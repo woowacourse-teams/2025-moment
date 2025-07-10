@@ -1,0 +1,44 @@
+# docker-compose.yml
+
+# Docker Compose 파일 버전
+version: "3.8"
+
+# 실행할 서비스(컨테이너)들 정의
+services:
+  # 1. Spring Boot 애플리케이션 서비스
+  app:
+    container_name: moment-app-server
+    platform: linux/amd64
+    # 현재 디렉토리의 Dockerfile을 사용하여 이미지 빌드
+    build: .
+    # 포트 매핑 (내 PC 8080 포트 -> 컨테이너 8080 포트)
+    ports:
+      - "8080:8080"
+    # 환경 변수 설정 (application.yml에서 사용)
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    # 'db' 서비스가 먼저 실행된 후에 'app' 서비스가 실행되도록 의존성 설정
+    depends_on:
+      - db
+
+  # 2. MySQL 데이터베이스 서비스
+  db:
+    # Docker Hub의 공식 MySQL 8.0 이미지 사용
+    image: "mysql:8"
+    container_name: moment-mysql-db
+    # 호스트의 3306 포트와 컨테이너의 3306 포트를 연결 (외부에서 DB 접속 시 필요)
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+volumes:
+  db-data:
