@@ -16,7 +16,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_FE }}
         with:
           script: |
-            const webhookUrl = process.env.DISCORD_WEBHOOK_FE;
+            const webhookUrl = process.env.DISCORD_WEBHOOK;
             if (!webhookUrl) {
               console.log('Discord webhook URL이 설정되지 않았습니다.');
               return;
