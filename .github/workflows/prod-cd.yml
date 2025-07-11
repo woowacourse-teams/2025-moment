@@ -1,0 +1,82 @@
+name: Notify PR Merge to Discord (moment-client only)
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  notify-discord:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord about PR Merge (main/develop only, client only)
+        uses: actions/github-script@v7
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          script: |
+            const webhookUrl = process.env.DISCORD_WEBHOOK;
+            if (!webhookUrl) {
+              console.log('Discord webhook URL이 설정되지 않았습니다.');
+              return;
+            }
+
+            const pr = context.payload.pull_request;
+
+            // 병합 브랜치가 main 또는 develop일 경우만
+            const targetBranches = ['main', 'develop'];
+            if (!targetBranches.includes(pr.base.ref)) {
+              console.log(`병합 대상 브랜치 '${pr.base.ref}'은 제외됨`);
+              return;
+            }
+
+            // 변경된 파일 목록 조회
+            const files = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const changedInClient = files.data.some(file => file.filename.startsWith('client/'));
+            if (!changedInClient) {
+              console.log('client 디렉토리에 변경사항 없음. 알림 생략');
+              return;
+            }
+
+            // 알림 Embed 생성
+            const embed = {
+              title: `🔀 PR Merged: ${pr.title}`,
+              description: `🧩 **client** 디렉토리 변경이 포함된 PR이 병합되었습니다! 🎉\n\n**작성자:** [@${pr.user.login}](${pr.user.html_url})\n**PR 링크:** [#${pr.number}](${pr.html_url})`,
+              color: 0x5865F2, // 디스코드 블루
+              author: {
+                name: pr.user.login,
+                icon_url: pr.user.avatar_url
+              },
+              timestamp: new Date().toISOString(),
+              fields: [
+                { name: "병합 브랜치", value: `${pr.base.ref}`, inline: true },
+                { name: "HEAD 브랜치", value: `${pr.head.ref}`, inline: true },
+                { name: "커밋 수", value: `${pr.commits}`, inline: true }
+              ]
+            };
+
+            const discordPayload = {
+              embeds: [embed]
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(discordPayload)
+            });
+
+            if (!response.ok) {
+              console.error(`Error sending to Discord: ${response.status} ${response.statusText}`);
+              const responseBody = await response.text();
+              console.error(`Response body: ${responseBody}`);
+              core.setFailed(`디스코드 알림 전송 실패: ${response.status}`);
+            } else {
+              console.log('PR 병합 알림 디스코드 전송 성공');
+            }
