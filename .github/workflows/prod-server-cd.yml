@@ -13,10 +13,10 @@ jobs:
       - name: Notify Discord about PR (opened or merged)
         uses: actions/github-script@v7
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_BE }}
         with:
           script: |
-            const webhookUrl = process.env.DISCORD_WEBHOOK;
+            const webhookUrl = process.env.DISCORD_WEBHOOK_BE;
             if (!webhookUrl) {
               console.log('Discord webhook URL이 설정되지 않았습니다.');
               return;
