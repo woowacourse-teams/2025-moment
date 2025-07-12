@@ -1,5 +1,13 @@
+import styled from '@emotion/styled'
+
 const App = () => {
-  return <h1 style={{ color: 'red' }}>Moment 팀</h1>;
+  return <AppStyled>Moment 팀</AppStyled>;
 };
+
+const AppStyled = styled.div`
+  color: blue;
+  font-size: 20px;
+  font-weight: bold;
+`
 
 export default App;
