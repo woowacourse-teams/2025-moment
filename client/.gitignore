@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# production build
+/dist/
+/build/
+
+# misc
+.env
+.env.*
+*.log
+
+# editor
+.vscode/
+.DS_Store
+
+# test coverage
+coverage/
+
+# local config
+*.local.js
+*.local.ts
