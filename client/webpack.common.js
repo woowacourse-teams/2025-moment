@@ -1,7 +1,8 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
-module.exports = {
+/** @type {import('webpack').Configuration} */
+const config = {
   entry: './src/index.tsx',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -30,3 +31,5 @@ module.exports = {
   },
   plugins: [new HtmlWebpackPlugin({ template: './public/index.html' }), new ForkTsCheckerWebpackPlugin()],
 };
+
+export default config;
