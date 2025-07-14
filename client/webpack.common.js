@@ -29,7 +29,10 @@ const config = {
       },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './public/index.html' }), new ForkTsCheckerWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new ForkTsCheckerWebpackPlugin(),
+  ],
 };
 
 export default config;
