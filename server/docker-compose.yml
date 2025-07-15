@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-  # 1. Spring Boot 애플리케이션 서비스
   app:
     container_name: moment-app-server
     platform: linux/amd64
@@ -17,7 +16,6 @@ services:
     depends_on:
       - db
 
-  # 2. MySQL 데이터베이스 서비스
   db:
     image: "mysql:8"
     container_name: moment-mysql-db
