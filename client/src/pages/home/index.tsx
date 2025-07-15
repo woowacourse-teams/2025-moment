@@ -1,11 +1,5 @@
-import styled from '@emotion/styled';
+import * as S from './index.styles';
 
 export default function HomePage() {
-  return <AppStyled>Moment 홈페이지</AppStyled>;
+  return <S.HomePageWrapper>Moment 홈페이지</S.HomePageWrapper>;
 }
-
-const AppStyled = styled.div`
-  color: blue;
-  font-size: 20px;
-  font-weight: bold;
-`;

@@ -8,6 +8,12 @@ const globalStyles = css`
     box-sizing: border-box;
   }
 
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   *,
   *::before,
   *::after {
