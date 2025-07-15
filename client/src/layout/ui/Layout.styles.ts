@@ -1,5 +1,5 @@
+import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
-import { colors } from '../../constants/colors';
 
 export const Wrapper = styled.div`
   min-height: 100vh;

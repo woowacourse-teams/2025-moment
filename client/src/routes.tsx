@@ -7,8 +7,8 @@ import { createBrowserRouter, createRoutesFromElements, Route } from 'react-rout
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path={ROUTES.ROOT} element={<Layout />}>
-      <Route path={ROUTES.ROOT} element={<HomePage />} />
-      <Route path={ROUTES.SIGNOUT} element={<SignupPage />} />
+      <Route index element={<HomePage />} />
+      <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
     </Route>,
   ),
 );
