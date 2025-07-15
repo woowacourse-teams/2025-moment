@@ -12,9 +12,13 @@ export const Wrapper = styled.div`
 `;
 
 export const Navbar = styled.nav`
+  height: 80px;
   background-color: ${colors.background.secondary};
-  padding: 16px 24px;
+  padding: 0 24px;
   color: ${colors.text.primary};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const Main = styled.main`
