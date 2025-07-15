@@ -1,5 +1,8 @@
+import { router } from '@/routes';
+import { RouterProvider } from 'react-router';
+
 const App = () => {
-  return <h1 style={{ color: 'red' }}>Moment 팀</h1>;
+  return <RouterProvider router={router} />;
 };
 
 export default App;

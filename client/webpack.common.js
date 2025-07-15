@@ -1,15 +1,46 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+/** @type {import('webpack').Configuration} */
+const config = {
   entry: './src/index.tsx',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
   module: {
     rules: [
-      { test: /\.(ts|tsx)$/, use: 'ts-loader', exclude: /node_modules/ },
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              ['@babel/preset-react', { runtime: 'automatic' }],
+              '@babel/preset-typescript',
+            ],
+          },
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './public/index.html' })],
+  plugins: [
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new ForkTsCheckerWebpackPlugin(),
+  ],
 };
+
+export default config;
