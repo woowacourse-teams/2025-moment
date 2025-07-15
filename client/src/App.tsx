@@ -1,13 +1,8 @@
-import styled from '@emotion/styled';
+import { router } from '@/routes';
+import { RouterProvider } from 'react-router';
 
 const App = () => {
-  return <AppStyled>Moment 팀</AppStyled>;
+  return <RouterProvider router={router} />;
 };
-
-const AppStyled = styled.div`
-  color: blue;
-  font-size: 20px;
-  font-weight: bold;
-`;
 
 export default App;
