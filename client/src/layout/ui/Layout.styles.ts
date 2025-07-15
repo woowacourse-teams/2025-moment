@@ -2,7 +2,7 @@ import { colors } from '@/constants/colors';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
-  min-height: 100vh;
+  height: 100vh;
   background-color: #0a0a0f;
   color: ${colors.text.primary};
   font-family:
@@ -11,10 +11,15 @@ export const Wrapper = styled.div`
     sans-serif;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Main = styled.main`
-  min-height: calc(100vh - 80px);
+  flex: 1;
   position: relative;
   z-index: 10;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `;
