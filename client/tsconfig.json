@@ -13,5 +13,5 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src", ".storybook"]
+  "include": ["src", ".storybook", "test"]
 }
