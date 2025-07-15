@@ -1,10 +1,10 @@
-import { colors } from '@/constants/colors';
+import { theme } from '@/styles/theme';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
-  background-color: ${colors.background.primary};
-  color: ${colors.text.primary};
+  background-color: ${theme.background.primary};
+  color: ${theme.text.primary};
   font-family:
     system-ui,
     -apple-system,
@@ -13,9 +13,9 @@ export const Wrapper = styled.div`
 
 export const Navbar = styled.nav`
   height: 80px;
-  background-color: ${colors.background.secondary};
+  background-color: ${theme.background.secondary};
   padding: 0 24px;
-  color: ${colors.text.primary};
+  color: ${theme.text.primary};
   display: flex;
   align-items: center;
   justify-content: space-between;
