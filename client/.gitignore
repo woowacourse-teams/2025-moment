@@ -20,3 +20,6 @@ coverage/
 # local config
 *.local.js
 *.local.ts
+
+*storybook.log
+storybook-static
