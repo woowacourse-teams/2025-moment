@@ -1,0 +1,26 @@
+project:
+  name: 2025-moment
+  description: woowa-moment project
+
+review:
+  exclude:
+    - node_modules/**
+    - dist/**
+    - build/**
+    - .next/**
+    - coverage/**
+    - .storybook/**
+  rules:
+    - name: 코드 스타일
+      enabled: true
+    - name: React 베스트 프랙티스
+      enabled: true
+    - name: TypeScript 타입 안정성
+      enabled: true
+    - name: 불필요한 리렌더링 감지
+      enabled: true
+  summary: true
+
+llm:
+  provider: gpt-4
+  temperature: 0.2
