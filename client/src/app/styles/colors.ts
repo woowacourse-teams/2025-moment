@@ -5,8 +5,8 @@ export const colors = {
   fourth: '#334155',
 
   background: {
-    primary: '#0F172A',
-    secondary: 'rgba(30, 41, 59, 0.5)',
+    primary: '#0a0a0f',
+    secondary: '#0d162b',
   },
 
   text: {
@@ -35,8 +35,7 @@ export const colors = {
     border: '#334155', //
   },
 
-  input: {
-    background: '#475569',
-    border: '#334155',
+  border: {
+    primary: '#334155',
   },
 } as const;
