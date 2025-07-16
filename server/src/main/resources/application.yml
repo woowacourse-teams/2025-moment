@@ -1,3 +1,32 @@
-spring:
-  application:
-    name: moment
+version: "3.8"
+
+services:
+  app:
+    container_name: moment-app-server
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: "mysql:8"
+    container_name: moment-mysql-db
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./.env
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  db-data:
