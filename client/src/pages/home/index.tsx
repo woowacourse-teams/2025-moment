@@ -1,6 +1,6 @@
 import { colors } from '@/app/styles/colors';
 import { Button } from '@/shared/ui/Button';
-import { Hero } from '@/widgets/Hero';
+import { Hero } from '@/widgets/hero';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
