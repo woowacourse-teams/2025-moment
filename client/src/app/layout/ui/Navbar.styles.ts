@@ -1,11 +1,10 @@
-import { theme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
 export const Navbar = styled.nav`
   height: 80px;
   background-color: transparent;
   padding: 0 24px;
-  color: ${theme.text.primary};
+  color: ${({ theme }) => theme.text.primary};
   display: flex;
   align-items: center;
   justify-content: space-between;

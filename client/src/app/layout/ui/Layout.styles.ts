@@ -1,10 +1,9 @@
-import { theme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
-  background-color: ${theme.background.primary};
-  color: ${theme.text.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.text.primary};
   font-family: inherit;
   position: relative;
   display: flex;
