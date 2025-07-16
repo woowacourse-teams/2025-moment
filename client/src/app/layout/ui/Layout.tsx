@@ -1,5 +1,4 @@
-import { Navbar } from '@/layout/ui/Navbar';
-import { StarField } from '@/layout/ui/StarField';
+import { Navbar } from '@/app/layout/ui/Navbar.styles';
 import React from 'react';
 import { Outlet } from 'react-router';
 import * as S from './Layout.styles';
@@ -7,7 +6,6 @@ import * as S from './Layout.styles';
 export const Layout: React.FC = () => {
   return (
     <S.Wrapper>
-      <StarField starCount={50} />
       <Navbar />
       <S.Main>
         <Outlet />

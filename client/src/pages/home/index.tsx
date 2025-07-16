@@ -1,6 +1,6 @@
-import { Button } from '@/components/common/Button';
-import Hero from '@/components/hero';
-import { colors } from '@/constants/colors';
+import { colors } from '@/app/styles/colors';
+import Hero from '@/pages/home/Hero';
+import { Button } from '@/shared/ui/Button';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
@@ -43,7 +43,6 @@ export default function HomePage() {
       <S.HeroSection>
         <Hero />
       </S.HeroSection>
-
       <S.ContentSection>
         <Button title="지금 시작하기" css={ButttonStyle} />
       </S.ContentSection>

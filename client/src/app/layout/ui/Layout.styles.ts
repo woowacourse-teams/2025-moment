@@ -1,4 +1,4 @@
-import { colors } from '@/constants/colors';
+import { colors } from '@/app/styles/colors';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`

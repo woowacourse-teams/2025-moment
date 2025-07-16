@@ -1,12 +1,12 @@
-import { LoginButton } from '@/components/auth/LoginButton';
-import { Logo } from '@/components/logo';
+import { Button } from '@/shared/ui/Button';
+import { Logo } from '@/shared/ui/Logo';
 import * as S from './Navbar.styles';
 
 export const Navbar = () => {
   return (
     <S.Navbar>
       <Logo />
-      <LoginButton />
+      <Button title="Sign Up" />
     </S.Navbar>
   );
 };

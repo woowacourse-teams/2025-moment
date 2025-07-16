@@ -1,5 +1,5 @@
-import { ROUTES } from '@/constants/routes';
-import { Layout } from '@/layout/ui';
+import { Layout } from '@/app/layout/ui';
+import { ROUTES } from '@/app/routes/routes';
 import HomePage from '@/pages/home';
 import SignupPage from '@/pages/signup';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';

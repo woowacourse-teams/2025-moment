@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import * as S from './index.styles';
+import * as S from './Hero.styles';
 
 interface HeroProps {
   title?: string[];

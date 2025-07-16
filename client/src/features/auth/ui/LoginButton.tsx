@@ -1,5 +1,5 @@
-import { Button } from '@/components/common/Button';
-import { colors } from '@/constants/colors';
+import { colors } from '@/app/styles/colors';
+import { Button } from '@/shared/ui/Button';
 import { css } from '@emotion/react';
 
 const loginStyle = css`
