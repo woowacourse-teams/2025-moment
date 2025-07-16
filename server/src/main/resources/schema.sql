@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS moments
 (
 	id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	momenter_id BIGINT NOT NULL,
-	content VARCHAR(255) NOT NULL,
+	content VARCHAR(100) NOT NULL,
 	is_matched BOOLEAN NOT NULL,
 	created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_moments_users
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS comments
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     commenter_id BIGINT NOT NULL,
     moment_id BIGINT NOT NULL,
-    content VARCHAR(255) NOT NULL,
+    content VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_comments_moments
         FOREIGN KEY (moment_id)
