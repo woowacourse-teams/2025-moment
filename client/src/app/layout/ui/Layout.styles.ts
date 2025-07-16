@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
-  background-color: #0a0a0f;
+  background-color: ${colors.background.primary};
   color: ${colors.text.primary};
   font-family: inherit;
   position: relative;

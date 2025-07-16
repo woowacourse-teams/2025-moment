@@ -5,7 +5,7 @@ export const colors = {
   fourth: '#334155',
 
   background: {
-    primary: '#0F172A',
+    primary: '#0a0a0f',
     secondary: '#0d162b',
   },
 
