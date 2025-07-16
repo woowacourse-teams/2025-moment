@@ -1,6 +1,6 @@
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const Button = ({ title, onClick, ...props }: ButtonProps) => {
