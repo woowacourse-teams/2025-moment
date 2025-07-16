@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 
-const ButttonStyle = css`
+const ButtonStyle = css`
   background-color: ${colors.secondary};
   color: black;
   padding: 18px 30px;
@@ -44,7 +44,7 @@ export default function HomePage() {
         <Hero />
       </S.HeroSection>
       <S.ContentSection>
-        <Button title="지금 시작하기" css={ButttonStyle} />
+        <Button title="지금 시작하기" css={ButtonStyle} />
       </S.ContentSection>
     </S.HomePageWrapper>
   );
