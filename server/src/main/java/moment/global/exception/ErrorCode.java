@@ -12,7 +12,6 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("G-001", "오류가 발생했습니다. 관리자에게 문의하세요.", HttpStatus.INTERNAL_SERVER_ERROR)
     ;
 
-
     ErrorCode(String code, String message, HttpStatus status) {
         this.code = code;
         this.message = message;
@@ -22,5 +21,4 @@ public enum ErrorCode {
     private final String code;
     private final String message;
     private final HttpStatus status;
-
 }
