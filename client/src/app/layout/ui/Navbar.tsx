@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { LoginButton } from '@/features/auth/ui/LoginButton';
 import { Logo } from '@/shared/ui/Logo';
 import * as S from './Navbar.styles';
 
@@ -6,7 +6,7 @@ export const Navbar = () => {
   return (
     <S.Navbar>
       <Logo />
-      <Button title="Sign Up" />
+      <LoginButton />
     </S.Navbar>
   );
 };

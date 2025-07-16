@@ -15,6 +15,11 @@ const loginStyle = css`
     transform: scale(1.05);
     transition: transform 0.3s ease;
   }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 `;
 
 export const LoginButton = () => {
