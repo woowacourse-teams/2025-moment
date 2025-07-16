@@ -1,5 +1,5 @@
 import { useDelayedVisible } from '@/shared/hooks';
-import * as S from './Hero.styles';
+import * as S from './Hero.styled';
 
 interface HeroProps {
   title?: string[];
