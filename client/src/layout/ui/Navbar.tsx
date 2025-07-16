@@ -1,12 +1,11 @@
 import { LoginButton } from '@/components/auth/LoginButton';
+import { Logo } from '@/components/logo';
 import * as S from './Navbar.styles';
 
 export const Navbar = () => {
   return (
     <S.Navbar>
-      <S.LogoContainer>
-        <S.Logo src="/logo.webp" alt="logo" />
-      </S.LogoContainer>
+      <Logo />
       <LoginButton />
     </S.Navbar>
   );
