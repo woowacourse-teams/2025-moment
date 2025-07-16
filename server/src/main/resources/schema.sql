@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS emojis
             REFERENCES users (id),
     CONSTRAINT fk_emojis_comments
         FOREIGN KEY (comment_id)
-            REFERENCES comments (id)
+            REFERENCES comments (id),
+    CONSTRAINT uq_emojis_user_comment_type
+        UNIQUE (user_id, comment_id, type)
 );
 
