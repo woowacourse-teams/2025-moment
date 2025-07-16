@@ -34,10 +34,12 @@ export const theme = {
 
   card: {
     background: '#1E293B',
-    border: '#334155', //
+    border: '#334155',
   },
 
   border: {
     primary: '#334155',
   },
 } as const;
+
+export type CustomTheme = typeof theme;
