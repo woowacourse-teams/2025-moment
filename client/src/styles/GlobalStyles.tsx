@@ -1,7 +1,6 @@
 import { Global, css } from '@emotion/react';
 
 const globalStyles = css`
-  /* CSS Reset */
   * {
     margin: 0;
     padding: 0;
@@ -20,11 +19,10 @@ const globalStyles = css`
     box-sizing: border-box;
   }
 
-  /* 로컬 폰트 정의 - 하나의 파일로 간단하게 */
   @font-face {
     font-family: 'IanSui';
     src: url('/fonts/iansui.woff2') format('woff2');
-    font-weight: 100 900; /* 가변 weight 지원 */
+    font-weight: 100 900;
     font-style: normal;
     font-display: swap;
   }
