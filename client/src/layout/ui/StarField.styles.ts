@@ -12,10 +12,10 @@ const twinkle = keyframes`
 
 export const StarFieldWrapper = styled.div`
   position: fixed;
-  top: 80px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 80px);
+  height: 100%;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
