@@ -20,6 +20,19 @@ review:
     - name: 불필요한 리렌더링 감지
       enabled: true
   summary: true
+  path_instructions:
+    - path: '**/*'
+      instructions: |
+        모든 리뷰 코멘트와 피드백을 한국어로 작성해주세요. 
+        코드 리뷰 시 다음 사항들을 한국어로 설명해주세요:
+        - 코드 개선 제안사항
+        - 버그나 잠재적 문제점
+        - 성능 최적화 방안
+        - 코드 스타일 및 컨벤션 관련 피드백
+        - TypeScript 타입 관련 개선사항
+        - React 컴포넌트 최적화 제안
+
+        기술적인 용어는 한국어와 영어를 병행 사용하되, 설명은 반드시 한국어로 해주세요.
 
 llm:
   provider: gpt-4
