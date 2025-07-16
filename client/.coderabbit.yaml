@@ -1,8 +1,11 @@
 project:
-  name: 2025-moment
+  name: 2025-moment-client
   description: woowa-moment project
 
 review:
+  auto_review: false
+  review_on_push: false
+  trigger: pull_request_only
   exclude:
     - node_modules/**
     - dist/**
