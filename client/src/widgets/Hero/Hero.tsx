@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useDelayedVisible } from '@/shared/hooks';
 import * as S from './Hero.styles';
 
 interface HeroProps {
   title?: string[];
   subtitle?: string[];
-  delay?: number;
 }
 
 export default function Hero({
@@ -13,17 +12,8 @@ export default function Hero({
     '삶의 다양한 순간을 공유하며 서로 진실된 공감을 건네는',
     '특별한 소셜 네트워크 서비스입니다',
   ],
-  delay = 100,
 }: HeroProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [delay]);
+  const { isVisible } = useDelayedVisible({ delay: 100 });
 
   return (
     <S.HeroWrapper isVisible={isVisible}>
