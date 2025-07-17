@@ -23,6 +23,12 @@ export const CardTitleWrapper = styled.div`
   gap: 10px;
 `;
 
+export const CardTitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
 export const CardTitle = styled.span`
   ${({ theme }) => CardTitleStyles.cardTitle(theme)}
 `;
