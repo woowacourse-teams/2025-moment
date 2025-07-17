@@ -38,12 +38,16 @@ public class User extends BaseEntity {
     private String nickname;
 
     public User(String email, String password, String nickname) {
-        validateEmail(email);
-        validatePassword(password);
-        validateNickname(nickname);
+        validate(email, password, nickname);
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+    }
+
+    private void validate(String email, String password, String nickname) {
+        validateEmail(email);
+        validatePassword(password);
+        validateNickname(nickname);
     }
 
     private void validateEmail(String email) {
