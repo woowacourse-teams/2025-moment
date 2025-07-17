@@ -12,11 +12,17 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    backgrounds: {
+      default: 'primary',
+      values: [{ name: 'primary', value: '#0F172A' }],
+    },
   },
   decorators: [
     Story => (
       <ThemeProvider theme={theme}>
-        <Story />
+        <div style={{ backgroundColor: '#0F172A', minHeight: '100vh', padding: '20px' }}>
+          <Story />
+        </div>
       </ThemeProvider>
     ),
   ],
