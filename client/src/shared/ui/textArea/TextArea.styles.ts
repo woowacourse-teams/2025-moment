@@ -12,7 +12,8 @@ const TextAreaStyles = {
     height: ${theme.typography.textAreaHeight[height]};;
     color: ${theme.colors.white};
     border: 1px solid ${theme.colors.gray700};
-
+    resize: none; 
+    
     &::placeholder {
         color: ${theme.colors.white};
     }

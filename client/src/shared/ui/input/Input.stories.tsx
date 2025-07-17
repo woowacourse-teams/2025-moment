@@ -1,18 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { Button } from './Button';
+import { Input } from './Input';
 
 const meta: Meta = {
-  title: 'Example/Button',
-  component: Button,
+  title: 'Example/Input',
+  component: Input,
   argTypes: {
-    variant: {
+    type: {
       control: { type: 'radio' },
-      options: ['primary', 'secondary'],
+      options: ['text', 'password', 'email'],
     },
   },
   args: {
-    variant: 'primary',
-    title: 'Click me',
+    placeholder: 'Enter your email',
+    type: 'text',
   },
 };
 
