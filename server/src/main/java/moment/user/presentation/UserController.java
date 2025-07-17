@@ -21,6 +21,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<Void>> createUser(@RequestBody UserCreateRequest request) {
         userService.addUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of(HttpStatus.CREATED, null));
+        HttpStatus status = HttpStatus.CREATED;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 }
