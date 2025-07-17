@@ -1,15 +1,22 @@
-import { ButtonVariant } from './Button.styles';
 import * as S from './Button.styles';
+import { ButtonVariant } from './Button.styles';
 
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
   title: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
-export const Button = ({ variant, title, onClick, ...props }: ButtonProps) => {
+export const Button = ({
+  variant = 'primary',
+  title,
+  onClick,
+  disabled,
+  ...props
+}: ButtonProps) => {
   return (
-    <S.Button variant={variant} onClick={onClick} {...props}>
+    <S.Button variant={variant} onClick={onClick} disabled={disabled} {...props}>
       {title}
     </S.Button>
   );
