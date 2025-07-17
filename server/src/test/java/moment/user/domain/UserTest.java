@@ -1,0 +1,50 @@
+package moment.user.domain;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+@DisplayNameGeneration(ReplaceUnderscores.class)
+class UserTest {
+
+    @Test
+    void 유저_생성에_성공한다() {
+        // when & then
+        assertThatCode(() -> new User("mimi@icloud.com", "1234", "mimi"))
+                .doesNotThrowAnyException();
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '", "mimi", "mimi@", "mimi@.com", "mimi@com", "mimi@icloud", "mimi@icloud."}, nullValues = "null")
+    void 이메일_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
+        //when & then
+        assertThatThrownBy(() -> new User(email, "password", "mimi"))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_INVALID);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void 비밀번호_형식이_유효하지_않은_경우_예외가_발생한다(String password) {
+        //when & then
+        assertThatThrownBy(() -> new User("mimi@icloud.com", password, "mimi"))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_INVALID);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void 닉네임_형식이_유효하지_않은_경우_예외가_발생한다(String nickname) {
+        //when & then
+        assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.NICKNAME_INVALID);
+    }
+}
