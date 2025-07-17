@@ -1,6 +1,8 @@
 spring:
   application:
     name: moment
+  config:
+    import: optional:file:.env[.properties]
 
   datasource:
     url: jdbc:h2:mem:database-test
@@ -21,3 +23,10 @@ spring:
   h2:
     console:
       enabled: true
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+expiration:
+  time: ${EXPIRATION_TIME}

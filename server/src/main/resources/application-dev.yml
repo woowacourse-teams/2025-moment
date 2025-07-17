@@ -20,3 +20,10 @@ spring:
   sql:
     init:
       mode: always
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+expiration:
+  time: ${EXPIRATION_TIME}

@@ -1,5 +1,6 @@
 package moment.user.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -46,5 +47,25 @@ class UserTest {
         assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.NICKNAME_INVALID);
+    }
+
+    @Test
+    void 동일한_비밀번호를_입력받으면_참을_반환한다() {
+        // given
+        User user = new User("ekorea623@gmail.com", "12345", "drago");
+        String password = "12345";
+
+        // when & then
+        assertThat(user.checkPassword(password)).isTrue();
+    }
+
+    @Test
+    void 다른_비밀번호를_입력받으면_거짓을_반환한다() {
+        // given
+        User user = new User("ekorea623@gmail.com", "12345", "drago");
+        String password = "abcdef";
+
+        // when & then
+        assertThat(user.checkPassword(password)).isFalse();
     }
 }
