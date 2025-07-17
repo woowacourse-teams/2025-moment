@@ -9,12 +9,12 @@ interface CardTitleContainerProps {
 
 export const CardTitleContainer = ({ Icon, title, subtitle }: CardTitleContainerProps) => {
   return (
-      <S.CardTitleContainer>
-        <S.CardTitleWrapper>
-          <Icon size={32} />
-          <S.CardTitle>{title}</S.CardTitle>
-        </S.CardTitleWrapper>
-        <S.CardSubtitle>{subtitle}</S.CardSubtitle>
-      </S.CardTitleContainer>
+    <S.CardTitleContainer>
+      <S.CardTitleWrapper>
+        <Icon size={32} />
+        <S.CardTitle>{title}</S.CardTitle>
+      </S.CardTitleWrapper>
+      <S.CardSubtitle>{subtitle}</S.CardSubtitle>
+    </S.CardTitleContainer>
   );
 };

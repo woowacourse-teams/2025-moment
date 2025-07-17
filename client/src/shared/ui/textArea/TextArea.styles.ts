@@ -1,10 +1,10 @@
-import { CustomTheme } from "@/app/styles/theme";
-import styled from "@emotion/styled";
+import { CustomTheme } from '@/app/styles/theme';
+import styled from '@emotion/styled';
 
-export type textAreaHeight = "small" | "medium" | "large";
+export type textAreaHeight = 'small' | 'medium' | 'large';
 
 const TextAreaStyles = {
-    textarea: (theme: CustomTheme, height: textAreaHeight) => `
+  textarea: (theme: CustomTheme, height: textAreaHeight) => `
     width: 100%;
     padding: 10px 20px;
     background-color: ${theme.colors.gray600};
@@ -16,9 +16,9 @@ const TextAreaStyles = {
     &::placeholder {
         color: ${theme.colors.white};
     }
-    `
-}
+    `,
+};
 
-export const TextArea = styled.textarea<{height: textAreaHeight}>`
-    ${({theme, height}) => TextAreaStyles.textarea(theme, height)}
+export const TextArea = styled.textarea<{ height: textAreaHeight }>`
+  ${({ theme, height }) => TextAreaStyles.textarea(theme, height)}
 `;

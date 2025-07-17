@@ -1,8 +1,8 @@
-import { CustomTheme } from "@/app/styles/theme";
-import styled from "@emotion/styled";
+import { CustomTheme } from '@/app/styles/theme';
+import styled from '@emotion/styled';
 
 const InputStyles = {
-    input: (theme: CustomTheme) => `
+  input: (theme: CustomTheme) => `
     width: 100%;
     padding: 10px 20px;
     background-color: ${theme.colors.gray600};
@@ -14,9 +14,9 @@ const InputStyles = {
     &::placeholder {
         color: ${theme.colors.white};
     }
-    `
-}
+    `,
+};
 
 export const Input = styled.input`
-    ${({theme}) => InputStyles.input(theme)}
+  ${({ theme }) => InputStyles.input(theme)}
 `;
