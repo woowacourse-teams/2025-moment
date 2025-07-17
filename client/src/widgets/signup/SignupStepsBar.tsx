@@ -1,6 +1,6 @@
 import { Step } from '@/features/auth/types';
 import styled from '@emotion/styled';
-import { Lock } from 'lucide-react';
+import { BadgeCheck, Lock, User } from 'lucide-react';
 
 interface SignupStepBarProps {
   step: Step;
@@ -85,6 +85,17 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
     }
   };
 
+  const getStepIcon = (currentStep: Step): React.ReactNode => {
+    switch (currentStep) {
+      case 'step1':
+        return <Lock />;
+      case 'step2':
+        return <User />;
+      case 'step3':
+        return <BadgeCheck />;
+    }
+  };
+
   const getStepTitle = (currentStep: Step): string => {
     switch (currentStep) {
       case 'step1':
@@ -111,9 +122,7 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
         <StepDot active={currentStepNumber === 3} completed={false} />
       </StepsContainer>
       <SignupFormTitle>
-        <SignupFormIcon>
-          <Lock />
-        </SignupFormIcon>
+        <SignupFormIcon>{getStepIcon(step)}</SignupFormIcon>
         <StepTitle active={true}>{currentTitle}</StepTitle>
       </SignupFormTitle>
     </StepsWrapper>
