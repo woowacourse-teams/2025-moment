@@ -1,15 +1,18 @@
 import { router } from '@/app/routes';
-import { RouterProvider } from 'react-router';
+import { SignupProvider } from '@/features/auth/context/SignupProvider';
 import { ThemeProvider } from '@emotion/react';
-import { theme } from './styles/theme';
+import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
+import { theme } from './styles/theme';
 
 const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <RouterProvider router={router} />
+        <SignupProvider>
+          <RouterProvider router={router} />
+        </SignupProvider>
       </ThemeProvider>
     </>
   );
