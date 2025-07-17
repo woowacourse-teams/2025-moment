@@ -1,4 +1,5 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from "@/shared/ui/button/Button";
+
 
 export const LoginButton = () => {
   return <Button title="로그인" onClick={() => {}} variant="primary" />;

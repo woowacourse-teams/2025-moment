@@ -1,4 +1,5 @@
-import { Button } from '@/shared/ui/Button';
+
+import { Button } from '@/shared/ui/button/Button';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
