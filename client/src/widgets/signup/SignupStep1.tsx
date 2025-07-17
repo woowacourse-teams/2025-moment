@@ -1,71 +1,29 @@
-import { useState } from 'react';
+import { useSignupContext } from '@/features/auth/context/useSignupContext';
 import * as S from './SignupStep.styles';
 
-interface FormData {
+interface signupData {
   username: string;
   password: string;
-  confirmPassword: string;
+  rePassword: string;
 }
 
 export const SignupStep1 = () => {
-  const [formData, setFormData] = useState<FormData>({
-    username: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const { signupData, changeSignupData, error } = useSignupContext();
 
-  const handleInputChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: undefined,
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {};
-
-    if (!formData.username.trim()) {
-      newErrors.username = '아이디를 입력해주세요.';
-    } else if (formData.username.length < 4) {
-      newErrors.username = '아이디는 4자 이상이어야 합니다.';
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = '비밀번호를 입력해주세요.';
-    } else if (formData.password.length < 6) {
-      newErrors.password = '비밀번호는 6자 이상이어야 합니다.';
-    }
-
-    if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = '비밀번호 확인을 입력해주세요.';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  console.log('asdf', signupData);
 
   return (
     <S.StepContainer>
       <S.InputGroup>
         <S.Label htmlFor="username">아이디</S.Label>
         <S.Input
-          id="username"
-          type="text"
+          id="email"
+          type="email"
           placeholder="아이디를 입력해주세요"
-          value={formData.username}
-          onChange={handleInputChange('username')}
+          value={signupData.email}
+          onChange={e => changeSignupData('email', e.target.value)}
         />
-        {errors.username && <S.ErrorMessage>{errors.username}</S.ErrorMessage>}
+        {error.emailError && <S.ErrorMessage>{error.emailError}</S.ErrorMessage>}
       </S.InputGroup>
 
       <S.InputGroup>
@@ -74,22 +32,22 @@ export const SignupStep1 = () => {
           id="password"
           type="password"
           placeholder="비밀번호를 입력해주세요"
-          value={formData.password}
-          onChange={handleInputChange('password')}
+          value={signupData.password}
+          onChange={e => changeSignupData('password', e.target.value)}
         />
-        {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
+        {error.passwordError && <S.ErrorMessage>{error.passwordError}</S.ErrorMessage>}
       </S.InputGroup>
 
       <S.InputGroup>
-        <S.Label htmlFor="confirmPassword">비밀번호 확인</S.Label>
+        <S.Label htmlFor="rePassword">비밀번호 확인</S.Label>
         <S.Input
-          id="confirmPassword"
+          id="rePassword"
           type="password"
           placeholder="비밀번호를 다시 입력해주세요"
-          value={formData.confirmPassword}
-          onChange={handleInputChange('confirmPassword')}
+          value={signupData.rePassword}
+          onChange={e => changeSignupData('rePassword', e.target.value)}
         />
-        {errors.confirmPassword && <S.ErrorMessage>{errors.confirmPassword}</S.ErrorMessage>}
+        {error.rePasswordError && <S.ErrorMessage>{error.rePasswordError}</S.ErrorMessage>}
       </S.InputGroup>
     </S.StepContainer>
   );
