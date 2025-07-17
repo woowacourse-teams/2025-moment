@@ -15,4 +15,6 @@ export const Main = styled.main`
   z-index: 10;
   padding-top: 80px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
