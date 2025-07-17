@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 export type ButtonVariant = 'primary' | 'secondary';
 
-const buttonStyls = {
+const buttonStyles = {
   primary: (theme: CustomTheme) => `
     background-color: transparent;
     color: #fff;
@@ -52,5 +52,5 @@ const buttonStyls = {
 };
 
 export const Button = styled.button<{ variant: ButtonVariant }>`
-  ${({ theme, variant }) => buttonStyls[variant](theme)}
+  ${({ theme, variant }) => buttonStyles[variant](theme)}
 `;
