@@ -1,5 +1,5 @@
-import type { Step } from '@/features/auth/types';
-import { STEPS } from '@/features/auth/types';
+import type { Step } from '@/features/auth/types/step';
+import { STEPS } from '@/features/auth/types/step';
 import { useFunnel } from '@/shared/hooks';
 import { Button } from '@/shared/ui/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';

@@ -1,4 +1,4 @@
-import { Step } from '@/features/auth/types';
+import { Step } from '@/features/auth/types/step';
 import styled from '@emotion/styled';
 import { BadgeCheck, Lock, User } from 'lucide-react';
 
