@@ -1,13 +1,13 @@
 import { LucideIcon } from 'lucide-react';
 import * as S from './CardTitleContainer.styles';
 
-interface CardTitleWrapperProps {
+interface CardTitleContainerProps {
   Icon: LucideIcon;
   title: string;
   subtitle: string;
 }
 
-export const CardTitleWrapper = ({ Icon, title, subtitle }: CardTitleWrapperProps) => {
+export const CardTitleContainer = ({ Icon, title, subtitle }: CardTitleContainerProps) => {
   return (
       <S.CardTitleContainer>
         <S.CardTitleWrapper>
