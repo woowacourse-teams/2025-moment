@@ -18,7 +18,13 @@ export const theme = {
     gray600: '#536872',
     gray700: '#334155'
     },
-  
+    typography: {
+      textAreaHeight:{
+        small: "100px",
+        medium: "200px",
+        large: "300px",
+      }
+    }
 } as const;
 
 
