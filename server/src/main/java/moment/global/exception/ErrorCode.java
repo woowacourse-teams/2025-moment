@@ -22,7 +22,9 @@ public enum ErrorCode {
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
 
-    COMMENT_INVALID_LENGTH("C-001", "코멘트는 입력 가능한 길이는 최대 100자 입니다.", HttpStatus.BAD_REQUEST);
+    COMMENT_INVALID_LENGTH("C-001", "코멘트는 입력 가능한 길이는 최대 100자 입니다.", HttpStatus.BAD_REQUEST),
+
+    MOMENT_NOT_FOUND("M-001", "존재하지 않는 모멘트입니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
