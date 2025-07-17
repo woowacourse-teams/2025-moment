@@ -1,13 +1,30 @@
 import styled from '@emotion/styled';
 
-export const SignupFormWrapper = styled.form`
-  width: 100%;
-  max-width: 400px;
-  min-height: 500px;
+export const SignupFormWrapper = styled.div`
+  width: 80%;
+  max-width: 500px;
+  min-height: 550px;
   padding: 32px;
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  gap: 28px;
+`;
+
+export const SignupFormContent = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+`;
+
+export const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
