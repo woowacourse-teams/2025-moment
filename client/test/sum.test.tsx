@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 test('버튼 클릭 이벤트 동작', async () => {
   const onClick = jest.fn();
-  render(<Button title="Click me" onClick={onClick} />);
+  render(<Button title="Click me" onClick={onClick} variant="primary" />);
 
   await userEvent.click(screen.getByText('Click me'));
 

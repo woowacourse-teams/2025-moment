@@ -1,8 +1,10 @@
-export const colors = {
-  primary: '#0F172A',
-  secondary: '#F1C40F',
-  tertiary: '#1E293B',
-  fourth: '#334155',
+export const theme = {
+  colors: {
+    primary: '#0F172A',
+    secondary: '#F1C40F',
+    tertiary: '#1E293B',
+    fourth: '#334155',
+  },
 
   background: {
     primary: '#0a0a0f',
@@ -32,10 +34,12 @@ export const colors = {
 
   card: {
     background: '#1E293B',
-    border: '#334155', //
+    border: '#334155',
   },
 
   border: {
     primary: '#334155',
   },
 } as const;
+
+export type CustomTheme = typeof theme;
