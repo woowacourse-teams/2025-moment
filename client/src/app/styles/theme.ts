@@ -15,6 +15,8 @@ export const theme = {
     red500:   '#EF4444', 
     navy900:   '#0a0a0f',
     indigo950: '#0d162b',
+    gray600: '#536872',
+    gray700: '#334155'
     },
   
 } as const;
