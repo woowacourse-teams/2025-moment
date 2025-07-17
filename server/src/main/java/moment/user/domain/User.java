@@ -67,4 +67,8 @@ public class User extends BaseEntity {
             throw new MomentException(ErrorCode.NICKNAME_INVALID);
         }
     }
+
+    public boolean checkPassword(String loginPassword) {
+        return password.equals(loginPassword);
+    }
 }

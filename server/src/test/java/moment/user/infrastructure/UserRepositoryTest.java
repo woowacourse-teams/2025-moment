@@ -2,6 +2,7 @@ package moment.user.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -54,5 +55,29 @@ class UserRepositoryTest {
 
         // when & then
         assertThat(userRepository.existsByNickname(notExistedNickname)).isFalse();
+    }
+
+    @Test
+    void 이메일을_가진_유저를_찾는다() {
+        // given
+        userRepository.save(new User("mimi@icloud.com", "password", "mimi"));
+
+        // when
+        Optional<User> user = userRepository.findByEmail("mimi@icloud.com");
+
+        // then
+        assertThat(user).isPresent();
+    }
+
+    @Test
+    void 가입되지_않은_이메일은_찾을_수_없다() {
+        // given
+        userRepository.save(new User("mimi@icloud.com", "password", "mimi"));
+
+        // when
+        Optional<User> user = userRepository.findByEmail("noUser@gmail.com");
+
+        // then
+        assertThat(user).isEmpty();
     }
 }
