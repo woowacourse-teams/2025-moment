@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Card } from './Card';
-import { CardTitleContainer } from '../cardTitle/CardTitleContainer';
+import { CardTitleContainer } from '../cardTitleContainer/CardTitleContainer';
 import { AlarmClock } from 'lucide-react';
 import { CardContent } from '../cardContent/CardContent';
 import { TextArea } from '../textArea/TextArea.styles';
