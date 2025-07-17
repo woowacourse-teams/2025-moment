@@ -44,10 +44,16 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+
         given(userRepository.findById(any(Long.class))).willReturn(
-                Optional.of(new User("hippo@gmail.com", "1234", "hippo")));
+                Optional.of(commenter));
         given(momentRepository.findById(any(Long.class))).willReturn(
-                Optional.of(new Moment("오늘 하루는 힘든 하루~", true, new User("kiki@icloud.com", "1234", "kiki"))));
+                Optional.of(moment));
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         // when
         commentService.addComment(request, 1L);
@@ -79,7 +85,7 @@ class CommentServiceTest {
 
         given(userRepository.findById(any(Long.class))).willReturn(
                 Optional.empty());
-        
+
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)

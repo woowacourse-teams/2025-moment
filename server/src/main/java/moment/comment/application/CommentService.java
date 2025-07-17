@@ -3,6 +3,7 @@ package moment.comment.application;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -20,8 +21,7 @@ public class CommentService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
 
-    public void addComment(CommentCreateRequest request, Long userId) {
-        // todo: USER NOT FOUND error code 의미 변경 논의 필요
+    public CommentCreateResponse addComment(CommentCreateRequest request, Long userId) {
         User commenter = userRepository.findById(userId)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
         Moment moment = momentRepository.findById(request.momentId())
@@ -29,6 +29,8 @@ public class CommentService {
 
         Comment comment = request.toComment(commenter, moment);
 
-        commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+
+        return CommentCreateResponse.from(savedComment);
     }
 }

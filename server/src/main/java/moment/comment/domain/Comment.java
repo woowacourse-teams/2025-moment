@@ -45,14 +45,32 @@ public class Comment extends BaseEntity {
 
     public Comment(String content, User commenter, Moment moment) {
         validateContent(content);
+        validateCommenter(commenter);
+        validateMoment(moment);
         this.content = content;
         this.commenter = commenter;
         this.moment = moment;
     }
 
     private void validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+
         if (content.length() > 100) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID_LENGTH);
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
+
+    private void validateCommenter(User commenter) {
+        if (commenter == null) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
+
+    private void validateMoment(Moment moment) {
+        if (moment == null) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
         }
     }
 }
