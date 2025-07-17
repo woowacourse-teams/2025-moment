@@ -6,6 +6,9 @@ export type cardWidth = "small" | "medium" | "large";
 const CardStyles ={
 
     card: (theme: CustomTheme, width: cardWidth) => `
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     width: ${theme.typography.cardWidth[width]};
     padding: 10px 20px;
     background-color: color-mix(in srgb, ${theme.colors.slate800} 60%, transparent);

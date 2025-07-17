@@ -15,10 +15,23 @@ export const theme = {
     red500:   '#EF4444', 
     navy900:   '#0a0a0f',
     indigo950: '#0d162b',
+    gray200: '#CBD5E1',
     gray600: '#536872',
     gray700: '#334155'
     },
     typography: {
+      title:{
+        fontSize:{
+          small:'16px',
+          medium:'18px',
+          large:'32px',
+        },
+        fontWeight:{
+          small:'400',
+          medium:'500',
+          large:'600',
+        },
+      },
       textAreaHeight:{
         small: "100px",
         medium: "200px",
