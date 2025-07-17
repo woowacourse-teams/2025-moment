@@ -14,7 +14,7 @@ export const theme = {
   text: {
     primary: '#FFFFFF',
     secondary: '#F1C40F',
-    tertiary: '#F4D03F',
+    tertiary: '#93A1B7',
   },
 
   success: {
