@@ -1,12 +1,16 @@
 import { router } from '@/app/routes';
-import GlobalStyles from '@/app/styles/GlobalStyles';
 import { RouterProvider } from 'react-router';
+import { ThemeProvider } from '@emotion/react';
+import { theme } from './styles/theme';
+import GlobalStyles from './styles/GlobalStyles';
 
 const App = () => {
   return (
     <>
-      <GlobalStyles />
-      <RouterProvider router={router} />
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </>
   );
 };
