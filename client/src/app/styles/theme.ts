@@ -23,6 +23,11 @@ export const theme = {
         small: "100px",
         medium: "200px",
         large: "300px",
+      },
+      cardWidth:{
+        small: "30%",
+        medium: "50%",
+        large: "100%",
       }
     }
 } as const;
