@@ -7,7 +7,7 @@ const buttonStyles = {
   primary: (theme: CustomTheme) => `
     background-color: transparent;
     color: #fff;
-    border: 1px solid ${theme.colors.primary};
+    border: 1px solid ${theme.colors.slate900};
     border-radius: 50px;
     padding: 10px 20px;
     font-size: 16px;
@@ -25,7 +25,7 @@ const buttonStyles = {
     `,
 
   secondary: (theme: CustomTheme) => `
-    background-color: ${theme.colors.secondary};
+    background-color: ${theme.colors.yellow500};
     color: black;
     padding: 18px 30px;
     border-radius: 50px;

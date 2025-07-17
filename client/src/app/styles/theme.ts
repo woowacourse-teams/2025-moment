@@ -1,45 +1,23 @@
 export const theme = {
+
   colors: {
-    primary: '#0F172A',
-    secondary: '#F1C40F',
-    tertiary: '#1E293B',
-    fourth: '#334155',
-  },
-
-  background: {
-    primary: '#0a0a0f',
-    secondary: '#0d162b',
-  },
-
-  text: {
-    primary: '#FFFFFF',
-    secondary: '#F1C40F',
-    tertiary: '#F4D03F',
-  },
-
-  success: {
-    default: '#10B981',
-    hover: '#059669',
-    background: '#ECFDF5',
-    border: '#A7F3D0',
-  },
-
-  warning: {
-    default: '#F59E0B',
-  },
-
-  danger: {
-    default: '#EF4444',
-  },
-
-  card: {
-    background: '#1E293B',
-    border: '#334155',
-  },
-
-  border: {
-    primary: '#334155',
-  },
+    slate900:  '#0F172A', // theme.colors.primary
+    slate800:  '#1E293B', // theme.colors.tertiary, card.background
+    slate700:  '#334155', // theme.colors.fourth, card.border, border.primary
+    white:    '#FFFFFF', // theme.text.primary
+    yellow500:'#F1C40F', // theme.text.secondary
+    yellow300:'#F4D03F', // theme.text.tertiary
+    emerald500: '#10B981', // theme.success.default
+    emerald600: '#059669', // theme.success.hover
+    emerald50:  '#ECFDF5', // theme.success.background
+    emerald200: '#A7F3D0', // theme.success.border
+    amber500: '#F59E0B', // theme.warning.default
+    red500:   '#EF4444', 
+    navy900:   '#0a0a0f',
+    indigo950: '#0d162b',
+    },
+  
 } as const;
+
 
 export type CustomTheme = typeof theme;
