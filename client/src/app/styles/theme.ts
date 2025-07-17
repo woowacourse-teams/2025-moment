@@ -21,16 +21,26 @@ export const theme = {
   typography: {
     title: {
       fontSize: {
-        small: '16px',
-        medium: '18px',
-        large: '32px',
-      },
-      fontWeight: {
-        small: '400',
-        medium: '500',
-        large: '600',
+        small: '32px',
+        medium: '48px',
+        large: '64px',
       },
     },
+
+    subTitle: {
+      fontSize: {
+        small: '12px',
+        medium: '18px',
+        large: '24px',
+      },
+    },
+
+    fontWeight: {
+      small: '400',
+      medium: '500',
+      large: '600',
+    },
+
     textAreaHeight: {
       small: '100px',
       medium: '200px',
