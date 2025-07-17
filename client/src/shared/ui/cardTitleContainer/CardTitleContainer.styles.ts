@@ -3,16 +3,15 @@ import styled from '@emotion/styled';
 
 export const CardTitleStyles = {
   cardTitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.title.fontSize.large};
-    font-weight: ${theme.typography.title.fontWeight.large};
+    font-size: ${theme.typography.title.fontSize.small};
+    font-weight: ${theme.typography.fontWeight.large};
     color: ${theme.colors.white};
     `,
 };
 
 export const CardSubtitleStyles = {
   cardSubtitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.title.fontSize.medium};
-    font-weight: ${theme.typography.title.fontWeight.medium};
+    font-size: ${theme.typography.subTitle.fontSize.medium};
     color: ${theme.colors.gray200};
     `,
 };
