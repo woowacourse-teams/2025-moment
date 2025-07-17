@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import moment.auth.application.TokenManager;
 import moment.global.dto.response.SuccessResponse;
+import moment.user.domain.User;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,9 @@ class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenManager tokenManager;
 
     @Test
     void 유저_생성에_성공한다() {
@@ -42,6 +49,29 @@ class UserControllerTest {
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(userRepository.existsByEmail("mimi@icloud.com")).isTrue()
+        );
+    }
+
+    @Test
+    void 유저_프로필_조회에_성공한다() {
+        // given
+        String nickname = "mimi";
+        User user = userRepository.save(new User("mimi@icloud.com", "password", nickname));
+        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        UserProfileResponse expect = new UserProfileResponse(nickname);
+
+        // when
+        SuccessResponse<UserProfileResponse> response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("/api/v1/users/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {});
+
+        // then
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.data()).isEqualTo(expect)
         );
     }
 }

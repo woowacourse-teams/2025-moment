@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.jsonwebtoken.Claims;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import moment.auth.dto.LoginRequest;
+import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;

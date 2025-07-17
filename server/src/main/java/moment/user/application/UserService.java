@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
+import moment.user.dto.request.LoginUser;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +42,11 @@ public class UserService {
         if (userRepository.existsByNickname(request.nickname())) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
         }
+    }
+
+    public UserProfileResponse getUserProfile(LoginUser loginUser) {
+        User user = userRepository.findById(loginUser.id())
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+        return UserProfileResponse.from(user);
     }
 }
