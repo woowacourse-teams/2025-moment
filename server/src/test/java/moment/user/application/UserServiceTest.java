@@ -24,12 +24,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class UserServiceTest {
 
     @InjectMocks
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
+    private final UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
 
     @Test
     void 유저_생성에_성공한다() {

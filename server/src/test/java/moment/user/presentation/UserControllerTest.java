@@ -20,7 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 class UserControllerTest {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Test
     void 유저_생성에_성공한다() {
