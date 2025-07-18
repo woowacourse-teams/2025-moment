@@ -37,8 +37,13 @@ public class CommentController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
             @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 아이디 또는 비밀번호가 일치하지 않습니다.
+                    - [U-002] 존재하지 않는 사용자입니다.
                     - [M-001] 존재하지 않는 모멘트입니다.
                     - [C-002] 존재하지 않는 코멘트입니다.
                     """,
