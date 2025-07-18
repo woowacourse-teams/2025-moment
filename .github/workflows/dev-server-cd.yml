@@ -1,13 +1,15 @@
 name: Deploy to EC2
 
 on:
-  push:
+  pull_request:
+    types: [ closed ]
     branches: [ develop ]
     paths: [ 'server/**' ]  # server 디렉토리 변경 시에만 배포
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: 코드 체크아웃
