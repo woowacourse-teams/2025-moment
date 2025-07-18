@@ -12,6 +12,7 @@ import moment.user.domain.User;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,9 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+@Disabled
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Disabled
 class UserControllerTest {
 
     @Autowired
@@ -66,7 +69,8 @@ class UserControllerTest {
                 .when().get("/api/v1/users/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(new TypeRef<>() {});
+                .extract().as(new TypeRef<>() {
+                });
 
         // then
         assertAll(

@@ -1,15 +1,13 @@
-package moment.auth.presentation;
+package moment.moment.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.jsonwebtoken.Claims;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import moment.auth.dto.request.LoginRequest;
-import moment.auth.infrastructure.JwtTokenManager;
-import moment.user.domain.User;
-import moment.user.infrastructure.UserRepository;
+import moment.auth.application.TokenManager;
+import moment.global.dto.response.SuccessResponse;
+import moment.moment.dto.request.MomentCreateRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,40 +18,33 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
-@Disabled
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @Disabled
-class AuthControllerTest {
+class MomentControllerTest {
 
     @Autowired
-    JwtTokenManager jwtTokenManager;
-
-    @Autowired
-    UserRepository userRepository;
+    private TokenManager tokenManager;
 
     @Test
-    void 로그인에_성공한다() {
+    void 모멘트를_등록한다() {
         // given
-        User user = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago"));
-        LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
+        MomentCreateRequest request = new MomentCreateRequest("재미있는 내용이네요~~?");
+        String token = tokenManager.createToken(1L, "lebron@gmail.com");
 
         // when
-        String token = RestAssured.given().log().all()
+        SuccessResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .cookie("token", token)
                 .body(request)
-                .when().post("/api/v1/auth/login")
+                .when().post("/api/v1/users/moments")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().cookie("token");
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().as(SuccessResponse.class);
 
         // then
-        Claims claims = jwtTokenManager.extractClaims(token);
-
-        assertAll(
-                () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId())),
-                () -> assertThat(claims.get("email", String.class)).isEqualTo(user.getEmail())
+        assertAll(() -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value())
         );
     }
 }

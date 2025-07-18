@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.user.domain.User;
 
 @Entity(name = "moments")
@@ -37,4 +39,36 @@ public class Moment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
+
+    public Moment(String content, User momenter) {
+        validate(content, momenter);
+        this.content = content;
+        this.isMatched = false;
+        this.momenter = momenter;
+    }
+
+    public Moment(String content, boolean isMatched, User momenter) {
+        validate(content, momenter);
+        this.content = content;
+        this.isMatched = isMatched;
+        this.momenter = momenter;
+    }
+  
+    private void validate(String content, User momenter) {
+        validateContent(content);
+        validateUser(momenter);
+    }
+
+    private void validateContent(String content) {
+        if (content == null || content.isEmpty()) {
+            throw new MomentException(ErrorCode.MOMENT_CONTENT_EMPTY);
+        }
+    }
+
+    // TODO: 추후에 유저 관련 에러 수정해야함.
+    private void validateUser(User momenter) {
+        if (momenter == null) {
+            throw new MomentException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
 }
