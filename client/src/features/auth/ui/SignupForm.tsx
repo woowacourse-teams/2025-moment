@@ -3,11 +3,17 @@ import { STEPS } from '@/features/auth/types/step';
 import { useFunnel } from '@/shared/hooks';
 import { Button } from '@/shared/ui/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
   const { Funnel, Step: FunnelStep, useStep } = useFunnel(STEPS);
+  const [password, setPassword] = useState<{ password: string; rePassword: string }>(
+    {
+      password: '',
+      rePassword: '',
+    }
+  );
   const { step, setStep } = useStep();
 
   const currentStepIndex = useMemo(() => STEPS.indexOf(step as Step), [step]);
@@ -32,16 +38,17 @@ export const SignupForm = () => {
     }
   };
 
+
   return (
     <S.SignupFormWrapper>
       <SignupStepBar step={step as Step} />
       <S.SignupFormContent>
         <Funnel>
           <FunnelStep name="step1">
-            <SignupStep1 />
+            <SignupStep1 password={password} setPassword={setPassword} />
           </FunnelStep>
           <FunnelStep name="step2">
-            <SignupStep2 />
+            <SignupStep2 password={password} />
           </FunnelStep>
           <FunnelStep name="step3">
             <SignupStep3 />

@@ -1,5 +1,5 @@
 import { router } from '@/app/routes';
-import { SignupProvider } from '@/features/auth/context/UserProvider';
+import { UserProvider } from '@/features/auth/context/UserProvider';
 import { ThemeProvider } from '@emotion/react';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
@@ -10,9 +10,9 @@ const App = () => {
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <SignupProvider>
+        <UserProvider>
           <RouterProvider router={router} />
-        </SignupProvider>
+        </UserProvider>
       </ThemeProvider>
     </>
   );
