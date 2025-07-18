@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
 
@@ -40,4 +42,39 @@ public class Comment extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "moment_id")
     private Moment moment;
+
+    public Comment(String content, User commenter, Moment moment) {
+        validate(content, commenter, moment);
+        this.content = content;
+        this.commenter = commenter;
+        this.moment = moment;
+    }
+
+    private void validate(String content, User commenter, Moment moment) {
+        validateContent(content);
+        validateCommenter(commenter);
+        validateMoment(moment);
+    }
+
+    private void validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+
+        if (content.length() > 100) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
+
+    private void validateCommenter(User commenter) {
+        if (commenter == null) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
+
+    private void validateMoment(Moment moment) {
+        if (moment == null) {
+            throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
 }

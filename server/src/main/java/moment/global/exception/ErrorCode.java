@@ -22,7 +22,12 @@ public enum ErrorCode {
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
 
-    MOMENT_CONTENT_EMPTY("M-001", "모멘트 내용이 비어있습니다.", HttpStatus.BAD_REQUEST);
+    COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_FOUND("C-002", "존재하지 않는 코멘트입니다.", HttpStatus.NOT_FOUND),
+
+    MOMENT_CONTENT_EMPTY("M-001", "모멘트 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
+    MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND),
+    ;
 
     private final String code;
     private final String message;

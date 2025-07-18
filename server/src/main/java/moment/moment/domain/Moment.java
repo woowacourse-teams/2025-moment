@@ -53,7 +53,7 @@ public class Moment extends BaseEntity {
         this.isMatched = isMatched;
         this.momenter = momenter;
     }
-
+  
     private void validate(String content, User momenter) {
         validateContent(content);
         validateUser(momenter);
