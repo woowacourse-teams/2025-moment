@@ -37,7 +37,20 @@ export default [
         },
       },
       globals: {
-        ...globals.jest,
+        // Jest globals
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
+        // Browser globals
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
       },
     },
     rules: {
