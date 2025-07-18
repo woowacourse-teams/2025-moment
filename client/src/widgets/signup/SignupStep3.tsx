@@ -1,7 +1,10 @@
 import { CheckCircle } from 'lucide-react';
 import * as S from './SignupStep3.styles';
+import { useUserContext } from '@/features/auth/context/useUserContext';
 
 export const SignupStep3 = () => {
+  const { userData } = useUserContext();
+
   return (
     <S.StepContainer>
       <S.SuccessIcon>

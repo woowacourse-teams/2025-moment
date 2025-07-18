@@ -6,7 +6,7 @@ interface SignupStep2Props {
 }
 
 export const SignupStep2 = ({ password }: SignupStep2Props) => {
-  const { signupData, changeUserData, error } = useUserContext();
+  const { userData, changeUserData, error } = useUserContext();
 
   return (
     <S.StepContainer>
@@ -16,7 +16,7 @@ export const SignupStep2 = ({ password }: SignupStep2Props) => {
           id="nickname"
           type="text"
           placeholder="닉네임을 입력해주세요"
-          value={signupData.nickname}
+          value={userData.nickname}
           onChange={e => changeUserData('nickname', e.target.value)}
         />
         {error.nicknameError && <S.ErrorMessage>{error.nicknameError}</S.ErrorMessage>}

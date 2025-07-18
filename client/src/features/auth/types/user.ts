@@ -1,5 +1,5 @@
 export interface UserContextType {
-  signupData: UserData;
+  userData: UserData;
   changeUserData: (key: keyof UserData, value: string) => void;
   resetUserData: () => void;
   error: UserError;

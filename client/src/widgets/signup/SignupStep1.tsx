@@ -10,7 +10,7 @@ interface SignupStep1Props {
 }
 
 export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
-  const { signupData, changeUserData, error } = useUserContext();
+  const { userData, changeUserData, error } = useUserContext();
 
   return (
     <S.StepContainer>
@@ -20,7 +20,7 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
           id="email"
           type="email"
           placeholder="아이디를 입력해주세요"
-          value={signupData.email}
+          value={userData.email}
           onChange={e => changeUserData('email', e.target.value)}
         />
         {error.emailError && <S.ErrorMessage>{error.emailError}</S.ErrorMessage>}
