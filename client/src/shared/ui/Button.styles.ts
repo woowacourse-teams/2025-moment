@@ -53,4 +53,11 @@ const buttonStyles = {
 
 export const Button = styled.button<{ variant: ButtonVariant }>`
   ${({ theme, variant }) => buttonStyles[variant](theme)}
+
+  &:disabled {
+    cursor: not-allowed;
+    transform: none;
+    color: ${({ theme }) => theme.colors.primary};
+    opacity: 0.8;
+  }
 `;

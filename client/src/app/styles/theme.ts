@@ -8,13 +8,13 @@ export const theme = {
 
   background: {
     primary: '#0a0a0f',
-    secondary: '#0d162b',
+    secondary: 'rgba(43, 53, 70, 0.6)',
   },
 
   text: {
     primary: '#FFFFFF',
     secondary: '#F1C40F',
-    tertiary: '#F4D03F',
+    tertiary: '#93A1B7',
   },
 
   success: {
