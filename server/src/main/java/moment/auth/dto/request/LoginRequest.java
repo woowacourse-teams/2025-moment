@@ -1,4 +1,4 @@
-package moment.auth.dto;
+package moment.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -4,6 +4,7 @@ import static io.jsonwebtoken.Jwts.SIG.HS256;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -13,6 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.TokenManager;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.dto.request.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -61,5 +63,17 @@ public class JwtTokenManager implements TokenManager {
         } catch (JwtException jwtException) {
             throw new MomentException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public Authentication extractAuthentication(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        Long id = Long.valueOf(verifiedJwt.getPayload().getSubject());
+
+        return Authentication.from(id);
     }
 }
