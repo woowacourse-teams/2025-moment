@@ -5,28 +5,23 @@ pnpm-lock.yaml
 # Build outputs
 dist/
 build/
+*.tsbuildinfo
 
-# Webpack generated files
-*.bundle.js
-*.chunk.js
+# MSW auto-generated files
+public/mockServiceWorker.js
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 
 # Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*
 
-# IDE files
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Generated files
-coverage/
+    
