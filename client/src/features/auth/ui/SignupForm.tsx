@@ -1,7 +1,7 @@
 import { useFunnel } from '@/shared/hooks';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
 import { useState } from 'react';
 import * as S from './SignupForm.styles';

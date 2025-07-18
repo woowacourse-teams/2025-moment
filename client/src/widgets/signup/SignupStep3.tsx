@@ -1,6 +1,6 @@
 import * as S from './SignupStep3.styles';
 import { useUserContext } from '@/features/auth/context/useUserContext';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/button/Button';
 
 export const SignupStep3 = () => {
   const { userData } = useUserContext();
@@ -29,11 +29,7 @@ export const SignupStep3 = () => {
       </S.Description>
 
       <S.ButtonContainer>
-        <Button
-          title="회원가입"
-          variant="primary"
-          onClick={handleSignup}
-        />
+        <Button title="회원가입" variant="primary" onClick={handleSignup} />
       </S.ButtonContainer>
     </S.StepContainer>
   );

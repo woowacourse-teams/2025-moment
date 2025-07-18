@@ -5,7 +5,7 @@ export const SignupFormWrapper = styled.div`
   max-width: 500px;
   min-height: 550px;
   padding: 32px;
-  background-color: ${({ theme }) => theme.background.secondary};
+  background-color: ${({ theme }) => theme.colors['slate-800_60']}; // #1E293B
   border-radius: 12px;
   display: flex;
   flex-direction: column;

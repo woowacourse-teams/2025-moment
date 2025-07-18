@@ -1,44 +1,61 @@
 export const theme = {
   colors: {
-    primary: '#0F172A',
-    secondary: '#F1C40F',
-    tertiary: '#1E293B',
-    fourth: '#334155',
+    'slate-900_60': 'color-mix(in srgb, #2B3546 60%, transparent)', // rgba(43, 53, 70, 0.6)와 동일
+    'slate-900': '#0F172A',
+    'slate-800_60': 'color-mix(in srgb, #1E293B 60%, transparent)',
+    'slate-800': '#1E293B',
+    'slate-700': '#334155',
+    white: '#FFFFFF',
+    'yellow-500': '#F1C40F',
+    'yellow-300': '#F4D03F',
+    'emerald-500': '#10B981',
+    'emerald-600': '#059669',
+    'emerald-50': '#ECFDF5',
+    'emerald-200': '#A7F3D0',
+    'amber-500': '#F59E0B',
+    'red-500': '#EF4444',
+    'navy-900': '#0a0a0f',
+    'indigo-950': '#0d162b',
+    'gray-200': '#CBD5E1',
+    'gray-400': '#93A1B7',
+    'gray-600': '#536872',
+    'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
+    'gray-700': '#334155',
   },
+  typography: {
+    title: {
+      fontSize: {
+        small: '32px',
+        medium: '40px',
+        large: '54px',
+      },
+    },
 
-  background: {
-    primary: '#0a0a0f',
-    secondary: 'rgba(43, 53, 70, 0.6)',
-  },
+    subTitle: {
+      fontSize: {
+        small: '12px',
+        medium: '18px',
+        large: '24px',
+      },
+    },
 
-  text: {
-    primary: '#FFFFFF',
-    secondary: '#F1C40F',
-    tertiary: '#93A1B7',
-  },
+    fontWeight: {
+      small: '400',
+      medium: '500',
+      large: '600',
+    },
 
-  success: {
-    default: '#10B981',
-    hover: '#059669',
-    background: '#ECFDF5',
-    border: '#A7F3D0',
-  },
+    textAreaHeight: {
+      small: '100px',
+      medium: '200px',
+      large: '300px',
+    },
 
-  warning: {
-    default: '#F59E0B',
-  },
-
-  danger: {
-    default: '#EF4444',
-  },
-
-  card: {
-    background: '#1E293B',
-    border: '#334155',
-  },
-
-  border: {
-    primary: '#334155',
+    cardWidth: {
+      small: '30%',
+      medium: '60%',
+      large: '80%',
+    },
   },
 } as const;
 

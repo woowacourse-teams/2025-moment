@@ -13,7 +13,7 @@ export const StepContainer = styled.div`
 export const Title = styled.h2`
   font-size: 24px;
   font-weight: 700;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0;
 `;
 
@@ -32,27 +32,27 @@ export const InfoItem = styled.div`
   justify-content: center;
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.border.primary};
-  background-color: ${({ theme }) => theme.background.secondary};
+  border: 1px solid ${({ theme }) => theme.colors['slate-700']};
+  background-color: ${({ theme }) => theme.colors['slate-800_60']};
 `;
 
 export const InfoLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text.secondary};
+  color: ${({ theme }) => theme.colors['yellow-500']};
   text-align: left;
 `;
 
 export const InfoValue = styled.span`
   font-size: 16px;
   font-weight: 500;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   text-align: left;
 `;
 
 export const Description = styled.p`
   font-size: 16px;
-  color: ${({ theme }) => theme.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
   line-height: 1.5;
   display: flex;

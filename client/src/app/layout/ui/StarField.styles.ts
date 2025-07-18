@@ -25,11 +25,11 @@ export const Star = styled.div<{ size: number; left: number; top: number; animat
   position: absolute;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.white};
   border-radius: 50%;
   left: ${props => props.left}%;
   top: ${props => props.top}%;
   animation: ${twinkle} 3s ease-in-out infinite;
   animation-delay: ${props => props.animationDelay}s;
-  box-shadow: 0 0 4px #ffffff;
+  box-shadow: 0 0 4px ${({ theme }) => theme.colors.white};
 `;
