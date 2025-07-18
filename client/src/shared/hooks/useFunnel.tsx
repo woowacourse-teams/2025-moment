@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
-import { STEPS } from '../types/step';
-import type { Step } from '../types/step';
 
 export function useFunnel<T extends readonly string[]>(steps: T) {
   const navigate = useNavigate();
@@ -30,16 +28,15 @@ export function useFunnel<T extends readonly string[]>(steps: T) {
     [step],
   );
 
-  const currentStepIndex = useMemo(() => STEPS.indexOf(step as Step), [step]);
+  const currentStepIndex = useMemo(() => steps.indexOf(step), [step, steps]);
 
   const beforeStep = useMemo(() => {
-    return currentStepIndex > 0 ? (STEPS[currentStepIndex - 1] as Step) : null;
-  }, [currentStepIndex]);
+    return currentStepIndex > 0 ? (steps[currentStepIndex - 1] as T[number]) : null;
+  }, [currentStepIndex, steps]);
 
   const nextStep = useMemo(() => {
-    return currentStepIndex < STEPS.length - 1 ? (STEPS[currentStepIndex + 1] as Step) : null;
-  }, [currentStepIndex]);
-
+    return currentStepIndex < steps.length - 1 ? (steps[currentStepIndex + 1] as T[number]) : null;
+  }, [currentStepIndex, steps]);
 
   return useMemo(
     () => ({

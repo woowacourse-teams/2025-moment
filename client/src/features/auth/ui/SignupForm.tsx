@@ -48,7 +48,7 @@ export const SignupForm = () => {
 
       <S.ButtonContainer>
         <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
-        <Button title="다음" onClick={handleNextStep} disabled={!nextStep} />{' '}
+        <Button title="다음" onClick={handleNextStep} disabled={!nextStep} />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );
