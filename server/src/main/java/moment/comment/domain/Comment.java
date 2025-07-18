@@ -44,12 +44,16 @@ public class Comment extends BaseEntity {
     private Moment moment;
 
     public Comment(String content, User commenter, Moment moment) {
-        validateContent(content);
-        validateCommenter(commenter);
-        validateMoment(moment);
+        validate(content, commenter, moment);
         this.content = content;
         this.commenter = commenter;
         this.moment = moment;
+    }
+
+    private void validate(String content, User commenter, Moment moment) {
+        validateContent(content);
+        validateCommenter(commenter);
+        validateMoment(moment);
     }
 
     private void validateContent(String content) {
