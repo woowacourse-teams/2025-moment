@@ -1,10 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Card } from './Card';
-import { CardTitleContainer } from './CardTitleContainer';
 import { AlarmClock } from 'lucide-react';
-import { CardContent } from './CardContent';
 import { TextArea } from '../textArea/TextArea';
-import { CardAction } from './CardAction';
 import { Button } from '../button/Button';
 
 const meta: Meta = {
