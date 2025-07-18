@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -21,7 +21,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(LoginUser.class)
+        return parameter.getParameterType().equals(Authentication.class)
                 && parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
@@ -30,7 +30,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = getToken(request);
-        return authService.getLoginUserByToken(token);
+        return authService.getAuthenticationByToken(token);
     }
 
     private String getToken(HttpServletRequest request) throws MomentException {

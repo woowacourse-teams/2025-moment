@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -44,8 +44,8 @@ public class UserService {
         }
     }
 
-    public UserProfileResponse getUserProfile(LoginUser loginUser) {
-        User user = userRepository.findById(loginUser.id())
+    public UserProfileResponse getUserProfile(Authentication authentication) {
+        User user = userRepository.findById(authentication.id())
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
         return UserProfileResponse.from(user);
     }

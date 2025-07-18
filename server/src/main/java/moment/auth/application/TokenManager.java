@@ -1,7 +1,7 @@
 package moment.auth.application;
 
 import io.jsonwebtoken.Claims;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 
 public interface TokenManager {
 
@@ -9,5 +9,5 @@ public interface TokenManager {
 
     Claims extractClaims(String token);
 
-    LoginUser getLoginUserByToken(String token);
+    Authentication extractAuthentication(String token);
 }

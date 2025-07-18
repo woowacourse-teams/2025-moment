@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.TokenManager;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +66,7 @@ public class JwtTokenManager implements TokenManager {
     }
 
     @Override
-    public LoginUser getLoginUserByToken(String token) {
+    public Authentication extractAuthentication(String token) {
         Jws<Claims> verifiedJwt = Jwts.parser()
                 .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
                 .build()
@@ -74,6 +74,6 @@ public class JwtTokenManager implements TokenManager {
 
         Long id = Long.valueOf(verifiedJwt.getPayload().getSubject());
 
-        return LoginUser.from(id);
+        return Authentication.from(id);
     }
 }

@@ -10,7 +10,7 @@ import moment.auth.dto.request.LoginRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -76,29 +76,29 @@ class AuthServiceTest {
     }
 
     @Test
-    void 토큰으로_유저를_조회할_수_있다() {
+    void 토큰에서_인증정보를_추출할_수_있다() {
         // given
         String token = "validToken";
-        LoginUser loginUser = new LoginUser(1L);
+        Authentication authentication = new Authentication(1L);
 
-        given(tokenManager.getLoginUserByToken(token)).willReturn(loginUser);
+        given(tokenManager.extractAuthentication(token)).willReturn(authentication);
         given(userRepository.existsById(1L)).willReturn(true);
 
         // when & then
-        assertThat(authService.getLoginUserByToken(token)).isEqualTo(loginUser);
+        assertThat(authService.getAuthenticationByToken(token)).isEqualTo(authentication);
     }
 
     @Test
     void 토큰에서_추출한_유저의_ID가_존재하지_않을_경우_예외가_발생한다() {
         // given
         String token = "invalidToken";
-        LoginUser loginUser = new LoginUser(1L);
+        Authentication authentication = new Authentication(1L);
 
-        given(tokenManager.getLoginUserByToken(token)).willReturn(loginUser);
+        given(tokenManager.extractAuthentication(token)).willReturn(authentication);
         given(userRepository.existsById(1L)).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> authService.getLoginUserByToken(token))
+        assertThatThrownBy(() -> authService.getAuthenticationByToken(token))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }

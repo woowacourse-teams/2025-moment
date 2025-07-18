@@ -11,7 +11,7 @@ import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.application.UserService;
-import moment.user.dto.request.LoginUser;
+import moment.user.dto.request.Authentication;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
@@ -73,9 +73,9 @@ public class UserController {
     })
     @GetMapping("/me")
     public ResponseEntity<SuccessResponse<UserProfileResponse>> readUserProfile(
-            @AuthenticationPrincipal LoginUser loginUser
+            @AuthenticationPrincipal Authentication authentication
     ) {
-        UserProfileResponse response = userService.getUserProfile(loginUser);
+        UserProfileResponse response = userService.getUserProfile(authentication);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status,response));
     }
