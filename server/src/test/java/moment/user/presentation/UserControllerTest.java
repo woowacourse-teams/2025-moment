@@ -25,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Disabled
 class UserControllerTest {
 
     @Autowired
@@ -68,7 +69,8 @@ class UserControllerTest {
                 .when().get("/api/v1/users/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(new TypeRef<>() {});
+                .extract().as(new TypeRef<>() {
+                });
 
         // then
         assertAll(

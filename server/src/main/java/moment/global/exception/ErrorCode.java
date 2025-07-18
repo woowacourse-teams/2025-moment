@@ -16,23 +16,28 @@ public enum ErrorCode {
     NICKNAME_INVALID("U-006", "유효하지 않은 닉네임 형식입니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_MISMATCHED("U-007", "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
 
-    TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다." , HttpStatus.UNAUTHORIZED),
-    TOKEN_EXPIRED("T-002", "만료된 토큰입니다." , HttpStatus.UNAUTHORIZED),
-    TOKEN_EMPTY("T-003", "빈 토큰입니다." , HttpStatus.UNAUTHORIZED),
+    TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    TOKEN_EMPTY("T-003", "빈 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
 
     EMOJI_NOT_FOUND("E-001", "존재하지 않는 이모지입니다.", HttpStatus.BAD_REQUEST),
 
-    COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST);
+    COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_FOUND("C-002", "존재하지 않는 코멘트입니다.", HttpStatus.NOT_FOUND),
 
+    MOMENT_CONTENT_EMPTY("M-001", "모멘트 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
+    MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND),
+    ;
+
+    private final String code;
+    private final String message;
+    private final HttpStatus status;
+    
     ErrorCode(String code, String message, HttpStatus status) {
         this.code = code;
         this.message = message;
         this.status = status;
     }
-
-    private final String code;
-    private final String message;
-    private final HttpStatus status;
 }
