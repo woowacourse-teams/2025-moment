@@ -20,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@Disabled
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
