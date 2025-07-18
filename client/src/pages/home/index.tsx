@@ -1,11 +1,23 @@
-import styled from '@emotion/styled';
+import { Button } from '@/shared/ui/Button';
+import { Hero } from '@/widgets/hero';
+import { useNavigate } from 'react-router';
+import * as S from './index.styles';
 
 export default function HomePage() {
-  return <AppStyled>Moment 홈페이지</AppStyled>;
-}
+  const navigate = useNavigate();
 
-const AppStyled = styled.div`
-  color: blue;
-  font-size: 20px;
-  font-weight: bold;
-`;
+  const handleClick = () => {
+    // navigate('/auth/signin');
+  };
+
+  return (
+    <S.HomePageWrapper>
+      <S.HeroSection>
+        <Hero />
+      </S.HeroSection>
+      <S.ContentSection>
+        <Button title="지금 시작하기" variant="secondary" />
+      </S.ContentSection>
+    </S.HomePageWrapper>
+  );
+}
