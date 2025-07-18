@@ -37,4 +37,10 @@ public class Moment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
+
+    public Moment(String content, boolean isMatched, User momenter) {
+        this.content = content;
+        this.isMatched = isMatched;
+        this.momenter = momenter;
+    }
 }

@@ -40,4 +40,10 @@ public class Comment extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "moment_id")
     private Moment moment;
+
+    public Comment(String content, User commenter, Moment moment) {
+        this.content = content;
+        this.commenter = commenter;
+        this.moment = moment;
+    }
 }

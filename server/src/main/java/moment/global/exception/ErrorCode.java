@@ -20,7 +20,11 @@ public enum ErrorCode {
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다." , HttpStatus.UNAUTHORIZED),
     TOKEN_EMPTY("T-003", "빈 토큰입니다." , HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED);
+    TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+
+    EMOJI_NOT_FOUND("E-001", "존재하지 않는 이모지입니다.", HttpStatus.BAD_REQUEST),
+
+    COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST);
 
     ErrorCode(String code, String message, HttpStatus status) {
         this.code = code;
