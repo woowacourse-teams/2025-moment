@@ -22,8 +22,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public CommentCreateResponse addComment(CommentCreateRequest request, Long userId) {
-        User commenter = userQueryService.getUserById(userId);
+    public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
+        User commenter = userQueryService.getUserById(commenterId);
         Moment moment = momentQueryService.getMomentById(request.momentId());
 
         Comment comment = request.toComment(commenter, moment);
