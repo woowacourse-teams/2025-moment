@@ -19,7 +19,6 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "install": "^0.13.0",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -32,14 +31,13 @@
     "@babel/preset-typescript": "^7.27.1",
     "@emotion/babel-plugin": "^11.13.5",
     "@eslint-react/eslint-plugin": "^1.52.3",
-    "@jest/globals": "^30.0.4",
     "@storybook/addon-docs": "9.0.16",
     "@storybook/addon-webpack5-compiler-swc": "3.0.0",
     "@storybook/react-webpack5": "^9.0.16",
-    "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.14",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "babel-jest": "^30.0.4",
@@ -52,14 +50,19 @@
     "html-webpack-plugin": "^5.6.3",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
+    "msw": "^2.10.4",
     "prettier": "^3.6.2",
     "style-loader": "^4.0.0",
-    "ts-jest": "^29.4.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.37.0",
     "webpack": "^5.100.1",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2",
     "webpack-merge": "^6.0.1"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
