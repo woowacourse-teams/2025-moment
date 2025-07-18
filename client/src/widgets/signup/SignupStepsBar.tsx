@@ -6,47 +6,17 @@ interface SignupStepBarProps {
   step: Step;
 }
 
-
 export const SignupStepBar = ({ step }: SignupStepBarProps) => {
-  const getCurrentStepNumber = (currentStep: Step): number => {
-    switch (currentStep) {
-      case 'step1':
-        return 1;
-      case 'step2':
-        return 2;
-      case 'step3':
-        return 3;
-      default:
-        return 1;
-    }
-  };
+  const STEP_CONFIG = {
+    step1: { number: 1, icon: <Lock />, title: '아이디/비밀번호' },
+    step2: { number: 2, icon: <User />, title: '프로필 설정' },
+    step3: { number: 3, icon: <BadgeCheck />, title: '완료' },
+  } as const;
 
-  const getStepIcon = (currentStep: Step): React.ReactNode => {
-    switch (currentStep) {
-      case 'step1':
-        return <Lock />;
-      case 'step2':
-        return <User />;
-      case 'step3':
-        return <BadgeCheck />;
-    }
-  };
+  const stepConfig = STEP_CONFIG[step] || STEP_CONFIG.step1;
 
-  const getStepTitle = (currentStep: Step): string => {
-    switch (currentStep) {
-      case 'step1':
-        return '아이디/비밀번호';
-      case 'step2':
-        return '프로필 설정';
-      case 'step3':
-        return '정보 확인';
-      default:
-        return '아이디/비밀번호';
-    }
-  };
-
-  const currentStepNumber = getCurrentStepNumber(step);
-  const currentTitle = getStepTitle(step);
+  const currentStepNumber = stepConfig.number;
+  const currentTitle = stepConfig.title;
 
   return (
     <S.StepsWrapper>
@@ -58,7 +28,7 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
         <S.StepDot active={currentStepNumber === 3} completed={false} />
       </S.StepsContainer>
       <S.SignupFormTitle>
-        <S.SignupFormIcon>{getStepIcon(step)}</S.SignupFormIcon>
+        <S.SignupFormIcon>{stepConfig.icon}</S.SignupFormIcon>
         <S.StepTitle active={true}>{currentTitle}</S.StepTitle>
       </S.SignupFormTitle>
     </S.StepsWrapper>
