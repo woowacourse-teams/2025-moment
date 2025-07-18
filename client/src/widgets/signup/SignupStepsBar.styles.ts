@@ -61,6 +61,5 @@ export const SignupFormIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  text-center
-  margin-bottom: 16px;
+  text-align: center;
 `;
