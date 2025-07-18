@@ -28,11 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class MomentController {
 
     private final MomentService momentService;
-    
+
     @Operation(summary = "모멘트 전달", description = "사용자가 모멘트를 등록합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "모멘트 등록 성공"),
-            @ApiResponse(responseCode = "400", description = """
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
