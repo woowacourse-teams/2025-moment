@@ -7,7 +7,7 @@ import { useState } from 'react';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
-  const { Funnel, Step: FunnelStep, useStep, beforeStep, nextStep } = useFunnel(STEPS);
+  const { Funnel, Step, useStep, beforeStep, nextStep } = useFunnel(STEPS);
   const [password, setPassword] = useState<{ password: string; rePassword: string }>({
     password: '',
     rePassword: '',
@@ -31,15 +31,15 @@ export const SignupForm = () => {
       <SignupStepBar step={step as Step} />
       <S.SignupFormContent>
         <Funnel>
-          <FunnelStep name="step1">
+          <Step name="step1">
             <SignupStep1 password={password} setPassword={setPassword} />
-          </FunnelStep>
-          <FunnelStep name="step2">
+          </Step>
+          <Step name="step2">
             <SignupStep2 password={password} />
-          </FunnelStep>
-          <FunnelStep name="step3">
+          </Step>
+          <Step name="step3">
             <SignupStep3 />
-          </FunnelStep>
+          </Step>
         </Funnel>
       </S.SignupFormContent>
 

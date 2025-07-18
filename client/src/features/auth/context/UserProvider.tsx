@@ -1,5 +1,5 @@
 import { UserContextType, UserData, UserError } from '@/features/auth/types/user';
-import { createContext, ReactNode, useCallback, useMemo, useState } from 'react';
+import { createContext, ReactNode, useMemo, useState } from 'react';
 
 export const UserContext = createContext<UserContextType | null>(null);
 
@@ -13,16 +13,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     nicknameError: '',
   });
 
-  const changeUserData = useCallback((key: keyof UserData, value: string) => {
+  const changeUserData = (key: keyof UserData, value: string) => {
     setUserData(prev => ({ ...prev, [key]: value }));
-  }, []);
+  };
 
-  const resetUserData = useCallback(() => {
+  const resetUserData = () => {
     setUserData({
       email: '',
       nickname: '',
     });
-  }, []);
+  };
 
   const value = useMemo(
     () => ({ userData, changeUserData, resetUserData, error }),
