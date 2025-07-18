@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
-import moment.auth.dto.LoginRequest;
+import moment.auth.dto.request.LoginRequest;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import org.springframework.http.HttpHeaders;
