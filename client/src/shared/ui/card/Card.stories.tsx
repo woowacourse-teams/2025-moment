@@ -3,7 +3,7 @@ import { Card } from './Card';
 import { CardTitleContainer } from '../cardTitleContainer/CardTitleContainer';
 import { AlarmClock } from 'lucide-react';
 import { CardContent } from '../cardContent/CardContent';
-import { TextArea } from '../textArea/TextArea.styles';
+import { TextArea } from '../textArea/TextArea';
 import { CardAction } from '../cardAction/CardAction';
 import { Button } from '../button/Button';
 
