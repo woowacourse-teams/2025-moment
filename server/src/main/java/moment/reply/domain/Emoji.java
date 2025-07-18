@@ -1,5 +1,6 @@
 package moment.reply.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,6 +34,7 @@ public class Emoji extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "type")
     private EmojiType emojiType;
 
     @ManyToOne(fetch = FetchType.LAZY)
