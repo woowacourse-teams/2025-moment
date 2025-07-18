@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Emoji API", description = "이모지 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/comments")
+@RequestMapping("/api/v1/emoji")
 public class EmojiController {
 
     private final EmojiService emojiService;
@@ -45,7 +45,7 @@ public class EmojiController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping("/emoji")
+    @PostMapping()
     public ResponseEntity<SuccessResponse<Void>> createEmoji(
             @RequestBody EmojiCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
