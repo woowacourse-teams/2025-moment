@@ -34,7 +34,7 @@ public class EmojiService {
 
         Emoji emoji = new Emoji(emojiType, user, comment);
         Emoji savedEmoji = emojiRepository.save(emoji);
-        return EmojiCreateResponse.of(savedEmoji);
+        return EmojiCreateResponse.from(savedEmoji);
     }
 
     private EmojiType convertToEmojiType(String emojiType) {
