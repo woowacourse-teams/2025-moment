@@ -2,4 +2,3 @@ export { Logo } from './logo/Logo';
 export { Card } from './card/Card';
 export { TextArea } from './textArea/TextArea';
 export { Button } from './button/Button';
-export { TitleContainer } from './titleContainer/TitleContainer';
