@@ -1,5 +1,5 @@
 import { router } from '@/app/routes';
-import { SignupProvider } from '@/features/auth/context/SignupProvider';
+import { SignupProvider } from '@/features/auth/context/UserProvider';
 import { ThemeProvider } from '@emotion/react';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';

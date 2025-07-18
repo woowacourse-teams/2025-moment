@@ -1,4 +1,4 @@
-import { useSignupContext } from '@/features/auth/context/useSignupContext';
+import { useSignupContext } from '@/features/auth/context/useUserContext';
 import * as S from './SignupStep.styles';
 
 export const SignupStep2 = () => {

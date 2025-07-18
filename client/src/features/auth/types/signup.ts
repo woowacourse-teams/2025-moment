@@ -1,20 +1,16 @@
-export interface SignupContextType {
-  signupData: SignupData;
-  changeSignupData: (key: keyof SignupData, value: string) => void;
-  resetSignupData: () => void;
-  error: SignupError;
+export interface UserContextType {
+  signupData: UserData;
+  changeUserData: (key: keyof UserData, value: string) => void;
+  resetUserData: () => void;
+  error: UserError;
 }
 
-export interface SignupData {
+export interface UserData {
   email: string;
-  password: string;
-  rePassword: string;
   nickname: string;
 }
 
-export interface SignupError {
+export interface UserError {
   emailError: string;
-  passwordError: string;
-  rePasswordError: string;
   nicknameError: string;
 }
