@@ -1,8 +1,9 @@
 export const theme = {
   colors: {
+    'slate-900_60': 'color-mix(in srgb, #2B3546 60%, transparent)', // rgba(43, 53, 70, 0.6)와 동일
     'slate-900': '#0F172A',
-    'slate-800': '#1E293B',
     'slate-800_60': 'color-mix(in srgb, #1E293B 60%, transparent)',
+    'slate-800': '#1E293B',
     'slate-700': '#334155',
     white: '#FFFFFF',
     'yellow-500': '#F1C40F',
@@ -16,6 +17,7 @@ export const theme = {
     'navy-900': '#0a0a0f',
     'indigo-950': '#0d162b',
     'gray-200': '#CBD5E1',
+    'gray-400': '#93A1B7',
     'gray-600': '#536872',
     'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
     'gray-700': '#334155',
