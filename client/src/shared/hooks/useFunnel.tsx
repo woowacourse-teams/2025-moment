@@ -10,7 +10,7 @@ export function useFunnel<T extends readonly string[]>(steps: T) {
 
   const stepQuery = searchParams.get('step');
   const stepsArray = Array.from(steps);
-  const step = stepsArray.indexOf(stepQuery || '') !== -1 ? (stepQuery as T[number]) : steps[0];
+  const step = stepsArray.includes(stepQuery || '') ? (stepQuery as T[number]) : steps[0];
 
   const setStep = useCallback(
     (nextStep: T[number]) => {
