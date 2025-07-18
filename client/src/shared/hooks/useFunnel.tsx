@@ -19,7 +19,7 @@ export function useFunnel<T extends readonly string[]>(steps: T) {
     [navigate, location.pathname, searchParams],
   );
 
-  const Funnel = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+  const Funnel = useCallback(({ children }: { children: React.ReactNode }) => <>{children}</>, []);
 
   const Step = useCallback(
     ({ name, children }: { name: T[number]; children: React.ReactNode }) => {
@@ -46,6 +46,6 @@ export function useFunnel<T extends readonly string[]>(steps: T) {
       beforeStep,
       nextStep,
     }),
-    [Funnel, Step, step, setStep, beforeStep, nextStep],
+    [Step, step, setStep, beforeStep, nextStep],
   );
 }
