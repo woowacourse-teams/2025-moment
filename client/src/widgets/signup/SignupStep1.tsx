@@ -15,11 +15,11 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
   return (
     <S.StepContainer>
       <S.InputGroup>
-        <S.Label htmlFor="username">아이디</S.Label>
+        <S.Label htmlFor="username">이메일</S.Label>
         <S.Input
           id="email"
           type="email"
-          placeholder="아이디를 입력해주세요"
+          placeholder="이메일을 입력해주세요"
           value={userData.email}
           onChange={e => changeUserData('email', e.target.value)}
         />
