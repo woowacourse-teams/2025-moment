@@ -1,35 +1,24 @@
 # macOS
 .DS_Store
 
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
 # Build outputs
 dist/
 build/
 .next/
 out/
 
-# Monorepo 패키지 내 공통
-**/node_modules/
-**/dist/
-**/build/
-**/.next/
-
-# 환경 변수
-*.env
-*.env.*        
-
 # IDE / Editor
 .idea/
 .vscode/
+*.iml
+*.ipr
+*.iws
 
 # 기타
 coverage/
 .eslintcache
 *.log
 *.tgz
+
+# 로그
+*.log
