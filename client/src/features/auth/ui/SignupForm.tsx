@@ -1,5 +1,5 @@
-import type { Step } from '@/features/auth/types/step';
-import { STEPS } from '@/features/auth/types/step';
+import type { Step } from '@/shared/types/step';
+import { STEPS } from '@/shared/types/step';
 import { useFunnel } from '@/shared/hooks';
 import { Button } from '@/shared/ui/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
-  const { Funnel, Step: FunnelStep, useStep } = useFunnel(STEPS);
+  const { Funnel, Step: FunnelStep, useStep, beforeStep, nextStep } = useFunnel(STEPS);
   const [password, setPassword] = useState<{ password: string; rePassword: string }>(
     {
       password: '',
@@ -15,16 +15,6 @@ export const SignupForm = () => {
     }
   );
   const { step, setStep } = useStep();
-
-  const currentStepIndex = useMemo(() => STEPS.indexOf(step as Step), [step]);
-
-  const beforeStep = useMemo(() => {
-    return currentStepIndex > 0 ? (STEPS[currentStepIndex - 1] as Step) : null;
-  }, [currentStepIndex]);
-
-  const nextStep = useMemo(() => {
-    return currentStepIndex < STEPS.length - 1 ? (STEPS[currentStepIndex + 1] as Step) : null;
-  }, [currentStepIndex]);
 
   const handlePreviousStep = () => {
     if (beforeStep) {

@@ -1,4 +1,4 @@
-import { Step } from '@/features/auth/types/step';
+import { Step } from '@/shared/types/step';
 import { BadgeCheck, Lock, User } from 'lucide-react';
 import * as S from './SignupStepsBar.styles';
 
