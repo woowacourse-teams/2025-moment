@@ -24,8 +24,8 @@ export const theme = {
     title: {
       fontSize: {
         small: '32px',
-        medium: '48px',
-        large: '64px',
+        medium: '40px',
+        large: '54px',
       },
     },
 
@@ -48,10 +48,11 @@ export const theme = {
       medium: '200px',
       large: '300px',
     },
+
     cardWidth: {
       small: '30%',
-      medium: '50%',
-      large: '100%',
+      medium: '60%',
+      large: '80%',
     },
   },
 } as const;
