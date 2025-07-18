@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserQueryServiceImpl implements UserQueryService {
+public class DefaultUserQueryService implements UserQueryService {
 
     private final UserRepository userRepository;
 
