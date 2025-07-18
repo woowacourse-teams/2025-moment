@@ -2,6 +2,7 @@ export const theme = {
   colors: {
     slate900: '#0F172A',
     slate800: '#1E293B',
+    slate800_60: 'color-mix(in srgb, #1E293B 60%, transparent)',
     slate700: '#334155',
     white: '#FFFFFF',
     yellow500: '#F1C40F',
@@ -16,6 +17,7 @@ export const theme = {
     indigo950: '#0d162b',
     gray200: '#CBD5E1',
     gray600: '#536872',
+    gray600_20: 'color-mix(in srgb, #536872 20%, transparent)',
     gray700: '#334155',
   },
   typography: {

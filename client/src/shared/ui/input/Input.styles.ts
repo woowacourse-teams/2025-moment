@@ -5,7 +5,7 @@ const InputStyles = {
   input: (theme: CustomTheme) => `
     width: 100%;
     padding: 10px 20px;
-    background-color: ${theme.colors.gray600};
+    background-color: ${theme.colors.gray600_20};
     border-radius: 5px;
     height: 50px;
     color: ${theme.colors.white};
