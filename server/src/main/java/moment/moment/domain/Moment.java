@@ -59,16 +59,16 @@ public class Moment extends BaseEntity {
         validateUser(momenter);
     }
 
+    private void validateContent(String content) {
+        if (content == null || content.isEmpty()) {
+            throw new MomentException(ErrorCode.MOMENT_CONTENT_EMPTY);
+        }
+    }
+
     // TODO: 추후에 유저 관련 에러 수정해야함.
     private void validateUser(User momenter) {
         if (momenter == null) {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
-        }
-    }
-
-    private void validateContent(String content) {
-        if (content == null || content.isEmpty()) {
-            throw new MomentException(ErrorCode.MOMENT_CONTENT_EMPTY);
         }
     }
 }
