@@ -6,16 +6,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
-import moment.moment.infrastructure.MomentRepository;
+import moment.user.application.UserQueryService;
 import moment.user.domain.User;
-import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -27,14 +26,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentServiceTest {
+
     @InjectMocks
     private CommentService commentService;
 
     @Mock
-    private MomentRepository momentRepository;
+    private MomentQueryService momentQueryService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserQueryService userQueryService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -49,10 +49,8 @@ class CommentServiceTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
-        given(userRepository.findById(any(Long.class))).willReturn(
-                Optional.of(commenter));
-        given(momentRepository.findById(any(Long.class))).willReturn(
-                Optional.of(moment));
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         // when
@@ -67,15 +65,13 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        given(userRepository.findById(any(Long.class))).willReturn(
-                Optional.of(new User("hippo@gmail.com", "1234", "hippo")));
-        given(momentRepository.findById(any(Long.class))).willReturn(
-                Optional.empty());
+        given(userQueryService.getUserById(any(Long.class))).willReturn(new User("hippo@gmail.com", "1234", "hippo"));
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(null);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
     }
 
     @Test
@@ -83,12 +79,11 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        given(userRepository.findById(any(Long.class))).willReturn(
-                Optional.empty());
+        given(userQueryService.getUserById(any(Long.class))).willReturn(null);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
     }
 }
