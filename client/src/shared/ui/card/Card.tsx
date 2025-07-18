@@ -7,5 +7,5 @@ interface CardProps {
 }
 
 export const Card = ({ children, width }: CardProps) => {
-  return <S.Card width={width}>{children}</S.Card>;
+  return <S.Card $width={width}>{children}</S.Card>;
 };

@@ -4,11 +4,11 @@ import styled from '@emotion/styled';
 export type cardWidth = 'small' | 'medium' | 'large';
 
 const CardStyles = {
-  card: (theme: CustomTheme, width: cardWidth) => `
+  card: (theme: CustomTheme, $width: cardWidth) => `
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: ${theme.typography.cardWidth[width]};
+    width: ${theme.typography.cardWidth[$width]};
     padding: 20px 30px;
     background-color: ${theme.colors.slate800_60};
     border-radius: 10px;
@@ -16,6 +16,6 @@ const CardStyles = {
     `,
 };
 
-export const Card = styled.div<{ width: cardWidth }>`
-  ${({ theme, width }) => CardStyles.card(theme, width)}
+export const Card = styled.div<{ $width: cardWidth }>`
+  ${({ theme, $width }) => CardStyles.card(theme, $width)}
 `;
