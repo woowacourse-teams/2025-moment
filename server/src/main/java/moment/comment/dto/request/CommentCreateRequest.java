@@ -7,7 +7,7 @@ import moment.user.domain.User;
 
 @Schema(description = "Moment 등록 요청 DTO")
 public record CommentCreateRequest(
-        @Schema(description = "Coment 내용", example = "정말 멋진 하루군요!")
+        @Schema(description = "Comment 내용", example = "정말 멋진 하루군요!")
         String content,
 
         @Schema(description = "Moment 아이디", example = "1")
