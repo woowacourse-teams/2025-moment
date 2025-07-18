@@ -35,7 +35,7 @@ export const SignupForm = () => {
             <SignupStep1 password={password} setPassword={setPassword} />
           </Step>
           <Step name="step2">
-            <SignupStep2 password={password} />
+            <SignupStep2 />
           </Step>
           <Step name="step3">
             <SignupStep3 />

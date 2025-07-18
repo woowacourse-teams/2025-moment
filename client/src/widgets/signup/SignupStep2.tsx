@@ -1,11 +1,7 @@
 import { useUserContext } from '@/features/auth/context/useUserContext';
 import * as S from './SignupStep.styles';
 
-interface SignupStep2Props {
-  password: { password: string; rePassword: string };
-}
-
-export const SignupStep2 = ({ password }: SignupStep2Props) => {
+export const SignupStep2 = () => {
   const { userData, changeUserData, error } = useUserContext();
 
   return (
