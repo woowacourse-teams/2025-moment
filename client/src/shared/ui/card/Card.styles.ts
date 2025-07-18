@@ -10,9 +10,9 @@ const CardStyles = {
     gap: 15px;
     width: ${theme.typography.cardWidth[$width]};
     padding: 20px 30px;
-    background-color: ${theme.colors.slate800_60};
+    background-color: ${theme.colors['slate-800_60']};
     border-radius: 10px;
-    border: 1px solid ${theme.colors.gray700};
+    border: 1px solid ${theme.colors['gray-700']};
     `,
 };
 

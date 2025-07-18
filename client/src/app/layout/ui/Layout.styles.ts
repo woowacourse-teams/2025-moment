@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.navy900};
+  background-color: ${({ theme }) => theme.colors['navy-900']};
   color: ${({ theme }) => theme.colors.white};
   font-family: inherit;
   position: relative;

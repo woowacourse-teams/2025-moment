@@ -12,7 +12,7 @@ export const CardTitleStyles = {
 export const CardSubtitleStyles = {
   cardSubtitle: (theme: CustomTheme) => `
     font-size: ${theme.typography.subTitle.fontSize.medium};
-    color: ${theme.colors.gray200};
+    color: ${theme.colors['gray-200']};
     `,
 };
 

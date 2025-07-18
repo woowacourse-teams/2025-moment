@@ -7,5 +7,5 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export const TextArea = ({ placeholder, height, ...props }: TextAreaProps) => {
-  return <S.TextArea placeholder={placeholder} height={height} {...props} />;
+  return <S.TextArea placeholder={placeholder} $height={height} {...props} />;
 };
