@@ -6,7 +6,7 @@ import moment.reply.domain.EmojiType;
 
 public record EmojiCreateResponse(EmojiType enumType, Long commentId, Long userId, LocalDateTime createdAt) {
 
-    public static EmojiCreateResponse of(Emoji emoji) {
+    public static EmojiCreateResponse from(Emoji emoji) {
         return new EmojiCreateResponse(
                 emoji.getEmojiType(),
                 emoji.getComment().getId(),
