@@ -1,19 +1,17 @@
+import { useFunnel } from '@/shared/hooks';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
-import { useFunnel } from '@/shared/hooks';
 import { Button } from '@/shared/ui/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
   const { Funnel, Step: FunnelStep, useStep, beforeStep, nextStep } = useFunnel(STEPS);
-  const [password, setPassword] = useState<{ password: string; rePassword: string }>(
-    {
-      password: '',
-      rePassword: '',
-    }
-  );
+  const [password, setPassword] = useState<{ password: string; rePassword: string }>({
+    password: '',
+    rePassword: '',
+  });
   const { step, setStep } = useStep();
 
   const handlePreviousStep = () => {
@@ -27,7 +25,6 @@ export const SignupForm = () => {
       setStep(nextStep);
     }
   };
-
 
   return (
     <S.SignupFormWrapper>
