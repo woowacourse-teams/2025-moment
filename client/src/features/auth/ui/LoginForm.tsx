@@ -1,6 +1,17 @@
+import { useNavigate } from 'react-router';
 import * as S from './LoginForm.styles';
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    // TODO: 로그인 로직 구현
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
+  };
+
   return (
     <S.LoginFormWrapper>
       <S.LoginFormTitleContainer>
@@ -22,12 +33,12 @@ export const LoginForm = () => {
         </S.InputGroup>
       </S.LoginFormContent>
       <S.LoginFooter>
-        <S.LoginButton>로그인</S.LoginButton>
+        <S.LoginButton onClick={handleLoginClick}>로그인</S.LoginButton>
         <S.LoginFooterContent>
           <S.LoginForgotPassword>비밀번호를 잊으셨나요?</S.LoginForgotPassword>
           <S.LoginSignupContainer>
             <span>아직 회원이 아니신가요?</span>
-            <S.LoginSignupLink>회원가입</S.LoginSignupLink>
+            <S.LoginSignupLink onClick={handleSignupClick}>회원가입</S.LoginSignupLink>
           </S.LoginSignupContainer>
         </S.LoginFooterContent>
       </S.LoginFooter>
