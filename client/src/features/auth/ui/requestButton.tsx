@@ -3,8 +3,10 @@ import { LucideIcon, Send } from 'lucide-react';
 
 interface RequestButtonProps {
   Icon?: LucideIcon;
+  title: string;
+  onClick?: () => void;
 }
 
-export const RequestButton = ({ Icon }: RequestButtonProps) => {
-  return <Button Icon={Send} title="모멘트 공유하기" variant="tertiary" />;
+export const RequestButton = ({ Icon, title, onClick }: RequestButtonProps) => {
+  return <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} />;
 };
