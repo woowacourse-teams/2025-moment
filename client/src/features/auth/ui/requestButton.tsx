@@ -5,8 +5,11 @@ interface RequestButtonProps {
   Icon?: LucideIcon;
   title: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
-export const RequestButton = ({ Icon, title, onClick }: RequestButtonProps) => {
-  return <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} />;
+export const RequestButton = ({ Icon, title, onClick, disabled }: RequestButtonProps) => {
+  return (
+    <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} disabled={disabled} />
+  );
 };
