@@ -19,7 +19,10 @@ public record MyMomentResponse(
 ) {
 
     public static MyMomentResponse of(Moment moment, Comment comment, List<Emoji> emojis) {
-        MyCommentResponse1 myCommentResponse1 = MyCommentResponse1.of(comment, emojis);
-        return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), myCommentResponse1);
+        if (comment != null) {
+            MyCommentResponse1 myCommentResponse1 = MyCommentResponse1.of(comment, emojis);
+            return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), myCommentResponse1);
+        }
+        return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), null);
     }
 }

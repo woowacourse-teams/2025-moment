@@ -57,7 +57,7 @@ public class MomentService {
         // 코멘트가 없는 경우 대비
         if (commentByMoment.isEmpty()) {
             return moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, null, null))
+                    .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
                     .toList();
         }
 
