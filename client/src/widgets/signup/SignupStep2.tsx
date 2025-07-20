@@ -1,4 +1,5 @@
 import { useUserContext } from '@/features/auth/context/useUserContext';
+import { Input } from '@/shared/ui/input/Input';
 import * as S from './SignupStep.styles';
 
 export const SignupStep2 = () => {
@@ -8,7 +9,7 @@ export const SignupStep2 = () => {
     <S.StepContainer>
       <S.InputGroup>
         <S.Label htmlFor="nickname">닉네임</S.Label>
-        <S.Input
+        <Input
           id="nickname"
           type="text"
           placeholder="닉네임을 입력해주세요"
