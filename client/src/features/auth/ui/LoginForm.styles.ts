@@ -126,6 +126,10 @@ export const LoginButton = styled.button`
     background-color: ${({ theme }) => theme.colors['yellow-500']};
     color: ${({ theme }) => theme.colors['slate-800']};
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 export const LoginFooterContent = styled.div`
