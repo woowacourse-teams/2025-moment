@@ -5,7 +5,7 @@ import * as S from './LoginForm.styles';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { formData, error, isLoading, handleInputChange, handleSubmit, isDisabled } =
+  const { formData, errors, isLoading, handleInputChange, handleSubmit, isDisabled } =
     useLoginForm();
 
   const handleLoginClick = () => {
@@ -36,6 +36,7 @@ export const LoginForm = () => {
             value={formData.email}
             onChange={handleInputChange('email')}
           />
+          {errors.email && <S.ErrorMessage>{errors.email}</S.ErrorMessage>}
         </S.InputGroup>
         <S.InputGroup>
           <S.Label htmlFor="password">비밀번호</S.Label>
@@ -46,6 +47,7 @@ export const LoginForm = () => {
             value={formData.password}
             onChange={handleInputChange('password')}
           />
+          {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
         </S.InputGroup>
       </S.LoginFormContent>
       <S.LoginFooter>
