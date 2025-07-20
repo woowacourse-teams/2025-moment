@@ -18,7 +18,7 @@ const config = {
     '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
   },
 
-  // 개선된 테스트 파일 패턴
+  // 테스트 파일 패턴
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.+(ts|tsx|js)',
     '<rootDir>/src/**/*.+(test|spec).+(ts|tsx|js)',
