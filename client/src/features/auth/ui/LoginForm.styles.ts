@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const LoginFormWrapper = styled.div`
+export const LoginFormWrapper = styled.form`
   width: 80%;
   max-width: 500px;
   min-height: 550px;
