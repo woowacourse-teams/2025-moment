@@ -41,32 +41,25 @@ public class MomentService {
     }
 
     public List<MyMomentResponse> getMyMoments(Long userId) {
-        // 1. 모멘트 조회 (쿼리 1)
         List<Moment> moments = momentRepository.findMomentByMomenter_Id(userId);
 
-        // 모멘트가 없는 경우 대비
         if (moments.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // 2. 위 모멘트에 달린 모든 코멘트 조회 (쿼리 2)
-        // 현재는 1:1
         Map<Moment, Comment> commentByMoment = commentRepository.findAllByMomentIn(moments).stream()
                 .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
 
-        // 코멘트가 없는 경우 대비
         if (commentByMoment.isEmpty()) {
             return moments.stream()
                     .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
                     .toList();
         }
 
-        // 3. 위 코멘트들에 달린 모든 이모지 조회 (쿼리 3)
         List<Comment> comments = new ArrayList<>(commentByMoment.values());
         Map<Comment, List<Emoji>> emojisByComment = emojiRepository.findAllByCommentIn(comments).stream()
                 .collect(Collectors.groupingBy(Emoji::getComment));
 
-        // 4. 최종 데이터 조립
         return moments.stream()
                 .map(moment -> {
                     Comment comment = commentByMoment.get(moment);
