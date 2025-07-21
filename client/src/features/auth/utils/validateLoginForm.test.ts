@@ -161,7 +161,10 @@ describe('isLoginFormValid', () => {
   });
 
   it('에러 객체가 비어있는 경우 true를 반환해야 한다', () => {
-    const errors = {};
+    const errors = {
+      email: '',
+      password: '',
+    };
 
     const result = isLoginFormValid(errors);
 
