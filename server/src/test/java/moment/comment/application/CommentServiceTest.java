@@ -8,9 +8,9 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 import java.util.List;
+import moment.comment.application.dto.request.CommentCreateRequest;
+import moment.comment.application.dto.response.MyCommentsResponse;
 import moment.comment.domain.Comment;
-import moment.comment.dto.request.CommentCreateRequest;
-import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;

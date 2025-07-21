@@ -1,4 +1,4 @@
-package moment.comment.dto.request;
+package moment.comment.application.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.comment.domain.Comment;
