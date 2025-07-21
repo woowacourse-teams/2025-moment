@@ -1,21 +1,4 @@
-import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
-
-export const CardSuccessTitleStyles = {
-  cardSuccessTitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.title.fontSize.small};
-    font-weight: ${theme.typography.fontWeight.large};
-    color: ${theme.colors.white};
-    `,
-};
-
-export const CardSuccessSubtitleStyles = {
-  cardSuccessSubtitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.subTitle.fontSize.medium};
-    color: ${theme.colors['gray-200']};
-    white-space: pre-line;
-    `,
-};
 
 export const CardSuccessContainer = styled.div`
   display: flex;
@@ -24,10 +7,23 @@ export const CardSuccessContainer = styled.div`
   gap: 20px;
 `;
 
+export const CardSuccessIcon = styled.div`
+  color: ${({ theme }) => theme.colors['yellow-500']};
+
+  svg {
+    width: 56px;
+    height: 56px;
+  }
+`;
+
 export const CardSuccessTitle = styled.span`
-  ${({ theme }) => CardSuccessTitleStyles.cardSuccessTitle(theme)}
+  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.large};
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 export const CardSuccessSubtitle = styled.span`
-  ${({ theme }) => CardSuccessSubtitleStyles.cardSuccessSubtitle(theme)}
+  font-size: ${({ theme }) => theme.typography.subTitle.fontSize.medium};
+  color: ${({ theme }) => theme.colors['gray-200']};
+  white-space: pre-line;
 `;
