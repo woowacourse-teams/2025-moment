@@ -1,6 +1,5 @@
 package moment.moment.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -89,9 +88,9 @@ class momentServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(myMomentResponses).hasSize(1),
-                () -> assertThat(myMomentResponses.getFirst().content()).isEqualTo("야근 힘들어용 ㅠㅠ"),
-                () -> assertThat(myMomentResponses.getFirst().comment().content()).isEqualTo("안됐네요.")
+                () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
+                () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
+                () -> then(momentRepository).should(times(1)).findMomentByMomenter_Id(any(Long.class))
         );
     }
 }

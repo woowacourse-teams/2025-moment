@@ -35,7 +35,7 @@ class DefaultMomentQueryServiceTest {
         given(momentRepository.findById(any(Long.class))).willReturn(Optional.of(moment));
 
         // when
-        Moment findMoment = defaultMomentQueryService.getMomentById(1L);
+        defaultMomentQueryService.getMomentById(1L);
 
         // then
         then(momentRepository).should(times(1)).findById(any(Long.class));
