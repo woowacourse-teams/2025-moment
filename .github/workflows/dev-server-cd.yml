@@ -1,21 +1,21 @@
-name: Deploy to EC2
+name: Deploy Backend to EC2 (Develop)
 
 on:
   pull_request:
-    types: [ closed ]
-    branches: [ develop ]
-    paths: [ 'server/**' ]  # server 디렉토리 변경 시에만 배포
+    types: [closed]
+    branches: [develop]
+    paths: [ 'server/**' ]
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 코드 체크아웃
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: EC2에 배포 파일 전송 및 배포
+      - name: Set up SSH and Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -23,30 +23,14 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: ${{ secrets.EC2_SSH_PORT }}
           script: |
-          # Git 저장소 업데이트
-            git fetch origin
-            git checkout develop
-            git pull origin develop
-            
-            # server 디렉토리로 이동
-            cd server
-            
-            # 기존 컨테이너 정리
             echo "🔄 기존 컨테이너 정리 중..."
             docker compose down --remove-orphans
-            
-            # 사용하지 않는 이미지 정리
             docker system prune -f
             
-            # 배포 스크립트 실행
             echo "🚀 배포 스크립트 실행 중..."
+            cd moment-2025
+            git pull origin develop
+            cd server
+            
             chmod +x deploy.sh
             ./deploy.sh
-            
-            # 헬스체크 대기 (DB 준비될 때까지)
-            echo "🏥 헬스체크 대기 중..."
-            sleep 20
-            
-            # 애플리케이션 로그 확인
-            echo "📋 애플리케이션 로그:"
-            docker compose logs --tail=50 app
