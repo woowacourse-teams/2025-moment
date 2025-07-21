@@ -33,7 +33,7 @@ public class RandomMatchingService implements MatchingService {
         List<User> todayNonMatchedUser = userQueryService.findNotMatchedUsersToday(moment.getMomenterId());
 
         if (todayNonMatchedUser.isEmpty()) {
-            return MatchingResult.COMMENTER_NOT_EXISTED;
+            return MatchingResult.NO_AVAILABLE_USERS;
         }
 
         int randomNumber = ThreadLocalRandom.current().nextInt(0, todayNonMatchedUser.size());

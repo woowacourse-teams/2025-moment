@@ -80,6 +80,6 @@ class RandomMatchingServiceTest {
         MatchingResult matchingResult = randomMatchingService.match(1L);
 
         // then
-        assertThat(matchingResult).isEqualTo(MatchingResult.COMMENTER_NOT_EXISTED);
+        assertThat(matchingResult).isEqualTo(MatchingResult.NO_AVAILABLE_USERS);
     }
 }
