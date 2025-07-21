@@ -8,7 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,6 +21,7 @@ import moment.global.domain.BaseEntity;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.reply.domain.Emoji;
 import moment.user.domain.User;
 
 @Entity(name = "comments")
@@ -42,6 +46,9 @@ public class Comment extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "moment_id")
     private Moment moment;
+
+    @OneToMany(mappedBy = "comment")
+    private List<Emoji> emojis = new ArrayList<>();
 
     public Comment(String content, User commenter, Moment moment) {
         validate(content, commenter, moment);
@@ -75,6 +82,13 @@ public class Comment extends BaseEntity {
     private void validateMoment(Moment moment) {
         if (moment == null) {
             throw new MomentException(ErrorCode.COMMENT_INVALID);
+        }
+    }
+
+    public void addEmoji(Emoji emoji) {
+        emojis.add(emoji);
+        if (emoji.getComment() != this) {
+            emoji.setComment(this);
         }
     }
 }

@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class DefaultCommentQueryServiceTest {
+class DefaultMomentQueryServiceTest {
 
     @InjectMocks
     private DefaultCommentQueryService defaultCommentQueryService;
