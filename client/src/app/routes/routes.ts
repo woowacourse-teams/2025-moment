@@ -4,4 +4,5 @@ export const ROUTES = {
   LOGIN: '/login',
   MY_MOMENTS: '/my-moments',
   TODAY_MOMENT: '/today-moment',
+  POST_MOMENTS: '/post-moments',
 };
