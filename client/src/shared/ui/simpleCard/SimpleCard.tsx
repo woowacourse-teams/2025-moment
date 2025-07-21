@@ -1,11 +1,16 @@
-import { SimpleCardHeight } from './SimpleCard.styles';
+import { SimpleCardHeight, ColorKey } from './SimpleCard.styles';
 import * as S from './SimpleCard.styles';
 
 interface SimpleCardProps {
   height: SimpleCardHeight;
   content: React.ReactNode;
+  backgroundColor?: ColorKey;
 }
 
-export const SimpleCard = ({ height, content }: SimpleCardProps) => {
-  return <S.SimpleCard $height={height}>{content}</S.SimpleCard>;
+export const SimpleCard = ({ height, content, backgroundColor }: SimpleCardProps) => {
+  return (
+    <S.SimpleCard $height={height} $backgroundColor={backgroundColor}>
+      {content}
+    </S.SimpleCard>
+  );
 };
