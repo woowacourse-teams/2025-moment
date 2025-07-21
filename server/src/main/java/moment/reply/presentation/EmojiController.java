@@ -6,15 +6,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.reply.application.EmojiService;
 import moment.reply.dto.request.EmojiCreateRequest;
+import moment.reply.dto.response.EmojisResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Emoji API", description = "이모지 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/emoji")
+@RequestMapping("/api/v1/emojis")
 public class EmojiController {
 
     private final EmojiService emojiService;
@@ -53,5 +57,18 @@ public class EmojiController {
         emojiService.addEmoji(request, authentication);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
+    }
+
+    @Operation(summary = "이모지 조회", description = "코멘트에 달린 모든 이모지를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "이모지 등록 성공")
+    })
+    @GetMapping("/{commentId}")
+    public ResponseEntity<SuccessResponse<List<EmojisResponse>>> readEmojis(
+            @PathVariable Long commentId
+    ) {
+        List<EmojisResponse> response = emojiService.getEmojisByCommentId(commentId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }
