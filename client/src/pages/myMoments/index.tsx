@@ -1,8 +1,9 @@
-import { Button, Card, Category, Text } from '@/shared/ui';
+import { Button, Card, Category, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Send } from 'lucide-react';
 import * as S from './index.styles';
 import { theme } from '@/app/styles/theme';
+import { NotFoundComents } from './NotFoundComents';
 
 // 임시 데이터(추후 제거 예정)
 const myMomentsData = [
@@ -55,7 +56,7 @@ export default function MyMoments() {
                 <Send size={20} color={theme.colors['yellow-500']} />
                 <span>받은 공감</span>
               </S.TitleContainer>
-              <Text height="small" content={moment.content} />
+              <SimpleCard height="small" content={moment.content || <NotFoundComents />} />
             </Card.Content>
             <Card.Action position="space-between">
               <Button variant="sendEmojis" title="+ 스티커 보내기" />
