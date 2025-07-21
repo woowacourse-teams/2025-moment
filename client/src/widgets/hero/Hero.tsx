@@ -19,7 +19,7 @@ export default function Hero({
     <S.HeroWrapper isVisible={isVisible}>
       <S.TitleContainer isVisible={isVisible}>
         {title.map((text, index) => (
-          <S.Title key={index}>{text}</S.Title>
+          <S.Title key={`hero-title-${index}`}>{text}</S.Title>
         ))}
       </S.TitleContainer>
 
@@ -27,7 +27,7 @@ export default function Hero({
 
       <S.SubtitleContainer isVisible={isVisible}>
         {subtitle.map((text, index) => (
-          <S.Subtitle key={index}>{text}</S.Subtitle>
+          <S.Subtitle key={`hero-subtitle-${index}`}>{text}</S.Subtitle>
         ))}
       </S.SubtitleContainer>
     </S.HeroWrapper>
