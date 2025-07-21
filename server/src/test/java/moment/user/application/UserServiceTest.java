@@ -1,10 +1,10 @@
 package moment.user.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -38,14 +38,10 @@ class UserServiceTest {
         given(userRepository.save(any(User.class))).willReturn(expect);
 
         // when
-        User user = userService.addUser(request);
+        userService.addUser(request);
 
         // then
-        assertAll(
-            () -> assertThat(user.getEmail()).isEqualTo(expect.getEmail()),
-            () -> assertThat(user.getPassword()).isEqualTo(expect.getPassword()),
-            () -> assertThat(user.getNickname()).isEqualTo(expect.getNickname())
-        );
+        then(userRepository).should(times(1)).save(any(User.class));
     }
 
     @Test
