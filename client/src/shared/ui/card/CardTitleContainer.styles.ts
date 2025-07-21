@@ -29,9 +29,11 @@ export const CardTitleContainer = styled.div`
 `;
 
 export const CardTitle = styled.span`
+  width: 100%;
   ${({ theme }) => CardTitleStyles.cardTitle(theme)}
 `;
 
 export const CardSubtitle = styled.span`
+  width: 100%;
   ${({ theme }) => CardSubtitleStyles.cardSubtitle(theme)}
 `;

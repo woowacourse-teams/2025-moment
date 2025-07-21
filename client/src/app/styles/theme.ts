@@ -21,6 +21,7 @@ export const theme = {
     'gray-600': '#536872',
     'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
     'gray-700': '#334155',
+    'blue-600': '#497CBC',
   },
   typography: {
     title: {
