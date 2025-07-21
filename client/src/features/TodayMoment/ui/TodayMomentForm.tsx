@@ -1,19 +1,11 @@
 import { Card } from '@/shared/ui';
 import { Star } from 'lucide-react';
-import { useCallback, useState } from 'react';
 import { TodayMomentSuccessContent } from '@/widgets/todayMoment/TodayMomentSuccessContent';
 import { TodayMomentWriteContent } from '@/widgets/todayMoment/TodayMomentWriteContent';
+import { useSubmitted } from '@/features/TodayMoment/hook/useSubmitted';
 
 export function TodayMomentForm() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = useCallback(() => {
-    setIsSubmitted(true);
-  }, []);
-
-  const handleBack = useCallback(() => {
-    setIsSubmitted(false);
-  }, []);
+  const { isSubmitted, handleSubmit, handleBack } = useSubmitted();
 
   return (
     <Card width="medium">
