@@ -1,7 +1,7 @@
 import { Card } from '@/shared/ui';
-import { TodayMomentSuccessContent } from '@/widgets/todayMoment/TodayMomentSuccessContent';
-import { TodayMomentWriteContent } from '@/widgets/todayMoment/TodayMomentWriteContent';
-import { useSubmitted } from '@/features/TodayMoment/hook/useSubmitted';
+import { TodayMomentSuccessContent } from '@/features/todayMoment/ui/TodayMomentSuccessContent';
+import { TodayMomentWriteContent } from '@/features/todayMoment/ui/TodayMomentWriteContent';
+import { useSubmitted } from '@/features/todayMoment/hook/useSubmitted';
 
 export function TodayMomentForm() {
   const { isSubmitted, handleSubmit, handleBack } = useSubmitted();
