@@ -1,7 +1,7 @@
 import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'sendEmojis';
 
 const buttonStyles = {
   primary: (theme: CustomTheme) => `
@@ -49,6 +49,16 @@ const buttonStyles = {
         transform: translateY(-2px);
     }
     `,
+
+  sendEmojis: (theme: CustomTheme) => `
+    border: 1px solid ${theme.colors['yellow-500']};
+    color: ${theme.colors['yellow-500']};
+    height: 20px;
+    border-radius: 25px;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: bold;
+  `,
 };
 
 export const Button = styled.button<{ variant: ButtonVariant }>`
