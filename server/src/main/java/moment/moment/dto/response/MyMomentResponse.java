@@ -15,13 +15,13 @@ public record MyMomentResponse(
         @Schema(description = "내 모멘트 작성 시간,", example = "2025-07-14T16:24:34Z")
         LocalDateTime createdAt,
 
-        MyCommentResponse1 comment
+        CommentReadResponse comment
 ) {
 
     public static MyMomentResponse of(Moment moment, Comment comment, List<Emoji> emojis) {
         if (comment != null) {
-            MyCommentResponse1 myCommentResponse1 = MyCommentResponse1.of(comment, emojis);
-            return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), myCommentResponse1);
+            CommentReadResponse commentReadResponse = CommentReadResponse.of(comment, emojis);
+            return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), commentReadResponse);
         }
         return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), null);
     }
