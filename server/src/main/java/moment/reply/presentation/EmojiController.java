@@ -64,7 +64,7 @@ public class EmojiController {
             @ApiResponse(responseCode = "201", description = "이모지 등록 성공")
     })
     @GetMapping("/{commentId}")
-    public ResponseEntity<SuccessResponse<List<EmojisResponse>>> readEmojis(
+    public ResponseEntity<SuccessResponse<List<EmojisResponse>>> readEmojisByComment(
             @PathVariable Long commentId
     ) {
         List<EmojisResponse> response = emojiService.getEmojisByCommentId(commentId);
