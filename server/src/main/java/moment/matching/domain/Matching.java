@@ -35,4 +35,9 @@ public class Matching extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "commenter_id")
     private User commenter;
+
+    public Matching(Moment moment, User commenter) {
+        this.moment = moment;
+        this.commenter = commenter;
+    }
 }

@@ -10,4 +10,7 @@ public interface EmojiRepository extends JpaRepository<Emoji, Long> {
 
     @EntityGraph(attributePaths = {"user"})
     List<Emoji> findAllByComment(Comment comment);
+
+    @EntityGraph(attributePaths = {"comment"})
+    List<Emoji> findAllByCommentIn(List<Comment> comments);
 }

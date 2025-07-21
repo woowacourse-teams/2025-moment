@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public record SuccessResponse<T>(
         @Schema(description = "상태 코드", example = "200")
         int status,
-        @Schema(description = "응답 데이터", example = "json")
+        @Schema(description = "응답 데이터")
         T data
 ) {
 

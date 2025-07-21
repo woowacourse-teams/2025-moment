@@ -1,5 +1,7 @@
 package moment.user.application;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -18,5 +20,15 @@ public class DefaultUserQueryService implements UserQueryService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
+    public List<User> findNotMatchedUsersToday(Long momenterId) {
+        return userRepository.findNotMatchedUsersToday(LocalDate.now(), momenterId);
     }
 }
