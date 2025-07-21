@@ -5,7 +5,7 @@ import moment.reply.domain.Emoji;
 import moment.reply.domain.EmojiType;
 
 @Schema(description = "내 모멘트의 코멘트의 이모지 조회 응답")
-public record EmojiDetailResponse(
+public record MyMomentEmojiResponse(
         @Schema(description = "조회된 Emoji id")
         Long id,
 
@@ -16,7 +16,7 @@ public record EmojiDetailResponse(
         String userName
 ) {
 
-    public static EmojiDetailResponse from(Emoji emoji) {
-        return new EmojiDetailResponse(emoji.getId(), emoji.getEmojiType(), emoji.getUser().getNickname());
+    public static MyMomentEmojiResponse from(Emoji emoji) {
+        return new MyMomentEmojiResponse(emoji.getId(), emoji.getEmojiType(), emoji.getUser().getNickname());
     }
 }
