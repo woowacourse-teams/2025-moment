@@ -17,6 +17,9 @@ node_modules/
 # test coverage
 coverage/
 
+# cache directories
+.jest-cache/
+
 # local config
 *.local.js
 *.local.ts
