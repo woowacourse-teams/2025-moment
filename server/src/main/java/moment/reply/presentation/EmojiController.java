@@ -17,6 +17,7 @@ import moment.reply.dto.response.EmojiReadResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +62,7 @@ public class EmojiController {
 
     @Operation(summary = "이모지 조회", description = "코멘트에 달린 모든 이모지를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "이모지 등록 성공")
+            @ApiResponse(responseCode = "201", description = "이모지 조회 성공")
     })
     @GetMapping("/{commentId}")
     public ResponseEntity<SuccessResponse<List<EmojiReadResponse>>> readEmojisByComment(
@@ -70,5 +71,36 @@ public class EmojiController {
         List<EmojiReadResponse> response = emojiService.getEmojisByCommentId(commentId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "이모지 삭제", description = "이모지를 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "이모지 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [E-001] "존재하지 않는 이모지입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = """
+                    - [U-008] "권한 없는 사용자입니다."
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{emojiId}")
+    public ResponseEntity<SuccessResponse<Void>> deleteEmojiById(
+            @PathVariable Long emojiId,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        emojiService.removeEmojiById(emojiId, authentication.id());
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 }
