@@ -1,6 +1,8 @@
 package moment.comment.application;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.dto.request.CommentCreateRequest;
 import moment.comment.application.dto.response.CommentCreateResponse;
@@ -11,6 +13,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.reply.domain.Emoji;
+import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ public class CommentService {
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
+    private final EmojiRepository emojiRepository;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -42,10 +47,17 @@ public class CommentService {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
         }
 
-        List<Comment> comments = commentRepository.findCommentsWithMomentAndEmojisByCommenterId(commenterId);
+        List<Comment> comments = commentRepository.findCommentsByCommenterId(commenterId);
 
-        return comments.stream()
-                .map(MyCommentsResponse::from)
-                .toList();
+        List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
+
+        if (emojis.isEmpty()) {
+            return comments.stream().map(MyCommentsResponse::from).toList();
+        }
+
+        Map<Comment, List<Emoji>> emojisByComment = emojis.stream()
+                .collect(Collectors.groupingBy(Emoji::getComment));
+
+        return emojisByComment.entrySet().stream().map(MyCommentsResponse::from).toList();
     }
 }

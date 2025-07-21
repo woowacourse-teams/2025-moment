@@ -3,6 +3,7 @@ package moment.comment.application.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map.Entry;
 import moment.comment.domain.Comment;
 import moment.reply.domain.Emoji;
 
@@ -20,14 +21,27 @@ public record MyCommentsResponse(
         @Schema(description = "Comment에 등록된 이모지 목록")
         List<EmojiDetailResponse> emojis
 ) {
-    public static MyCommentsResponse from(Comment comment) {
+    public static MyCommentsResponse from(Entry<Comment, List<Emoji>> entry) {
+        Comment comment = entry.getKey();
+        List<Emoji> emojis = entry.getValue();
+
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
 
-        List<Emoji> emojis = comment.getEmojis();
         List<EmojiDetailResponse> emojisResponse = emojis.stream()
                 .map(EmojiDetailResponse::from)
                 .toList();
 
+        return new MyCommentsResponse(
+                comment.getContent(),
+                comment.getCreatedAt(),
+                momentResponse,
+                emojisResponse
+        );
+    }
+
+    public static MyCommentsResponse from(Comment comment) {
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
+        List<EmojiDetailResponse> emojisResponse = null;
         return new MyCommentsResponse(
                 comment.getContent(),
                 comment.getCreatedAt(),

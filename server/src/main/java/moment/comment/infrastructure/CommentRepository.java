@@ -2,14 +2,15 @@ package moment.comment.infrastructure;
 
 import java.util.List;
 import moment.comment.domain.Comment;
+import moment.moment.domain.Moment;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("SELECT DISTINCT c FROM comments c " +
-            "JOIN FETCH c.moment m " +
-            "LEFT JOIN FETCH c.emojis e " +
-            "WHERE c.commenter.id = :commenterId")
-    List<Comment> findCommentsWithMomentAndEmojisByCommenterId(Long commenterId);
+    @EntityGraph(attributePaths = {"moment"})
+    List<Comment> findCommentsByCommenterId(Long commenterId);
+
+    @EntityGraph(attributePaths = {"moment"})
+    List<Comment> findAllByMomentIn(List<Moment> moments);
 }

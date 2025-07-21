@@ -68,12 +68,4 @@ public class Emoji extends BaseEntity {
             throw new MomentException(ErrorCode.COMMENT_INVALID);
         }
     }
-
-    public void setComment(Comment comment) {
-        this.comment = comment;
-
-        if (!comment.getEmojis().contains(this)) {
-            comment.getEmojis().add(this);
-        }
-    }
 }

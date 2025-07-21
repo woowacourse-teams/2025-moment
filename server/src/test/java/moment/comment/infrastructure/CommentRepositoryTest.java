@@ -7,8 +7,6 @@ import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -49,19 +47,14 @@ class CommentRepositoryTest {
         Comment comment = new Comment("첫 번째 댓글", commenter, moment);
         Comment savedComment = commentRepository.save(comment);
 
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
-        Emoji savedEmoji = emojiRepository.save(emoji);
-        comment.getEmojis().add(savedEmoji);
-
         // when
-        List<Comment> comments = commentRepository.findCommentsWithMomentAndEmojisByCommenterId(savedCommenter.getId());
+        List<Comment> comments = commentRepository.findCommentsByCommenterId(savedCommenter.getId());
 
         // then
         assertAll(
                 () -> assertThat(comments).hasSize(1),
                 () -> assertThat(comments.getFirst()).isEqualTo(savedComment),
-                () -> assertThat(comments.getFirst().getMoment()).isEqualTo(savedMoment),
-                () -> assertThat(comments.getFirst().getEmojis().getFirst()).isEqualTo(savedEmoji)
+                () -> assertThat(comments.getFirst().getMoment()).isEqualTo(savedMoment)
         );
     }
 }
