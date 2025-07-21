@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmojiRepository extends JpaRepository<Emoji, Long> {
 
-    @EntityGraph(attributePaths = {"comment", "comment.commenter"})
+    @EntityGraph(attributePaths = {"user"})
     List<Emoji> findAllByComment(Comment comment);
 }
