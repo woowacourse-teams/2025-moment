@@ -8,7 +8,7 @@ interface RequestButtonProps {
   disabled?: boolean;
 }
 
-export const RequestButton = ({ Icon, title, onClick, disabled }: RequestButtonProps) => {
+export const YellowSquareButton = ({ Icon, title, onClick, disabled }: RequestButtonProps) => {
   return (
     <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} disabled={disabled} />
   );

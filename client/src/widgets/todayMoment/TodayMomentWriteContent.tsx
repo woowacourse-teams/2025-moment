@@ -1,4 +1,4 @@
-import { RequestButton } from '@/features/TodayMoment/ui/RequestButton';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card, TextArea } from '@/shared/ui';
 import { Send, Star } from 'lucide-react';
 import { useState } from 'react';
@@ -41,7 +41,7 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentPro
         <p>
           {text.length} / {MAX_LENGTH}
         </p>
-        <RequestButton
+        <YellowSquareButton
           Icon={Send}
           title="모멘트 공유하기"
           onClick={handleSubmit}

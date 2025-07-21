@@ -1,4 +1,4 @@
-import { RequestButton } from '@/features/TodayMoment/ui/RequestButton';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card } from '@/shared/ui';
 import { CardSuccessContainer } from '@/shared/ui/card/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
@@ -21,7 +21,7 @@ export const TodayMomentSuccessContent = ({ onBack }: TodayMomentSuccessContentP
         />
       </Card.Content>
       <Card.Action position="center">
-        <RequestButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onBack} />
+        <YellowSquareButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onBack} />
       </Card.Action>
     </S.TodayMomentContentWrapper>
   );
