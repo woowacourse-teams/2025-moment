@@ -17,7 +17,7 @@ export const TodayMomentSuccessContent = ({ onBack }: TodayMomentSuccessContentP
           subtitle={
             '당신의 모멘트가 누군가에게 전달되었습니다.\n내일 또 다른 모멘트를 공유해보세요'
           }
-        ></CardSuccessContainer>
+        />
       </Card.Content>
       <Card.Action position="center">
         <RequestButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onBack} />

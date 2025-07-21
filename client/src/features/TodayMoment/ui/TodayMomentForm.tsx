@@ -13,7 +13,7 @@ export function TodayMomentForm() {
         Icon={Star}
         title="모멘트 공유하기"
         subtitle="뿌듯한 순간, 위로받고 싶은 순간, 기쁜 순간 모든 모멘트를 자유롭게 적어보세요"
-      ></Card.TitleContainer>
+      />
       {!isSubmitted ? (
         <TodayMomentWriteContent onSubmit={handleSubmit} />
       ) : (
