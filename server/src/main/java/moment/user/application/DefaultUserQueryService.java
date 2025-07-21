@@ -28,11 +28,6 @@ public class DefaultUserQueryService implements UserQueryService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
     public List<User> findNotMatchedUsersToday(Long momenterId) {
         return userRepository.findNotMatchedUsersToday(LocalDate.now(), momenterId);
     }

@@ -40,8 +40,4 @@ public class Matching extends BaseEntity {
         this.moment = moment;
         this.commenter = commenter;
     }
-
-    public long getCommenterId() {
-        return commenter.getId();
-    }
 }
