@@ -5,7 +5,7 @@ import { theme } from '@/app/styles/theme';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 
 // 임시 데이터(추후 제거 예정)
-const postMomentsData = [
+const postCommentsData = [
   {
     id: 1,
     category: '위로가 필요해요',
@@ -25,12 +25,12 @@ const postMomentsData = [
   },
 ];
 
-export default function PostMomentsPage() {
+export default function PostCommentsPage() {
   return (
-    <S.PostMomentsPageContainer>
-      <TitleContainer title="보낸 모멘트" subtitle="내가 보낸 공감을 확인해보세요" />
+    <S.PostCommentsPageContainer>
+      <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
       <S.MomentsContainer>
-        {postMomentsData.map(post => (
+        {postCommentsData.map(post => (
           <Card width="large">
             <Card.TitleContainer
               title={
@@ -67,6 +67,6 @@ export default function PostMomentsPage() {
           </Card>
         ))}
       </S.MomentsContainer>
-    </S.PostMomentsPageContainer>
+    </S.PostCommentsPageContainer>
   );
 }
