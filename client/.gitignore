@@ -26,3 +26,7 @@ coverage/
 
 *storybook.log
 storybook-static
+
+# jest-cache
+.jest-cache/
+

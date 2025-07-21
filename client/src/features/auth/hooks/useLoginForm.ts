@@ -1,6 +1,5 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
-import { isLoginFormValid, validateLoginFormData } from '@/features/auth/utils/validateLoginForm';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const useLoginForm = () => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -12,13 +11,8 @@ export const useLoginForm = () => {
     password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
 
-  useEffect(() => {
-    const validationErrors = validateLoginFormData(formData);
-    setErrors(validationErrors);
-    setIsDisabled(!isLoginFormValid(validationErrors) || isLoading);
-  }, [formData, isLoading]);
+  const isDisabled = formData.email === '' || formData.password === '' || isLoading;
 
   const handleInputChange =
     (field: keyof LoginFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
