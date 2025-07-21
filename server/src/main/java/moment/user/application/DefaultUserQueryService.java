@@ -1,5 +1,6 @@
 package moment.user.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -23,5 +24,10 @@ public class DefaultUserQueryService implements UserQueryService {
     @Override
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
