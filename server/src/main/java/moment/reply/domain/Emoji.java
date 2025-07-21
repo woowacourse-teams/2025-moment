@@ -68,4 +68,10 @@ public class Emoji extends BaseEntity {
             throw new MomentException(ErrorCode.COMMENT_INVALID);
         }
     }
+
+    public void checkWriter(User writer) {
+        if (!user.equals(writer)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+    }
 }

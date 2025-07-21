@@ -6,16 +6,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
-import moment.comment.dto.request.CommentCreateRequest;
-import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.application.dto.request.CommentCreateRequest;
+import moment.comment.application.dto.response.CommentCreateResponse;
+import moment.comment.application.dto.response.MyCommentsResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,5 +59,27 @@ public class CommentController {
         CommentCreateResponse response = commentService.addComment(request, userId);
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "나의 Comment 목록 조회", description = "내가 등록한 Comment 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나의 Comment 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/me")
+    public ResponseEntity<SuccessResponse<List<MyCommentsResponse>>> readMyComments(
+            @AuthenticationPrincipal Authentication authentication) {
+        Long userId = authentication.id();
+        List<MyCommentsResponse> myComments = commentService.getCommentsByUserId(userId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, myComments));
     }
 }

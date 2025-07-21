@@ -56,4 +56,14 @@ public class EmojiService {
                 .map(EmojiReadResponse::from)
                 .toList();
     }
+
+    @Transactional
+    public void removeEmojiById(Long emojiId, Long userId) {
+        Emoji emoji = emojiQueryService.getEmojiById(emojiId);
+        User user = userQueryService.getUserById(userId);
+
+        emoji.checkWriter(user);
+
+        emojiRepository.delete(emoji);
+    }
 }

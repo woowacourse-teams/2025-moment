@@ -94,7 +94,6 @@ class EmojiServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
@@ -104,5 +103,43 @@ class EmojiServiceTest {
 
         // then
         then(emojiQueryService).should(times(1)).getEmojisByComment(any(Comment.class));
+    }
+
+    @Test
+    void 이모지를_제거한다() {
+        // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+
+        given(emojiQueryService.getEmojiById(any(Long.class)))
+                .willReturn(emoji);
+        given(userQueryService.getUserById(any(Long.class)))
+                .willReturn(momenter);
+
+        // when
+        emojiService.removeEmojiById(1L, 1L);
+
+        // then
+        then(emojiRepository).should(times(1)).delete(any(Emoji.class));
+    }
+
+    @Test
+    void 이모지_작성자가_아닌_회원이_삭제요청_할_경우_예외가_발생한다() {
+        // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+
+        given(emojiQueryService.getEmojiById(any(Long.class)))
+                .willReturn(emoji);
+
+        // when & then
+        assertThatThrownBy(() -> emojiService.removeEmojiById(1L, comment.getId()))
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
     }
 }
