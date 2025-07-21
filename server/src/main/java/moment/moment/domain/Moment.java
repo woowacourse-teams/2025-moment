@@ -71,4 +71,16 @@ public class Moment extends BaseEntity {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
         }
     }
+
+    public void matchComplete() {
+        isMatched = true;
+    }
+
+    public boolean alreadyMatched() {
+        return isMatched;
+    }
+
+    public Long getMomenterId() {
+        return momenter.getId();
+    }
 }
