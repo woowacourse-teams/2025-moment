@@ -20,7 +20,7 @@ public record EmojisResponse(
         return new EmojisResponse(
                 emoji.getId(),
                 emoji.getEmojiType(),
-                emoji.getComment().getCommenter().getNickname()
+                emoji.getUser().getNickname()
         );
     }
 }
