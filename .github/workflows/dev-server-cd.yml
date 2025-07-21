@@ -2,8 +2,8 @@ name: Deploy Backend to EC2 (Develop)
 
 on:
   pull_request:
-    types: [closed]
-    branches: [develop]
+    types: [ closed ]
+    branches: [ develop ]
     paths: [ 'server/**' ]
 
 jobs:
@@ -31,6 +31,7 @@ jobs:
             cd moment-2025
             git pull origin develop
             cd server
-            
+
+            cp ../.env .
             chmod +x deploy.sh
             ./deploy.sh

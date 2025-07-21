@@ -2,6 +2,7 @@ package moment.comment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -114,8 +115,10 @@ class CommentServiceTest {
         List<MyCommentsResponse> actualComments = commentService.getCommentsByUserId(1L);
 
         // then
-        assertThat(actualComments).hasSize(1);
-        then(commentRepository).should(times(1)).findCommentsByCommenterId(1L);
+        assertAll(
+                () -> assertThat(actualComments).hasSize(1),
+                () -> then(commentRepository).should(times(1)).findCommentsByCommenterId(1L)
+        );
     }
 
     @Test

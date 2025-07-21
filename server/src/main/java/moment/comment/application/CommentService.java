@@ -52,12 +52,16 @@ public class CommentService {
         List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
 
         if (emojis.isEmpty()) {
-            return comments.stream().map(MyCommentsResponse::from).toList();
+            return comments.stream()
+                    .map(MyCommentsResponse::from)
+                    .toList();
         }
 
         Map<Comment, List<Emoji>> emojisByComment = emojis.stream()
                 .collect(Collectors.groupingBy(Emoji::getComment));
 
-        return emojisByComment.entrySet().stream().map(MyCommentsResponse::from).toList();
+        return emojisByComment.entrySet().stream()
+                .map(MyCommentsResponse::from)
+                .toList();
     }
 }
