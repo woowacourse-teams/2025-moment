@@ -1,5 +1,5 @@
 export const ROUTES = {
   ROOT: '/',
   SIGNUP: '/signup',
-  TODAY: '/today',
+  TODAY_MOMENT: '/today-moment',
 };

@@ -3,11 +3,11 @@ import { Card, TextArea } from '@/shared/ui';
 import { CardSuccessContainer } from '@/shared/ui/card/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
 
-interface TodaySuccessContentProps {
+interface TodayMomentSuccessContentProps {
   onBack: () => void;
 }
 
-export const TodaySuccessContent = ({ onBack }: TodaySuccessContentProps) => {
+export const TodayMomentSuccessContent = ({ onBack }: TodayMomentSuccessContentProps) => {
   return (
     <>
       <Card.Content>

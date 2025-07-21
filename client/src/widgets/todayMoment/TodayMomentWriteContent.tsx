@@ -3,11 +3,11 @@ import { Card, TextArea } from '@/shared/ui';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
 
-interface TodayWriteContentProps {
+interface TodayMomentWriteContentProps {
   onSubmit: () => void;
 }
 
-export const TodayWriteContent = ({ onSubmit }: TodayWriteContentProps) => {
+export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentProps) => {
   const [text, setText] = useState('');
   const MAX_LENGTH = 300;
 
