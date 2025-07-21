@@ -27,7 +27,8 @@ jobs:
             docker compose down --remove-orphans
             docker system prune -f
             
-            echo "🚀 배포 스크립트 실행 중..."            cd 2025-moment
+            echo "🚀 배포 스크립트 실행 중..."
+            cd moment-2025
             git pull origin develop
             cd server
 
