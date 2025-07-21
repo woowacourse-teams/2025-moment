@@ -69,7 +69,7 @@ public class MomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponse<List<MyMomentResponse>>> getMyMoment(
+    public ResponseEntity<SuccessResponse<List<MyMomentResponse>>> readMyMoment(
             @AuthenticationPrincipal Authentication authentication
     ) {
         List<MyMomentResponse> responses = momentService.getMyMoments(authentication.id());
