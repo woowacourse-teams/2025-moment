@@ -78,7 +78,7 @@ public class CommentController {
     public ResponseEntity<SuccessResponse<List<MyCommentsResponse>>> readMyComments(
             @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
-        List<MyCommentsResponse> myComments = commentService.getCommentsOfUserId(userId);
+        List<MyCommentsResponse> myComments = commentService.getCommentsByUserId(userId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, myComments));
     }

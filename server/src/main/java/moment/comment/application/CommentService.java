@@ -37,7 +37,7 @@ public class CommentService {
         return CommentCreateResponse.from(savedComment);
     }
 
-    public List<MyCommentsResponse> getCommentsOfUserId(Long commenterId) {
+    public List<MyCommentsResponse> getCommentsByUserId(Long commenterId) {
         if (!userQueryService.existsById(commenterId)) {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
         }

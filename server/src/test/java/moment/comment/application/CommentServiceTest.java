@@ -105,7 +105,7 @@ class CommentServiceTest {
         given(userQueryService.existsById(any(Long.class))).willReturn(true);
 
         // when
-        List<MyCommentsResponse> actualComments = commentService.getCommentsOfUserId(1L);
+        List<MyCommentsResponse> actualComments = commentService.getCommentsByUserId(1L);
 
         // then
         assertThat(actualComments).hasSize(1);
@@ -118,7 +118,7 @@ class CommentServiceTest {
         given(userQueryService.existsById(any(Long.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> commentService.getCommentsOfUserId(1L))
+        assertThatThrownBy(() -> commentService.getCommentsByUserId(1L))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
