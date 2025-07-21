@@ -10,4 +10,6 @@ public interface UserQueryService {
     boolean existsById(Long id);
 
     List<User> findAll();
+
+    List<User> findNotMatchedUsersToday(Long momenterId);
 }

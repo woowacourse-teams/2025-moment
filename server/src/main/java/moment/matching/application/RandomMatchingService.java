@@ -1,6 +1,5 @@
 package moment.matching.application;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +26,13 @@ public class RandomMatchingService implements MatchingService {
     @Transactional
     public MatchingResult match(Long momentId) {
         Moment moment = momentQueryService.getMomentById(momentId);
-        if(moment.alreadyMatched()) {
+        if (moment.alreadyMatched()) {
             return MatchingResult.ALREADY_MATCHED;
         }
 
-        List<Matching> todayMatches = matchingRepository.findAllByCreatedDate(LocalDate.now());
-        List<User> users = userQueryService.findAll();
+        List<User> todayNonMatchedUser = userQueryService.findNotMatchedUsersToday(moment.getMomenterId());
 
-        List<Long> todayMatchedCommenterId = todayMatches.stream()
-                .map(Matching::getCommenterId)
-                .toList();
-
-        List<User> todayNonMatchedUser = users.stream()
-                .filter(user -> !todayMatchedCommenterId.contains(user.getId()))
-                .toList();
-
-        if(todayNonMatchedUser.isEmpty()) {
+        if (todayNonMatchedUser.isEmpty()) {
             return MatchingResult.COMMENTER_NOT_EXISTED;
         }
 

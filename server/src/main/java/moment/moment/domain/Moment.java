@@ -79,4 +79,8 @@ public class Moment extends BaseEntity {
     public boolean alreadyMatched() {
         return isMatched;
     }
+
+    public Long getMomenterId() {
+        return momenter.getId();
+    }
 }
