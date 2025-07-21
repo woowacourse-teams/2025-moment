@@ -56,13 +56,13 @@ public class EmojiController {
             @AuthenticationPrincipal Authentication authentication
     ) {
         emojiService.addEmoji(request, authentication);
-        HttpStatus status = HttpStatus.OK;
+        HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "이모지 조회", description = "코멘트에 달린 모든 이모지를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "이모지 조회 성공")
+            @ApiResponse(responseCode = "200", description = "이모지 조회 성공")
     })
     @GetMapping("/{commentId}")
     public ResponseEntity<SuccessResponse<List<EmojiReadResponse>>> readEmojisByComment(
