@@ -6,6 +6,7 @@ export const theme = {
     'slate-800': '#1E293B',
     'slate-700': '#334155',
     white: '#FFFFFF',
+    'yellow-600': '#92610a',
     'yellow-500': '#F1C40F',
     'yellow-300': '#F4D03F',
     'emerald-500': '#10B981',
