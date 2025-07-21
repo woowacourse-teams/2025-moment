@@ -4,7 +4,7 @@ export const MyMomentsPageContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  margin: 20px 0;
+  margin: 20px;
 `;
 
 export const TitleContainer = styled.div`
@@ -37,5 +37,5 @@ export const MomentsContainer = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 `;
