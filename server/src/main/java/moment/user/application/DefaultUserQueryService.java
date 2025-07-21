@@ -19,4 +19,9 @@ public class DefaultUserQueryService implements UserQueryService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 }

@@ -1,4 +1,5 @@
 import { useUserContext } from '@/features/auth/context/useUserContext';
+import { Input } from '@/shared/ui/input/Input';
 import * as S from './SignupStep.styles';
 
 interface SignupStep1Props {
@@ -16,7 +17,7 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
     <S.StepContainer>
       <S.InputGroup>
         <S.Label htmlFor="username">이메일</S.Label>
-        <S.Input
+        <Input
           id="email"
           type="email"
           placeholder="이메일을 입력해주세요"
@@ -28,7 +29,7 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
 
       <S.InputGroup>
         <S.Label htmlFor="password">비밀번호</S.Label>
-        <S.Input
+        <Input
           id="password"
           type="password"
           placeholder="비밀번호를 입력해주세요"
@@ -41,7 +42,7 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
 
       <S.InputGroup>
         <S.Label htmlFor="rePassword">비밀번호 확인</S.Label>
-        <S.Input
+        <Input
           id="rePassword"
           type="password"
           placeholder="비밀번호를 다시 입력해주세요"
