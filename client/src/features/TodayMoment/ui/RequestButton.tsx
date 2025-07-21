@@ -1,5 +1,5 @@
 import { Button } from '@/shared/ui';
-import { LucideIcon, Send } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 interface RequestButtonProps {
   Icon?: LucideIcon;

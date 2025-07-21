@@ -1,4 +1,4 @@
-import { RequestButton } from '@/features/auth/ui/requestButton';
+import { RequestButton } from '@/features/TodayMoment/ui/RequestButton';
 import { Card, TextArea } from '@/shared/ui';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
