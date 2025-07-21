@@ -10,7 +10,7 @@ import moment.reply.domain.Emoji;
 import moment.reply.domain.EmojiType;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
-import moment.reply.dto.response.EmojisResponse;
+import moment.reply.dto.response.EmojiReadResponse;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
@@ -48,12 +48,12 @@ public class EmojiService {
         }
     }
 
-    public List<EmojisResponse> getEmojisByCommentId(Long commentId) {
+    public List<EmojiReadResponse> getEmojisByCommentId(Long commentId) {
         Comment comment = commentQueryService.getCommentById(commentId);
         List<Emoji> emojis = emojiQueryService.getEmojisByComment(comment);
 
         return emojis.stream()
-                .map(EmojisResponse::from)
+                .map(EmojiReadResponse::from)
                 .toList();
     }
 }

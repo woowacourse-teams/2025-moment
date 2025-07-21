@@ -13,7 +13,7 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.reply.application.EmojiService;
 import moment.reply.dto.request.EmojiCreateRequest;
-import moment.reply.dto.response.EmojisResponse;
+import moment.reply.dto.response.EmojiReadResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,10 +64,10 @@ public class EmojiController {
             @ApiResponse(responseCode = "201", description = "이모지 등록 성공")
     })
     @GetMapping("/{commentId}")
-    public ResponseEntity<SuccessResponse<List<EmojisResponse>>> readEmojisByComment(
+    public ResponseEntity<SuccessResponse<List<EmojiReadResponse>>> readEmojisByComment(
             @PathVariable Long commentId
     ) {
-        List<EmojisResponse> response = emojiService.getEmojisByCommentId(commentId);
+        List<EmojiReadResponse> response = emojiService.getEmojisByCommentId(commentId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
