@@ -41,10 +41,6 @@ public class UserController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = """
                     - [U-001] 이미 가입된 사용자입니다.
                     - [U-003] 이미 존재하는 닉네임입니다.

@@ -19,11 +19,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User addUser(UserCreateRequest request) {
+    public void addUser(UserCreateRequest request) {
         validatePassword(request);
         validateEmail(request);
         validateNickname(request);
-        return userRepository.save(request.toUser());
+        userRepository.save(request.toUser());
     }
 
     private void validatePassword(UserCreateRequest request) {

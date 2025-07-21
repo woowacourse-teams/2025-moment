@@ -25,7 +25,7 @@ class UserTest {
     @ParameterizedTest
     @CsvSource(value = {"null", "''", "' '", "mimi", "mimi@", "mimi@.com", "mimi@com", "mimi@icloud", "mimi@icloud."}, nullValues = "null")
     void 이메일_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
-        //when & then
+        // when & then
         assertThatThrownBy(() -> new User(email, "password", "mimi"))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_INVALID);
@@ -34,7 +34,7 @@ class UserTest {
     @ParameterizedTest
     @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
     void 비밀번호_형식이_유효하지_않은_경우_예외가_발생한다(String password) {
-        //when & then
+        // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", password, "mimi"))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_INVALID);
@@ -43,7 +43,7 @@ class UserTest {
     @ParameterizedTest
     @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
     void 닉네임_형식이_유효하지_않은_경우_예외가_발생한다(String nickname) {
-        //when & then
+        // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.NICKNAME_INVALID);
