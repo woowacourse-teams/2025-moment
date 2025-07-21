@@ -2,6 +2,7 @@ import { RequestButton } from '@/features/TodayMoment/ui/RequestButton';
 import { Card, TextArea } from '@/shared/ui';
 import { Send, Star } from 'lucide-react';
 import { useState } from 'react';
+import * as S from './TodayMomentContent.styles';
 
 interface TodayMomentWriteContentProps {
   onSubmit: () => void;
@@ -22,7 +23,7 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentPro
     onSubmit();
   };
   return (
-    <>
+    <S.TodayMomentContentWrapper>
       <Card.TitleContainer
         Icon={Star}
         title="모멘트 공유하기"
@@ -47,6 +48,6 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentPro
           disabled={text.trim().length === 0}
         />
       </Card.Action>
-    </>
+    </S.TodayMomentContentWrapper>
   );
 };
