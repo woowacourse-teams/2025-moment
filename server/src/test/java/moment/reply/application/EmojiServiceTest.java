@@ -94,7 +94,6 @@ class EmojiServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
@@ -115,14 +114,13 @@ class EmojiServiceTest {
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
 
-        Authentication authentication = new Authentication(1L);
         given(emojiQueryService.getEmojiById(any(Long.class)))
                 .willReturn(emoji);
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
 
         // when
-        emojiService.removeEmojiById(1L, authentication.id());
+        emojiService.removeEmojiById(1L, 1L);
 
         // then
         then(emojiRepository).should(times(1)).delete(any(Emoji.class));
@@ -137,7 +135,6 @@ class EmojiServiceTest {
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
 
-        Authentication authentication = new Authentication(1L);
         given(emojiQueryService.getEmojiById(any(Long.class)))
                 .willReturn(emoji);
 
