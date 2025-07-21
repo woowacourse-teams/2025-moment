@@ -47,7 +47,7 @@ describe('validateLoginFormData', () => {
     const result = validateLoginFormData(formData);
 
     expect(result.email).toBe('');
-    expect(result.password).toBe('비밀번호는 최소 6자 이상이어야 합니다.');
+    expect(result.password).toBe('비밀번호는 최소 4자 이상이어야 합니다.');
   });
 
   it('모든 입력이 유효한 경우 빈 에러를 반환해야 한다', () => {
