@@ -1,18 +1,23 @@
 package moment.comment.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import java.util.Collections;
+import java.util.List;
+import moment.comment.application.dto.request.CommentCreateRequest;
+import moment.comment.application.dto.response.MyCommentsResponse;
 import moment.comment.domain.Comment;
-import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -35,6 +40,9 @@ class CommentServiceTest {
 
     @Mock
     private UserQueryService userQueryService;
+
+    @Mock
+    private EmojiRepository emojiRepository;
 
     @Mock
     private CommentRepository commentRepository;
@@ -85,5 +93,39 @@ class CommentServiceTest {
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+    }
+
+    @Test
+    void Commenter_ID가_일치하는_Comment_목록을_불러온다() {
+        // given
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        Comment comment = new Comment("첫 번째 댓글", commenter, moment);
+
+        List<Comment> expectedComments = List.of(comment);
+        given(commentRepository.findCommentsByCommenterId(any(Long.class)))
+                .willReturn(expectedComments);
+        given(userQueryService.existsById(any(Long.class))).willReturn(true);
+        given(emojiRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+
+        // when
+        List<MyCommentsResponse> actualComments = commentService.getCommentsByUserId(1L);
+
+        // then
+        assertThat(actualComments).hasSize(1);
+        then(commentRepository).should(times(1)).findCommentsByCommenterId(1L);
+    }
+
+    @Test
+    void 존재하지_않는_Commenter가_Comment_목록을_조회하는_경우_예외가_발생한다() {
+        // given
+        given(userQueryService.existsById(any(Long.class))).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> commentService.getCommentsByUserId(1L))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
 }
