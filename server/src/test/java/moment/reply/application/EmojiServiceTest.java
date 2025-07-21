@@ -41,6 +41,9 @@ class EmojiServiceTest {
     @Mock
     private UserQueryService userQueryService;
 
+    @Mock
+    private EmojiQueryService emojiQueryService;
+
     @InjectMocks
     private EmojiService emojiService;
 
@@ -83,4 +86,23 @@ class EmojiServiceTest {
     }
 
     // TODO: 모멘트와 코멘트 작성자 아닌 사용자가 이모지를 등록하면 예외가 발생한다
+
+    @Test
+    void 코멘트의_모든_이모지를_조회한다() {
+        // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+
+        given(commentQueryService.getCommentById(any(Long.class)))
+                .willReturn(comment);
+
+        // when
+        emojiService.getEmojisByCommentId(1L);
+
+        // then
+        then(emojiQueryService).should(times(1)).getEmojisByComment(any(Comment.class));
+    }
 }
