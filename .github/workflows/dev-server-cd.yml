@@ -2,8 +2,8 @@ name: Deploy Backend to EC2 (Develop)
 
 on:
   pull_request:
-    types: [closed]
-    branches: [develop]
+    types: [ closed ]
+    branches: [ develop ]
     paths: [ 'server/**' ]
 
 jobs:
@@ -28,9 +28,10 @@ jobs:
             docker system prune -f
             
             echo "🚀 배포 스크립트 실행 중..."
-            cd moment-2025
+            cd 2025-moment
             git pull origin develop
             cd server
-            
+
+            cp ../.env .
             chmod +x deploy.sh
             ./deploy.sh
