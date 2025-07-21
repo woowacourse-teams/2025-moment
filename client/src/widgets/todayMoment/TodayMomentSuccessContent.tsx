@@ -1,5 +1,5 @@
 import { RequestButton } from '@/features/TodayMoment/ui/RequestButton';
-import { Card, TextArea } from '@/shared/ui';
+import { Card } from '@/shared/ui';
 import { CardSuccessContainer } from '@/shared/ui/card/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
 
