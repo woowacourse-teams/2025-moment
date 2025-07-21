@@ -1,6 +1,7 @@
 import { Layout } from '@/app/layout/ui';
 import { ROUTES } from '@/app/routes/routes';
 import HomePage from '@/pages/home';
+import LoginPage from '@/pages/login';
 import SignupPage from '@/pages/signup';
 import TodayMomentPage from '@/pages/todayMoment';
 
@@ -12,6 +13,7 @@ export const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
     </Route>,
   ),
 );

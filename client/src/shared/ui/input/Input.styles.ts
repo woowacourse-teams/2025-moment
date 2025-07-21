@@ -12,7 +12,8 @@ const InputStyles = {
     border: 1px solid ${theme.colors['gray-700']};
 
     &::placeholder {
-        color: ${theme.colors.white};
+        color: ${theme.colors['gray-400']};
+        opacity: 0.6;
     }
     `,
 };
