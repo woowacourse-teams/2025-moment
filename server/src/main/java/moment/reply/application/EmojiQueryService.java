@@ -7,4 +7,6 @@ import moment.reply.domain.Emoji;
 public interface EmojiQueryService {
 
     List<Emoji> getEmojisByComment(Comment comment);
+
+    Emoji getEmojiById(Long emojiId);
 }
