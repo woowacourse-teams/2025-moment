@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { Text } from './Text';
+import { SimpleCard } from './SimpleCard';
 
 const meta: Meta = {
   title: 'Example/Text',
-  component: Text,
+  component: SimpleCard,
   argTypes: {
     height: {
       control: { type: 'radio' },
