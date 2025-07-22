@@ -1,3 +1,4 @@
+import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +39,7 @@ export const validateNickname = (nickname: string): string => {
   return '';
 };
 
-export const validateSingleField = (
+export const validateSignupField = (
   field: keyof SignupFormData,
   value: string,
   signupData: SignupFormData,
@@ -57,21 +58,24 @@ export const validateSingleField = (
   }
 };
 
-export const validateSignupData = ({
-  signupData,
-  setErrors,
-}: {
-  signupData: SignupFormData;
-  setErrors: (errors: SignupErrors) => void;
-}) => {
-  const errors: SignupErrors = {
-    email: validateEmail(signupData.email),
-    password: validatePassword(signupData.password),
-    rePassword: validateRePassword(signupData.password, signupData.rePassword),
-    nickname: validateNickname(signupData.nickname),
+export const validateLoginForm = (data: LoginFormData): LoginError => {
+  return {
+    email: validateEmail(data.email),
+    password: validatePassword(data.password),
   };
+};
 
-  setErrors(errors);
+export const validateSignupForm = (data: SignupFormData): SignupErrors => {
+  return {
+    email: validateEmail(data.email),
+    password: validatePassword(data.password),
+    rePassword: validateRePassword(data.password, data.rePassword),
+    nickname: validateNickname(data.nickname),
+  };
+};
+
+export const isLoginFormValid = (errors: LoginError): boolean => {
+  return Object.values(errors).every(error => error === '');
 };
 
 export const isSignupFormValid = (errors: SignupErrors): boolean => {
