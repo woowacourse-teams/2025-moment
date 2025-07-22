@@ -81,3 +81,7 @@ export const isLoginFormValid = (errors: LoginError): boolean => {
 export const isSignupFormValid = (errors: SignupErrors): boolean => {
   return Object.values(errors).every(error => error === '');
 };
+
+export const isDataEmpty = (data: LoginFormData | SignupFormData): boolean => {
+  return Object.values(data).every(value => value === '');
+};
