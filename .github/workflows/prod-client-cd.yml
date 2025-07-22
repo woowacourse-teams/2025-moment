@@ -37,6 +37,9 @@ jobs:
 
       - name: Upload to S3
         run: |
+          echo "🔼 Uploading static files to S3..."
+
+          # 1. HTML 외 모든 파일 먼저 업로드
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
             --delete \
             --cache-control "public,max-age=31536000,immutable" \
@@ -44,14 +47,25 @@ jobs:
             --exclude "service-worker.js" \
             --region ap-northeast-2
 
-          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
-            --cache-control "public,max-age=0,must-revalidate" \
-            --include "*.html" \
-            --include "service-worker.js" \
-            --region ap-northeast-2
+          # 2. .html 파일은 개별적으로 --content-type text/html 지정
+          find ./dist -name "*.html" | while read file; do
+            aws s3 cp "$file" s3://${{ secrets.S3_BUCKET_NAME }}/moment/"${file#./dist/}" \
+              --cache-control "public,max-age=0,must-revalidate" \
+              --content-type "text/html" \
+              --region ap-northeast-2
+          done
+
+          # 3. service-worker.js도 개별 업로드
+          if [ -f ./dist/service-worker.js ]; then
+            aws s3 cp ./dist/service-worker.js s3://${{ secrets.S3_BUCKET_NAME }}/moment/service-worker.js \
+              --cache-control "public,max-age=0,must-revalidate" \
+              --content-type "application/javascript" \
+              --region ap-northeast-2
+          fi
 
       - name: Invalidate CloudFront cache
         run: |
+          echo "🧹 Invalidating CloudFront cache..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" \
