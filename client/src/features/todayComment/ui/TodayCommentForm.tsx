@@ -1,5 +1,5 @@
 import { Card } from '@/shared/ui';
-import { useSubmitted } from '@/features/todayMoment/hook/useSubmitted';
+import { useSubmitted } from '@/features/moment/hook/useSubmitted';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { TodayCommentSuccessContent } from './TodayCommentSuccessContent';
 
