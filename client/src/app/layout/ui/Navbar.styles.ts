@@ -4,7 +4,7 @@ export const Navbar = styled.nav`
   height: 80px;
   background-color: transparent;
   padding: 0 24px;
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   display: flex;
   align-items: center;
   justify-content: space-between;

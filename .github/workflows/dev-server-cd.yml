@@ -1,0 +1,37 @@
+name: Deploy Backend to EC2 (Develop)
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+    paths: [ 'server/**' ]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH and Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          script: |
+            echo "🔄 기존 컨테이너 정리 중..."
+            docker compose down --remove-orphans
+            docker system prune -f
+            
+            echo "🚀 배포 스크립트 실행 중..."
+            cd moment-2025
+            git pull origin develop
+            cd server
+
+            cp ../.env .
+            chmod +x deploy.sh
+            ./deploy.sh

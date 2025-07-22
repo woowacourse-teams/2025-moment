@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.text.primary};
+  background-color: ${({ theme }) => theme.colors['navy-900']};
+  color: ${({ theme }) => theme.colors.white};
   font-family: inherit;
   position: relative;
   display: flex;
@@ -15,4 +15,6 @@ export const Main = styled.main`
   z-index: 10;
   padding-top: 80px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
