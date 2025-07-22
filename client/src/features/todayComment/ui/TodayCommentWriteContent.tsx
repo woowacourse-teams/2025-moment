@@ -11,6 +11,7 @@ interface TodayCommentWriteContent {
 export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent) => {
   const [text, setText] = useState('');
   const MAX_LENGTH = 300;
+  const NOT_TEXT = text.trim().length === 0;
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
@@ -44,7 +45,7 @@ export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent)
           Icon={Send}
           title="코멘트 보내기"
           onClick={handleSubmit}
-          disabled={text.trim().length === 0}
+          disabled={NOT_TEXT}
         />
       </Card.Action>
     </S.TodayContentWrapper>
