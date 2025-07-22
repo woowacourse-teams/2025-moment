@@ -1,6 +1,6 @@
 package moment.user.infrastructure;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import moment.user.domain.User;
@@ -17,14 +17,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     @Query("""
-    SELECT u
-    FROM users u
-    WHERE u.id NOT IN (
-        SELECT m.commenter.id
-        FROM matchings m
-        WHERE FUNCTION('DATE', m.createdAt) = :today
-    )
-    AND u.id != :momenterId
+    SELECT u FROM users u
+    WHERE u != :momenter
+      AND NOT EXISTS (
+          SELECT 1 FROM matchings m
+          WHERE m.commenter = u
+            AND m.createdAt >= :startOfDay AND m.createdAt < :endOfDay
+      )
     """)
-    List<User> findNotMatchedUsersToday(@Param("today") LocalDate today, @Param("momenterId") Long momenterId);
+    List<User> findNotMatchedUsersToday(@Param("startOfDay") LocalDateTime startOfDay,
+                                        @Param("endOfDay") LocalDateTime endOfDay,
+                                        @Param("momenter") User momenter);
 }

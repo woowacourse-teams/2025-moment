@@ -44,7 +44,7 @@ class RandomMatchingServiceTest {
         given(momentQueryService.getMomentById(any())).willReturn(moment);
 
         User notMatchedUser = new User("hippo@gmail.com", "password1234!", "hippo");
-        given(userQueryService.findNotMatchedUsersToday(any())).willReturn(List.of(notMatchedUser));
+        given(userQueryService.findNotMatchedUsersTodayByMomenter(any())).willReturn(List.of(notMatchedUser));
 
         // when
         MatchingResult matchingResult = randomMatchingService.match(1L);
@@ -74,7 +74,7 @@ class RandomMatchingServiceTest {
         Moment moment = new Moment("내용", false, momenter);
         given(momentQueryService.getMomentById(any())).willReturn(moment);
 
-        given(userQueryService.findNotMatchedUsersToday(any())).willReturn(Collections.emptyList());
+        given(userQueryService.findNotMatchedUsersTodayByMomenter(any())).willReturn(Collections.emptyList());
 
         // when
         MatchingResult matchingResult = randomMatchingService.match(1L);

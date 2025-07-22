@@ -1,6 +1,7 @@
 package moment.user.application;
 
 import java.util.List;
+import moment.moment.domain.Moment;
 import moment.user.domain.User;
 
 public interface UserQueryService {
@@ -9,5 +10,5 @@ public interface UserQueryService {
 
     boolean existsById(Long id);
 
-    List<User> findNotMatchedUsersToday(Long momenterId);
+    List<User> findNotMatchedUsersTodayByMomenter(User momenter);
 }
