@@ -1,14 +1,14 @@
 import { LoginFormData } from '@/features/auth/types/login';
-import { isLoginFormValid, validateLoginFormData } from './validateLoginForm';
+import { isLoginFormValid, validateLoginForm } from './validateAuth';
 
-describe('validateLoginFormData', () => {
+describe('validateLoginForm', () => {
   it('이메일이 비어있는 경우 에러를 반환해야 한다', () => {
     const formData: LoginFormData = {
       email: '',
       password: 'validpassword',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('이메일을 입력해주세요.');
     expect(result.password).toBe('');
@@ -20,7 +20,7 @@ describe('validateLoginFormData', () => {
       password: 'validpassword',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('올바른 이메일 형식을 입력해주세요.');
     expect(result.password).toBe('');
@@ -32,7 +32,7 @@ describe('validateLoginFormData', () => {
       password: '',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('');
     expect(result.password).toBe('비밀번호를 입력해주세요.');
@@ -44,7 +44,7 @@ describe('validateLoginFormData', () => {
       password: '123',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('');
     expect(result.password).toBe('비밀번호는 최소 4자 이상이어야 합니다.');
@@ -56,7 +56,7 @@ describe('validateLoginFormData', () => {
       password: 'validpassword',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('');
     expect(result.password).toBe('');
@@ -68,7 +68,7 @@ describe('validateLoginFormData', () => {
       password: '12',
     };
 
-    const result = validateLoginFormData(formData);
+    const result = validateLoginForm(formData);
 
     expect(result.email).toBe('올바른 이메일 형식을 입력해주세요.');
     expect(result.password).toBe('비밀번호는 최소 4자 이상이어야 합니다.');
@@ -88,7 +88,7 @@ describe('validateLoginFormData', () => {
         password: 'validpassword',
       };
 
-      const result = validateLoginFormData(formData);
+      const result = validateLoginForm(formData);
       expect(result.email).toBe('');
     });
   });
@@ -109,7 +109,7 @@ describe('validateLoginFormData', () => {
         password: 'validpassword',
       };
 
-      const result = validateLoginFormData(formData);
+      const result = validateLoginForm(formData);
       expect(result.email).toBe('올바른 이메일 형식을 입력해주세요.');
     });
   });
@@ -169,5 +169,16 @@ describe('isLoginFormValid', () => {
     const result = isLoginFormValid(errors);
 
     expect(result).toBe(true);
+  });
+
+  it('에러 객체가 비어있지 않은 경우 false를 반환해야 한다', () => {
+    const errors = {
+      email: '이메일을 입력해주세요.',
+      password: '비밀번호를 입력해주세요.',
+    };
+
+    const result = isLoginFormValid(errors);
+
+    expect(result).toBe(false);
   });
 });
