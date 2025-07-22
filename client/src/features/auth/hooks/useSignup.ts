@@ -1,6 +1,6 @@
 import { useSignupMutation } from '@/features/auth/hooks/useSignupMutation';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
-import { isSignupFormValid, validateSingleField } from '@/features/auth/utils/validateSignupData';
+import { isSignupFormValid, validateSignupField } from '@/features/auth/utils/validateAuth';
 import { useCallback, useState } from 'react';
 
 export const useSignup = () => {
@@ -27,7 +27,7 @@ export const useSignup = () => {
       setSignupData(prev => {
         const updatedData = { ...prev, [field]: value };
 
-        const fieldError = validateSingleField(field, value, updatedData);
+        const fieldError = validateSignupField(field, value, updatedData);
 
         setErrors(prevErrors => {
           const newErrors = {
@@ -36,7 +36,7 @@ export const useSignup = () => {
           };
 
           if (field === 'password' && updatedData.rePassword) {
-            newErrors.rePassword = validateSingleField(
+            newErrors.rePassword = validateSignupField(
               'rePassword',
               updatedData.rePassword,
               updatedData,
