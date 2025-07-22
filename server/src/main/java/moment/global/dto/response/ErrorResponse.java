@@ -2,7 +2,6 @@ package moment.global.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.global.exception.ErrorCode;
-import org.springframework.http.HttpStatus;
 
 @Schema(description = "예외 공통 응답 DTO")
 public record ErrorResponse(
@@ -13,10 +12,10 @@ public record ErrorResponse(
         String message,
 
         @Schema(description = "상태 코드", example = "409")
-        HttpStatus status
+        int status
 ) {
 
     public static ErrorResponse from(ErrorCode errorCode) {
-        return new ErrorResponse(errorCode.getCode(), errorCode.getMessage(), errorCode.getStatus());
+        return new ErrorResponse(errorCode.getCode(), errorCode.getMessage(), errorCode.getStatus().value());
     }
 }
