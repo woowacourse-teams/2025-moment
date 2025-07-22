@@ -2,7 +2,7 @@ import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
-export type ExternalButtonStyles = (theme: CustomTheme) => string;
+export type ExternalVariant = (theme: CustomTheme) => string;
 
 const buttonStyles = {
   primary: (theme: CustomTheme) => `
@@ -83,10 +83,10 @@ const buttonStyles = {
 
 export const Button = styled.button<{
   variant: ButtonVariant;
-  externalButtonStyles?: ExternalButtonStyles;
+  externalVariant?: ExternalVariant;
 }>`
   ${({ theme, variant }) => buttonStyles[variant](theme)};
-  ${({ theme, externalButtonStyles }) => externalButtonStyles && externalButtonStyles(theme)};
+  ${({ theme, externalVariant }) => externalVariant && externalVariant(theme)};
 
   &:disabled {
     cursor: not-allowed;

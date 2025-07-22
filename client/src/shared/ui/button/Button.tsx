@@ -1,10 +1,10 @@
 import { LucideIcon } from 'lucide-react';
 import * as S from './Button.styles';
-import { ButtonVariant, ExternalButtonStyles } from './Button.styles';
+import { ButtonVariant, ExternalVariant } from './Button.styles';
 
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-  externalButtonStyles?: ExternalButtonStyles;
+  externalVariant?: ExternalVariant;
   title: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -13,7 +13,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 export const Button = ({
   variant = 'primary',
-  externalButtonStyles,
+  externalVariant,
   title,
   onClick,
   disabled,
@@ -23,7 +23,7 @@ export const Button = ({
   return (
     <S.Button
       variant={variant}
-      externalButtonStyles={externalButtonStyles}
+      externalVariant={externalVariant}
       onClick={onClick}
       disabled={disabled}
       {...props}

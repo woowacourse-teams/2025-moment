@@ -2,10 +2,10 @@ import { CustomTheme } from '@/app/styles/theme';
 import { Button } from '@/shared/ui';
 
 export const EmojiButton = () => {
-  return <Button externalButtonStyles={externalButtonStyles} title="+ 스티커 보내기" />;
+  return <Button externalVariant={externalVariant} title="+ 스티커 보내기" />;
 };
 
-const externalButtonStyles = (theme: CustomTheme) => `
+const externalVariant = (theme: CustomTheme) => `
   border: 1px solid ${theme.colors['yellow-500']};
   color: ${theme.colors['yellow-500']};
   height: 20px;
