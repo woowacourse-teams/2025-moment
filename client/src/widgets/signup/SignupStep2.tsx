@@ -1,10 +1,14 @@
-import { useUserContext } from '@/features/auth/context/useUserContext';
+import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { Input } from '@/shared/ui/input/Input';
 import * as S from './SignupStep.styles';
 
-export const SignupStep2 = () => {
-  const { userData, changeUserData, error } = useUserContext();
+interface SignupStep2Props {
+  signupData: SignupFormData;
+  errors: SignupErrors;
+  handleChange: (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
+export const SignupStep2 = ({ signupData, errors, handleChange }: SignupStep2Props) => {
   return (
     <S.StepContainer>
       <S.InputGroup>
@@ -13,10 +17,10 @@ export const SignupStep2 = () => {
           id="nickname"
           type="text"
           placeholder="닉네임을 입력해주세요"
-          value={userData.nickname}
-          onChange={e => changeUserData('nickname', e.target.value)}
+          value={signupData.nickname}
+          onChange={handleChange('nickname')}
         />
-        {error.nicknameError && <S.ErrorMessage>{error.nicknameError}</S.ErrorMessage>}
+        {errors.nickname && <S.ErrorMessage>{errors.nickname}</S.ErrorMessage>}
       </S.InputGroup>
     </S.StepContainer>
   );

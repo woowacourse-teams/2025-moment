@@ -1,25 +1,23 @@
-import * as S from './SignupStep3.styles';
-import { useUserContext } from '@/features/auth/context/useUserContext';
+import { SignupFormData } from '@/features/auth/types/signup';
 import { Button } from '@/shared/ui/button/Button';
+import * as S from './SignupStep3.styles';
 
-export const SignupStep3 = () => {
-  const { userData } = useUserContext();
+interface SignupStep3Props {
+  signupData: SignupFormData;
+  handleClick: () => void;
+}
 
-  const handleSignup = () => {
-    // TODO: 실제 회원가입 API 호출
-    console.log('회원가입 요청:', userData);
-  };
-
+export const SignupStep3 = ({ signupData, handleClick }: SignupStep3Props) => {
   return (
     <S.StepContainer>
       <S.InfoContainer>
         <S.InfoItem>
           <S.InfoLabel>이메일</S.InfoLabel>
-          <S.InfoValue>{userData.email}</S.InfoValue>
+          <S.InfoValue>{signupData.email}</S.InfoValue>
         </S.InfoItem>
         <S.InfoItem>
           <S.InfoLabel>닉네임</S.InfoLabel>
-          <S.InfoValue>{userData.nickname}</S.InfoValue>
+          <S.InfoValue>{signupData.nickname}</S.InfoValue>
         </S.InfoItem>
       </S.InfoContainer>
 
@@ -29,7 +27,7 @@ export const SignupStep3 = () => {
       </S.Description>
 
       <S.ButtonContainer>
-        <Button title="회원가입" variant="primary" onClick={handleSignup} />
+        <Button title="회원가입" variant="primary" onClick={handleClick} />
       </S.ButtonContainer>
     </S.StepContainer>
   );
