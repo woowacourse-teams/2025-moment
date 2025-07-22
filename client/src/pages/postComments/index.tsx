@@ -31,7 +31,7 @@ export default function PostCommentsPage() {
       <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
       <S.MomentsContainer>
         {postCommentsData.map(post => (
-          <Card width="large">
+          <Card width="large" key={post.id}>
             <Card.TitleContainer
               title={
                 <S.TitleWrapper>

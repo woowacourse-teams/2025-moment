@@ -42,7 +42,7 @@ export default function MyMoments() {
       />
       <S.MomentsContainer>
         {myMomentsData.map(moment => (
-          <Card width="large">
+          <Card width="large" key={moment.id}>
             <Card.TitleContainer
               title={
                 <S.TitleWrapper>
