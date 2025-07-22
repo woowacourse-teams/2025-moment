@@ -35,9 +35,15 @@ export const NavItem = styled.div<NavItemProps>`
   font-size: 1.2rem;
   font-weight: 600;
 
-  &:hover {
+  cursor: pointer;
+
+  &:active {
     color: ${({ theme }) => theme.colors.white};
   }
 
-  transition: color 0.3s ease;
+  &:hover {
+    scale: 1.05;
+  }
+
+  transition: all 0.3s ease;
 `;
