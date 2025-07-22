@@ -1,16 +1,17 @@
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card, TextArea } from '@/shared/ui';
-import { Send, Star } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useState } from 'react';
-import * as S from './TodayMomentContent.styles';
+import * as S from '../../todayMoment/ui/TodayContent.styles';
 
-interface TodayMomentWriteContentProps {
+interface TodayCommentWriteContent {
   onSubmit: () => void;
 }
 
-export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentProps) => {
+export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent) => {
   const [text, setText] = useState('');
   const MAX_LENGTH = 300;
+  const NOT_TEXT = text.trim().length === 0;
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
@@ -23,15 +24,14 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentPro
     onSubmit();
   };
   return (
-    <S.TodayMomentContentWrapper>
+    <S.TodayContentWrapper>
       <Card.TitleContainer
-        Icon={Star}
-        title="모멘트 공유하기"
-        subtitle="뿌듯한 순간, 위로받고 싶은 순간, 기쁜 순간 모든 모멘트를 자유롭게 적어보세요"
+        title={''} //추후 공용 컴포넌트 추가 후 수정
+        subtitle="오늘 첫 면접에서 떨어졌어요. 너무 실망스럽고 자신감이 없어져요. 위로 받고 싶어요."
       />
       <Card.Content>
         <TextArea
-          placeholder="오늘 어떤 모멘트를 경험하셨나요? 솔직한 마음을 들려주세요..."
+          placeholder="따뜻한 위로의 말을 전해주세요..."
           height="medium"
           value={text}
           onChange={handleTextChange}
@@ -43,11 +43,11 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentPro
         </p>
         <YellowSquareButton
           Icon={Send}
-          title="모멘트 공유하기"
+          title="코멘트 보내기"
           onClick={handleSubmit}
-          disabled={text.trim().length === 0}
+          disabled={NOT_TEXT}
         />
       </Card.Action>
-    </S.TodayMomentContentWrapper>
+    </S.TodayContentWrapper>
   );
 };
