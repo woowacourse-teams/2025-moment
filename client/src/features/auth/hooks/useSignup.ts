@@ -1,9 +1,10 @@
 import { useSignupMutation } from '@/features/auth/hooks/useSignupMutation';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
-import { useState } from 'react';
+import { isSignupFormValid, validateSingleField } from '@/features/auth/utils/validateSignupData';
+import { useCallback, useState } from 'react';
 
 export const useSignup = () => {
-  const [signupData, setSignupData] = useState({
+  const [signupData, setSignupData] = useState<SignupFormData>({
     email: '',
     password: '',
     rePassword: '',
@@ -19,19 +20,46 @@ export const useSignup = () => {
 
   const { mutateAsync: signup, isPending, error, isError } = useSignupMutation();
 
-  const handleChange =
+  const handleChange = useCallback(
     (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSignupData(prev => ({ ...prev, [field]: e.target.value }));
-    };
+      const value = e.target.value;
 
-  const handleClick = async () => {
+      setSignupData(prev => {
+        const updatedData = { ...prev, [field]: value };
+
+        const fieldError = validateSingleField(field, value, updatedData);
+
+        setErrors(prevErrors => {
+          const newErrors = {
+            ...prevErrors,
+            [field]: fieldError,
+          };
+
+          if (field === 'password' && updatedData.rePassword) {
+            newErrors.rePassword = validateSingleField(
+              'rePassword',
+              updatedData.rePassword,
+              updatedData,
+            );
+          }
+
+          return newErrors;
+        });
+
+        return updatedData;
+      });
+    },
+    [],
+  );
+
+  const handleClick = useCallback(async () => {
     try {
       await signup(signupData);
     } catch (error) {
       // 추후 UI 레벨에서 에러 처리 -> 여기서 토스트, 에러 메시지 등 표시 필요
       console.error('Signup failed:', error);
     }
-  };
+  }, [signup, signupData]);
 
   return {
     signupData,
@@ -41,5 +69,6 @@ export const useSignup = () => {
     isError,
     handleChange,
     handleClick,
+    isSignupFormValid: isSignupFormValid(errors),
   };
 };
