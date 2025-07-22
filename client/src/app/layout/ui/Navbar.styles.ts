@@ -28,7 +28,7 @@ export const NavItem = styled.div<{ $isActive?: boolean }>`
   align-items: center;
   gap: 24px;
   color: ${({ theme, $isActive }) => ($isActive ? theme.colors.white : theme.colors['gray-400'])};
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
 
   cursor: pointer;
