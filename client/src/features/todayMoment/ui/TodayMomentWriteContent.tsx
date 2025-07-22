@@ -4,11 +4,11 @@ import { Send, Star } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './TodayContent.styles';
 
-interface TodayMomentWriteContentProps {
+interface TodayMomentWriteContent {
   onSubmit: () => void;
 }
 
-export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContentProps) => {
+export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContent) => {
   const [text, setText] = useState('');
   const MAX_LENGTH = 300;
 

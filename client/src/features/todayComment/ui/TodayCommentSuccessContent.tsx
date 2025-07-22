@@ -4,11 +4,11 @@ import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { Heart, MessageSquare } from 'lucide-react';
 import * as S from '../../todayMoment/ui/TodayContent.styles';
 
-interface TodayCommentSuccessContentProps {
+interface TodayCommentSuccessContent {
   onBack: () => void;
 }
 
-export const TodayCommentSuccessContent = ({ onBack }: TodayCommentSuccessContentProps) => {
+export const TodayCommentSuccessContent = ({ onBack }: TodayCommentSuccessContent) => {
   return (
     <S.TodayContentWrapper>
       <Card.Content>

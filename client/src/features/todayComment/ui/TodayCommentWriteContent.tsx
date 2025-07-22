@@ -4,11 +4,11 @@ import { Send } from 'lucide-react';
 import { useState } from 'react';
 import * as S from '../../todayMoment/ui/TodayContent.styles';
 
-interface TodayCommentWriteContentProps {
+interface TodayCommentWriteContent {
   onSubmit: () => void;
 }
 
-export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContentProps) => {
+export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent) => {
   const [text, setText] = useState('');
   const MAX_LENGTH = 300;
 
