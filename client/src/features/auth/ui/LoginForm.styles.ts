@@ -5,7 +5,7 @@ export const LoginFormWrapper = styled.form`
   max-width: 500px;
   min-height: 550px;
   padding: 30px;
-  background-color: ${({ theme }) => theme.colors['slate-800_60']}; // #1E293B
+  background-color: ${({ theme }) => theme.colors['slate-800_60']};
   border-radius: 12px;
   display: flex;
   flex-direction: column;

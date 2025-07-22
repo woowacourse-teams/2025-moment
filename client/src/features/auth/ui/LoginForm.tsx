@@ -5,7 +5,7 @@ import * as S from './LoginForm.styles';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { formData, errors, isLoading, handleInputChange, handleSubmit, isDisabled } =
+  const { formData, errors, isLoading, handleChange, handleBlur, handleSubmit, isDisabled } =
     useLoginForm();
 
   const handleLoginClick = () => {
@@ -15,6 +15,9 @@ export const LoginForm = () => {
   const handleSignupClick = () => {
     navigate('/signup');
   };
+
+  console.log(formData);
+  console.log(errors);
 
   return (
     <S.LoginFormWrapper onSubmit={handleSubmit}>
@@ -34,7 +37,8 @@ export const LoginForm = () => {
             type="email"
             placeholder="이메일을 입력해주세요"
             value={formData.email}
-            onChange={handleInputChange('email')}
+            onChange={handleChange('email')}
+            onBlur={handleBlur('email')}
           />
           {errors.email && <S.ErrorMessage>{errors.email}</S.ErrorMessage>}
         </S.InputGroup>
@@ -45,7 +49,8 @@ export const LoginForm = () => {
             type="password"
             placeholder="비밀번호를 입력해주세요"
             value={formData.password}
-            onChange={handleInputChange('password')}
+            onChange={handleChange('password')}
+            onBlur={handleBlur('password')}
           />
           {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
         </S.InputGroup>
