@@ -1,18 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { Button } from './Button';
+import { SimpleCard } from './SimpleCard';
 
 const meta: Meta = {
-  title: 'Example/Button',
-  component: Button,
+  title: 'Example/Text',
+  component: SimpleCard,
   argTypes: {
-    variant: {
+    height: {
       control: { type: 'radio' },
-      options: ['primary', 'secondary', 'tertiary'],
+      options: ['small', 'medium', 'large'],
     },
   },
   args: {
-    variant: 'primary',
-    title: 'Click me',
+    height: 'small',
+    content: '텍스트 상자입니다.',
   },
 };
 
