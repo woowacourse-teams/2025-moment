@@ -1,4 +1,4 @@
-name: Deploy Client to S3 + CloudFront
+name: Deploy Client to AWS S3 + CloudFront
 
 on:
   push:
