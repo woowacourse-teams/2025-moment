@@ -1,88 +1,85 @@
-name: Notify PR Open or Merge to Discord (client only)
+name: Deploy Client to S3 + CloudFront
 
 on:
-  pull_request:
-    types:
-      - opened
-      - closed
+  push:
+    branches: [main]
 
 jobs:
-  notify-discord:
+  start-runner:
+    name: Start EC2 Instance
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord about PR (opened or merged)
-        uses: actions/github-script@v7
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_FE }}
+      - name: Start EC2 instance
+        run: |
+          echo "Starting EC2 runner instance..."
+          aws ec2 start-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+          echo "Waiting for EC2 runner to start..."
+          aws ec2 wait instance-status-ok --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+
+  build-and-deploy:
+    name: Build and Deploy Client
+    runs-on: self-hosted
+    needs: start-runner
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          script: |
-            const webhookUrl = process.env.DISCORD_WEBHOOK;
-            if (!webhookUrl) {
-              console.log('Discord webhook URL이 설정되지 않았습니다.');
-              return;
-            }
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: client/pnpm-lock.yaml
 
-            const pr = context.payload.pull_request;
-            const action = context.payload.action;
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
-            if (!['opened', 'closed'].includes(action)) {
-              console.log(`처리하지 않는 PR 이벤트: ${action}`);
-              return;
-            }
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-            if (action === 'closed' && !pr.merged) {
-              console.log('PR이 닫혔지만 병합되지 않음. 알림 생략');
-              return;
-            }
+      - name: Build application
+        run: pnpm run build
+        env:
+          NODE_ENV: production
 
-            const files = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pr.number,
-              per_page: 100,
-            });
+      - name: Upload to S3
+        run: |
+          echo "Uploading build files to S3..."
+          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "*.html" \
+            --exclude "service-worker.js"
 
-            const changedInClient = files.data.some(file => file.filename.startsWith('client/'));
-            if (!changedInClient) {
-              console.log('client 디렉토리에 변경사항 없음. 알림 생략');
-              return;
-            }
+          # HTML files with shorter cache
+          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
+            --cache-control "public,max-age=0,must-revalidate" \
+            --include "*.html" \
+            --include "service-worker.js"
 
-            const embed = {
-              title: action === 'opened'
-                ? `📥 PR Opened: ${pr.title}`
-                : `🔀 PR Merged: ${pr.title}`,
-              description: action === 'opened'
-                ? `**client** 디렉토리에 변경사항이 있는 PR이 열렸습니다.\n\n**작성자:** [@${pr.user.login}](${pr.user.html_url})\n**PR 링크:** [#${pr.number}](${pr.html_url})`
-                : `**client** 디렉토리 변경이 포함된 PR이 병합되었습니다! 🎉\n\n**작성자:** [@${pr.user.login}](${pr.user.html_url})\n**PR 링크:** [#${pr.number}](${pr.html_url})`,
-              color: action === 'opened' ? 0x00b0f4 : 0x5865F2,
-              author: {
-                name: pr.user.login,
-                icon_url: pr.user.avatar_url
-              },
-              timestamp: new Date().toISOString(),
-              fields: [
-                { name: "기반 브랜치", value: `${pr.base.ref}`, inline: true },
-                { name: "PR 브랜치", value: `${pr.head.ref}`, inline: true },
-                ...(action === 'closed'
-                  ? [{ name: "커밋 수", value: `${pr.commits}`, inline: true }]
-                  : [])
-              ]
-            };
+      - name: Invalidate CloudFront cache
+        run: |
+          echo "Creating CloudFront invalidation..."
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*" \
+            --query 'Invalidation.Id' \
+            --output text)
+          echo "Invalidation ID: $INVALIDATION_ID"
 
-            const discordPayload = { embeds: [embed] };
-
-            const response = await fetch(webhookUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(discordPayload)
-            });
-
-            if (!response.ok) {
-              const responseBody = await response.text();
-              console.error(`Discord 전송 실패: ${response.status} ${response.statusText}`);
-              console.error(`응답 내용: ${responseBody}`);
-              core.setFailed(`디스코드 전송 실패`);
-            } else {
-              console.log(`디스코드 알림 전송 성공 (${action})`);
-            }
+  stop-runner:
+    name: Stop EC2 Instance
+    runs-on: ubuntu-latest
+    if: always()
+    needs: build-and-deploy
+    steps:
+      - name: Stop EC2 instance
+        run: |
+          echo "Stopping EC2 runner instance..."
+          aws ec2 stop-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+          echo "EC2 instance stopped"

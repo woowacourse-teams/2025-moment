@@ -1,13 +1,13 @@
 import { LucideIcon } from 'lucide-react';
 import * as S from './CardSuccessContainer.styles';
 
-interface CardSuccessContainerProps {
+interface CardSuccessContainer {
   Icon?: LucideIcon;
   title: string;
   subtitle: string;
 }
 
-export const CardSuccessContainer = ({ Icon, title, subtitle }: CardSuccessContainerProps) => {
+export const CardSuccessContainer = ({ Icon, title, subtitle }: CardSuccessContainer) => {
   return (
     <S.CardSuccessContainer>
       {Icon && (

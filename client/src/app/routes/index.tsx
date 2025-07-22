@@ -4,6 +4,7 @@ import HomePage from '@/pages/home';
 import MyMoments from '@/pages/myMoments';
 import LoginPage from '@/pages/login';
 import SignupPage from '@/pages/signup';
+import TodayCommentPage from '@/pages/todayComment';
 import TodayMomentPage from '@/pages/todayMoment';
 import PostCommentsPage from '@/pages/postComments';
 
@@ -18,6 +19,8 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.MY_MOMENTS} element={<MyMoments />} />
       <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
       <Route path={ROUTES.POST_COMMENTS} element={<PostCommentsPage />} />
+      <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+      <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
     </Route>,
   ),
 );
