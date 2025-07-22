@@ -14,8 +14,8 @@ export const validateLoginFormData = (data: LoginFormData): LoginError => {
 
   if (!data.password) {
     errors.password = '비밀번호를 입력해주세요.';
-  } else if (data.password.length < 6) {
-    errors.password = '비밀번호는 최소 6자 이상이어야 합니다.';
+  } else if (data.password.length < 4) {
+    errors.password = '비밀번호는 최소 4자 이상이어야 합니다.';
   }
 
   return errors;
