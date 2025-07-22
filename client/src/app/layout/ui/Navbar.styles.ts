@@ -1,9 +1,5 @@
 import styled from '@emotion/styled';
 
-interface NavItemProps {
-  $isActive?: boolean;
-}
-
 export const Navbar = styled.nav`
   height: 80px;
   background-color: transparent;
@@ -27,12 +23,12 @@ export const NavItems = styled.div`
   gap: 24px;
 `;
 
-export const NavItem = styled.div<NavItemProps>`
+export const NavItem = styled.div<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;
   gap: 24px;
   color: ${({ theme, $isActive }) => ($isActive ? theme.colors.white : theme.colors['gray-400'])};
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
 
   cursor: pointer;
