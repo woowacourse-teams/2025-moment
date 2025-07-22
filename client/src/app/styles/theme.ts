@@ -9,6 +9,7 @@ export const theme = {
     'yellow-600': '#92610a',
     'yellow-500': '#F1C40F',
     'yellow-300': '#F4D03F',
+    'yellow-300_10': 'color-mix(in srgb, #F4D03F 10%, transparent)',
     'emerald-500': '#10B981',
     'emerald-600': '#059669',
     'emerald-50': '#ECFDF5',
@@ -22,6 +23,7 @@ export const theme = {
     'gray-600': '#536872',
     'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
     'gray-700': '#334155',
+    'blue-600': '#497CBC',
   },
   typography: {
     title: {
