@@ -9,12 +9,16 @@ jobs:
     name: Start EC2 Instance
     runs-on: ubuntu-latest
     steps:
-      - name: Start EC2 instance
+      - name: Start EC2 runner instance
         run: |
           echo "Starting EC2 runner instance..."
-          aws ec2 start-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+          aws ec2 start-instances \
+            --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }} \
+            --region ap-northeast-2
           echo "Waiting for EC2 runner to start..."
-          aws ec2 wait instance-status-ok --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+          aws ec2 wait instance-status-ok \
+            --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }} \
+            --region ap-northeast-2
 
   build-and-deploy:
     name: Build and Deploy Client
@@ -54,13 +58,15 @@ jobs:
             --delete \
             --cache-control "public,max-age=31536000,immutable" \
             --exclude "*.html" \
-            --exclude "service-worker.js"
+            --exclude "service-worker.js" \
+            --region ap-northeast-2
 
           # HTML files with shorter cache
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
             --cache-control "public,max-age=0,must-revalidate" \
             --include "*.html" \
-            --include "service-worker.js"
+            --include "service-worker.js" \
+            --region ap-northeast-2
 
       - name: Invalidate CloudFront cache
         run: |
@@ -68,6 +74,7 @@ jobs:
           INVALIDATION_ID=$(aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" \
+            --region us-east-1 \
             --query 'Invalidation.Id' \
             --output text)
           echo "Invalidation ID: $INVALIDATION_ID"
@@ -78,8 +85,10 @@ jobs:
     if: always()
     needs: build-and-deploy
     steps:
-      - name: Stop EC2 instance
+      - name: Stop EC2 runner instance
         run: |
           echo "Stopping EC2 runner instance..."
-          aws ec2 stop-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
+          aws ec2 stop-instances \
+            --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }} \
+            --region ap-northeast-2
           echo "EC2 instance stopped"
