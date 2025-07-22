@@ -1,18 +1,22 @@
 package moment.moment.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.matching.application.MatchingService;
 import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
@@ -102,6 +106,60 @@ class momentServiceTest {
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
                 () -> then(momentRepository).should(times(1)).findMomentByMomenter_Id(any(Long.class))
+        );
+    }
+
+    @Test
+    void 내가_받은_모멘트를_조회한다() {
+        // given
+        User commenter = new User("kiki@gmail.com", "1234", "kiki");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        Moment moment = new Moment("아 행복해..", momenter);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentRepository.findMatchedMomentByCommenter(
+                any(User.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(Optional.of(moment));
+        // when
+        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.id()).isEqualTo(moment.getId()),
+                () -> assertThat(response.content()).isEqualTo(moment.getContent()),
+                () -> assertThat(response.createdAt()).isEqualTo(moment.getCreatedAt()),
+                () -> then(momentRepository).should(times(1)).findMatchedMomentByCommenter(
+                        any(User.class),
+                        any(LocalDateTime.class),
+                        any(LocalDateTime.class))
+        );
+    }
+
+    @Test
+    void 내가_받은_모멘트가_존재하지_않는_경우_빈_데이터를_반환한다() {
+        // given
+        User commenter = new User("kiki@gmail.com", "1234", "kiki");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentRepository.findMatchedMomentByCommenter(
+                any(User.class),
+                any(LocalDateTime.class),
+                any(LocalDateTime.class)))
+                .willReturn(Optional.empty());
+        // when
+        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.id()).isNull(),
+                () -> assertThat(response.content()).isNull(),
+                () -> assertThat(response.createdAt()).isNull(),
+                () -> then(momentRepository).should(times(1)).findMatchedMomentByCommenter(
+                        any(User.class),
+                        any(LocalDateTime.class),
+                        any(LocalDateTime.class))
         );
     }
 }

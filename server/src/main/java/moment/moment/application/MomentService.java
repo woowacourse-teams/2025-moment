@@ -1,9 +1,12 @@
 package moment.moment.application;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
@@ -11,6 +14,7 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.matching.application.MatchingService;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -71,5 +75,16 @@ public class MomentService {
                     return MyMomentResponse.of(moment, comment, relatedEmojis);
                 })
                 .toList();
+    }
+
+    public MatchedMomentResponse getMatchedMoment(Long commenterId) {
+        User commenter = userQueryService.getUserById(commenterId);
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+
+        Optional<Moment> matchedMoment = momentRepository.findMatchedMomentByCommenter(commenter, startOfDay, endOfDay);
+
+        return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }
 }
