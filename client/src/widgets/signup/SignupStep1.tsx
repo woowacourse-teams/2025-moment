@@ -1,18 +1,14 @@
-import { useUserContext } from '@/features/auth/context/useUserContext';
+import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { Input } from '@/shared/ui/input/Input';
 import * as S from './SignupStep.styles';
 
 interface SignupStep1Props {
-  password: {
-    password: string;
-    rePassword: string;
-  };
-  setPassword: (password: { password: string; rePassword: string }) => void;
+  signupData: SignupFormData;
+  errors: SignupErrors;
+  handleChange: (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
-  const { userData, changeUserData, error } = useUserContext();
-
+export const SignupStep1 = ({ signupData, errors, handleChange }: SignupStep1Props) => {
   return (
     <S.StepContainer>
       <S.InputGroup>
@@ -21,10 +17,10 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
           id="email"
           type="email"
           placeholder="이메일을 입력해주세요"
-          value={userData.email}
-          onChange={e => changeUserData('email', e.target.value)}
+          value={signupData.email}
+          onChange={handleChange('email')}
         />
-        {error.emailError && <S.ErrorMessage>{error.emailError}</S.ErrorMessage>}
+        {errors.email && <S.ErrorMessage>{errors.email}</S.ErrorMessage>}
       </S.InputGroup>
 
       <S.InputGroup>
@@ -33,11 +29,11 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
           id="password"
           type="password"
           placeholder="비밀번호를 입력해주세요"
-          value={password.password}
-          onChange={e => setPassword({ ...password, password: e.target.value })}
+          value={signupData.password}
+          onChange={handleChange('password')}
         />
         {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
-        {/* {error.passwordError && <S.ErrorMessage>{error.passwordError}</S.ErrorMessage>} */}
+        {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
       </S.InputGroup>
 
       <S.InputGroup>
@@ -46,11 +42,11 @@ export const SignupStep1 = ({ password, setPassword }: SignupStep1Props) => {
           id="rePassword"
           type="password"
           placeholder="비밀번호를 다시 입력해주세요"
-          value={password.rePassword}
-          onChange={e => setPassword({ ...password, rePassword: e.target.value })}
+          value={signupData.rePassword}
+          onChange={handleChange('rePassword')}
         />
         {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
-        {/* {error.rePasswordError && <S.ErrorMessage>{error.rePasswordError}</S.ErrorMessage>} */}
+        {errors.rePassword && <S.ErrorMessage>{errors.rePassword}</S.ErrorMessage>}
       </S.InputGroup>
     </S.StepContainer>
   );

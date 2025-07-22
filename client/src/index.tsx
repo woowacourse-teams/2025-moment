@@ -14,7 +14,7 @@ async function enableMocking() {
 }
 
 async function startApp() {
-  await enableMocking();
+  // await enableMocking();
 
   const rootElement = document.getElementById('root');
   if (!rootElement) {
