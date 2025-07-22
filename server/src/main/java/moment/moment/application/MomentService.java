@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.matching.application.MatchingService;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MomentCreateResponse;
@@ -30,14 +31,17 @@ public class MomentService {
     private final EmojiRepository emojiRepository;
 
     private final UserQueryService userQueryService;
+    private final MatchingService matchingService;
 
     @Transactional
-    public MomentCreateResponse addMoment(MomentCreateRequest request, Long momenterId) {
+    public MomentCreateResponse addMomentAndMatch(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
         Moment momentWithoutId = new Moment(request.content(), momenter);
-        Moment moment = momentRepository.save(momentWithoutId);
+        Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        return MomentCreateResponse.of(moment);
+        matchingService.match(savedMoment.getId());
+
+        return MomentCreateResponse.of(savedMoment);
     }
 
     public List<MyMomentResponse> getMyMoments(Long userId) {

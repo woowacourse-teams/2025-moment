@@ -9,6 +9,8 @@ import static org.mockito.Mockito.times;
 import java.util.List;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.matching.application.MatchingService;
+import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MyMomentResponse;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -45,6 +48,9 @@ class momentServiceTest {
     @Mock
     private UserQueryService userQueryService;
 
+    @Mock
+    private MatchingService matchingService;
+
     @Test
     void 모멘트_생성에_성공한다() {
         // given
@@ -52,15 +58,20 @@ class momentServiceTest {
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
         User momenter = new User("lebron@gmail.com", "1234", "르브론");
         Moment expect = new Moment(momentContent, momenter);
+        ReflectionTestUtils.setField(expect, "id", 1L);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
-        momentService.addMoment(request, 1L);
+        momentService.addMomentAndMatch(request, 1L);
 
         // then
-        then(momentRepository).should(times(1)).save(any(Moment.class));
+        assertAll(
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(matchingService).should(times(1)).match(any(Long.class))
+        );
     }
 
     @Test

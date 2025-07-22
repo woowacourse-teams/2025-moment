@@ -50,7 +50,7 @@ public class MomentController {
             @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addMoment(request, authentication.id());
+        MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
