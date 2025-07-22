@@ -1,9 +1,10 @@
-import { Button, Card, Category, SimpleCard } from '@/shared/ui';
+import { Card, Category, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Send } from 'lucide-react';
 import * as S from './index.styles';
 import { theme } from '@/app/styles/theme';
 import { NotFoundComents } from './NotFoundComents';
+import { EmojiButton } from './EmojiButton';
 
 // 임시 데이터(추후 제거 예정)
 const myMomentsData = [
@@ -59,7 +60,7 @@ export default function MyMoments() {
               <SimpleCard height="small" content={moment.content || <NotFoundComents />} />
             </Card.Content>
             <Card.Action position="space-between">
-              <Button variant="sendEmojis" title="+ 스티커 보내기" />
+              <EmojiButton />
             </Card.Action>
           </Card>
         ))}

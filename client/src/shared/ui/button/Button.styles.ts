@@ -1,7 +1,8 @@
 import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'sendEmojis';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ExternalButtonStyles = (theme: CustomTheme) => string;
 
 const buttonStyles = {
   primary: (theme: CustomTheme) => `
@@ -78,20 +79,14 @@ const buttonStyles = {
         transform: translateY(-2px);
     }
     `,
-
-  sendEmojis: (theme: CustomTheme) => `
-    border: 1px solid ${theme.colors['yellow-500']};
-    color: ${theme.colors['yellow-500']};
-    height: 20px;
-    border-radius: 25px;
-    padding: 0 16px;
-    font-size: 12px;
-    font-weight: bold;
-  `,
 };
 
-export const Button = styled.button<{ variant: ButtonVariant }>`
-  ${({ theme, variant }) => buttonStyles[variant](theme)}
+export const Button = styled.button<{
+  variant: ButtonVariant;
+  externalButtonStyles?: ExternalButtonStyles;
+}>`
+  ${({ theme, variant }) => buttonStyles[variant](theme)};
+  ${({ theme, externalButtonStyles }) => externalButtonStyles && externalButtonStyles(theme)};
 
   &:disabled {
     cursor: not-allowed;
