@@ -5,10 +5,10 @@ import { Heart, MessageSquare } from 'lucide-react';
 import * as S from '@/features/todayMoment/ui/TodayContent.styles';
 
 interface TodayCommentSuccessContent {
-  onBack: () => void;
+  onPagination: () => void;
 }
 
-export const TodayCommentSuccessContent = ({ onBack }: TodayCommentSuccessContent) => {
+export const TodayCommentSuccessContent = ({ onPagination }: TodayCommentSuccessContent) => {
   return (
     <S.TodayContentWrapper>
       <Card.Content>
@@ -21,7 +21,7 @@ export const TodayCommentSuccessContent = ({ onBack }: TodayCommentSuccessConten
         />
       </Card.Content>
       <Card.Action position="center">
-        <YellowSquareButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onBack} />
+        <YellowSquareButton Icon={MessageSquare} title="보낸 모멘트 보기" onClick={onPagination} />
       </Card.Action>
     </S.TodayContentWrapper>
   );

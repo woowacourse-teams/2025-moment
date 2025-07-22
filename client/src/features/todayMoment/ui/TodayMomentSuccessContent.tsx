@@ -5,10 +5,10 @@ import { CheckCircle, MessageSquare } from 'lucide-react';
 import * as S from './TodayContent.styles';
 
 interface TodayMomentSuccessContent {
-  onBack: () => void;
+  onPagination: () => void;
 }
 
-export const TodayMomentSuccessContent = ({ onBack }: TodayMomentSuccessContent) => {
+export const TodayMomentSuccessContent = ({ onPagination }: TodayMomentSuccessContent) => {
   return (
     <S.TodayContentWrapper>
       <Card.Content>
@@ -21,7 +21,7 @@ export const TodayMomentSuccessContent = ({ onBack }: TodayMomentSuccessContent)
         />
       </Card.Content>
       <Card.Action position="center">
-        <YellowSquareButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onBack} />
+        <YellowSquareButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={onPagination} />
       </Card.Action>
     </S.TodayContentWrapper>
   );

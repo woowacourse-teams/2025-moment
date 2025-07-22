@@ -20,9 +20,6 @@ export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent)
     }
   };
 
-  const handleSubmit = () => {
-    onSubmit();
-  };
   return (
     <S.TodayContentWrapper>
       <Card.TitleContainer
@@ -44,7 +41,7 @@ export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent)
         <YellowSquareButton
           Icon={Send}
           title="코멘트 보내기"
-          onClick={handleSubmit}
+          onClick={onSubmit}
           disabled={NOT_TEXT}
         />
       </Card.Action>
