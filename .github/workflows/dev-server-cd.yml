@@ -24,12 +24,11 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          # ⚠️ 중요: 이 경로는 실제 EC2 서버에 프로젝트가 위치한 경로로 수정해야 합니다.
           cd /home/ubuntu/2025-moment/server
           
-          docker compose pull app
+          sudo docker compose pull app
           
-          docker compose up --no-deps -d app
+          sudo docker compose up --no-deps -d app
 
       - name: Prune old images
         run: docker image prune -f
