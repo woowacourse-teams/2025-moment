@@ -4,7 +4,7 @@ import { useMomentsMutation } from './useMomentsMutation';
 export const useSendMoments = () => {
   const [content, setContent] = useState('');
 
-  const { mutateAsync: sendMoments, isSuccess, reset } = useMomentsMutation();
+  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation();
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
@@ -19,15 +19,9 @@ export const useSendMoments = () => {
     }
   };
 
-  const handleReset = () => {
-    reset();
-    setContent('');
-  };
-
   return {
     handleContentChange,
     handleSendContent,
-    handleReset,
     content,
     isSuccess,
   };

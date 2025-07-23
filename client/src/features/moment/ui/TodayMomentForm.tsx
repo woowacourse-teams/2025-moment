@@ -4,8 +4,7 @@ import { Card } from '@/shared/ui';
 import { useSendMoments } from '../hook/useSendMoments';
 
 export function TodayMomentForm() {
-  const { handleContentChange, handleSendContent, content, isSuccess, handleReset } =
-    useSendMoments();
+  const { handleContentChange, handleSendContent, content, isSuccess } = useSendMoments();
 
   return (
     <Card width="medium">
@@ -16,7 +15,7 @@ export function TodayMomentForm() {
           content={content}
         />
       ) : (
-        <TodayMomentSuccessContent onBack={handleReset} />
+        <TodayMomentSuccessContent />
       )}
     </Card>
   );
