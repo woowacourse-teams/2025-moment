@@ -8,6 +8,8 @@ interface LoginButtonProps {
 export const LoginButton = ({ onClick }: LoginButtonProps) => {
   const navigate = useNavigate();
 
+  // 로그아웃 로직 추가
+
   const handleLoginClick = () => {
     onClick?.();
     navigate('/login');
