@@ -1,4 +1,5 @@
 import { useSignup } from '@/features/auth/hooks/useSignup';
+import { isDataEmpty, isSignupFormValid } from '@/features/auth/utils/validateAuth';
 import { useFunnel } from '@/shared/hooks';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
@@ -24,7 +25,7 @@ export const SignupForm = () => {
     }
   };
 
-  console.log('signupData', signupData);
+  const isDisabled = !isSignupFormValid(errors) || isDataEmpty(signupData);
 
   return (
     <S.SignupFormWrapper>
@@ -44,8 +45,8 @@ export const SignupForm = () => {
       </S.SignupFormContent>
 
       <S.ButtonContainer>
-        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
-        <Button title="다음" onClick={handleNextStep} disabled={!nextStep} />
+        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep || isDisabled} />
+        <Button title="다음" onClick={handleNextStep} disabled={!nextStep || isDisabled} />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );

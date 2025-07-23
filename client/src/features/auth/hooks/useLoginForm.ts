@@ -1,6 +1,6 @@
 import { useLoginMutation } from '@/features/auth/hooks/useLoginMutation';
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
-import { isLoginFormValid, validateLoginFormData } from '@/features/auth/utils/validateLoginForm';
+import { isLoginFormValid, validateLoginForm } from '@/features/auth/utils/validateAuth';
 import { useMemo, useState } from 'react';
 
 export const useLoginForm = () => {
@@ -17,22 +17,23 @@ export const useLoginForm = () => {
   const { mutateAsync: login, isPending, error, isError } = useLoginMutation();
 
   const handleChange = (field: keyof LoginFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+    const newValue = e.target.value;
+    const newFormData = { ...formData, [field]: newValue };
+
+    setFormData(newFormData);
+
+    const validationErrors = validateLoginForm(newFormData);
+    setErrors(validationErrors);
   };
 
   const isDisabled = useMemo(() => {
     return !isLoginFormValid(errors) || isPending;
   }, [errors, isPending]);
 
-  const handleBlur = (field: keyof LoginFormData) => (e: React.FocusEvent<HTMLInputElement>) => {
-    const validationErrors = validateLoginFormData(formData);
-    setErrors(validationErrors);
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const validationErrors = validateLoginFormData(formData);
+    const validationErrors = validateLoginForm(formData);
     setErrors(validationErrors);
 
     if (isLoginFormValid(validationErrors)) {
@@ -51,7 +52,6 @@ export const useLoginForm = () => {
     isLoading: isPending,
     isDisabled,
     handleChange,
-    handleBlur,
     handleSubmit,
     isError,
     error,

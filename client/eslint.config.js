@@ -68,6 +68,7 @@ export default [
         HTMLInputElement: 'readonly',
         HTMLTextAreaElement: 'readonly',
         HTMLDivElement: 'readonly',
+        HTMLFormElement: 'readonly',
         Event: 'readonly',
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',
