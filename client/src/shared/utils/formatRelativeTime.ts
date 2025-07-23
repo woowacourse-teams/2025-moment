@@ -31,11 +31,12 @@ export const formatRelativeTime = (dateString: string): string => {
     return `${diffInWeeks}주일 전`;
   }
 
-  const diffInMonths = Math.floor(diffInDays / 30);
+  const diffInMonths =
+    (now.getFullYear() - targetDate.getFullYear()) * 12 + (now.getMonth() - targetDate.getMonth());
   if (diffInMonths < 12) {
     return `${diffInMonths}개월 전`;
   }
 
-  const diffInYears = Math.floor(diffInDays / 365);
+  const diffInYears = now.getFullYear() - targetDate.getFullYear();
   return `${diffInYears}년 전`;
 };
