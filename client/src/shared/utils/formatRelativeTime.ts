@@ -3,6 +3,10 @@ export const formatRelativeTime = (dateString: string): string => {
   const targetDate = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
 
+  if (isNaN(targetDate.getTime())) {
+    throw new Error('Invalid date string provided');
+  }
+
   if (diffInSeconds < 60) {
     return '방금 전';
   }
