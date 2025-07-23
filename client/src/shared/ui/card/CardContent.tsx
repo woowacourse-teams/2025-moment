@@ -13,4 +13,5 @@ const CardContentStyles = styled.section`
   flex-direction: column;
   text-align: center;
   gap: 5px;
+  margin: 10px 0;
 `;

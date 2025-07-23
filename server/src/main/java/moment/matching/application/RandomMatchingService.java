@@ -29,8 +29,9 @@ public class RandomMatchingService implements MatchingService {
         if (moment.alreadyMatched()) {
             return MatchingResult.ALREADY_MATCHED;
         }
+        User momenter = userQueryService.getUserById(moment.getMomenterId());
 
-        List<User> todayNonMatchedUser = userQueryService.findNotMatchedUsersToday(moment.getMomenterId());
+        List<User> todayNonMatchedUser = userQueryService.findNotMatchedUsersTodayByMomenter(momenter);
 
         if (todayNonMatchedUser.isEmpty()) {
             return MatchingResult.NO_AVAILABLE_USERS;

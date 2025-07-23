@@ -1,14 +1,13 @@
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import * as S from './index.styles';
-import { Card, Category, SimpleCard } from '@/shared/ui';
 import { theme } from '@/app/styles/theme';
+import { Card, SimpleCard } from '@/shared/ui';
+import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Gift, MessageSquare, Send } from 'lucide-react';
+import * as S from './index.styles';
 
 // 임시 데이터(추후 제거 예정)
 const postCommentsData = [
   {
     id: 1,
-    category: '위로가 필요해요',
     timeStamp: '2시간 전',
     moment: '오늘 첫 면접에서 떨어졌어요. 너무 실망스럽고 자신감이 없어져요. 위로 받고 싶어요.',
     comment: '새로운 시작을 축하드려요! 분명 좋은 일들이 기다리고 있을 거에요. 화이팅!',
@@ -16,7 +15,6 @@ const postCommentsData = [
   },
   {
     id: 2,
-    category: '일상 공유',
     timeStamp: '1일 전',
     moment:
       '오늘 드디어 새로운 직장에 첫 출근을 했어요. 떨리자만 설레는 마음으로 새로운 시작을 하게 되었습니다.',
@@ -35,7 +33,6 @@ export default function PostCommentsPage() {
             <Card.TitleContainer
               title={
                 <S.TitleWrapper>
-                  <Category text={post.category} />
                   <S.TimeStamp>{post.timeStamp}</S.TimeStamp>
                 </S.TitleWrapper>
               }

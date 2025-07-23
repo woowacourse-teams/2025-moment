@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const LoginFormWrapper = styled.form`
   width: 80%;
   max-width: 500px;
-  min-height: 550px;
+  height: 100%;
   padding: 30px;
   background-color: ${({ theme }) => theme.colors['slate-800_60']};
   border-radius: 12px;
@@ -11,7 +11,7 @@ export const LoginFormWrapper = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 25px;
+  gap: 20px;
 `;
 
 export const LoginFormTitleContainer = styled.div`
@@ -36,7 +36,7 @@ export const LogoImage = styled.img`
 `;
 
 export const LogoTitle = styled.span`
-  font-size: 38px;
+  font-size: 35px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.white};
 `;
@@ -80,6 +80,8 @@ export const ErrorMessage = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.colors['red-500']};
   margin-top: 4px;
+  min-height: 16px;
+  line-height: 16px;
 `;
 
 export const LoginFooter = styled.div`
