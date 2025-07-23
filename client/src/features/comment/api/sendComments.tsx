@@ -1,5 +1,5 @@
 import { api } from '@/app/lib/api';
-import { sendCommentsData, sendCommentsResponse } from '../types/sendComments';
+import { sendCommentsData, sendCommentsResponse } from '../types/comments';
 
 export const sendComments = async (
   commentsData: sendCommentsData,
