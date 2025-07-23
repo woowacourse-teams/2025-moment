@@ -1,5 +1,5 @@
 import { navItems } from '@/app/layout/types/navItems';
-import { LoginButton } from '@/features/auth/ui/LoginButton';
+import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
@@ -33,9 +33,9 @@ export const Navbar = () => {
         ))}
       </S.DesktopNavItems>
 
-      <S.DesktopLoginButton>
-        <LoginButton />
-      </S.DesktopLoginButton>
+      <S.DesktopAuthButton>
+        <AuthButton />
+      </S.DesktopAuthButton>
 
       <S.DropdownButton
         ref={dropdownButtonRef}
@@ -55,7 +55,7 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <LoginButton onClick={toggleMobileMenu} />
+            <AuthButton onClick={toggleMobileMenu} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
       </S.MobileMenu>

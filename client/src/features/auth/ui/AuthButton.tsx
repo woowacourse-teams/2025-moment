@@ -1,11 +1,11 @@
 import { Button } from '@/shared/ui/button/Button';
 import { useNavigate } from 'react-router';
 
-interface LoginButtonProps {
+interface AuthButtonProps {
   onClick?: () => void;
 }
 
-export const LoginButton = ({ onClick }: LoginButtonProps) => {
+export const AuthButton = ({ onClick }: AuthButtonProps) => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
