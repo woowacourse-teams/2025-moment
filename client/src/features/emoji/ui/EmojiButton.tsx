@@ -30,7 +30,7 @@ const buttonVariant = (theme: CustomTheme) => `
   color: ${theme.colors['yellow-500']};
   border-radius: 25px;
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   
   &:disabled {
