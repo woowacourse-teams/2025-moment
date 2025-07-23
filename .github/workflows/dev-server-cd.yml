@@ -1,31 +1,45 @@
+# 워크플로우의 이름을 지정합니다.
 name: Dev Server CD
 
+# 워크플로우가 실행될 이벤트를 정의합니다.
 on:
+  # 레지스트리에 패키지가 게시(published)되었을 때 실행됩니다.
   registry_package:
     types: [published]
 
+# 워크플로우에 포함될 작업(job)들을 정의합니다.
 jobs:
+  # 'deploy'라는 이름의 작업을 정의합니다.
   deploy:
+    # 이 작업은 ghcr.io에 게시된 패키지가 Docker 이미지일 경우에만 실행됩니다.
     if: github.event.package.package_type == 'CONTAINER'
-    runs-on: ubuntu-latest
+    # 이 작업을 EC2에 설치한 Self-hosted runner에서 실행하도록 지정합니다.
+    runs-on: [self-hosted, backend]
 
+    # 이 작업에서 실행될 스텝들을 정의합니다.
     steps:
+      # 코드를 체크아웃하는 스텝입니다. (최신 버전의 docker-compose.yml 파일을 사용하기 위함)
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy to Dev Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script: |
-            cd /home/${{ secrets.EC2_USER }}/2025-moment/server
-            
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
-            docker compose pull app
-            
-            docker compose up --no-deps -d app
-            
-            docker image prune -f
+      # GitHub Container Registry(ghcr.io)에 로그인하는 스텝입니다.
+      # Self-hosted runner가 서버 내에서 직접 Docker 명령을 실행합니다.
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # Docker Compose를 사용하여 배포하는 스텝입니다.
+      - name: Deploy with Docker Compose
+        # EC2 서버 내에서 직접 셸 명령어를 실행합니다.
+        run: |
+          # ⚠️ 중요: 이 경로는 실제 EC2 서버에 프로젝트가 위치한 경로로 수정해야 합니다.
+          cd /home/ubuntu/2025-moment/server
+          
+          # docker-compose.yml에 정의된 app 서비스의 이미지를 최신 버전으로 pull 받습니다.
+          docker compose pull app
+          
+          # docker-compose를 사용하여 컨테이너를 재시작합니다.
+          docker compose up --no-deps -d app
+
+      # 사용하지 않는 오래된 Docker 이미지를 정리하여 디스크 공간을 확보하는 스텝입니다.
+      - name: Prune old images
+        run: docker image prune -f
