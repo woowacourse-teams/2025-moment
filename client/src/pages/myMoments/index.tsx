@@ -1,10 +1,10 @@
+import { theme } from '@/app/styles/theme';
 import { Card, Category, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Send } from 'lucide-react';
+import { NotFoundComents } from '../../features/comment/ui/NotFoundComents';
+import { EmojiButton } from '../../features/emoji/ui/EmojiButton';
 import * as S from './index.styles';
-import { theme } from '@/app/styles/theme';
-import { NotFoundComents } from './NotFoundComents';
-import { EmojiButton } from './EmojiButton';
 
 // 임시 데이터(추후 제거 예정)
 const myMomentsData = [
