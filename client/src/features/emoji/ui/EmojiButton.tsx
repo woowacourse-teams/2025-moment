@@ -28,7 +28,6 @@ export const EmojiButton = ({ commentId = 1, emojiType = 'HEART' }: EmojiButtonP
 const buttonVariant = (theme: CustomTheme) => `
   border: 1px solid ${theme.colors['yellow-500']};
   color: ${theme.colors['yellow-500']};
-  height: 20px;
   border-radius: 25px;
   padding: 0 16px;
   font-size: 12px;
