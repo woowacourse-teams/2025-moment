@@ -3,7 +3,6 @@ import * as S from './index.styles';
 import { Button } from '@/shared/ui/button/Button';
 
 export default function HomePage() {
-
   return (
     <S.HomePageWrapper>
       <S.HeroSection>
