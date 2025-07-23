@@ -1,6 +1,6 @@
-import { TodayMomentForm } from '@/features/todayMoment/ui/TodayMomentForm';
-import * as S from './index.styles';
+import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import * as S from './index.styles';
 
 export default function TodayMomentPage() {
   return (

@@ -1,8 +1,8 @@
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card } from '@/shared/ui';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { Heart, MessageSquare } from 'lucide-react';
-import * as S from '../../todayMoment/ui/TodayContent.styles';
+import * as S from '../../moment/ui/TodayContent.styles';
 
 interface TodayCommentSuccessContent {
   onBack: () => void;
