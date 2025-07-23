@@ -1,13 +1,27 @@
 import { SignupFormData } from '@/features/auth/types/signup';
 import { Button } from '@/shared/ui/button/Button';
+import { useEffect } from 'react';
 import * as S from './SignupStep3.styles';
 
 interface SignupStep3Props {
   signupData: SignupFormData;
   handleClick: () => void;
+  onEnter?: () => void;
 }
 
-export const SignupStep3 = ({ signupData, handleClick }: SignupStep3Props) => {
+export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Props) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && onEnter) {
+        e.preventDefault();
+        onEnter();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onEnter]);
+
   return (
     <S.StepContainer>
       <S.InfoContainer>

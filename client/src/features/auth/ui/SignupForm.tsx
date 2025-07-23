@@ -33,13 +33,23 @@ export const SignupForm = () => {
       <S.SignupFormContent>
         <Funnel>
           <Step name="step1">
-            <SignupStep1 signupData={signupData} errors={errors} handleChange={handleChange} />
+            <SignupStep1
+              signupData={signupData}
+              errors={errors}
+              handleChange={handleChange}
+              onNext={!nextStep || isDisabled ? undefined : handleNextStep}
+            />
           </Step>
           <Step name="step2">
-            <SignupStep2 signupData={signupData} errors={errors} handleChange={handleChange} />
+            <SignupStep2
+              signupData={signupData}
+              errors={errors}
+              handleChange={handleChange}
+              onNext={!nextStep || isDisabled ? undefined : handleNextStep}
+            />
           </Step>
           <Step name="step3">
-            <SignupStep3 signupData={signupData} handleClick={handleClick} />
+            <SignupStep3 signupData={signupData} handleClick={handleClick} onEnter={handleClick} />
           </Step>
         </Funnel>
       </S.SignupFormContent>
