@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew test
 
   build-and-push-docker:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     needs: test
     runs-on: ubuntu-latest
     steps:
