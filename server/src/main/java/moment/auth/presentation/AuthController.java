@@ -49,6 +49,8 @@ public class AuthController {
         String token = authService.login(request);
 
         ResponseCookie cookie = ResponseCookie.from("token", token)
+                .sameSite("none")
+                .secure(true)
                 .httpOnly(true)
                 .path("/")
                 .maxAge(1800000)
