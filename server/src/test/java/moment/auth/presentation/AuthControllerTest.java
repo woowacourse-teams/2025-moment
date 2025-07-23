@@ -10,7 +10,6 @@ import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,6 +51,38 @@ class AuthControllerTest {
         assertAll(
                 () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId())),
                 () -> assertThat(claims.get("email", String.class)).isEqualTo(user.getEmail())
+        );
+    }
+
+    @Test
+    void 로그아웃에_성공한다() {
+        // given
+        User user = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago"));
+        LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
+
+        String token = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/auth/login")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().cookie("token");
+
+        Claims claims = jwtTokenManager.extractClaims(token);
+
+        // when
+        String emptyToken = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().post("/api/v1/auth/logout")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().cookie("token");
+
+        // then
+        assertAll(
+                () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId())),
+                () -> assertThat(claims.get("email", String.class)).isEqualTo(user.getEmail()),
+                () -> assertThat(emptyToken).isEmpty()
         );
     }
 }

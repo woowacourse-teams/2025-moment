@@ -61,4 +61,25 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(SuccessResponse.of(status, null));
     }
+
+    @Operation(summary = "로그아웃", description = "사용자 로그아웃을 합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<SuccessResponse<Void>> logout() {
+        ResponseCookie cookie = ResponseCookie.from("token", null)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(SuccessResponse.of(status, null));
+    }
 }
