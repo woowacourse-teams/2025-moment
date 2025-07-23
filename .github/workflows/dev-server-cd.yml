@@ -1,12 +1,14 @@
 name: Dev Server CD
 
 on:
-  registry_package:
-    types: [published]
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+    paths: [ 'server/**' ]
 
 jobs:
   deploy:
-    if: github.event.package.package_type == 'CONTAINER'
+    if: github.event.pull_request.merged == true
     runs-on: [self-hosted, backend]
     
     permissions:
