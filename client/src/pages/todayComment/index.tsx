@@ -1,6 +1,6 @@
-import { TodayCommentForm } from '@/features/todayComment/ui/TodayCommentForm';
-import * as S from '../todayMoment/index.styles';
+import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import * as S from '../todayMoment/index.styles';
 
 export default function TodayCommentPage() {
   return (

@@ -13,6 +13,11 @@ const CardStyles = {
     background-color: ${theme.colors['slate-800_60']};
     border-radius: 10px;
     border: 1px solid ${theme.colors['gray-700']};
+    word-break: keep-all;
+
+    @media (max-width: 768px) {
+      width: 90%;
+    }
     `,
 };
 

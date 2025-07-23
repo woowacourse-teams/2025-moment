@@ -61,7 +61,7 @@ export const theme = {
     cardWidth: {
       small: '30%',
       medium: '60%',
-      large: '80%',
+      large: '90%',
     },
   },
 } as const;
