@@ -10,7 +10,9 @@ export default function PostCommentsPage() {
 
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
-  if (!commentsResponse?.data) return <div>데이터가 없습니다.</div>;
+  if (!commentsResponse?.data || !Array.isArray(commentsResponse.data)) {
+    return <div>데이터가 없습니다.</div>;
+  }
 
   return (
     <S.PostCommentsPageContainer>
@@ -46,7 +48,9 @@ export default function PostCommentsPage() {
                   <Gift size={20} color={theme.colors['yellow-500']} />
                   <span>받은 스티커</span>
                 </S.TitleContainer>
-                <S.Emoji>{post.emojis.map(emoji => emoji.emojiType).join(' ')}</S.Emoji>
+                <S.Emoji>
+                  {post.emojis?.map(emoji => emoji.emojiType).join(' ') || '스티커가 없습니다'}
+                </S.Emoji>
               </S.ContentContainer>
             </Card.Content>
           </Card>
