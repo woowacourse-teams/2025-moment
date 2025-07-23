@@ -17,12 +17,6 @@ export const Navbar = styled.nav`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
-export const NavItems = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-`;
-
 export const NavItem = styled.div<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;
@@ -42,4 +36,109 @@ export const NavItem = styled.div<{ $isActive?: boolean }>`
   }
 
   transition: all 0.3s ease;
+`;
+
+export const DesktopNavItems = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+export const DesktopLoginButton = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+export const HamburgerButton = styled.button<{ $isOpen: boolean }>`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 101;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 24px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors['yellow-300']};
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`;
+
+export const MobileMenu = styled.div<{ $isOpen: boolean }>`
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  background: ${({ theme }) => theme.colors['gray-800_90']};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 99;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ${({ $isOpen }) =>
+    $isOpen &&
+    `
+    transform: translateY(0);
+    opacity: 1;
+  `}
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+`;
+
+export const MobileMenuContent = styled.div`
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+export const MobileNavItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const MobileNavItem = styled.div<{ $isActive?: boolean }>`
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    color: ${({ theme, $isActive }) =>
+      $isActive ? theme.colors['yellow-300'] : theme.colors.white};
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+  }
+
+  &:hover a {
+    color: ${({ theme }) => theme.colors['yellow-300']};
+    transform: translateX(8px);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
