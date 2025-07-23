@@ -1,4 +1,4 @@
-export interface MyMomentsResponse {
+export interface postCommentsResponse {
   status: number;
   data: [
     {

@@ -1,4 +1,4 @@
-import { TodayCommentForm } from '@/features/comment/ui/todayComment/TodayCommentForm';
+import { TodayCommentForm } from '@/features/todayComment/ui/TodayCommentForm';
 import * as S from '../todayMoment/index.styles';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 
