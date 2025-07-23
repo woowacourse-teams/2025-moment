@@ -4,11 +4,11 @@ import { Send } from 'lucide-react';
 import * as S from '../../moment/ui/TodayContent.styles';
 import { useSend } from '@/features/comment/hooks/useSend';
 
-interface TodayCommentWriteContentProps {
+interface TodayCommentWriteContent {
   onSubmit: () => void;
 }
 
-export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContentProps) => {
+export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent) => {
   const { commentsData, handleChange, handleSubmit } = useSend();
 
   const MAX_LENGTH = 300;
