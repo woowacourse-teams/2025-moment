@@ -1,13 +1,17 @@
 import { SignupFormData } from '@/features/auth/types/signup';
 import { Button } from '@/shared/ui/button/Button';
+import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import * as S from './SignupStep3.styles';
 
 interface SignupStep3Props {
   signupData: SignupFormData;
   handleClick: () => void;
+  onEnter?: () => void;
 }
 
-export const SignupStep3 = ({ signupData, handleClick }: SignupStep3Props) => {
+export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Props) => {
+  useEnterKeyHandler(onEnter);
+
   return (
     <S.StepContainer>
       <S.InfoContainer>
