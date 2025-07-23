@@ -41,8 +41,8 @@ const config = {
     new ForkTsCheckerWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.BASE_URL': JSON.stringify(
-        process.env.BASE_URL || 'http://localhost:8080/api/v1',
+      'process.env.REACT_APP_BASE_URL': JSON.stringify(
+        process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1',
       ),
     }),
   ],
