@@ -2,7 +2,7 @@ import { Card, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
 import * as S from '../../moment/ui/TodayContent.styles';
-import { useSend } from '@/features/postComments/hooks/useSend';
+import { useSend } from '@/features/comment/hooks/useSend';
 
 interface TodayCommentWriteContentProps {
   onSubmit: () => void;

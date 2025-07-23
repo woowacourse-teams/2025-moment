@@ -3,7 +3,7 @@ import { Card, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './index.styles';
-import { useCommentsQuery } from '@/features/postComments/hooks/useCommentsQuery';
+import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
