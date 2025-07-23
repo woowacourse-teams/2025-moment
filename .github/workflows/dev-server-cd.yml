@@ -1,14 +1,18 @@
 name: Dev Server CD
 
 on:
-  pull_request:
-    types: [ closed ]
-    branches: [ develop ]
-    paths: [ 'server/**' ]
+#  pull_request:
+#    types: [ closed ]
+#    branches: [ develop ]
+#    paths: [ 'server/**' ]
+
+  push:
+    branches:
+      - develop
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
     runs-on: [self-hosted, backend]
     
     permissions:
