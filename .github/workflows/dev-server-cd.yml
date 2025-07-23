@@ -1,37 +1,28 @@
-name: Deploy Backend to EC2 (Develop)
+name: Dev Server CD
 
 on:
-  pull_request:
-    types: [ closed ]
-    branches: [ develop ]
-    paths: [ 'server/**' ]
+  registry_package:
+    types: [published]
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    if: github.event.package.package_type == 'CONTAINER'
+    runs-on: [self-hosted, backend]
 
     steps:
-      - name: Checkout source code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up SSH and Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: |
-            echo "🔄 기존 컨테이너 정리 중..."
-            docker compose down --remove-orphans
-            docker system prune -f
-            
-            echo "🚀 배포 스크립트 실행 중..."
-            cd moment-2025
-            git pull origin develop
-            cd server
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            cp ../.env .
-            chmod +x deploy.sh
-            ./deploy.sh
+      - name: Deploy with Docker Compose
+        run: |
+          cd /home/ubuntu/2025-moment/server
+          
+          docker compose pull app
+          
+          docker compose up --no-deps -d app
+
+      - name: Prune old images
+        run: docker image prune -f
