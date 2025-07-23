@@ -1,22 +1,14 @@
 import { navItems } from '@/app/layout/types/navItems';
 import { LoginButton } from '@/features/auth/ui/LoginButton';
+import { useToggle } from '@/shared/hooks';
 import { Logo } from '@/shared/ui/logo/Logo';
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
 
   return (
     <S.Navbar>
@@ -43,7 +35,7 @@ export const Navbar = () => {
           <S.MobileNavItems>
             {navItems.map(item => (
               <S.MobileNavItem key={item.href} $isActive={currentPath === item.href}>
-                <Link to={item.href} onClick={closeMobileMenu}>
+                <Link to={item.href} onClick={toggleMobileMenu}>
                   {item.label}
                 </Link>
               </S.MobileNavItem>
