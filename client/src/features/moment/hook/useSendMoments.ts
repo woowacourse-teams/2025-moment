@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useMomonetsMutation } from './useMomentsMutation';
+import { useMomentsMutation } from './useMomentsMutation';
 
 export const useSendMoments = () => {
   const [content, setContent] = useState('');
 
-  const { mutateAsync: sendMoments, isSuccess, reset } = useMomonetsMutation();
+  const { mutateAsync: sendMoments, isSuccess, reset } = useMomentsMutation();
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
