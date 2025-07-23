@@ -51,6 +51,7 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
+        alert: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         setInterval: 'readonly',

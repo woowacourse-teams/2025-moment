@@ -24,8 +24,8 @@ export const useSend = () => {
         content: commentsData.content,
         momentId: commentsData.momentId,
       });
-    } catch (error) {
-      console.error('Send comments failed:', error);
+    } catch {
+      alert('코멘트 전송에 실패했습니다.');
     }
   };
 
