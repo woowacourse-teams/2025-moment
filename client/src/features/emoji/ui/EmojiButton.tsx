@@ -29,7 +29,7 @@ const buttonVariant = (theme: CustomTheme) => `
   border: 1px solid ${theme.colors['yellow-500']};
   color: ${theme.colors['yellow-500']};
   border-radius: 25px;
-  padding: 0 16px;
+  padding: 8px 16px;
   font-size: 12px;
   font-weight: bold;
   
