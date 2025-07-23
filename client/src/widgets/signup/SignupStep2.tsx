@@ -1,6 +1,6 @@
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { Input } from '@/shared/ui/input/Input';
-import { useEffect } from 'react';
+import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import * as S from './SignupStep.styles';
 
 interface SignupStep2Props {
@@ -11,17 +11,7 @@ interface SignupStep2Props {
 }
 
 export const SignupStep2 = ({ signupData, errors, handleChange, onNext }: SignupStep2Props) => {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && onNext) {
-        e.preventDefault();
-        onNext();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onNext]);
+  useEnterKeyHandler(onNext);
 
   return (
     <S.StepContainer>
