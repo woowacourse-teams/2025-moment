@@ -2,50 +2,42 @@ name: Dev Server CI
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [opened, synchronize, reopened, closed]
     branches: [ develop ]
     paths: [ 'server/**' ]
 
 jobs:
-  integration:
-    if: github.event.pull_request.merged == true
+  test:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: ./server
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-
       - name: Test with Gradle
         run: ./gradlew test
 
   build-and-push-docker:
-    needs: integration
+    #if: github.event.pull_request.merged == true
+    needs: test
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
