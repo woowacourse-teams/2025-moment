@@ -1,13 +1,19 @@
 name: Dev Server CD
 
 on:
-  registry_package:
-    types: [published]
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+    paths: [ 'server/**' ]
 
 jobs:
   deploy:
-    if: github.event.package.package_type == 'CONTAINER'
+    if: github.event.pull_request.merged == true
     runs-on: [self-hosted, backend]
+    
+    permissions:
+      packages: read
+      contents: read
 
     steps:
       - name: Checkout
@@ -18,6 +24,7 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
+          # ⚠️ 중요: 이 경로는 실제 EC2 서버에 프로젝트가 위치한 경로로 수정해야 합니다.
           cd /home/ubuntu/2025-moment/server
           
           docker compose pull app
