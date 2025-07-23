@@ -5,19 +5,11 @@ import * as S from './LoginForm.styles';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { formData, errors, isLoading, handleChange, handleBlur, handleSubmit, isDisabled } =
-    useLoginForm();
-
-  const handleLoginClick = () => {
-    // TODO: 로그인 로직 구현
-  };
+  const { formData, errors, isLoading, handleChange, handleSubmit, isDisabled } = useLoginForm();
 
   const handleSignupClick = () => {
     navigate('/signup');
   };
-
-  console.log(formData);
-  console.log(errors);
 
   return (
     <S.LoginFormWrapper onSubmit={handleSubmit}>
@@ -38,9 +30,8 @@ export const LoginForm = () => {
             placeholder="이메일을 입력해주세요"
             value={formData.email}
             onChange={handleChange('email')}
-            onBlur={handleBlur('email')}
           />
-          {errors.email && <S.ErrorMessage>{errors.email}</S.ErrorMessage>}
+          <S.ErrorMessage>{errors.email || ' '}</S.ErrorMessage>
         </S.InputGroup>
         <S.InputGroup>
           <S.Label htmlFor="password">비밀번호</S.Label>
@@ -50,9 +41,8 @@ export const LoginForm = () => {
             placeholder="비밀번호를 입력해주세요"
             value={formData.password}
             onChange={handleChange('password')}
-            onBlur={handleBlur('password')}
           />
-          {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
+          <S.ErrorMessage>{errors.password || ' '}</S.ErrorMessage>
         </S.InputGroup>
       </S.LoginFormContent>
       <S.LoginFooter>

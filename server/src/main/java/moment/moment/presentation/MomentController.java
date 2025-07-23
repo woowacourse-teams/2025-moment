@@ -13,6 +13,7 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.user.dto.request.Authentication;
@@ -50,7 +51,7 @@ public class MomentController {
             @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addMoment(request, authentication.id());
+        MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -73,6 +74,28 @@ public class MomentController {
             @AuthenticationPrincipal Authentication authentication
     ) {
         List<MyMomentResponse> responses = momentService.getMyMoments(authentication.id());
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
+    }
+
+    @Operation(summary = "매칭된 모멘트 조회", description = "사용자에게 매칭된 모멘트를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "매칭된 모멘트 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/matching")
+    public ResponseEntity<SuccessResponse<MatchedMomentResponse>> readMatchedMoment(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MatchedMomentResponse responses = momentService.getMatchedMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
     }

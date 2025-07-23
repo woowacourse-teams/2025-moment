@@ -1,6 +1,7 @@
 package moment.user.application;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
@@ -28,7 +29,9 @@ public class DefaultUserQueryService implements UserQueryService {
     }
 
     @Override
-    public List<User> findNotMatchedUsersToday(Long momenterId) {
-        return userRepository.findNotMatchedUsersToday(LocalDate.now(), momenterId);
+    public List<User> findNotMatchedUsersTodayByMomenter(User momenter) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+        return userRepository.findNotMatchedUsersToday(startOfDay, endOfDay, momenter);
     }
 }

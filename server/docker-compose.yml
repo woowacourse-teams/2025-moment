@@ -5,7 +5,7 @@ services:
     container_name: moment-app-server
     build: .
     ports:
-      - "80:8080"
+      - "8080:8080"
     env_file:
       - ./.env
     depends_on:
@@ -22,7 +22,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -8,7 +8,7 @@ export const navItems = [
     href: '/today-comment',
   },
   {
-    label: '나의 코멘트',
+    label: '나의 모멘트',
     href: '/my-moments',
   },
   {

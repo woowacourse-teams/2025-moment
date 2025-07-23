@@ -1,5 +1,5 @@
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card, TextArea } from '@/shared/ui';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send, Star } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './TodayContent.styles';
@@ -31,6 +31,7 @@ export const TodayMomentWriteContent = ({ onSubmit }: TodayMomentWriteContent) =
       />
       <Card.Content>
         <TextArea
+          maxLength={MAX_LENGTH}
           placeholder="오늘 어떤 모멘트를 경험하셨나요? 솔직한 마음을 들려주세요..."
           height="medium"
           value={text}

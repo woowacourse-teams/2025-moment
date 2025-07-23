@@ -20,7 +20,7 @@ export const SignupStep1 = ({ signupData, errors, handleChange }: SignupStep1Pro
           value={signupData.email}
           onChange={handleChange('email')}
         />
-        {errors.email && <S.ErrorMessage>{errors.email}</S.ErrorMessage>}
+        <S.ErrorMessage>{errors.email || ''}</S.ErrorMessage>
       </S.InputGroup>
 
       <S.InputGroup>
@@ -33,7 +33,7 @@ export const SignupStep1 = ({ signupData, errors, handleChange }: SignupStep1Pro
           onChange={handleChange('password')}
         />
         {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
-        {errors.password && <S.ErrorMessage>{errors.password}</S.ErrorMessage>}
+        <S.ErrorMessage>{errors.password || ''}</S.ErrorMessage>
       </S.InputGroup>
 
       <S.InputGroup>
@@ -46,7 +46,7 @@ export const SignupStep1 = ({ signupData, errors, handleChange }: SignupStep1Pro
           onChange={handleChange('rePassword')}
         />
         {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
-        {errors.rePassword && <S.ErrorMessage>{errors.rePassword}</S.ErrorMessage>}
+        <S.ErrorMessage>{errors.rePassword || ''}</S.ErrorMessage>
       </S.InputGroup>
     </S.StepContainer>
   );

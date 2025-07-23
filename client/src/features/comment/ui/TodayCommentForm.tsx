@@ -1,9 +1,8 @@
+import { useSubmitted } from '@/features/moment/hook/useSubmitted';
 import { Card } from '@/shared/ui';
-import { useSubmitted } from '@/features/todayMoment/hook/useSubmitted';
-
-import { useNavigateHandler } from '@/shared/hooks/useNavigateHandler';
-import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { TodayCommentSuccessContent } from './TodayCommentSuccessContent';
+import { TodayCommentWriteContent } from './TodayCommentWriteContent';
+import { useNavigateHandler } from '@/shared/hooks/useNavigateHandler';
 
 export function TodayCommentForm() {
   const { isSubmitted, handleSubmit } = useSubmitted();

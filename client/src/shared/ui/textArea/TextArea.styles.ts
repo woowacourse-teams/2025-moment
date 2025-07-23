@@ -6,7 +6,7 @@ export type textAreaHeight = 'small' | 'medium' | 'large';
 const TextAreaStyles = {
   textarea: (theme: CustomTheme, $height: textAreaHeight) => `
     width: 100%;
-    padding: 10px 20px;
+    padding: 20px;
     background-color: ${theme.colors['gray-600_20']};
     border-radius: 5px;
     height: ${theme.typography.textAreaHeight[$height]};

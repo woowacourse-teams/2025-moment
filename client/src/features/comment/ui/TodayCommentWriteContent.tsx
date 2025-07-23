@@ -1,8 +1,8 @@
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Card, TextArea } from '@/shared/ui';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
-import * as S from '@/features/todayMoment/ui/TodayContent.styles';
+import * as S from '../../moment/ui/TodayContent.styles';
 
 interface TodayCommentWriteContent {
   onSubmit: () => void;
