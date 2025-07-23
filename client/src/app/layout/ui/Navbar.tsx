@@ -26,9 +26,9 @@ export const Navbar = () => {
         <LoginButton />
       </S.DesktopLoginButton>
 
-      <S.HamburgerButton onClick={toggleMobileMenu} $isOpen={isMobileMenuOpen}>
+      <S.DropdownButton onClick={toggleMobileMenu} $isOpen={isMobileMenuOpen}>
         {isMobileMenuOpen ? '✕' : '☰'}
-      </S.HamburgerButton>
+      </S.DropdownButton>
 
       <S.MobileMenu $isOpen={isMobileMenuOpen}>
         <S.MobileMenuContent>

@@ -54,7 +54,7 @@ export const DesktopLoginButton = styled.div`
   }
 `;
 
-export const HamburgerButton = styled.button<{ $isOpen: boolean }>`
+export const DropdownButton = styled.button<{ $isOpen: boolean }>`
   display: none;
   align-items: center;
   justify-content: center;
