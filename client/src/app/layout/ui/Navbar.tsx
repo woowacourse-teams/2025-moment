@@ -1,6 +1,6 @@
 import { navItems } from '@/app/layout/types/navItems';
 import { LoginButton } from '@/features/auth/ui/LoginButton';
-import { useToggle } from '@/shared/hooks';
+import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
