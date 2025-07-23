@@ -1,14 +1,18 @@
 import { Hero } from '@/widgets/hero';
-import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { Button } from '@/shared/ui/button/Button';
+import { useEffect } from 'react';
+import { api } from '@/app/lib/api';
 
 export default function HomePage() {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    // navigate('/auth/signin');
-  };
+  // 프로필 조회 테스트
+  useEffect(() => {
+    const getProfile = async () => {
+      const response = await api.get('/users/me');
+      console.log(response);
+    };
+    getProfile();
+  }, []);
 
   return (
     <S.HomePageWrapper>
