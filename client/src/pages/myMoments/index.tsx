@@ -1,5 +1,5 @@
 import { theme } from '@/app/styles/theme';
-import { Card, Category, SimpleCard } from '@/shared/ui';
+import { Card, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Send } from 'lucide-react';
 import { NotFoundComents } from '../../features/comment/ui/NotFoundComents';
@@ -10,14 +10,12 @@ import * as S from './index.styles';
 const myMomentsData = [
   {
     id: 1,
-    category: '위로가 필요해요',
     timeStamp: '2시간 전',
     title: '오늘 첫 면접에서 떨어졌어요. 너무 실망스럽고 자신감이 없어져요. 위로 받고 싶어요.',
     content: '',
   },
   {
     id: 2,
-    category: '일상 공유',
     timeStamp: '1일 전',
     title:
       '오늘 드디어 새로운 직장에 첫 출근을 했어요. 떨리자만 설레는 마음으로 새로운 시작을 하게 되었습니다.',
@@ -25,7 +23,6 @@ const myMomentsData = [
   },
   {
     id: 3,
-    category: '칭찬 받고 싶어요',
     timeStamp: '1주일 전',
     title:
       '6개월 동안 준비한 자격증 시험에 합격했어요! 정말 기쁘고 누군가와 이 기쁨을 나누고 싶어요.',
@@ -46,7 +43,6 @@ export default function MyMoments() {
             <Card.TitleContainer
               title={
                 <S.TitleWrapper>
-                  <Category text={moment.category} />
                   <S.TimeStamp>{moment.timeStamp}</S.TimeStamp>
                 </S.TitleWrapper>
               }
