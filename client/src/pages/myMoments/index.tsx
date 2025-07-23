@@ -1,7 +1,7 @@
 import { theme } from '@/app/styles/theme';
 import { Card, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import { Send } from 'lucide-react';
+import { Send, Timer } from 'lucide-react';
 import { NotFoundComents } from '../../features/comment/ui/NotFoundComents';
 import { EmojiButton } from '../../features/emoji/ui/EmojiButton';
 import * as S from './index.styles';
@@ -43,6 +43,7 @@ export default function MyMoments() {
             <Card.TitleContainer
               title={
                 <S.TitleWrapper>
+                  <Timer size={16} color={theme.colors['gray-400']} />
                   <S.TimeStamp>{moment.timeStamp}</S.TimeStamp>
                 </S.TitleWrapper>
               }

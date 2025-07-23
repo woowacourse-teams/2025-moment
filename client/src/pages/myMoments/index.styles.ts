@@ -18,8 +18,8 @@ export const TitleWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-end;
+  gap: 4px;
 `;
 
 export const TimeStamp = styled.span`
