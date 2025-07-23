@@ -3,24 +3,27 @@ import { useSendCommentsMutation } from './useSendCommentsMutation';
 
 export const useSend = () => {
   const [commentsData, setCommentsData] = useState({
-    comment: '',
-    momentId: '',
+    content: '',
+    momentId: 11,
   });
 
   const [errors, setErrors] = useState({
-    comment: '',
+    content: '',
     momentId: '',
   });
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentsData(prev => ({ ...prev, comment: e.target.value }));
+    setCommentsData(prev => ({ ...prev, content: e.target.value }));
   };
 
   const handleSubmit = async () => {
     try {
-      await sendComments(commentsData);
+      await sendComments({
+        content: commentsData.content,
+        momentId: commentsData.momentId,
+      });
     } catch (error) {
       console.error('Send comments failed:', error);
     }

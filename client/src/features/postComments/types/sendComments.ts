@@ -1,6 +1,6 @@
 export interface sendCommentsData {
-  comment: string;
-  momentId: string;
+  content: string;
+  momentId: number;
 }
 
 export interface sendCommentsResponse {
