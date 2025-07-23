@@ -55,7 +55,7 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <LoginButton />
+            <LoginButton onClick={toggleMobileMenu} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
       </S.MobileMenu>
