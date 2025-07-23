@@ -10,6 +10,9 @@ node_modules/
 .env.*
 *.log
 
+# MSW (Mock Service Worker)
+public/mockServiceWorker.js
+
 # editor
 .vscode/
 .DS_Store

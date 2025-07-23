@@ -25,4 +25,7 @@ export const ErrorMessage = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.colors['red-500']};
   margin-top: 4px;
+  height: 18px;
+  display: block;
+  line-height: 1.5;
 `;

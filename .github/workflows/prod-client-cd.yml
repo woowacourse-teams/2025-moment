@@ -1,25 +1,13 @@
-name: Deploy Client to S3 + CloudFront
+name: Deploy Client to AWS S3 + CloudFront
 
 on:
   push:
     branches: [main]
 
 jobs:
-  start-runner:
-    name: Start EC2 Instance
-    runs-on: ubuntu-latest
-    steps:
-      - name: Start EC2 instance
-        run: |
-          echo "Starting EC2 runner instance..."
-          aws ec2 start-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
-          echo "Waiting for EC2 runner to start..."
-          aws ec2 wait instance-status-ok --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
-
   build-and-deploy:
     name: Build and Deploy Client
     runs-on: self-hosted
-    needs: start-runner
     defaults:
       run:
         working-directory: ./client
@@ -31,8 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: client/pnpm-lock.yaml
+          # cache: 'pnpm'
+          # cache-dependency-path: ${{ github.workspace }}/client/pnpm-lock.yaml
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -49,37 +37,36 @@ jobs:
 
       - name: Upload to S3
         run: |
-          echo "Uploading build files to S3..."
+          echo "🔼 Uploading static files to S3..."
+
+          # 1. HTML 외 모든 파일 먼저 업로드
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
             --delete \
             --cache-control "public,max-age=31536000,immutable" \
             --exclude "*.html" \
-            --exclude "service-worker.js"
+            --exclude "service-worker.js" \
+            --region ap-northeast-2
 
-          # HTML files with shorter cache
-          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
-            --cache-control "public,max-age=0,must-revalidate" \
-            --include "*.html" \
-            --include "service-worker.js"
+          # 2. .html 파일은 개별적으로 --content-type text/html 지정
+          find ./dist -name "*.html" | while read file; do
+            aws s3 cp "$file" s3://${{ secrets.S3_BUCKET_NAME }}/moment/"${file#./dist/}" \
+              --cache-control "public,max-age=0,must-revalidate" \
+              --content-type "text/html" \
+              --region ap-northeast-2
+          done
+
+          # 3. service-worker.js도 개별 업로드
+          if [ -f ./dist/service-worker.js ]; then
+            aws s3 cp ./dist/service-worker.js s3://${{ secrets.S3_BUCKET_NAME }}/moment/service-worker.js \
+              --cache-control "public,max-age=0,must-revalidate" \
+              --content-type "application/javascript" \
+              --region ap-northeast-2
+          fi
 
       - name: Invalidate CloudFront cache
         run: |
-          echo "Creating CloudFront invalidation..."
-          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+          echo "🧹 Invalidating CloudFront cache..."
+          aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" \
-            --query 'Invalidation.Id' \
-            --output text)
-          echo "Invalidation ID: $INVALIDATION_ID"
-
-  stop-runner:
-    name: Stop EC2 Instance
-    runs-on: ubuntu-latest
-    if: always()
-    needs: build-and-deploy
-    steps:
-      - name: Stop EC2 instance
-        run: |
-          echo "Stopping EC2 runner instance..."
-          aws ec2 stop-instances --instance-ids ${{ secrets.EC2_RUNNER_INSTANCE_ID }}
-          echo "EC2 instance stopped"
+            --region us-east-1

@@ -56,6 +56,10 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         URLSearchParams: 'readonly',
+        // DOM types
+        Node: 'readonly',
+        Element: 'readonly',
+        EventTarget: 'readonly',
         // Node.js globals
         process: 'readonly',
         Buffer: 'readonly',
@@ -68,6 +72,7 @@ export default [
         HTMLInputElement: 'readonly',
         HTMLTextAreaElement: 'readonly',
         HTMLDivElement: 'readonly',
+        HTMLFormElement: 'readonly',
         Event: 'readonly',
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',

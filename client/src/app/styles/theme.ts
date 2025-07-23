@@ -1,6 +1,7 @@
 export const theme = {
   colors: {
-    'slate-900_60': 'color-mix(in srgb, #2B3546 60%, transparent)', // rgba(43, 53, 70, 0.6)와 동일
+    'slate-900_90': 'color-mix(in srgb, #2B3546 90%, transparent)',
+    'slate-900_60': 'color-mix(in srgb, #2B3546 60%, transparent)',
     'slate-900': '#0F172A',
     'slate-800_60': 'color-mix(in srgb, #1E293B 60%, transparent)',
     'slate-800': '#1E293B',
@@ -23,6 +24,9 @@ export const theme = {
     'gray-600': '#536872',
     'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
     'gray-700': '#334155',
+    'gray-800': '#1E293B',
+    'gray-800_80': 'color-mix(in srgb, #1E293B 80%, transparent)',
+    'gray-800_90': 'color-mix(in srgb, #1E293B 90%, transparent)',
     'blue-600': '#497CBC',
   },
   typography: {
@@ -57,7 +61,7 @@ export const theme = {
     cardWidth: {
       small: '30%',
       medium: '60%',
-      large: '80%',
+      large: '90%',
     },
   },
 } as const;

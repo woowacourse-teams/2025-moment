@@ -20,7 +20,7 @@ export const SignupStep2 = ({ signupData, errors, handleChange }: SignupStep2Pro
           value={signupData.nickname}
           onChange={handleChange('nickname')}
         />
-        {errors.nickname && <S.ErrorMessage>{errors.nickname}</S.ErrorMessage>}
+        <S.ErrorMessage>{errors.nickname || ''}</S.ErrorMessage>
       </S.InputGroup>
     </S.StepContainer>
   );

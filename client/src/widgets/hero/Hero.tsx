@@ -1,4 +1,4 @@
-import { useDelayedVisible } from '@/shared/hooks';
+import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import * as S from './Hero.styles';
 
 interface HeroProps {
