@@ -8,7 +8,7 @@ const buttonStyles = {
   primary: (theme: CustomTheme) => `
     background-color: transparent;
     color: #fff;
-    border: 1px solid ${theme.colors['slate-900']};
+    border: 1px solid ${theme.colors['slate-700']};
     border-radius: 50px;
     padding: 10px 20px;
     font-size: 16px;
