@@ -1,23 +1,12 @@
-import { useSubmitted } from '@/features/moment/hook/useSubmitted';
 import { Card } from '@/shared/ui';
-import { TodayCommentSuccessContent } from './TodayCommentSuccessContent';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
-import { useNavigate } from 'react-router';
+import { useSend } from '../hooks/useSend';
 
 export function TodayCommentForm() {
-  const { isSubmitted, handleSubmit } = useSubmitted();
-
-  const navigate = useNavigate();
-
-  const handlePagination = () => navigate('/post-comments');
-
+  const { handleSubmit } = useSend();
   return (
     <Card width="medium">
-      {!isSubmitted ? (
-        <TodayCommentWriteContent onSubmit={handleSubmit} />
-      ) : (
-        <TodayCommentSuccessContent onPagination={handlePagination} />
-      )}
+      <TodayCommentWriteContent onSubmit={handleSubmit} />
     </Card>
   );
 }
