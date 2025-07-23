@@ -1,6 +1,6 @@
 import { useSignup } from '@/features/auth/hooks/useSignup';
 import { isDataEmpty, isSignupFormValid } from '@/features/auth/utils/validateAuth';
-import { useFunnel } from '@/shared/hooks';
+import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
 import { Button } from '@/shared/ui/button/Button';

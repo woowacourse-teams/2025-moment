@@ -11,9 +11,6 @@ export const LoginForm = () => {
     navigate('/signup');
   };
 
-  console.log(formData);
-  console.log(errors);
-
   return (
     <S.LoginFormWrapper onSubmit={handleSubmit}>
       <S.LoginFormTitleContainer>
