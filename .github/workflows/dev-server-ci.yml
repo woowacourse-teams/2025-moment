@@ -2,13 +2,13 @@ name: Dev Server CI
 
 on:
   pull_request:
-    types: [ closed ]
-    branches: [ develop ]
+    #types: [ closed ]
+    branches: [ feat/#154 ]
     paths: [ 'server/**' ]
 
 jobs:
   integration:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     defaults:
