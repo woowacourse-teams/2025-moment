@@ -5,7 +5,7 @@ import { useMomentsQuery } from '../hook/useMomentsQuery';
 import * as S from './MyMomentsList.styles';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
 import { NotFoundComents } from '@/features/comment/ui/NotFoundComents';
-import { MyMoments } from '../types/Moments';
+import { MyMoments } from '../types/moments';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 
 export const MyMomentsList = () => {
