@@ -1,16 +1,20 @@
-import { useSubmitted } from '@/features/moment/hook/useSubmitted';
 
+import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentWriteContent } from '@/features/moment/ui/TodayMomentWriteContent';
 import { Card } from '@/shared/ui';
 import { TodayMomentSuccessContent } from './TodayMomentSuccessContent';
 
 export function TodayMomentForm() {
-  const { isSubmitted, handleSubmit } = useSubmitted();
+  const { handleContentChange, handleSendContent, content, isSuccess } = useSendMoments();
 
   return (
     <Card width="medium">
-      {!isSubmitted ? (
-        <TodayMomentWriteContent onSubmit={handleSubmit} />
+      {!isSuccess ? (
+        <TodayMomentWriteContent
+          handleContentChange={handleContentChange}
+          handleSendContent={handleSendContent}
+          content={content}
+        />
       ) : (
         <TodayMomentSuccessContent />
       )}
