@@ -1,6 +1,8 @@
+export interface Profile {
+  nickname: string;
+}
+
 export interface ProfileResponse {
   status: number;
-  data: {
-    nickname: string;
-  };
+  data: Profile;
 }
