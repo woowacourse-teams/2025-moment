@@ -2,15 +2,20 @@ import { Card, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
 import * as S from '../../moment/ui/TodayContent.styles';
-import { useSend } from '@/features/comment/hooks/useSend';
 
-interface TodayCommentWriteContent {
+interface TodayCommentWriteContentProps {
+  commentsData: { content: string; momentId: number };
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleSubmit: () => Promise<void>;
   onSubmit: () => void;
 }
 
-export const TodayCommentWriteContent = ({ onSubmit }: TodayCommentWriteContent) => {
-  const { commentsData, handleChange, handleSubmit } = useSend();
-
+export const TodayCommentWriteContent = ({
+  commentsData,
+  handleChange,
+  handleSubmit,
+  onSubmit,
+}: TodayCommentWriteContentProps) => {
   const MAX_LENGTH = 300;
   const currentLength = commentsData.content.length;
   const isDisabled = commentsData.content.trim().length === 0 || currentLength > MAX_LENGTH;
