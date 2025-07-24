@@ -25,12 +25,6 @@ export const TodayCommentWriteContent = ({
     onSubmit();
   };
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= MAX_LENGTH) {
-      handleChange(e);
-    }
-  };
-
   return (
     <S.TodayContentWrapper>
       <Card.TitleContainer
@@ -41,8 +35,9 @@ export const TodayCommentWriteContent = ({
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."
           height="medium"
+          maxLength={MAX_LENGTH}
           value={commentsData.content}
-          onChange={handleTextChange}
+          onChange={handleChange}
         />
       </Card.Content>
       <Card.Action position="space-between">
