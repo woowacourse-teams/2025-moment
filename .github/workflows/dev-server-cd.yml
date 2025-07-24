@@ -25,8 +25,7 @@ jobs:
           
           sudo docker compose pull app
           
-          sudo docker compose up --no-deps -d app  
-
+          sudo docker compose up --no-deps -d app
 #      - name: Deploy with Docker Compose
 #        run: |
 #          cd /home/ubuntu/2025-moment/server
