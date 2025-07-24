@@ -49,8 +49,12 @@ export const DesktopNavItems = styled.div`
 `;
 
 export const DesktopAuthButton = styled.div`
+  display: flex;
+  margin-right: 24px;
+
   @media (max-width: 768px) {
     display: none;
+    margin-right: 0;
   }
 `;
 
