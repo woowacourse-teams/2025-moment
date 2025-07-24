@@ -1,12 +1,12 @@
 import { theme } from '@/app/styles/theme';
+import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
+import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
 import { Card, SimpleCard } from '@/shared/ui';
+import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
-import * as S from './MyMomentsList.styles';
-import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { NotFoundComents } from '@/features/comment/ui/NotFoundComents';
 import { MyMoments } from '../types/moments';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
+import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
   const { data } = useMomentsQuery();
@@ -32,7 +32,10 @@ export const MyMomentsList = () => {
               <Send size={20} color={theme.colors['yellow-500']} />
               <span>받은 공감</span>
             </S.TitleContainer>
-            <SimpleCard height="small" content={myMoment.comment?.content || <NotFoundComents />} />
+            <SimpleCard
+              height="small"
+              content={myMoment.comment?.content || <NotFoundComments />}
+            />
           </Card.Content>
           <Card.Action position="space-between">
             <EmojiButton />
