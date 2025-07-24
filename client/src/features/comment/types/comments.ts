@@ -2,6 +2,7 @@ export interface CommentsResponse {
   status: number;
   data: [
     {
+      id: number;
       content: string;
       createdAt: string;
       moment: {

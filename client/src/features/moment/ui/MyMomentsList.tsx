@@ -7,6 +7,7 @@ import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 
 export const MyMomentsList = () => {
   const { data } = useMomentsQuery();
@@ -38,7 +39,11 @@ export const MyMomentsList = () => {
             />
           </Card.Content>
           <Card.Action position="space-between">
+            {/* TODO: 이모지 딜리트 구현 */}
             {myMoment.comment?.content && <EmojiButton commentId={myMoment.comment.id} />}
+            {myMoment.comment && (
+              <div>{myMoment.comment.emojis.map(emoji => emojiMapping(emoji.emojiType))}</div>
+            )}
           </Card.Action>
         </Card>
       ))}
