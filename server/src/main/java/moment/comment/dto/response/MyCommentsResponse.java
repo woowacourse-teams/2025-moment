@@ -9,6 +9,9 @@ import moment.reply.domain.Emoji;
 
 @Schema(description = "나의 Comment 목록 조회 응답")
 public record MyCommentsResponse(
+        @Schema(description = "등록된 Comment id", example = "1")
+        Long id,
+
         @Schema(description = "등록된 Comment 내용", example = "정말 멋진 하루군요!")
         String content,
 
@@ -32,6 +35,7 @@ public record MyCommentsResponse(
                 .toList();
 
         return new MyCommentsResponse(
+                comment.getId(),
                 comment.getContent(),
                 comment.getCreatedAt(),
                 momentResponse,
@@ -43,6 +47,7 @@ public record MyCommentsResponse(
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
         List<EmojiDetailResponse> emojisResponse = null;
         return new MyCommentsResponse(
+                comment.getId(),
                 comment.getContent(),
                 comment.getCreatedAt(),
                 momentResponse,
