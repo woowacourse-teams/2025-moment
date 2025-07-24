@@ -12,11 +12,11 @@ export const api = axios.create({
 api.interceptors.response.use(
   // 추후 refresh token 로직 추가
   response => response,
-  error => {
-    if (error.response.status === 401) {
-      alert('로그인 후 이용해주세요.');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  },
+  // error => {
+  //   if (error.response.status === 401) {
+  //     alert('로그인 후 이용해주세요.');
+  //     window.location.href = '/login';
+  //   }
+  //   return Promise.reject(error);
+  // },
 );
