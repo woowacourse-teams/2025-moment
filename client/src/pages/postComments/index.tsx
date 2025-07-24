@@ -4,15 +4,23 @@ import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './index.styles';
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
+import { useEmojisQuery } from '@/features/emoji/hooks/useEmojisQuery';
+import { EMOJI_TYPE } from '@/features/emoji/const/emojiType';
 
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
+  const { data: emojiResponse } = useEmojisQuery(4); // TODO: 현재 commentsResponse에 commentId 값이 없어서 임시로 설정.
+  const emojiData = emojiResponse?.data;
 
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
   if (!commentsResponse?.data || !Array.isArray(commentsResponse.data)) {
     return <div>데이터가 없습니다.</div>;
   }
+
+  const emojiMapping = (emojiType: string) => {
+    return EMOJI_TYPE[emojiType as keyof typeof EMOJI_TYPE] || emojiType;
+  };
 
   return (
     <S.PostCommentsPageContainer>
@@ -48,9 +56,14 @@ export default function PostCommentsPage() {
                   <Gift size={20} color={theme.colors['yellow-500']} />
                   <span>받은 스티커</span>
                 </S.TitleContainer>
-                <S.Emoji>
-                  {post.emojis?.map(emoji => emoji.emojiType).join(' ') || '스티커가 없습니다'}
-                </S.Emoji>
+                {emojiData && emojiData.length > 0 ? (
+                  <S.Emoji>
+                    {emojiData.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+                  </S.Emoji>
+                ) : (
+                  // TODO: 스티커 없을 시 디자인 논의 필요
+                  <div>스티커가 없습니다.</div>
+                )}
               </S.ContentContainer>
             </Card.Content>
           </Card>
