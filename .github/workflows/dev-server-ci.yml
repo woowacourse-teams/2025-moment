@@ -45,6 +45,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ github.event.pull_request.head.sha }}
           labels: |
             org.opencontainers.image.source=${{ github.repository_url }}
             org.opencontainers.image.revision=${{ github.sha }}

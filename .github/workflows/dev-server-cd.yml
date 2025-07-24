@@ -25,7 +25,7 @@ jobs:
         run: |
           cd /home/ubuntu/2025-moment/server
           
-          export IMAGE_TAG=${{ github.sha }}
+          export IMAGE_TAG=${{ github.event.pull_request.head.sha }}
           
           echo "IMAGE_TAG: $IMAGE_TAG"
           
@@ -38,8 +38,3 @@ jobs:
 
       - name: Prune old images
         run: docker image prune -f
-#      - name: Deploy with Docker Compose
-#        run: |
-#          cd /home/ubuntu/2025-moment/server
-#          sudo docker compose pull app
-#          sudo docker compose up --no-deps -d app

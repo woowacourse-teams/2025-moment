@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @SpringBootApplication
 public class MomentApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MomentApplication.class, args);
-	}
+    //    CI/CD TEST
+    public static void main(String[] args) {
+        SpringApplication.run(MomentApplication.class, args);
+    }
 }
