@@ -48,7 +48,7 @@ export const MyMomentsList = () => {
             />
           </Card.Content>
           <Card.Action position="space-between">
-            <EmojiButton />
+            {myMoment.comment?.content && <EmojiButton />}
           </Card.Action>
         </Card>
       ))}
