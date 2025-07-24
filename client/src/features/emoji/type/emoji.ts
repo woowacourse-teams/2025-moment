@@ -8,5 +8,11 @@ export interface EmojiRequest {
 
 export interface EmojiResponse {
   status: number;
-  data: string;
+  data: Emoji[];
+}
+
+export interface Emoji {
+  id: number;
+  emojiType: string;
+  userName: string;
 }
