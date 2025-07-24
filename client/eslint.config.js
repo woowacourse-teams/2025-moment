@@ -76,6 +76,7 @@ export default [
         Event: 'readonly',
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',
+        alert: 'readonly',
       },
     },
     rules: {
