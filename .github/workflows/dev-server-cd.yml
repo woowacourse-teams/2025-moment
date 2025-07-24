@@ -5,9 +5,6 @@ on:
     types: [ closed ]
     branches: [ develop ]
     paths: [ 'server/**' ]
-  push:
-    branches:
-      - develop
 
 jobs:
   deploy:
