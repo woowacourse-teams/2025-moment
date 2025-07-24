@@ -2,7 +2,7 @@ import { theme } from '@/app/styles/theme';
 import { Card, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Send, Timer } from 'lucide-react';
-import { NotFoundComents } from '../../features/comment/ui/NotFoundComents';
+import { NotFoundComments } from '../../features/comment/ui/NotFoundComments';
 import { EmojiButton } from '../../features/emoji/ui/EmojiButton';
 import * as S from './index.styles';
 
@@ -54,7 +54,7 @@ export default function MyMoments() {
                 <Send size={20} color={theme.colors['yellow-500']} />
                 <span>받은 공감</span>
               </S.TitleContainer>
-              <SimpleCard height="small" content={moment.content || <NotFoundComents />} />
+              <SimpleCard height="small" content={moment.content || <NotFoundComments />} />
             </Card.Content>
             <Card.Action position="space-between">
               <EmojiButton />
