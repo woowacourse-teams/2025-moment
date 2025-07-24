@@ -38,8 +38,3 @@ jobs:
 
       - name: Prune old images
         run: docker image prune -f
-#      - name: Deploy with Docker Compose
-#        run: |
-#          cd /home/ubuntu/2025-moment/server
-#          sudo docker compose pull app
-#          sudo docker compose up --no-deps -d app
