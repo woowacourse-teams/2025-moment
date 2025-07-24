@@ -55,6 +55,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
 
   deploy:
+    needs: build-and-push-docker
     runs-on: [ self-hosted, backend ]
     steps:
       - name: Checkout
