@@ -25,9 +25,17 @@ jobs:
         run: |
           cd /home/ubuntu/2025-moment/server
           
-          sudo docker compose pull app
+          export IMAGE_TAG=${{ github.sha }}
           
+          echo "IMAGE_TAG: $IMAGE_TAG"
+          
+          sudo docker compose pull app
+
           sudo docker compose up --no-deps -d app
+          
+          echo "=== Checking if image exists locally ==="
+          docker images | grep "ghcr.io/woowacourse-teams/2025-moment" || echo "No local images found"
+
       - name: Prune old images
         run: docker image prune -f
 #      - name: Deploy with Docker Compose
