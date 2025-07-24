@@ -34,14 +34,11 @@ jobs:
         run: |
           cd /home/ubuntu/2025-moment/server
           
-          export IMAGE_TAG
-          export DOCKER_REPO
-
           echo "DOCKER_REPO: $DOCKER_REPO"
           echo "IMAGE_TAG: $IMAGE_TAG"
           
-          sudo docker compose pull app
-          sudo docker compose up --no-deps -d app
+          DOCKER_REPO=$DOCKER_REPO IMAGE_TAG=$IMAGE_TAG sudo docker compose pull app
+          DOCKER_REPO=$DOCKER_REPO IMAGE_TAG=$IMAGE_TAG sudo docker compose up --no-deps -d app
           
           echo "=== Checking if image exists locally ==="
           docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
