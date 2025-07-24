@@ -3,10 +3,7 @@ import { useSendCommentsMutation } from './useSendCommentsMutation';
 import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 
 export const useSendComments = () => {
-  const [commentsData, setCommentsData] = useState({
-    content: '',
-    momentId: 0,
-  });
+  const [comment, setComment] = useState('');
 
   const [errors, setErrors] = useState({
     content: '',
@@ -18,13 +15,13 @@ export const useSendComments = () => {
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentsData(prev => ({ ...prev, content: e.target.value }));
+    setComment(e.target.value);
   };
 
   const handleSubmit = async () => {
     try {
       await sendComments({
-        content: commentsData.content,
+        content: comment,
         momentId: momentsData?.data.id || 0,
       });
     } catch {
@@ -34,7 +31,7 @@ export const useSendComments = () => {
 
   return {
     momentsData: momentsData?.data.content,
-    commentsData,
+    comment,
     errors,
     isPending,
     isError,

@@ -7,9 +7,9 @@ import { useSendComments } from '../hooks/useSendComments';
 export const TodayCommentWriteContent = () => {
   const MAX_LENGTH = 300;
 
-  const { momentsData, commentsData, handleChange, handleSubmit } = useSendComments();
-  const currentLength = commentsData.content.length;
-  const isDisabled = commentsData.content.trim().length === 0 || currentLength > MAX_LENGTH;
+  const { momentsData, comment, handleChange, handleSubmit } = useSendComments();
+  const currentLength = comment.length;
+  const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
 
   return (
     <S.TodayContentWrapper>
@@ -22,7 +22,7 @@ export const TodayCommentWriteContent = () => {
           placeholder="따뜻한 위로의 말을 전해주세요..."
           height="medium"
           maxLength={MAX_LENGTH}
-          value={commentsData.content}
+          value={comment}
           onChange={handleChange}
         />
       </Card.Content>
