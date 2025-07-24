@@ -25,7 +25,7 @@ jobs:
         run: |
           cd /home/ubuntu/2025-moment/server
           
-          export IMAGE_TAG=${{ github.sha }}
+          export IMAGE_TAG=${{ github.event.pull_request.head.sha }}
           
           echo "IMAGE_TAG: $IMAGE_TAG"
           
