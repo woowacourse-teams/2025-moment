@@ -14,6 +14,13 @@ jobs:
       contents: read
 
     steps:
+      - name: Stop and remove existing container
+        run: |
+            if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
+              sudo docker stop moment-app-server
+              sudo docker rm -f moment-app-server
+            fi
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -26,6 +33,8 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           cd /home/ubuntu/moment
+          
+          sudo docker compose stop moment-app-server
         
           sudo docker compose up --no-deps -d app
           
