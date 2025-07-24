@@ -1,57 +1,56 @@
 import { theme } from '@/app/styles/theme';
 import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
+import { Card, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
+import { NotFoundMyMoments } from './NotFoundMyMoments';
 
 export const MyMomentsList = () => {
   const { data, isLoading } = useMomentsQuery();
   const myMoments = data?.data;
 
-  if (isLoading) {
-    return (
-      <S.MomentsContainer>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <CommonSkeletonCard key={index} variant="moment" />
-        ))}
-      </S.MomentsContainer>
-    );
-  }
+  const hasMoments = myMoments?.length && myMoments.length > 0;
 
   return (
-    <S.MomentsContainer>
-      {myMoments?.map((myMoment: MyMoments, index: number) => (
-        <Card width="large" key={index}>
-          {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
-          <Card.TitleContainer
-            title={
-              <S.TitleWrapper>
-                {/* TODO: 추후 Icon 컴포넌트로 변경 필요 */}
-                <Timer size={16} color={theme.colors['gray-400']} />{' '}
-                <S.TimeStamp>{formatRelativeTime(myMoment.createdAt)}</S.TimeStamp>
-              </S.TitleWrapper>
-            }
-            subtitle={myMoment.content}
-          />
-          <Card.Content>
-            <S.TitleContainer>
-              <Send size={20} color={theme.colors['yellow-500']} />
-              <span>받은 공감</span>
-            </S.TitleContainer>
-            <SimpleCard
-              height="small"
-              content={myMoment.comment?.content || <NotFoundComments />}
-            />
-          </Card.Content>
-          <Card.Action position="space-between">
-            {myMoment.comment?.content && <EmojiButton />}
-          </Card.Action>
-        </Card>
-      ))}
-    </S.MomentsContainer>
+    <>
+      {hasMoments ? (
+        <S.MomentsContainer>
+          {myMoments?.map((myMoment: MyMoments, index: number) => (
+            <Card width="large" key={index}>
+              {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
+              <Card.TitleContainer
+                title={
+                  <S.TitleWrapper>
+                    {/* TODO: 추후 Icon 컴포넌트로 변경 필요 */}
+                    <Timer size={16} color={theme.colors['gray-400']} />{' '}
+                    <S.TimeStamp>{formatRelativeTime(myMoment.createdAt)}</S.TimeStamp>
+                  </S.TitleWrapper>
+                }
+                subtitle={myMoment.content}
+              />
+              <Card.Content>
+                <S.TitleContainer>
+                  <Send size={20} color={theme.colors['yellow-500']} />
+                  <span>받은 공감</span>
+                </S.TitleContainer>
+                <SimpleCard
+                  height="small"
+                  content={myMoment.comment?.content || <NotFoundComments />}
+                />
+              </Card.Content>
+              <Card.Action position="space-between">
+                <EmojiButton />
+              </Card.Action>
+            </Card>
+          ))}
+        </S.MomentsContainer>
+      ) : (
+        <NotFoundMyMoments />
+      )}
+    </>
   );
 };

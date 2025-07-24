@@ -1,4 +1,4 @@
-package moment.comment.application.dto.response;
+package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;

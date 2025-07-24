@@ -4,7 +4,7 @@ FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
 COPY . .
-RUN gradle build -x test --no-daemon
+RUN gradle build -x test
 
 # 2단계: 실행용 (최소한의 JDK 포함)
 FROM eclipse-temurin:21-jdk-jammy
