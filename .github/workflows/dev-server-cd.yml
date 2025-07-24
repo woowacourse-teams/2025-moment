@@ -17,21 +17,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo ${{ secrets.MOMENT_GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Deploy with Docker Compose
         run: |
           cd /home/ubuntu/2025-moment/server
-          export IMAGE_TAG=${{ github.sha }}
-          
-          sed -i "s|image: ghcr.io/woowacourse-teams/2025-moment:latest|image: ghcr.io/woowacourse-teams/2025-moment:$IMAGE_TAG|g"docker-compose.yml
+          export IMAGE_TAG=${{ github.event.pull_request.head.sha }}
           
           sudo docker compose pull app
           
-          sudo docker compose up --no-deps -d --force-recreate app
+          sudo docker compose up --no-deps -d app
+      - name: Prune old images
+        run: docker image prune -f
 #      - name: Deploy with Docker Compose
 #        run: |
 #          cd /home/ubuntu/2025-moment/server
 #          sudo docker compose pull app
 #          sudo docker compose up --no-deps -d app
-#      - name: Prune old images
-#        run: docker image prune -f
