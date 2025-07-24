@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Create .env file
+        run: |
+          echo "REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}" > .env
+
       - name: Build application
         run: pnpm run build
         env:
@@ -37,7 +41,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          echo "🔼 Uploading static files to S3..."
+          echo "Uploading static files to S3..."
 
           # 1. HTML 외 모든 파일 먼저 업로드
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
@@ -65,7 +69,7 @@ jobs:
 
       - name: Invalidate CloudFront cache
         run: |
-          echo "🧹 Invalidating CloudFront cache..."
+          echo "Invalidating CloudFront cache..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" \

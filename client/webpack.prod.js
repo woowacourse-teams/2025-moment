@@ -1,5 +1,6 @@
 import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,4 +15,17 @@ export default merge(common, {
     clean: true,
   },
   devtool: false,
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'public',
+          to: '',
+          globOptions: {
+            ignore: ['**/index.html'],
+          },
+        },
+      ],
+    }),
+  ],
 });
