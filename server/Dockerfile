@@ -3,6 +3,6 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
 
-COPY app/build/libs/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
