@@ -22,7 +22,7 @@ export interface Comment {
   id: number;
   content: string;
   createdAt: string;
-  emoji: Emoji[];
+  emojis: Emoji[];
 }
 
 export interface Emoji {
