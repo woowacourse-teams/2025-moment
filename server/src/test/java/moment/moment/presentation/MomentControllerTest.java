@@ -97,7 +97,6 @@ class MomentControllerTest {
         assertAll(
                 () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
-//                () -> assertThat(response.createdAt()).isEqualTo(savedMoment.getCreatedAt())
         );
 
 

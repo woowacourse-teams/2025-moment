@@ -125,10 +125,8 @@ class CommentControllerTest {
         assertAll(
                 () -> assertThat(response).hasSize(1),
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment.getContent()),
-//                () -> assertThat(firstResponse.createdAt()).isEqualTo(savedComment.getCreatedAt()),
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment.getContent()),
                 () -> assertThat(firstResponse.moment().content()).isEqualTo(savedMoment.getContent()),
-//                () -> assertThat(firstResponse.moment().createdAt()).isEqualTo(savedMoment.getCreatedAt()),
                 () -> assertThat(firstResponse.emojis().getFirst().id()).isEqualTo(savedEmoji.getId()),
                 () -> assertThat(firstResponse.emojis().getFirst().emojiType()).isEqualTo(savedEmoji.getEmojiType())
         );

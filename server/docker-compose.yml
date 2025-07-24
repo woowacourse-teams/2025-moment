@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     container_name: moment-app-server
-    build: .
+    image: ghcr.io/woowacourse-teams/2025-moment:latest
     ports:
       - "8080:8080"
     env_file:
