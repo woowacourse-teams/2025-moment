@@ -19,7 +19,7 @@ export const Toast: React.FC<ToastProps> = ({ id, message, variant, duration = 4
   const handleClose = () => {
     setIsExiting(true);
     setTimeout(() => {
-      onClose(id);
+      onClose();
     }, 300);
   };
 

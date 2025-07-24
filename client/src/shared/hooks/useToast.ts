@@ -2,7 +2,7 @@ import { useToastContext } from '@/shared/context/toast/useToastContext';
 import { UseToastReturn } from '@/shared/types/toast';
 
 export const useToast = (): UseToastReturn => {
-  const { addToast, removeToast, toasts } = useToastContext();
+  const { addToast, removeToast, toast } = useToastContext();
 
   const showSuccess = (message: string, duration?: number) => {
     addToast({
@@ -24,6 +24,6 @@ export const useToast = (): UseToastReturn => {
     showSuccess,
     showError,
     removeToast,
-    toasts,
+    toast,
   };
 };

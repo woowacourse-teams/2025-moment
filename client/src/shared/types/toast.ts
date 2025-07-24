@@ -12,7 +12,7 @@ export interface ToastProps {
   message: string;
   variant: ToastVariant;
   duration?: number;
-  onClose: (id: string) => void;
+  onClose: () => void;
 }
 
 export type CreateToastParams = Omit<ToastData, 'id'>;
@@ -20,6 +20,6 @@ export type CreateToastParams = Omit<ToastData, 'id'>;
 export interface UseToastReturn {
   showSuccess: (message: string, duration?: number) => void;
   showError: (message: string, duration?: number) => void;
-  removeToast: (id: string) => void;
-  toasts: ToastData[];
+  removeToast: () => void;
+  toast: ToastData | null;
 }

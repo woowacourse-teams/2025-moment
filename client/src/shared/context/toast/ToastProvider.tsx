@@ -6,48 +6,44 @@ import { ToastContainer } from '../../ui/toast/Toast.styles';
 
 export interface ToastContextType {
   addToast: (toast: CreateToastParams) => void;
-  removeToast: (id: string) => void;
-  toasts: ToastData[];
+  removeToast: () => void;
+  toast: ToastData | null;
 }
 
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
-  const [toasts, setToasts] = useState<ToastData[]>([]);
+  const [toast, setToast] = useState<ToastData | null>(null);
 
-  const addToast = (toast: CreateToastParams) => {
-    const id = Math.random().toString(36).slice(2, 11);
-    const newToast: ToastData = { ...toast, id };
-
-    setToasts(prevToasts => [...prevToasts, newToast]);
+  const addToast = (toastParams: CreateToastParams) => {
+    const newToast: ToastData = { ...toastParams, id: 'single-toast' };
+    setToast(newToast);
   };
 
-  const removeToast = (id: string) => {
-    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
+  const removeToast = () => {
+    setToast(null);
   };
 
   const contextValue: ToastContextType = {
     addToast,
     removeToast,
-    toasts,
+    toast,
   };
 
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      {toasts.length > 0 &&
+      {toast &&
         createPortal(
           <ToastContainer>
-            {toasts.map(toast => (
-              <Toast
-                key={toast.id}
-                id={toast.id}
-                message={toast.message}
-                variant={toast.variant}
-                duration={toast.duration}
-                onClose={removeToast}
-              />
-            ))}
+            <Toast
+              key={toast.id}
+              id={toast.id}
+              message={toast.message}
+              variant={toast.variant}
+              duration={toast.duration}
+              onClose={removeToast}
+            />
           </ToastContainer>,
           document.body,
         )}

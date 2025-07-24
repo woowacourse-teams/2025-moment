@@ -67,7 +67,7 @@ const ToastExample: React.FC = () => {
           cursor: 'pointer',
         }}
       >
-        여러 메시지 보기
+        연속 메시지 (교체됨)
       </button>
 
       <button
