@@ -3,7 +3,7 @@ export interface MomentsResponse {
   data: MyMoments[];
 }
 
-export interface matchMomentsResponse {
+export interface MatchMomentsResponse {
   status: number;
   data: {
     id: number;
