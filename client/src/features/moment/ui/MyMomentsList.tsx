@@ -8,10 +8,13 @@ import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
+import { Emoji } from '@/features/emoji/ui/Emoji';
 
 export const MyMomentsList = () => {
   const { data } = useMomentsQuery();
   const myMoments = data?.data;
+  const { handleDeleteEmoji } = useDeleteEmoji();
 
   return (
     <S.MomentsContainer>
@@ -42,7 +45,13 @@ export const MyMomentsList = () => {
             {/* TODO: 이모지 딜리트 구현 */}
             {myMoment.comment?.content && <EmojiButton commentId={myMoment.comment.id} />}
             {myMoment.comment && (
-              <div>{myMoment.comment.emojis.map(emoji => emojiMapping(emoji.emojiType))}</div>
+              <S.EmojiContainer>
+                {myMoment.comment.emojis.map(emoji => (
+                  <Emoji key={emoji.id} onClick={() => handleDeleteEmoji(emoji.id)}>
+                    {emojiMapping(emoji.emojiType)}
+                  </Emoji>
+                ))}
+              </S.EmojiContainer>
             )}
           </Card.Action>
         </Card>
