@@ -1,13 +1,13 @@
 name: Dev Server CD
 
-on:
+#on:
 #  pull_request:
 #    types: [ closed ]
 #    branches: [ develop ]
 #    paths: [ 'server/**' ]
-  push:
-    branches:
-      - develop
+#  push:
+#    branches:
+#      - develop
 
 jobs:
   deploy:
