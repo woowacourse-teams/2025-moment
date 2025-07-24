@@ -1,4 +1,3 @@
-import { useSubmitted } from '@/features/moment/hook/useSubmitted';
 import { TodayMomentSuccessContent } from '@/features/moment/ui/TodayMomentSuccessContent';
 import { TodayMomentWriteContent } from '@/features/moment/ui/TodayMomentWriteContent';
 import { Card } from '@/shared/ui';
@@ -8,8 +7,12 @@ export function TodayMomentForm() {
 
   return (
     <Card width="medium">
-      {!isSubmitted ? (
-        <TodayMomentWriteContent onSubmit={handleSubmit} />
+      {!isSuccess ? (
+        <TodayMomentWriteContent
+          handleContentChange={handleContentChange}
+          handleSendContent={handleSendContent}
+          content={content}
+        />
       ) : (
         <TodayMomentSuccessContent />
       )}

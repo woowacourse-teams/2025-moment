@@ -22,11 +22,15 @@ export const TodayMomentSuccessContent = () => {
         />
       </Card.Content>
       <Card.Action position="center">
+<<<<<<< HEAD
+        <YellowSquareButton Icon={MessageSquare} title="받은 모멘트 보기" onClick={() => {}} />
+=======
         <YellowSquareButton
           Icon={MessageSquare}
           title="받은 모멘트 보기"
           onClick={handleNavigate}
         />
+>>>>>>> 9f0ca0624ec697ca15a524299e0180d6ae355870
       </Card.Action>
     </S.TodayContentWrapper>
   );
