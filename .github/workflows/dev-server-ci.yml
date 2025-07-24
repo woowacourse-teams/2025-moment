@@ -23,7 +23,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Test with Gradle
-        #run: ./gradlew test
+        run: ./gradlew test
 
   build-and-push-docker:
     needs: test
