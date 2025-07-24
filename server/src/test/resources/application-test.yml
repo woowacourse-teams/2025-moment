@@ -26,7 +26,7 @@ spring:
 
 jwt:
   secret:
-    key: ${JWT_SECRET_KEY}
+    key: test-secret-key-for-jwt-token-generation
 
 expiration:
-  time: ${EXPIRATION_TIME}
+  time: 3600000

@@ -1,14 +1,18 @@
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { Input } from '@/shared/ui/input/Input';
+import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import * as S from './SignupStep.styles';
 
 interface SignupStep1Props {
   signupData: SignupFormData;
   errors: SignupErrors;
   handleChange: (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onNext?: () => void;
 }
 
-export const SignupStep1 = ({ signupData, errors, handleChange }: SignupStep1Props) => {
+export const SignupStep1 = ({ signupData, errors, handleChange, onNext }: SignupStep1Props) => {
+  useEnterKeyHandler(onNext);
+
   return (
     <S.StepContainer>
       <S.InputGroup>
