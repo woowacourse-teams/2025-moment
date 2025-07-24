@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { useSendCommentsMutation } from './useSendCommentsMutation';
+import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 
-export const useSend = () => {
+export const useSendComments = () => {
   const [commentsData, setCommentsData] = useState({
     content: '',
-    momentId: 11,
+    momentId: 0,
   });
 
   const [errors, setErrors] = useState({
     content: '',
     momentId: '',
   });
+
+  const { data: momentsData } = useMatchMomentsQuery();
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
@@ -22,7 +25,7 @@ export const useSend = () => {
     try {
       await sendComments({
         content: commentsData.content,
-        momentId: commentsData.momentId,
+        momentId: momentsData?.data.id || 0,
       });
     } catch {
       alert('코멘트 전송에 실패했습니다.');
@@ -30,6 +33,7 @@ export const useSend = () => {
   };
 
   return {
+    momentsData: momentsData?.data.content,
     commentsData,
     errors,
     isPending,
