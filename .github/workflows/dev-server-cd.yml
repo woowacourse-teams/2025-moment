@@ -36,9 +36,14 @@ jobs:
           
           echo "DOCKER_REPO: $DOCKER_REPO"
           echo "IMAGE_TAG: $IMAGE_TAG"
-          
-          DOCKER_REPO=$DOCKER_REPO IMAGE_TAG=$IMAGE_TAG sudo docker compose pull app
-          DOCKER_REPO=$DOCKER_REPO IMAGE_TAG=$IMAGE_TAG sudo docker compose up --no-deps -d app
+
+          echo "DOCKER_REPO=${DOCKER_REPO}" > ./.env.ci
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> ./.env.ci
+
+          sudo docker compose --env-file ./.env.ci pull app
+          sudo docker compose --env-file ./.env.ci up --no-deps -d app
+
+          rm ./.env.ci
           
           echo "=== Checking if image exists locally ==="
           docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
