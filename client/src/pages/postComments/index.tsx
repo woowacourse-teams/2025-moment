@@ -5,7 +5,7 @@ import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './index.styles';
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { useEmojisQuery } from '@/features/emoji/hooks/useEmojisQuery';
-import { EMOJI_TYPE } from '@/features/emoji/const/emojiType';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
@@ -17,10 +17,6 @@ export default function PostCommentsPage() {
   if (!commentsResponse?.data || !Array.isArray(commentsResponse.data)) {
     return <div>데이터가 없습니다.</div>;
   }
-
-  const emojiMapping = (emojiType: string) => {
-    return EMOJI_TYPE[emojiType as keyof typeof EMOJI_TYPE] || emojiType;
-  };
 
   return (
     <S.PostCommentsPageContainer>
