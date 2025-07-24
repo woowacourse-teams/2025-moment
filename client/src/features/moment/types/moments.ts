@@ -19,6 +19,7 @@ export interface MyMoments {
 }
 
 export interface Comment {
+  id: number;
   content: string;
   createdAt: string;
   emoji: Emoji[];
