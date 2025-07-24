@@ -12,7 +12,7 @@ on:
 jobs:
   deploy:
     if: github.event.pull_request.merged == true
-    runs-on: [self-hosted, backend]
+    runs-on: [ self-hosted, backend ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,7 +21,16 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           cd /home/ubuntu/2025-moment/server
+          export IMAGE_TAG=${{ github.event.pull_request.head.sha }}
+          
           sudo docker compose pull app
-          sudo docker compose up --no-deps -d app
-      - name: Prune old images
-        run: docker image prune -f
+          
+          sudo docker compose up --no-deps -d app  
+
+#      - name: Deploy with Docker Compose
+#        run: |
+#          cd /home/ubuntu/2025-moment/server
+#          sudo docker compose pull app
+#          sudo docker compose up --no-deps -d app
+#      - name: Prune old images
+#        run: docker image prune -f
