@@ -3,8 +3,7 @@ version: "3.8"
 services:
   app:
     container_name: moment-app-server
-    #    image: ghcr.io/woowacourse-teams/2025-moment:latest
-    image: ghcr.io/woowacourse-teams/2025-moment:${IMAGE_TAG}
+    image: ghcr.io/woowacourse-teams/2025-moment:a476bc976cdeb0fd201597cb7ffb81ce9152efee
     ports:
       - "8080:8080"
     env_file:

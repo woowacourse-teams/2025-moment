@@ -2,7 +2,7 @@ name: Dev Server CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     branches: [ develop ]
     paths: [ 'server/**' ]
 
@@ -44,8 +44,8 @@ jobs:
           file: ./server/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ github.event.pull_request.head.sha }}
           labels: |
             org.opencontainers.image.source=${{ github.repository_url }}
             org.opencontainers.image.revision=${{ github.sha }}
