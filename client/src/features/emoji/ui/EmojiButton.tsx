@@ -1,11 +1,10 @@
 import { CustomTheme } from '@/app/styles/theme';
 import { Button } from '@/shared/ui';
 import { useEmojiMutation } from '../hooks/useEmojiMutation';
-import { EmojiType } from '../type/emoji';
 
 interface EmojiButtonProps {
   commentId: number;
-  emojiType?: EmojiType;
+  emojiType?: string;
 }
 
 // 현재는 emojiType을 옵셔널로 주지만 나중엔 필수로 바꿔야함
