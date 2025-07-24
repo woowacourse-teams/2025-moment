@@ -7,9 +7,5 @@ export const useSubmitted = () => {
     setIsSubmitted(true);
   };
 
-  const handleBack = () => {
-    setIsSubmitted(false);
-  };
-
-  return { isSubmitted, handleSubmit, handleBack };
+  return { isSubmitted, handleSubmit };
 };

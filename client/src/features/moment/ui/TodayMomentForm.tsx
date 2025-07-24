@@ -1,7 +1,7 @@
+import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentSuccessContent } from '@/features/moment/ui/TodayMomentSuccessContent';
 import { TodayMomentWriteContent } from '@/features/moment/ui/TodayMomentWriteContent';
 import { Card } from '@/shared/ui';
-import { useSendMoments } from '../hook/useSendMoments';
 
 export function TodayMomentForm() {
   const { handleContentChange, handleSendContent, content, isSuccess } = useSendMoments();

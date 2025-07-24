@@ -1,6 +1,6 @@
+import { MyMomentsList } from '@/features/moment/ui/MyMomentsList';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './index.styles';
-import { MyMomentsList } from '@/features/moment/ui/MyMomentsList';
 
 export default function MyMoments() {
   return (

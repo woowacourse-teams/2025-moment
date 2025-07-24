@@ -1,17 +1,18 @@
 name: Dev Server CD
 
-#on:
-#  pull_request:
-#    types: [ closed ]
-#    branches: [ develop ]
-#    paths: [ 'server/**' ]
-#  push:
-#    branches:
-#      - develop
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+    paths: [ 'server/**' ]
+  push:
+    branches:
+      - develop
 
 jobs:
   deploy:
-    runs-on: [self-hosted, backend]
+    if: github.event.pull_request.merged == true
+    runs-on: [ self-hosted, backend ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,7 +21,15 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           cd /home/ubuntu/2025-moment/server
+          export IMAGE_TAG=${{ github.event.pull_request.head.sha }}
+          
           sudo docker compose pull app
+          
           sudo docker compose up --no-deps -d app
-      - name: Prune old images
-        run: docker image prune -f
+#      - name: Deploy with Docker Compose
+#        run: |
+#          cd /home/ubuntu/2025-moment/server
+#          sudo docker compose pull app
+#          sudo docker compose up --no-deps -d app
+#      - name: Prune old images
+#        run: docker image prune -f
