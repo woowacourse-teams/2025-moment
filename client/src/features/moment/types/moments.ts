@@ -3,6 +3,15 @@ export interface MomentsResponse {
   data: MyMoments[];
 }
 
+export interface matchMomentsResponse {
+  status: number;
+  data: {
+    id: number;
+    content: string;
+    createdAt: string;
+  };
+}
+
 export interface MyMoments {
   content: string;
   createdAt: string;

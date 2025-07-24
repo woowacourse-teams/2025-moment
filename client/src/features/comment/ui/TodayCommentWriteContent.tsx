@@ -2,6 +2,7 @@ import { Card, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
 import * as S from '../../moment/ui/TodayContent.styles';
+import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 
 interface TodayCommentWriteContentProps {
   commentsData: { content: string; momentId: number };
@@ -19,6 +20,7 @@ export const TodayCommentWriteContent = ({
   const MAX_LENGTH = 300;
   const currentLength = commentsData.content.length;
   const isDisabled = commentsData.content.trim().length === 0 || currentLength > MAX_LENGTH;
+  const { data: momentsData } = useMatchMomentsQuery();
 
   const handleFormSubmit = async () => {
     await handleSubmit();
@@ -29,7 +31,7 @@ export const TodayCommentWriteContent = ({
     <S.TodayContentWrapper>
       <Card.TitleContainer
         title={''} // 추후 공용 컴포넌트 추가 후 수정
-        subtitle="오늘 첫 면접에서 떨어졌어요. 너무 실망스럽고 자신감이 없어져요. 위로 받고 싶어요."
+        subtitle={momentsData?.data.content || ''}
       />
       <Card.Content>
         <TextArea
