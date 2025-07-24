@@ -53,7 +53,7 @@ public class AuthController {
                 .secure(true)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(1800000)
+                .maxAge(1800)
                 .build();
 
         HttpStatus status = HttpStatus.OK;
