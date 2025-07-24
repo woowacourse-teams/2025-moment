@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     container_name: moment-app-server
-    image: ${DOCKER_REPO}:${IMAGE_TAG}
+    image: skyrockets/moment:latest
     ports:
       - "8080:8080"
     env_file:
