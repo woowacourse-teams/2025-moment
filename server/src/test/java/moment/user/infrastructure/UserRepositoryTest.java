@@ -118,6 +118,7 @@ class UserRepositoryTest {
         this.testDateTimeProvider = (TestDateTimeProvider) dateTimeProvider;
     }
 
+    //TODO: 시간 값 비교 문제 해결
     @Disabled
     @Test
     void 오늘_날짜에_매칭_기록이_없는_사용자를_조회한다() {

@@ -4,14 +4,14 @@ import { TodayMomentWriteContent } from '@/features/moment/ui/TodayMomentWriteCo
 import { Card } from '@/shared/ui';
 
 export function TodayMomentForm() {
-  const { isSubmitted, handleSubmit, handleBack } = useSubmitted();
+  const { isSubmitted, handleSubmit } = useSubmitted();
 
   return (
     <Card width="medium">
       {!isSubmitted ? (
         <TodayMomentWriteContent onSubmit={handleSubmit} />
       ) : (
-        <TodayMomentSuccessContent onBack={handleBack} />
+        <TodayMomentSuccessContent />
       )}
     </Card>
   );

@@ -6,4 +6,5 @@ export const ROUTES = {
   TODAY_MOMENT: '/today-moment',
   POST_COMMENTS: '/post-comments',
   TODAY_COMMENT: '/today-comment',
+  TODAY_COMMENT_SUCCESS: '/today-comment/success',
 };

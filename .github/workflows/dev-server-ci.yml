@@ -1,13 +1,10 @@
 name: Dev Server CI
 
 on:
-#  pull_request:
-#    types: [opened, synchronize, reopened, closed]
-#    branches: [ develop ]
-#    paths: [ 'server/**' ]
-  push:
-    branches:
-      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ develop ]
+    paths: [ 'server/**' ]
 
 jobs:
   test:
@@ -29,7 +26,6 @@ jobs:
         run: ./gradlew test
 
   build-and-push-docker:
-    #if: github.event.pull_request.merged == true
     needs: test
     runs-on: ubuntu-latest
     steps:
