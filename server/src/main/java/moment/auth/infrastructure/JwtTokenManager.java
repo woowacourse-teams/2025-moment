@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
+import java.util.function.Function;
 import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.TokenManager;
 import moment.global.exception.ErrorCode;
@@ -46,12 +47,34 @@ public class JwtTokenManager implements TokenManager {
 
     @Override
     public Claims extractClaims(String token) {
+        return handleTokenException(token, (value) ->
+                Jwts.parser()
+                        .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                        .build()
+                        .parseSignedClaims(value)
+                        .getPayload()
+        );
+    }
+
+    @Override
+    public Authentication extractAuthentication(String token) {
+        Long id = handleTokenException(token, this::extractIdFromToken);
+
+        return Authentication.from(id);
+    }
+
+    private Long extractIdFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return Long.valueOf(verifiedJwt.getPayload().getSubject());
+    }
+
+    private <T> T handleTokenException(String token, Function<String, T> function) {
         try {
-            return Jwts.parser()
-                    .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+            return function.apply(token);
         } catch (MalformedJwtException malformedJwtException) {
             throw new MomentException(ErrorCode.TOKEN_INVALID);
         } catch (ExpiredJwtException expiredJwtException) {
@@ -63,17 +86,5 @@ public class JwtTokenManager implements TokenManager {
         } catch (JwtException jwtException) {
             throw new MomentException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public Authentication extractAuthentication(String token) {
-        Jws<Claims> verifiedJwt = Jwts.parser()
-                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
-                .build()
-                .parseSignedClaims(token);
-
-        Long id = Long.valueOf(verifiedJwt.getPayload().getSubject());
-
-        return Authentication.from(id);
     }
 }
