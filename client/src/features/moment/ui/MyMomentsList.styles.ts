@@ -32,3 +32,9 @@ export const MomentsContainer = styled.section`
   align-items: center;
   gap: 16px;
 `;
+
+export const EmojiContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
