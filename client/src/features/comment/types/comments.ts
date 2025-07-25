@@ -1,7 +1,8 @@
-export interface postCommentsResponse {
+export interface CommentsResponse {
   status: number;
   data: [
     {
+      id: number;
       content: string;
       createdAt: string;
       moment: {
@@ -19,12 +20,12 @@ export interface postCommentsResponse {
   ];
 }
 
-export interface sendCommentsData {
+export interface SendCommentsData {
   content: string;
   momentId: number;
 }
 
-export interface sendCommentsResponse {
+export interface SendCommentsResponse {
   status: number;
   data: {
     commentId: number;
@@ -33,7 +34,7 @@ export interface sendCommentsResponse {
   };
 }
 
-export interface sendCommentsError {
+export interface SendCommentsError {
   code: string;
   message: string;
   status: number;

@@ -1,7 +1,7 @@
 import { api } from '@/app/lib/api';
-import { postCommentsResponse } from '../types/comments';
+import { CommentsResponse } from '../types/comments';
 
-export const getComments = async (): Promise<postCommentsResponse> => {
-  const response = await api.get<postCommentsResponse>('/comments/me');
+export const getComments = async (): Promise<CommentsResponse> => {
+  const response = await api.get<CommentsResponse>('/comments/me');
   return response.data;
 };
