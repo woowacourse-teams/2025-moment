@@ -1,6 +1,6 @@
+import { Button } from '@/shared/ui/button/Button';
 import { Hero } from '@/widgets/hero';
 import * as S from './index.styles';
-import { Button } from '@/shared/ui/button/Button';
 
 export default function HomePage() {
   return (
