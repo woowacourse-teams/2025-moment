@@ -8,6 +8,9 @@ import moment.reply.domain.Emoji;
 
 @Schema(description = "모멘트에 달린 코멘트 응답")
 public record MyMomentCommentResponse(
+        @Schema(description = "코멘트 id", example = "1")
+        Long id,
+
         @Schema(description = "코멘트 내용", example = "안됐네요.")
         String content,
 
@@ -21,6 +24,11 @@ public record MyMomentCommentResponse(
         List<MyMomentEmojiResponse> emojiDetailRespons = emojis.stream()
                 .map(MyMomentEmojiResponse::from)
                 .toList();
-        return new MyMomentCommentResponse(comment.getContent(), comment.getCreatedAt(), emojiDetailRespons);
+        
+        return new MyMomentCommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                emojiDetailRespons);
     }
 }

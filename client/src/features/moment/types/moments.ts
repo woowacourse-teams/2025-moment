@@ -3,6 +3,15 @@ export interface MomentsResponse {
   data: MyMoments[];
 }
 
+export interface MatchMomentsResponse {
+  status: number;
+  data: {
+    id: number;
+    content: string;
+    createdAt: string;
+  };
+}
+
 export interface MyMoments {
   content: string;
   createdAt: string;
@@ -10,9 +19,10 @@ export interface MyMoments {
 }
 
 export interface Comment {
+  id: number;
   content: string;
   createdAt: string;
-  emoji: Emoji[];
+  emojis: Emoji[];
 }
 
 export interface Emoji {

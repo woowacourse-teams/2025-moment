@@ -11,7 +11,6 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   // 추후 refresh token 로직 추가
-  // 테스트
   response => response,
   // error => {
   //   if (error.response.status === 401) {

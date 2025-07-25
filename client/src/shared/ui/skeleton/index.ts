@@ -1,0 +1,1 @@
+export { CommonSkeletonCard } from './CommonSkeletonCard';
