@@ -1,6 +1,6 @@
+import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 import { useState } from 'react';
 import { useSendCommentsMutation } from './useSendCommentsMutation';
-import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 
 export const useSendComments = () => {
   const [comment, setComment] = useState('');
@@ -24,8 +24,8 @@ export const useSendComments = () => {
         content: comment,
         momentId: momentsData?.data.id || 0,
       });
-    } catch {
-      alert('코멘트 전송에 실패했습니다.');
+    } catch (error) {
+      console.error(error);
     }
   };
 
