@@ -1,16 +1,17 @@
 import { Layout } from '@/app/layout/ui';
 import { ROUTES } from '@/app/routes/routes';
 import HomePage from '@/pages/home';
-import MyMoments from '@/pages/myMoments';
 import LoginPage from '@/pages/login';
+import MyMoments from '@/pages/myMoments';
 import SignupPage from '@/pages/signup';
 
-import TodayMomentPage from '@/pages/todayMoment';
 import PostCommentsPage from '@/pages/postComments';
+import TodayMomentPage from '@/pages/todayMoment';
 
-import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
+import NotFoundPage from '@/pages/notFound';
 import TodayCommentPage from '@/pages/todayComment/TodayCommentPage';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
+import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
       <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
       <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Route>,
   ),
 );
