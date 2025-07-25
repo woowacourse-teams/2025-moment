@@ -1,7 +1,7 @@
 import { theme } from '@/app/styles/theme';
 import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { Card, SimpleCard } from '@/shared/ui';
+import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
@@ -13,11 +13,21 @@ import { Emoji } from '@/features/emoji/ui/Emoji';
 import { NotFoundMyMoments } from './NotFoundMyMoments';
 
 export const MyMomentsList = () => {
-  const { data } = useMomentsQuery();
+  const { data, isLoading } = useMomentsQuery();
   const myMoments = data?.data;
   const { handleDeleteEmoji } = useDeleteEmoji();
 
   const hasMoments = myMoments?.length && myMoments.length > 0;
+
+  if (isLoading) {
+    return (
+      <S.MomentsContainer>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <CommonSkeletonCard key={index} variant="moment" />
+        ))}
+      </S.MomentsContainer>
+    );
+  }
 
   return (
     <>

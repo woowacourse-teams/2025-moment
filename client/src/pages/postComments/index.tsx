@@ -1,11 +1,11 @@
 import { theme } from '@/app/styles/theme';
-import { Card, SimpleCard } from '@/shared/ui';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import { Gift, MessageSquare, Send } from 'lucide-react';
-import * as S from './index.styles';
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { useEmojisQuery } from '@/features/emoji/hooks/useEmojisQuery';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
+import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import { Gift, MessageSquare, Send } from 'lucide-react';
+import * as S from './index.styles';
 import { NotFoundMyComments } from './NotFoundMyComments';
 
 export default function PostCommentsPage() {
@@ -13,7 +13,18 @@ export default function PostCommentsPage() {
   const { data: emojiResponse } = useEmojisQuery(4); // TODO: 현재 commentsResponse에 commentId 값이 없어서 임시로 설정.
   const emojiData = emojiResponse?.data;
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) {
+    return (
+      <S.PostCommentsPageContainer>
+        <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
+        <S.MomentsContainer>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <CommonSkeletonCard key={index} variant="comment" />
+          ))}
+        </S.MomentsContainer>
+      </S.PostCommentsPageContainer>
+    );
+  }
   if (error) return <div>에러가 발생했습니다.</div>;
   if (!commentsResponse?.data || !Array.isArray(commentsResponse.data)) {
     return <div>데이터가 없습니다.</div>;
