@@ -7,11 +7,15 @@ import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
+import { Emoji } from '@/features/emoji/ui/Emoji';
 import { NotFoundMyMoments } from './NotFoundMyMoments';
 
 export const MyMomentsList = () => {
   const { data, isLoading } = useMomentsQuery();
   const myMoments = data?.data;
+  const { handleDeleteEmoji } = useDeleteEmoji();
 
   const hasMoments = myMoments?.length && myMoments.length > 0;
 
@@ -43,7 +47,17 @@ export const MyMomentsList = () => {
                 />
               </Card.Content>
               <Card.Action position="space-between">
-                <EmojiButton />
+                {/* TODO: 이모지 딜리트 구현 */}
+                {myMoment.comment?.content && <EmojiButton commentId={myMoment.comment.id} />}
+                {myMoment.comment && (
+                  <S.EmojiContainer>
+                    {myMoment.comment.emojis.map(emoji => (
+                      <Emoji key={emoji.id} onClick={() => handleDeleteEmoji(emoji.id)}>
+                        {emojiMapping(emoji.emojiType)}
+                      </Emoji>
+                    ))}
+                  </S.EmojiContainer>
+                )}
               </Card.Action>
             </Card>
           ))}
