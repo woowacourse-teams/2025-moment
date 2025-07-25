@@ -11,7 +11,6 @@ export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
   const { data: emojiResponse } = useEmojisQuery(4); // TODO: 현재 commentsResponse에 commentId 값이 없어서 임시로 설정.
   const emojiData = emojiResponse?.data;
-  console.log('emojiData', emojiData);
 
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
