@@ -27,14 +27,16 @@ public enum ErrorCode {
 
     COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_FOUND("C-002", "존재하지 않는 코멘트입니다.", HttpStatus.NOT_FOUND),
+    COMMENT_CONFLICT("C-003", "모멘트에 등록된 코멘트가 이미 존재합니다.", HttpStatus.CONFLICT),
 
     MOMENT_CONTENT_EMPTY("M-001", "모멘트 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
-    MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND);
+    MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND),
+    ;
 
     private final String code;
     private final String message;
     private final HttpStatus status;
-    
+
     ErrorCode(String code, String message, HttpStatus status) {
         this.code = code;
         this.message = message;

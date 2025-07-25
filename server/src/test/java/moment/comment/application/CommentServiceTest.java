@@ -1,15 +1,5 @@
 package moment.comment.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
-import java.util.Collections;
-import java.util.List;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentsResponse;
@@ -29,6 +19,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentServiceTest {
@@ -47,6 +48,9 @@ class CommentServiceTest {
 
     @Mock
     private CommentRepository commentRepository;
+
+    @Mock
+    private CommentQueryService commentQueryService;
 
     @Test
     void Comment를_등록한다() {
@@ -131,4 +135,26 @@ class CommentServiceTest {
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
+
+    @Test
+    void 코멘트가_이미_등록된_모멘트에_코멘트를_등록하는_경우_예외가_발생한다() {
+        // given
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(commentQueryService.existsByMoment(any(Moment.class))).willReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> commentService.addComment(request, 1L))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_CONFLICT);
+    }
+
+
 }
