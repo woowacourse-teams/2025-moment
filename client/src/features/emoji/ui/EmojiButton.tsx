@@ -1,29 +1,18 @@
 import { CustomTheme } from '@/app/styles/theme';
 import { Button } from '@/shared/ui';
 import { useEmojiMutation } from '../hooks/useEmojiMutation';
-import { Emoji } from '../type/emoji';
 
 interface EmojiButtonProps {
   commentId: number;
   emojiType?: string;
-  onAddEmojiData: (newEmoji: Emoji) => void;
 }
 
 // 현재는 emojiType을 옵셔널로 주지만 나중엔 필수로 바꿔야함
-export const EmojiButton = ({
-  commentId,
-  emojiType = 'HEART',
-  onAddEmojiData: handleEmojiAdded,
-}: EmojiButtonProps) => {
+export const EmojiButton = ({ commentId, emojiType = 'HEART' }: EmojiButtonProps) => {
   const { mutateAsync: sendEmoji } = useEmojiMutation();
   const handleClick = async () => {
     try {
-      const response = await sendEmoji({
-        emojiType,
-        commentId,
-      });
-
-      handleEmojiAdded(response.data[0]);
+      await sendEmoji({ emojiType, commentId });
     } catch {
       alert('스티커 보내기 실패');
     }
