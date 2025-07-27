@@ -30,28 +30,39 @@ class CommentRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void Comment_ID와_일치하는_Comment_목록을_조회한다() {
+    void Comment_ID와_일치하는_Comment_목록을_생성_시간_내림차순으로_조회한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
-        userRepository.save(momenter);
+        User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
+        userRepository.save(momenter1);
+
+        User momenter2 = new User("ama@gmail.com", "1234", "ama");
+        userRepository.save(momenter2);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo");
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
-        Moment savedMoment = momentRepository.save(moment);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
+        Moment savedMoment1 = momentRepository.save(moment1);
 
-        Comment comment = new Comment("첫 번째 댓글", commenter, moment);
-        Comment savedComment = commentRepository.save(comment);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment savedMoment2 = momentRepository.save(moment2);
+
+        Comment comment1 = new Comment("moment1 comment", commenter, moment1);
+        Comment savedComment1 = commentRepository.save(comment1);
+
+        Comment comment2 = new Comment("moment2 comment", commenter, moment2);
+        Comment savedComment2 = commentRepository.save(comment2);
 
         // when
-        List<Comment> comments = commentRepository.findCommentsByCommenterId(savedCommenter.getId());
+        List<Comment> comments = commentRepository.findCommentsByCommenterIdOrderByCreatedAtDesc(savedCommenter.getId());
 
         // then
         assertAll(
-                () -> assertThat(comments).hasSize(1),
-                () -> assertThat(comments.getFirst()).isEqualTo(savedComment),
-                () -> assertThat(comments.getFirst().getMoment()).isEqualTo(savedMoment)
+                () -> assertThat(comments).hasSize(2),
+                () -> assertThat(comments.getFirst()).isEqualTo(savedComment2),
+                () -> assertThat(comments.getLast()).isEqualTo(savedComment1),
+                () -> assertThat(comments.getFirst().getMoment()).isEqualTo(savedMoment2),
+                () -> assertThat(comments.getLast().getMoment()).isEqualTo(savedMoment1)
         );
     }
 

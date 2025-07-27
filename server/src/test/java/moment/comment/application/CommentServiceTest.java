@@ -101,16 +101,22 @@ class CommentServiceTest {
     }
 
     @Test
-    void Commenter_ID가_일치하는_Comment_목록을_불러온다() {
+    void Commenter_ID가_일치하는_Comment_목록을_생성_시간_내림차순으로_불러온다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
-
+        User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter2 = new User("drago@gmail.com", "1234", "drago");
         User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        Comment comment = new Comment("첫 번째 댓글", commenter, moment);
 
-        List<Comment> expectedComments = List.of(comment);
-        given(commentRepository.findCommentsByCommenterId(any(Long.class)))
+        Moment moment1 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1);
+        Moment moment2 = new Moment("오늘 하루는 행복한 하루~", true, momenter2);
+        Comment comment1 = new Comment("moment1 comment", commenter, moment1);
+        Comment comment2 = new Comment("moment2 comment", commenter, moment2);
+
+        // given
+
+        List<Comment> expectedComments = List.of(comment1, comment2);
+
+        given(commentRepository.findCommentsByCommenterIdOrderByCreatedAtDesc(any(Long.class)))
                 .willReturn(expectedComments);
         given(userQueryService.existsById(any(Long.class))).willReturn(true);
         given(emojiRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
@@ -120,8 +126,8 @@ class CommentServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(actualComments).hasSize(1),
-                () -> then(commentRepository).should(times(1)).findCommentsByCommenterId(1L)
+                () -> assertThat(actualComments).hasSize(2),
+                () -> then(commentRepository).should(times(1)).findCommentsByCommenterIdOrderByCreatedAtDesc(1L)
         );
     }
 
