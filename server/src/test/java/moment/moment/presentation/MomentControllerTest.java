@@ -105,7 +105,7 @@ class MomentControllerTest {
         assertAll(
                 () -> assertThat(responses).hasSize(4),
                 () -> assertThat(responses.stream()
-                        .allMatch(response -> response.id().equals(savedMomenter.getId())))
+                        .allMatch(response -> response.momenterId().equals(savedMomenter.getId())))
                         .isTrue()
         );
     }
