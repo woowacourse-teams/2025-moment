@@ -77,4 +77,12 @@ public class Comment extends BaseEntity {
             throw new MomentException(ErrorCode.COMMENT_INVALID);
         }
     }
+
+    public void checkAuthorization(User user) {
+        User momenter = moment.getMomenter();
+
+        if (!this.commenter.equals(user) && !momenter.equals(user)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+    }
 }

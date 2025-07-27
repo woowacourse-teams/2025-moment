@@ -5,11 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
@@ -72,6 +75,26 @@ class EmojiServiceTest {
     }
 
     // TODO: 모멘트와 코멘트 작성자 아닌 사용자가 이모지를 등록하면 예외가 발생한다
+
+    @Test
+    void 모멘트와_코멘트_작성자_아닌_사용자가_이모지를_등록하면_예외가_발생한다() {
+        // given
+        Authentication authentication = new Authentication(1L);
+        EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
+
+        User unAuthorized = new User("noUser@gmail.com", "1234", "unAuthorized");
+        Comment comment = mock(Comment.class);
+
+        given(commentQueryService.getCommentById(any(Long.class))).willReturn(comment);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(unAuthorized);
+        doThrow(new MomentException(ErrorCode.USER_UNAUTHORIZED))
+                .when(comment).checkAuthorization(unAuthorized);
+
+        // when & then
+        assertThatThrownBy(() -> emojiService.addEmoji(request, authentication))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
+    }
 
     @Test
     void 코멘트의_모든_이모지를_조회한다() {

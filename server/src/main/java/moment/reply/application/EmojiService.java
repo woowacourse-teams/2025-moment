@@ -30,6 +30,8 @@ public class EmojiService {
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
+        comment.checkAuthorization(user);
+
         Emoji emoji = new Emoji(request.emojiType(), user, comment);
         Emoji savedEmoji = emojiRepository.save(emoji);
         return EmojiCreateResponse.from(savedEmoji);
