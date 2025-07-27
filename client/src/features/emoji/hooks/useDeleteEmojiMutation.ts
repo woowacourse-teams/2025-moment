@@ -6,7 +6,7 @@ export const useDeleteEmojiMutation = () => {
   return useMutation({
     mutationFn: deleteEmoji,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['emojis'] });
+      queryClient.invalidateQueries({ queryKey: ['moments'] });
     },
   });
 };
