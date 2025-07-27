@@ -12,12 +12,7 @@ import * as S from './MyMomentsList.styles';
 
 export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index: number }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
-
   const emojis = myMoment.comment?.emojis || [];
-
-  const handleDeleteEmojiData = (emojiId: number) => {
-    handleDeleteEmoji(emojiId);
-  };
 
   return (
     <Card width="large" key={index}>
@@ -44,7 +39,7 @@ export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index:
         {myMoment.comment && (
           <S.EmojiContainer>
             {emojis.map(emoji => (
-              <Emoji key={emoji.id} onClick={() => handleDeleteEmojiData(emoji.id)}>
+              <Emoji key={emoji.id} onClick={() => handleDeleteEmoji(emoji.id)}>
                 {emojiMapping(emoji.emojiType)}
               </Emoji>
             ))}
