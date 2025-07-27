@@ -88,7 +88,10 @@ class momentServiceTest {
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Emoji emoji = new Emoji(EmojiType.HEART, commenter, comment);
 
-        given(momentRepository.findMomentByMomenter_Id(any(Long.class)))
+        given(userQueryService.getUserById(any(Long.class)))
+                .willReturn(momenter);
+        
+        given(momentRepository.findMomentByMomenter(any(User.class)))
                 .willReturn(List.of(moment));
 
         given(commentRepository.findAllByMomentIn(any(List.class)))
@@ -105,7 +108,7 @@ class momentServiceTest {
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
-                () -> then(momentRepository).should(times(1)).findMomentByMomenter_Id(any(Long.class))
+                () -> then(momentRepository).should(times(1)).findMomentByMomenter(any(User.class))
         );
     }
 

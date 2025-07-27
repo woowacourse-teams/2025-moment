@@ -49,7 +49,8 @@ public class MomentService {
     }
 
     public List<MyMomentResponse> getMyMoments(Long userId) {
-        List<Moment> moments = momentRepository.findMomentByMomenter_Id(userId);
+        User momenter = userQueryService.getUserById(userId);
+        List<Moment> moments = momentRepository.findMomentByMomenter(momenter);
 
         if (moments.isEmpty()) {
             return Collections.emptyList();
