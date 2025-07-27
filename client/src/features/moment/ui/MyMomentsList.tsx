@@ -1,7 +1,10 @@
 import { theme } from '@/app/styles/theme';
 import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
+import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
+import { Emoji } from '@/features/emoji/ui/Emoji';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { Card, SimpleCard } from '@/shared/ui';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
@@ -12,8 +15,19 @@ import { NotFoundMyMoments } from './NotFoundMyMoments';
 export const MyMomentsList = () => {
   const { data, isLoading } = useMomentsQuery();
   const myMoments = data?.data;
+  const { handleDeleteEmoji } = useDeleteEmoji();
 
   const hasMoments = myMoments?.length && myMoments.length > 0;
+
+  if (isLoading) {
+    return (
+      <S.MomentsContainer>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <CommonSkeletonCard key={index} variant="moment" />
+        ))}
+      </S.MomentsContainer>
+    );
+  }
 
   return (
     <>
@@ -43,7 +57,17 @@ export const MyMomentsList = () => {
                 />
               </Card.Content>
               <Card.Action position="space-between">
-                <EmojiButton />
+                {/* TODO: 이모지 딜리트 구현 */}
+                {myMoment.comment?.content && <EmojiButton commentId={myMoment.comment.id} />}
+                {myMoment.comment && (
+                  <S.EmojiContainer>
+                    {myMoment.comment.emojis.map(emoji => (
+                      <Emoji key={emoji.id} onClick={() => handleDeleteEmoji(emoji.id)}>
+                        {emojiMapping(emoji.emojiType)}
+                      </Emoji>
+                    ))}
+                  </S.EmojiContainer>
+                )}
               </Card.Action>
             </Card>
           ))}

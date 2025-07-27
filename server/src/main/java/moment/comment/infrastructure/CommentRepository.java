@@ -13,4 +13,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @EntityGraph(attributePaths = {"moment"})
     List<Comment> findAllByMomentIn(List<Moment> moments);
+
+    boolean existsByMoment(Moment moment);
 }
