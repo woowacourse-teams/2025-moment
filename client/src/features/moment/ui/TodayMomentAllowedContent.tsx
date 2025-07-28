@@ -5,7 +5,7 @@ import { CheckCircle, MessageSquare } from 'lucide-react';
 import * as S from './TodayContent.styles';
 import { useNavigate } from 'react-router';
 
-export const TodayMomentSuccessContent = () => {
+export const TodayMomentAllowedContent = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => navigate('/my-moments');

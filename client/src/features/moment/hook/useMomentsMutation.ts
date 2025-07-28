@@ -10,6 +10,7 @@ export const useMomentsMutation = () => {
     mutationFn: sendMoments,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
+      queryClient.invalidateQueries({ queryKey: ['checkMoments'] });
       showSuccess('모멘트가 성공적으로 등록되었습니다!');
     },
     onError: () => {
