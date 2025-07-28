@@ -50,7 +50,6 @@ class MomentRepositoryTest {
         momentRepository.save(moment3);
         Thread.sleep(10);
         momentRepository.save(moment4);
-        Thread.sleep(10);
 
         // when
         List<Moment> moments = momentRepository.findMomentByMomenterOrderByCreatedAtDesc(momenter);
