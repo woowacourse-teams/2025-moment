@@ -18,6 +18,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(exception.getStatus()).body(errorResponse);
     }
 
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error(exception.getMessage(), exception);
+
+        ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(errorResponse);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
         log.error(exception.getMessage(), exception);
