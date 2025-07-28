@@ -1,6 +1,7 @@
 package moment.moment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.exception.ErrorCode;
 import moment.matching.application.MatchingService;
 import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
@@ -86,10 +88,17 @@ class momentServiceTest {
     @Test
     void 오늘_작성한_모멘트가_존재하는_경우_예외가_발생한다() {
         // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론");
 
-        // when
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
 
-        // then
+        // when & then
+        assertThatThrownBy(() -> momentService.addMomentAndMatch(request, 1L))
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_ALREADY_EXIST);
+
     }
 
     @Test

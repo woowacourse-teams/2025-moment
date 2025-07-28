@@ -48,7 +48,7 @@ public class MomentService {
     public MomentCreateResponse addMomentAndMatch(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        if (momentCreatePolicy.canCreate(momenter)) {
+        if (!momentCreatePolicy.canCreate(momenter)) {
             throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
         }
 
