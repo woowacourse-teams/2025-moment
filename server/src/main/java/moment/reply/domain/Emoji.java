@@ -2,8 +2,6 @@ package moment.reply.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,9 +31,8 @@ public class Emoji extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private EmojiType emojiType;
+    private String emojiType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
@@ -45,7 +42,7 @@ public class Emoji extends BaseEntity {
     @JoinColumn(nullable = false, name = "comment_id")
     private Comment comment;
 
-    public Emoji(EmojiType emojiType, User user, Comment comment) {
+    public Emoji(String emojiType, User user, Comment comment) {
         validate(user, comment);
         this.emojiType = emojiType;
         this.user = user;

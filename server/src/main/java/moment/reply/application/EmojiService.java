@@ -4,10 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
 import moment.reply.dto.response.EmojiReadResponse;
@@ -30,22 +27,12 @@ public class EmojiService {
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
-        EmojiType emojiType = convertToEmojiType(request.emojiType());
-
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
-        Emoji emoji = new Emoji(emojiType, user, comment);
+        Emoji emoji = new Emoji(request.emojiType(), user, comment);
         Emoji savedEmoji = emojiRepository.save(emoji);
         return EmojiCreateResponse.from(savedEmoji);
-    }
-
-    private EmojiType convertToEmojiType(String emojiType) {
-        try {
-            return EmojiType.valueOf(emojiType);
-        } catch (IllegalArgumentException e) {
-            throw new MomentException(ErrorCode.EMOJI_NOT_FOUND);
-        }
     }
 
     public List<EmojiReadResponse> getEmojisByCommentId(Long commentId) {

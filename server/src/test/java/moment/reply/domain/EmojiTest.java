@@ -23,9 +23,9 @@ class EmojiTest {
         User user = new User("lebron@gmail.com", "1234", "르브론");
 
         // when & then
-        assertThatThrownBy(() -> new Emoji(EmojiType.HEART, user, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("comment가 null이 되어서는 안 됩니다.");
+        assertThatThrownBy(() -> new Emoji("HEART", user, null))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
     }
 
     @Test
@@ -37,9 +37,9 @@ class EmojiTest {
         Comment comment = new Comment("오운완!", commenter, moment);
 
         // when & then
-        assertThatThrownBy(() -> new Emoji(EmojiType.HEART, null, comment))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("user가 null이 되어서는 안 됩니다.");
+        assertThatThrownBy(() -> new Emoji("HEART", null, comment))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
