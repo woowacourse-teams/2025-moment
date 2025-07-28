@@ -1,18 +1,16 @@
 package moment.user.presentation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.domain.User;
+import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -71,6 +72,33 @@ class UserControllerTest {
                 });
 
         // then
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.data()).isEqualTo(expect)
+        );
+    }
+
+    @Test
+    void 이메일_중복_여부_조회를_성공한다() {
+        // given
+        String email = "mimi@icloud.com";
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
+
+        userRepository.save(new User(email, "password", "mimi"));
+
+        // when
+        SuccessResponse<EmailConflictCheckResponse> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/users/email/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        // then
+        EmailConflictCheckResponse expect = new EmailConflictCheckResponse(true);
+
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.data()).isEqualTo(expect)
