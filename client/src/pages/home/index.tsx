@@ -6,17 +6,18 @@ import * as S from './index.styles';
 
 export default function HomePage() {
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(ROUTES.TODAY_MOMENT);
+  };
+
   return (
     <S.HomePageWrapper>
       <S.HeroSection>
         <Hero />
       </S.HeroSection>
       <S.ContentSection>
-        <Button
-          title="모멘트 작성하기"
-          variant="secondary"
-          onClick={() => navigate(ROUTES.TODAY_MOMENT)}
-        />
+        <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
     </S.HomePageWrapper>
   );
