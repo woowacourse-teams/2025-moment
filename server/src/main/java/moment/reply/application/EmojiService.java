@@ -6,8 +6,8 @@ import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
 import moment.reply.dto.response.EmojiReadResponse;
@@ -30,21 +30,21 @@ public class EmojiService {
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
-        EmojiType emojiType = convertToEmojiType(request.emojiType());
-
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
-        Emoji emoji = new Emoji(emojiType, user, comment);
-        Emoji savedEmoji = emojiRepository.save(emoji);
+        validateMomenter(comment, user);
+
+        Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
+        Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
+
         return EmojiCreateResponse.from(savedEmoji);
     }
 
-    private EmojiType convertToEmojiType(String emojiType) {
-        try {
-            return EmojiType.valueOf(emojiType);
-        } catch (IllegalArgumentException e) {
-            throw new MomentException(ErrorCode.EMOJI_NOT_FOUND);
+    private static void validateMomenter(Comment comment, User user) {
+        Moment moment = comment.getMoment();
+        if (!moment.checkMomenter(user)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
 

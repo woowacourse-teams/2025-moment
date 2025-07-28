@@ -59,7 +59,7 @@ class AuthServiceTest {
         // when & then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_LOGIN_FAILED);
     }
 
     @Test
@@ -72,7 +72,7 @@ class AuthServiceTest {
         // when & then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_LOGIN_FAILED);
     }
 
     @Test
@@ -100,6 +100,6 @@ class AuthServiceTest {
         // when & then
         assertThatThrownBy(() -> authService.getAuthenticationByToken(token))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_LOGIN_FAILED);
     }
 }

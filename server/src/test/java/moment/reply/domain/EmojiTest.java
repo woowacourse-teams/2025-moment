@@ -18,14 +18,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 class EmojiTest {
 
     @Test
-    void 코멘트가_잆는_경우_예외가_발생한다() {
+    void 코멘트가_없는_경우_예외가_발생한다() {
         // given
         User user = new User("lebron@gmail.com", "1234", "르브론");
 
         // when & then
-        assertThatThrownBy(() -> new Emoji(EmojiType.HEART, user, null))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        assertThatThrownBy(() -> new Emoji("HEART", user, null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -37,9 +36,8 @@ class EmojiTest {
         Comment comment = new Comment("오운완!", commenter, moment);
 
         // when & then
-        assertThatThrownBy(() -> new Emoji(EmojiType.HEART, null, comment))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+        assertThatThrownBy(() -> new Emoji("HEART", null, comment))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -49,7 +47,7 @@ class EmojiTest {
         Moment moment = new Moment("오운완!", false, momenter);
         User commenter = new User("ama@gmail.com", "1234", "ama");
         Comment comment = new Comment("오운완!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         // when & then
         assertThatCode(() -> emoji.checkWriter(momenter))
@@ -67,7 +65,7 @@ class EmojiTest {
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
         Comment comment = new Comment("오운완!", commenter, writer);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         // when & then
         assertThatThrownBy(() -> emoji.checkWriter(commenter))

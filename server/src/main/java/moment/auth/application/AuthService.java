@@ -20,10 +20,10 @@ public class AuthService {
 
     public String login(LoginRequest request) {
         User user =  userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
         if (!user.checkPassword(request.password())) {
-            throw new MomentException(ErrorCode.USER_NOT_FOUND);
+            throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
         return tokenManager.createToken(user.getId(), user.getEmail());
@@ -32,8 +32,9 @@ public class AuthService {
     public Authentication getAuthenticationByToken(String token) {
         Authentication authentication = tokenManager.extractAuthentication(token);
 
+        // TODO : 삭제
         if(!userRepository.existsById(authentication.id())) {
-            throw new MomentException(ErrorCode.USER_NOT_FOUND);
+            throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
         return authentication;

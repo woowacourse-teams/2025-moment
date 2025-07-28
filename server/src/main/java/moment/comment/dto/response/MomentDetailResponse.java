@@ -1,11 +1,15 @@
 package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
+
+import java.time.LocalDateTime;
 
 @Schema(description = "Comment가 등록된 Moment 상세 내용")
 public record MomentDetailResponse(
+        @Schema(description = "Moment 아이디", example = "1")
+        Long id,
+
         @Schema(description = "Moment 내용", example = "테스트를 겨우 통과했어요!")
         String content,
 
@@ -13,6 +17,6 @@ public record MomentDetailResponse(
         LocalDateTime createdAt
 ) {
     public static MomentDetailResponse from(Moment moment) {
-        return new MomentDetailResponse(moment.getContent(), moment.getCreatedAt());
+        return new MomentDetailResponse(moment.getId(), moment.getContent(), moment.getCreatedAt());
     }
 }
