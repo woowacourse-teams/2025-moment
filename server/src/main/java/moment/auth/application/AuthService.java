@@ -30,13 +30,6 @@ public class AuthService {
     }
 
     public Authentication getAuthenticationByToken(String token) {
-        Authentication authentication = tokenManager.extractAuthentication(token);
-
-        // TODO : 삭제
-        if(!userRepository.existsById(authentication.id())) {
-            throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
-        }
-
-        return authentication;
+        return tokenManager.extractAuthentication(token);
     }
 }
