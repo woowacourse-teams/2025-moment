@@ -54,7 +54,6 @@ public class User extends BaseEntity {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("email이 null이거나 빈 값이어서는 안 됩니다.");
         }
-        // TODO : 도메인 검증은 전부 서버 예외일까? 클라이언트 예외는 DTO 검증 해서 거르고 클라이언트한테 반환할 것이니까?
         if (!email.matches(EMAIL_REGEX)) {
             throw new MomentException(ErrorCode.EMAIL_INVALID);
         }
