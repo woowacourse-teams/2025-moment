@@ -18,14 +18,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 class EmojiTest {
 
     @Test
-    void 코멘트가_잆는_경우_예외가_발생한다() {
+    void 코멘트가_없는_경우_예외가_발생한다() {
         // given
         User user = new User("lebron@gmail.com", "1234", "르브론");
 
         // when & then
         assertThatThrownBy(() -> new Emoji(EmojiType.HEART, user, null))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("comment가 null이 되어서는 안 됩니다.");
     }
 
     @Test
@@ -38,8 +38,8 @@ class EmojiTest {
 
         // when & then
         assertThatThrownBy(() -> new Emoji(EmojiType.HEART, null, comment))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("user가 null이 되어서는 안 됩니다.");
     }
 
     @Test

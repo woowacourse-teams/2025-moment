@@ -23,7 +23,16 @@ class UserTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"null", "''", "' '", "mimi", "mimi@", "mimi@.com", "mimi@com", "mimi@icloud", "mimi@icloud."}, nullValues = "null")
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void 이메일이_빈_값인_경우_예외가_발생한다(String email) {
+        // when & then
+        assertThatThrownBy(() -> new User(email, "password", "mimi"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("email이 null이거나 빈 값이어서는 안 됩니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"mimi", "mimi@", "mimi@.com", "mimi@com", "mimi@icloud", "mimi@icloud."})
     void 이메일_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
         // when & then
         assertThatThrownBy(() -> new User(email, "password", "mimi"))
@@ -36,8 +45,8 @@ class UserTest {
     void 비밀번호_형식이_유효하지_않은_경우_예외가_발생한다(String password) {
         // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", password, "mimi"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_INVALID);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("password가 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @ParameterizedTest
@@ -45,8 +54,8 @@ class UserTest {
     void 닉네임_형식이_유효하지_않은_경우_예외가_발생한다(String nickname) {
         // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.NICKNAME_INVALID);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("nickname이 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @Test

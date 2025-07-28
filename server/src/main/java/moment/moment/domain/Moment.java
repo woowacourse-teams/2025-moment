@@ -61,14 +61,13 @@ public class Moment extends BaseEntity {
 
     private void validateContent(String content) {
         if (content == null || content.isEmpty()) {
-            throw new MomentException(ErrorCode.MOMENT_CONTENT_EMPTY);
+            throw new IllegalArgumentException("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
         }
     }
 
-    // TODO: 추후에 유저 관련 에러 수정해야함.
     private void validateUser(User momenter) {
         if (momenter == null) {
-            throw new MomentException(ErrorCode.USER_NOT_FOUND);
+            throw new IllegalArgumentException("momenter가 null이 되어서는 안 됩니다.");
         }
     }
 

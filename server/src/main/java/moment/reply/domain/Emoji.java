@@ -59,13 +59,13 @@ public class Emoji extends BaseEntity {
 
     private void validateUser(User user) {
         if (user == null) {
-            throw new MomentException(ErrorCode.USER_NOT_FOUND);
+            throw new IllegalArgumentException("user가 null이 되어서는 안 됩니다.");
         }
     }
 
     private void validateComment(Comment comment) {
         if (comment == null) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID);
+            throw new IllegalArgumentException("comment가 null이 되어서는 안 됩니다.");
         }
     }
 

@@ -16,17 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
+    private final UserQueryService userQueryService;
     private final UserRepository userRepository;
 
     @Transactional
     public void addUser(UserCreateRequest request) {
-        validatePassword(request);
+        comparePasswordWithRepassword(request);
         validateEmail(request);
         validateNickname(request);
         userRepository.save(request.toUser());
     }
 
-    private void validatePassword(UserCreateRequest request) {
+    private void comparePasswordWithRepassword(UserCreateRequest request) {
         if (!request.password().equals(request.rePassword())) {
             throw new MomentException(ErrorCode.PASSWORD_MISMATCHED);
         }
@@ -45,8 +46,7 @@ public class UserService {
     }
 
     public UserProfileResponse getUserProfile(Authentication authentication) {
-        User user = userRepository.findById(authentication.id())
-                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+        User user = userQueryService.getUserById(authentication.id());
         return UserProfileResponse.from(user);
     }
 }

@@ -18,21 +18,21 @@ class MomentTest {
     @ParameterizedTest
     @NullSource
     @EmptySource
-    void 내용이_잆는_경우_예외가_발생한다(String content) {
+    void 내용이_없는_경우_예외가_발생한다(String content) {
         // given
         User user = new User("lebron@gmail.com", "1234", "르브론");
 
         // when & then
         assertThatThrownBy(() -> new Moment(content, user))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_CONTENT_EMPTY);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @Test
     void 사용자가_없는_경우_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() -> new Moment("굿", null))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("momenter가 null이 되어서는 안 됩니다.");
     }
 }
