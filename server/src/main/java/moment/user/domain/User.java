@@ -14,6 +14,9 @@ import moment.global.domain.BaseEntity;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -21,7 +24,8 @@ import moment.global.exception.MomentException;
 @ToString
 public class User extends BaseEntity {
 
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9가-힣]{2,6}$");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +58,9 @@ public class User extends BaseEntity {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("email이 null이거나 빈 값이어서는 안 됩니다.");
         }
-        if (!email.matches(EMAIL_REGEX)) {
+
+        Matcher matcher = EMAIL_REGEX.matcher(email);
+        if (!matcher.matches()) {
             throw new MomentException(ErrorCode.EMAIL_INVALID);
         }
     }
@@ -68,6 +74,11 @@ public class User extends BaseEntity {
     private void validateNickname(String nickname) {
         if (nickname == null || nickname.isBlank()) {
             throw new IllegalArgumentException("nickname이 null이거나 빈 값이어서는 안 됩니다.");
+        }
+
+        Matcher matcher = NICKNAME_REGEX.matcher(nickname);
+        if (!matcher.matches()) {
+            throw new MomentException(ErrorCode.NICKNAME_INVALID);
         }
     }
 
