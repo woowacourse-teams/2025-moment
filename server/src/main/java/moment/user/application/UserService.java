@@ -5,7 +5,9 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,10 @@ public class UserService {
     public UserProfileResponse getUserProfile(Authentication authentication) {
         User user = userQueryService.getUserById(authentication.id());
         return UserProfileResponse.from(user);
+    }
+
+    public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
+        boolean existsByNickname = userRepository.existsByNickname(request.nickname());
+        return new NicknameConflictCheckResponse(existsByNickname);
     }
 }

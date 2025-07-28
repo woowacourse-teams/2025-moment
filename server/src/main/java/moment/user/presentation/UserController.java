@@ -6,13 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.application.UserService;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +76,24 @@ public class UserController {
     ) {
         UserProfileResponse response = userService.getUserProfile(authentication);
         HttpStatus status = HttpStatus.OK;
-        return ResponseEntity.status(status).body(SuccessResponse.of(status,response));
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "닉네임 중복 여부 조회", description = "닉네임 중복 여부를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 중복 여부 조회 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [U-006] 유효하지 않은 닉네임 형식입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PostMapping("/nickname/check")
+    public ResponseEntity<SuccessResponse<NicknameConflictCheckResponse>> readNicknameConflict(
+            @Valid @RequestBody NicknameConflictCheckRequest request
+    ) {
+        NicknameConflictCheckResponse response = userService.checkNicknameConflict(request);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }
