@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
+import moment.comment.dto.CommentStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentsResponse;
@@ -82,5 +83,27 @@ public class CommentController {
         List<MyCommentsResponse> myComments = commentService.getCommentsByUserId(userId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, myComments));
+    }
+
+    @Operation(summary = "Comment 등록 전 상태 체크", description = "Comment를 등록할 수 있는 상태인지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Comment 등록 가능 여부 상태 확인 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/check")
+    public ResponseEntity<SuccessResponse<CommentStatusResponse>> checkMyComments(
+            @AuthenticationPrincipal Authentication authentication) {
+        Long userId = authentication.id();
+        CommentStatusResponse commentStatus = commentService.checkCommentStatus(userId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, commentStatus));
     }
 }

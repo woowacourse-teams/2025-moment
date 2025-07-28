@@ -1,6 +1,8 @@
 package moment.comment.application;
 
+import java.util.Optional;
 import moment.comment.domain.Comment;
+import moment.comment.dto.CommentStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
@@ -162,5 +164,66 @@ class CommentServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_CONFLICT);
     }
 
+    @Test
+    void 아직_매칭된_모멘트가_존재하지_않을_경우의_상태를_반환한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi");
 
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.empty());
+
+        // when
+        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.isAlreadyMatched()).isFalse(),
+                () -> assertThat(response.isAlreadyCommented()).isFalse()
+        );
+    }
+
+    @Test
+    void 이미_매칭된_모멘트에_코멘트를_작성한_경우의_상태를_반환한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi");
+        User momenter = new User("hippo@icloud.com",  "1234", "hippo");
+        Moment moment = new Moment("집가고 싶어요..", momenter);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
+
+        // when
+        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.isAlreadyMatched()).isTrue(),
+                () -> assertThat(response.isAlreadyCommented()).isTrue()
+        );
+    }
+
+    @Test
+    void 코멘트를_등록할_수_있는_상태를_반환한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi");
+        User momenter = new User("hippo@icloud.com",  "1234", "hippo");
+        Moment moment = new Moment("집가고 싶어요..", momenter);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
+
+        // when
+        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.isAlreadyMatched()).isTrue(),
+                () -> assertThat(response.isAlreadyCommented()).isFalse()
+        );
+    }
 }

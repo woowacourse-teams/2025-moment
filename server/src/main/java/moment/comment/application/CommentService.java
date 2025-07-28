@@ -1,7 +1,9 @@
 package moment.comment.application;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
+import moment.comment.dto.CommentStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentsResponse;
@@ -69,5 +71,20 @@ public class CommentService {
         return commentAndEmojis.entrySet().stream()
                 .map(MyCommentsResponse::from)
                 .toList();
+    }
+
+    public CommentStatusResponse checkCommentStatus(Long commenterId) {
+        User commenter = userQueryService.getUserById(commenterId);
+        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
+
+        if(matchedMoment.isEmpty()) {
+            return CommentStatusResponse.createNotMatchedStatus();
+        }
+
+        if(commentRepository.existsByMoment(matchedMoment.get())) {
+            return CommentStatusResponse.createAlreadyCommentedStatus();
+        }
+
+        return CommentStatusResponse.createWritingAvailableStatus();
     }
 }
