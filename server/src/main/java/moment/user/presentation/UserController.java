@@ -79,18 +79,14 @@ public class UserController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "이메일 중복 여부 조회", description = "회원 가입 시 이메일 중복 여부를 조회합니다.")
+    @Operation(summary = "이메일 중복 여부 조회", description = "이메일 중복 여부를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이메일 중복 여부 조회 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [U-004] 유효하지 않은 이메일 형식입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "409", description = """
-                    - [U-001] 이미 가입된 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            )
     })
     @PostMapping("/email/check")
     public ResponseEntity<SuccessResponse<EmailConflictCheckResponse>> readEmailConflict(
