@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -29,6 +30,9 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private final UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
 
     @Test
@@ -36,6 +40,7 @@ class UserServiceTest {
         // given
         User expect = new User("mimi@icloud.com", "mimi1234", "미미");
         given(userRepository.save(any(User.class))).willReturn(expect);
+        given(passwordEncoder.encode(expect.getPassword())).willReturn("aoijwofkdl");
 
         // when
         userService.addUser(request);

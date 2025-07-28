@@ -8,8 +8,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
-import moment.user.domain.User;
-import moment.user.infrastructure.UserRepository;
+import moment.user.application.UserService;
+import moment.user.dto.request.UserCreateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,12 +28,19 @@ class AuthControllerTest {
     JwtTokenManager jwtTokenManager;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Test
     void 로그인에_성공한다() {
         // given
-        User user = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago"));
+        userService.addUser(
+                new UserCreateRequest(
+                        "ekorea623@gmail.com",
+                        "1q2w3e4r",
+                        "1q2w3e4r",
+                        "drago"
+                )
+        );
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
 
         // when
@@ -49,17 +56,24 @@ class AuthControllerTest {
         Claims claims = jwtTokenManager.extractClaims(token);
 
         assertAll(
-                () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId())),
-                () -> assertThat(claims.get("email", String.class)).isEqualTo(user.getEmail())
+                () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(1L)),
+                () -> assertThat(claims.get("email", String.class)).isEqualTo("ekorea623@gmail.com")
         );
     }
 
     @Test
     void 로그아웃에_성공한다() {
         // given
-        User user = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago"));
+        userService.addUser(
+                new UserCreateRequest(
+                        "ekorea623@gmail.com",
+                        "1q2w3e4r",
+                        "1q2w3e4r",
+                        "drago"
+                )
+        );
 
-        String token = jwtTokenManager.createToken(user.getId(), user.getEmail());
+        String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
 
         // when
         String emptyToken = RestAssured.given().log().all()
