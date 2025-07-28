@@ -5,13 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.util.List;
 import moment.auth.application.TokenManager;
-import moment.global.dto.response.SuccessResponse;
 import moment.matching.domain.Matching;
 import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
+import moment.moment.dto.response.MomentCreateResponse;
+import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -46,22 +48,65 @@ class MomentControllerTest {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo");
         User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
 
-        MomentCreateRequest request = new MomentCreateRequest("재미있는 내용이네요~~?");
+        MomentCreateRequest request = new MomentCreateRequest(content);
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        SuccessResponse response = RestAssured.given().log().all()
+        MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", token)
                 .body(request)
                 .when().post("/api/v1/moments")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .extract().as(SuccessResponse.class);
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
 
         // then
-        assertAll(() -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value())
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+    @Test
+    void 내_모멘트를_조회한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
+        Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
+        Moment moment3 = new Moment("아 짜증나", false, savedMomenter);
+        Moment moment4 = new Moment("아 신기해", false, savedMomenter);
+
+        momentRepository.save(moment1);
+        momentRepository.save(moment2);
+        momentRepository.save(moment3);
+        momentRepository.save(moment4);
+
+        // when
+        List<MyMomentResponse> responses = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("token", token)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getList("data", MyMomentResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(responses).hasSize(4),
+                () -> assertThat(responses.stream()
+                        .allMatch(response -> response.momenterId().equals(savedMomenter.getId())))
+                        .isTrue()
         );
     }
 
@@ -98,7 +143,5 @@ class MomentControllerTest {
                 () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
         );
-
-
     }
 }

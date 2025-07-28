@@ -9,6 +9,12 @@ import moment.reply.domain.Emoji;
 
 @Schema(description = "내 모멘트 조회 응답")
 public record MyMomentResponse(
+        @Schema(description = "모멘트 id", example = "1")
+        Long id,
+
+        @Schema(description = "모멘트 작성자 id", example = "1")
+        Long momenterId,
+
         @Schema(description = "내 모멘트 내용", example = "야근 힘들어요 퓨ㅠㅠ")
         String content,
 
@@ -21,8 +27,20 @@ public record MyMomentResponse(
     public static MyMomentResponse of(Moment moment, Comment comment, List<Emoji> emojis) {
         if (comment != null) {
             MyMomentCommentResponse myMomentCommentResponse = MyMomentCommentResponse.of(comment, emojis);
-            return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), myMomentCommentResponse);
+            
+            return new MyMomentResponse(
+                    moment.getId(),
+                    moment.getMomenterId(),
+                    moment.getContent(),
+                    moment.getCreatedAt(),
+                    myMomentCommentResponse);
         }
-        return new MyMomentResponse(moment.getContent(), moment.getCreatedAt(), null);
+
+        return new MyMomentResponse(
+                moment.getId(),
+                moment.getMomenterId(),
+                moment.getContent(),
+                moment.getCreatedAt(),
+                null);
     }
 }
