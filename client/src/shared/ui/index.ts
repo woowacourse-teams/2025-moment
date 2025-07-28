@@ -4,3 +4,4 @@ export { Logo } from './logo/Logo';
 export { SimpleCard } from './simpleCard/SimpleCard';
 export { CommonSkeletonCard } from './skeleton';
 export { TextArea } from './textArea/TextArea';
+export { Toast } from './toast/Toast';
