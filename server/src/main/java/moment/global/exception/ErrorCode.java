@@ -32,6 +32,7 @@ public enum ErrorCode {
 
     MOMENT_CONTENT_EMPTY("M-001", "모멘트 내용이 비어있습니다.", HttpStatus.BAD_REQUEST),
     MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND),
+    MOMENT_ALREADY_EXIST("M-003", "오늘 작성한 모멘트가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

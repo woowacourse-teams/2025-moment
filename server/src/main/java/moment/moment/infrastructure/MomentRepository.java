@@ -23,4 +23,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     Optional<Moment> findMatchedMomentByCommenter(@Param("commenter") User commenter,
                                                   @Param("startOfDay") LocalDateTime startOfDay,
                                                   @Param("endOfDay") LocalDateTime endOfDay);
+
+    int countByMomenterAndCreatedAtBetween(User user, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

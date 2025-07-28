@@ -15,8 +15,11 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.matching.application.MatchingService;
 import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentCreatePolicy;
+import moment.moment.domain.MomentCreationStatus;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
+import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
@@ -54,6 +57,9 @@ class momentServiceTest {
     @Mock
     private MatchingService matchingService;
 
+    @Mock
+    private MomentCreatePolicy momentCreatePolicy;
+
     @Test
     void 모멘트_생성에_성공한다() {
         // given
@@ -78,6 +84,15 @@ class momentServiceTest {
     }
 
     @Test
+    void 오늘_작성한_모멘트가_존재하는_경우_예외가_발생한다() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
     void 내가_작성한_모멘트를_조회한다() {
         // given
         User momenter = new User("harden@gmail.com", "1234", "하든");
@@ -89,7 +104,7 @@ class momentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
-        
+
         given(momentRepository.findMomentByMomenter(any(User.class)))
                 .willReturn(List.of(moment));
 
@@ -163,5 +178,33 @@ class momentServiceTest {
                         any(LocalDateTime.class),
                         any(LocalDateTime.class))
         );
+    }
+
+    @Test
+    void 오늘_모멘트를_작성할_수_있는_상태를_반환한다() {
+        // given
+        User commenter = new User("harden@gmail.com", "1234", "하든");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+
+        MomentCreationStatusResponse response = new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
+
+        // when & then
+        assertThat(momentService.canCreateMoment(1L)).isEqualTo(response);
+    }
+
+    @Test
+    void 오늘_모멘트를_작성할_수_없는_상태를_반환한다() {
+        // given
+        User commenter = new User("harden@gmail.com", "1234", "하든");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+
+        MomentCreationStatusResponse response = new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
+
+        // when & then
+        assertThat(momentService.canCreateMoment(1L)).isEqualTo(response);
     }
 }
