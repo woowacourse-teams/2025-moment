@@ -12,6 +12,7 @@ export const ProtectedRoute: React.FC = () => {
   }
 
   if (isError || !profile) {
+    alert('로그인 후 이용해주세요.');
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
