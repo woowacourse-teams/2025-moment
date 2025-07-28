@@ -9,7 +9,6 @@ import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -37,7 +36,7 @@ class DefaultEmojiQueryServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         given(emojiRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(emoji));

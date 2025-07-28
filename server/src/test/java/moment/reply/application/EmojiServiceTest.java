@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import moment.comment.application.CommentQueryService;
@@ -13,7 +14,6 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
@@ -57,7 +57,7 @@ class EmojiServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
@@ -74,18 +74,25 @@ class EmojiServiceTest {
     }
 
     @Test
-    void 존재하지_않는_이모지를_등록할_경우_예외가_발생한다() {
+    void 모멘트와_작성자_아닌_사용자가_이모지를_등록하면_예외가_발생한다() {
         // given
         Authentication authentication = new Authentication(1L);
-        EmojiCreateRequest request = new EmojiCreateRequest("NO_EXIST_EMOJI", 1L);
+        EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
+
+        User unAuthorized = new User("noUser@gmail.com", "1234", "unAuthorized");
+        Comment comment = mock(Comment.class);
+        Moment moment = mock(Moment.class);
+        given(comment.getMoment()).willReturn(moment);
+
+        given(commentQueryService.getCommentById(any(Long.class))).willReturn(comment);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(unAuthorized);
+        given(moment.checkMomenter(any(User.class))).willReturn(false);
 
         // when & then
         assertThatThrownBy(() -> emojiService.addEmoji(request, authentication))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMOJI_NOT_FOUND);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
     }
-
-    // TODO: 모멘트와 코멘트 작성자 아닌 사용자가 이모지를 등록하면 예외가 발생한다
 
     @Test
     void 코멘트의_모든_이모지를_조회한다() {
@@ -112,7 +119,7 @@ class EmojiServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         given(emojiQueryService.getEmojiById(any(Long.class)))
                 .willReturn(emoji);
@@ -133,7 +140,7 @@ class EmojiServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki");
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         given(emojiQueryService.getEmojiById(any(Long.class)))
                 .willReturn(emoji);
