@@ -55,7 +55,7 @@ public class User extends BaseEntity {
             throw new IllegalArgumentException("email이 null이거나 빈 값이어서는 안 됩니다.");
         }
         if (!email.matches(EMAIL_REGEX)) {
-            throw new MomentException(ErrorCode.EMAIL_INVALID);
+            throw new IllegalArgumentException("email의 형식이 올바르지 않습니다.");
         }
     }
 
