@@ -1,7 +1,7 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const validateEmail = (email: string): string => {
   if (!email) {
