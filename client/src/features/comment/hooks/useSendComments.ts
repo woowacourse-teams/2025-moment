@@ -5,11 +5,6 @@ import { useSendCommentsMutation } from './useSendCommentsMutation';
 export const useSendComments = () => {
   const [comment, setComment] = useState('');
 
-  const [errors, setErrors] = useState({
-    content: '',
-    momentId: '',
-  });
-
   const { data: momentsData } = useMatchMomentsQuery();
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
@@ -19,20 +14,16 @@ export const useSendComments = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      await sendComments({
-        content: comment,
-        momentId: momentsData?.data.id || 0,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    await sendComments({
+      content: comment,
+      momentId: momentsData?.data.id || 0,
+    });
   };
 
   return {
     momentsData: momentsData?.data.content,
+    error,
     comment,
-    errors,
     isPending,
     isError,
     handleChange,
