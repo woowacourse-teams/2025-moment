@@ -63,10 +63,10 @@ public class CommentService {
                     .toList();
         }
 
-        Map<Comment, List<Emoji>> emojisByComment = emojis.stream()
+        Map<Comment, List<Emoji>> commentAndEmojis = emojis.stream()
                 .collect(Collectors.groupingBy(Emoji::getComment));
 
-        return emojisByComment.entrySet().stream()
+        return commentAndEmojis.entrySet().stream()
                 .map(MyCommentsResponse::from)
                 .toList();
     }
