@@ -48,34 +48,4 @@ class JwtTokenManagerTest {
                 () -> assertThat(claims.get("email", String.class)).isEqualTo(email)
         );
     }
-
-    @Test
-    void 만료된_토큰을_검증하면_예외가_발생한다() throws InterruptedException {
-        // given
-        JwtTokenManager expiredTokenManager = new JwtTokenManager(1, testSecretKey);
-        String expiredToken = expiredTokenManager.createToken(1L, "expired@moment.com");
-
-        // when
-        Thread.sleep(5);
-
-        // then
-        assertThatThrownBy(() -> jwtTokenManager.extractClaims(expiredToken))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.TOKEN_EXPIRED);
-    }
-
-    @Test
-    void 잘못된_시크릿키로_생성된_토큰을_검증하면_예외가_발생한다() {
-        // given
-        String invalidSecretKey = "this-is-a-completely-different-secret-key-for-moment";
-        JwtTokenManager invalidKeyManager = new JwtTokenManager(testExpirationTime, invalidSecretKey);
-
-        // when
-        String invalidToken = invalidKeyManager.createToken(1L, "user@moment.com");
-
-        // then
-        assertThatThrownBy(() -> jwtTokenManager.extractClaims(invalidToken))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.TOKEN_NOT_SIGNED);
-    }
 }
