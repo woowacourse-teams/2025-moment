@@ -16,8 +16,8 @@ export const EmojiButton = ({ commentId, emojiType = 'HEART' }: EmojiButtonProps
         emojiType,
         commentId,
       });
-    } catch {
-      alert('스티커 보내기 실패');
+    } catch (error) {
+      console.error(error);
     }
   };
 

@@ -53,6 +53,7 @@ public class MomentController {
     ) {
         MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
+
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
@@ -75,6 +76,7 @@ public class MomentController {
     ) {
         List<MyMomentResponse> responses = momentService.getMyMoments(authentication.id());
         HttpStatus status = HttpStatus.OK;
+
         return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
     }
 
@@ -97,6 +99,7 @@ public class MomentController {
     ) {
         MatchedMomentResponse responses = momentService.getMatchedMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
+        
         return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
     }
 }
