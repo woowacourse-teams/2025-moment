@@ -3,12 +3,12 @@ package moment.auth.presentation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.jsonwebtoken.Claims;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.user.domain.User;
+import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +46,8 @@ class AuthControllerTest {
                 .extract().cookie("token");
 
         // then
-        Claims claims = jwtTokenManager.extractClaims(token);
-
-        assertAll(
-                () -> assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId())),
-                () -> assertThat(claims.get("email", String.class)).isEqualTo(user.getEmail())
-        );
+        Authentication authentication = jwtTokenManager.extractAuthentication(token);
+        assertThat(authentication.id()).isEqualTo(user.getId());
     }
 
     @Test
