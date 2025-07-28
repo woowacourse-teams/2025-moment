@@ -20,7 +20,6 @@ import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
@@ -86,7 +85,7 @@ class momentServiceTest {
 
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter);
         Comment comment = new Comment("안됐네요.", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, commenter, comment);
+        Emoji emoji = new Emoji("HEART", commenter, comment);
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
