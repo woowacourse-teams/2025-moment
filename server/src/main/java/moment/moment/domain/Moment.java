@@ -71,6 +71,10 @@ public class Moment extends BaseEntity {
         }
     }
 
+    public boolean checkMomenter(User user) {
+        return momenter.equals(user);
+    }
+
     public void matchComplete() {
         isMatched = true;
     }

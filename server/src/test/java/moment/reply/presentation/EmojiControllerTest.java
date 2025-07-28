@@ -45,6 +45,7 @@ public class EmojiControllerTest {
 
     private User momenter;
     private User commenter;
+    private String momenterToken;
     private String commenterToken;
     private Moment moment;
     private Comment comment;
@@ -53,6 +54,7 @@ public class EmojiControllerTest {
     void setUp() {
         momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki"));
         commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago"));
+        momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
         commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter));
         comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment));
@@ -62,12 +64,12 @@ public class EmojiControllerTest {
     void 이모지를_등록한다() {
         // given
         String emojiType = "HEART";
-        EmojiCreateRequest request = new EmojiCreateRequest(emojiType, comment.getId());
+        EmojiCreateRequest request = new EmojiCreateRequest(emojiType,  comment.getId());
 
         // when
         RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie("token", commenterToken)
+            .cookie("token", momenterToken)
             .body(request)
             .when().post("/api/v1/emojis")
             .then().log().all()
@@ -78,8 +80,8 @@ public class EmojiControllerTest {
         assertAll(
             () -> assertThat(emojis).hasSize(1),
             () -> assertThat(emojis.get(0).getEmojiType()).isEqualTo(emojiType),
-            () -> assertThat(emojis.get(0).getUser().getId()).isEqualTo(commenter.getId()),
-            () -> assertThat(emojis.get(0).getComment().getId()).isEqualTo(comment.getId())
+            () -> assertThat(emojis.get(0).getUser().getId()).isEqualTo(momenter.getId()),
+            () -> assertThat(emojis.get(0).getComment().getId()).isEqualTo(momenter.getId())
         );
     }
 
