@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
@@ -23,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Tag(name = "Comment API", description = "Comment 관련 API 명세")
 @RestController
@@ -61,7 +62,7 @@ public class CommentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "나의 Comment 목록 조회", description = "내가 등록한 Comment 목록을 조회합니다.")
+    @Operation(summary = "나의 Comment 목록 조회", description = "내가 등록한 Comment 목록을 생성 시간 내림 차순으로 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "나의 Comment 목록 조회 성공"),
             @ApiResponse(responseCode = "401", description = """

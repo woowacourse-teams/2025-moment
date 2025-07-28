@@ -1,11 +1,11 @@
-import { CreateToastParams, ToastData } from '@/shared/types/toast';
+import { ToastData } from '@/shared/types/toast';
 import { Toast } from '@/shared/ui';
 import { createContext, ReactNode, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ToastContainer } from '../../ui/toast/Toast.styles';
 
 export interface ToastContextType {
-  addToast: (toast: CreateToastParams) => void;
+  addToast: (toast: ToastData) => void;
   removeToast: () => void;
   toast: ToastData | null;
 }
@@ -15,9 +15,8 @@ export const ToastContext = createContext<ToastContextType | undefined>(undefine
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState<ToastData | null>(null);
 
-  const addToast = (toastParams: CreateToastParams) => {
-    const newToast: ToastData = { ...toastParams, id: 'single-toast' };
-    setToast(newToast);
+  const addToast = (toastParams: ToastData) => {
+    setToast(toastParams);
   };
 
   const removeToast = () => {
@@ -37,8 +36,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         createPortal(
           <ToastContainer>
             <Toast
-              key={toast.id}
-              id={toast.id}
+              key="toast"
               message={toast.message}
               variant={toast.variant}
               duration={toast.duration}

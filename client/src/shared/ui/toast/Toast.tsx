@@ -3,7 +3,7 @@ import { CheckCircle, X, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import * as S from './Toast.styles';
 
-export const Toast: React.FC<ToastProps> = ({ id, message, variant, duration = 4000, onClose }) => {
+export const Toast: React.FC<ToastProps> = ({ message, variant, duration = 3000, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {

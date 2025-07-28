@@ -1,13 +1,5 @@
 package moment.comment.application;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-
-import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -21,6 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -58,5 +59,29 @@ class DefaultMomentQueryServiceTest {
         assertThatThrownBy(() -> defaultCommentQueryService.getCommentById(1L))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_NOT_FOUND);
+    }
+
+    @Test
+    void Momment에_등록된_Comment가_존재하면_true를_반환한다() {
+        // given
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
+
+        // when & then
+        assertThat(defaultCommentQueryService.existsByMoment(moment)).isTrue();
+    }
+
+    @Test
+    void Momment에_등록된_Comment가_존재하면_false를_반환한다() {
+        // given
+        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
+
+        // when & then
+        assertThat(defaultCommentQueryService.existsByMoment(moment)).isFalse();
     }
 }

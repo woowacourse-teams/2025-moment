@@ -1,15 +1,15 @@
 import { theme } from '@/app/styles/theme';
 import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
+import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
+import { Emoji } from '@/features/emoji/ui/Emoji';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { Card, SimpleCard } from '@/shared/ui';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
-import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
-import { Emoji } from '@/features/emoji/ui/Emoji';
 import { NotFoundMyMoments } from './NotFoundMyMoments';
 
 export const MyMomentsList = () => {
@@ -18,6 +18,16 @@ export const MyMomentsList = () => {
   const { handleDeleteEmoji } = useDeleteEmoji();
 
   const hasMoments = myMoments?.length && myMoments.length > 0;
+
+  if (isLoading) {
+    return (
+      <S.MomentsContainer>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <CommonSkeletonCard key={index} variant="moment" />
+        ))}
+      </S.MomentsContainer>
+    );
+  }
 
   return (
     <>

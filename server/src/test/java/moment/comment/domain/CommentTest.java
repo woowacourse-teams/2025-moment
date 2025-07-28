@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
@@ -80,5 +81,26 @@ class CommentTest {
                 null
         )).isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+    }
+
+    @Test
+    void Comment와_Moment_작성자가_아니라면_예외가_발생한다() {
+        // given
+        User momenter = new User("momenter@email.com", "1234", "momenter");
+        ReflectionTestUtils.setField(momenter, "id", 1L);
+
+        User commenter = new User("commenter@email.com", "1234", "commenter");
+        ReflectionTestUtils.setField(commenter, "id", 2L);
+
+        User unAuthorized = new User("no@email.com", "1", "unAuthorized");
+        ReflectionTestUtils.setField(unAuthorized, "id", 3L);
+
+        Moment moment = new Moment("오늘 야근 정말 힘들었네요", momenter);
+        Comment comment = new Comment("수고하셨습니다.!", commenter, moment);
+
+        // when & then
+        assertThatThrownBy(() -> comment.checkAuthorization(unAuthorized))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
     }
 }

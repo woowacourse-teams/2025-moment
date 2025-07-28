@@ -4,6 +4,7 @@ FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
 COPY . .
+
 RUN gradle build -x test
 
 # 2단계: 실행용 (최소한의 JDK 포함)
@@ -13,4 +14,4 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]

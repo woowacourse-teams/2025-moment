@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MomentRepository extends JpaRepository<Moment, Long> {
 
-    List<Moment> findMomentByMomenter_Id(Long id);
+    List<Moment> findMomentByMomenter(User Momenter);
 
     @Query("""
             SELECT ma.moment FROM matchings ma

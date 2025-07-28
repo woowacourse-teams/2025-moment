@@ -20,7 +20,6 @@ import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
@@ -86,9 +85,12 @@ class momentServiceTest {
 
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter);
         Comment comment = new Comment("안됐네요.", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, commenter, comment);
+        Emoji emoji = new Emoji("HEART", commenter, comment);
 
-        given(momentRepository.findMomentByMomenter_Id(any(Long.class)))
+        given(userQueryService.getUserById(any(Long.class)))
+                .willReturn(momenter);
+        
+        given(momentRepository.findMomentByMomenter(any(User.class)))
                 .willReturn(List.of(moment));
 
         given(commentRepository.findAllByMomentIn(any(List.class)))
@@ -105,7 +107,7 @@ class momentServiceTest {
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
-                () -> then(momentRepository).should(times(1)).findMomentByMomenter_Id(any(Long.class))
+                () -> then(momentRepository).should(times(1)).findMomentByMomenter(any(User.class))
         );
     }
 
