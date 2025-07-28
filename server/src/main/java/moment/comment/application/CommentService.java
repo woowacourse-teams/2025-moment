@@ -53,7 +53,7 @@ public class CommentService {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
         }
 
-        List<Comment> comments = commentRepository.findCommentsByCommenterId(commenterId);
+        List<Comment> comments = commentRepository.findCommentsByCommenterIdOrderByCreatedAtDesc(commenterId);
 
         List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
 
