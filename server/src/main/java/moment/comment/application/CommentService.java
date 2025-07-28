@@ -3,7 +3,7 @@ package moment.comment.application;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
-import moment.comment.dto.CommentStatusResponse;
+import moment.comment.dto.response.CommentStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentsResponse;

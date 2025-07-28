@@ -2,7 +2,7 @@ package moment.comment.application;
 
 import java.util.Optional;
 import moment.comment.domain.Comment;
-import moment.comment.dto.CommentStatusResponse;
+import moment.comment.dto.response.CommentStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
