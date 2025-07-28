@@ -24,8 +24,7 @@ class EmojiTest {
 
         // when & then
         assertThatThrownBy(() -> new Emoji("HEART", user, null))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -38,8 +37,7 @@ class EmojiTest {
 
         // when & then
         assertThatThrownBy(() -> new Emoji("HEART", null, comment))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -49,7 +47,7 @@ class EmojiTest {
         Moment moment = new Moment("오운완!", false, momenter);
         User commenter = new User("ama@gmail.com", "1234", "ama");
         Comment comment = new Comment("오운완!", commenter, moment);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         // when & then
         assertThatCode(() -> emoji.checkWriter(momenter))
@@ -67,7 +65,7 @@ class EmojiTest {
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
         Comment comment = new Comment("오운완!", commenter, writer);
-        Emoji emoji = new Emoji(EmojiType.HEART, momenter, comment);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
 
         // when & then
         assertThatThrownBy(() -> emoji.checkWriter(commenter))
