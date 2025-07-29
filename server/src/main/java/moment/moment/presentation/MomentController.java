@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -49,7 +50,7 @@ public class MomentController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<MomentCreateResponse>> createMoment(
-            @RequestBody MomentCreateRequest request,
+            @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
         MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
