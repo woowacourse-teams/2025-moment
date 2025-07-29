@@ -18,16 +18,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ✅ pnpm 캐시 대상 경로가 존재하지 않는 문제 해결용
-      - name: Ensure pnpm store exists
-        run: mkdir -p ~/.pnpm-store
+      - name: Restore pnpm cache manually
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('client/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
-      - name: Setup Node.js with pnpm cache
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: './client/pnpm-lock.yaml'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -36,6 +38,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Save pnpm cache manually
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('client/pnpm-lock.yaml') }}
 
       - name: Create .env file
         run: |
@@ -60,16 +68,11 @@ jobs:
             echo "AWS CLI is already installed"
           fi
 
-          echo "AWS Version:"
           aws --version
-
-          echo "Verifying AWS credentials..."
           aws sts get-caller-identity
 
       - name: Upload to S3
         run: |
-          echo "Uploading static files to S3..."
-
           aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/moment \
             --delete \
             --cache-control "public,max-age=31536000,immutable" \
@@ -93,7 +96,6 @@ jobs:
 
       - name: Invalidate CloudFront cache
         run: |
-          echo "Invalidating CloudFront cache..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" \
