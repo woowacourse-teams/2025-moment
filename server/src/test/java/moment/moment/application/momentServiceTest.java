@@ -89,8 +89,8 @@ class momentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
-        
-        given(momentRepository.findMomentByMomenter(any(User.class)))
+
+        given(momentRepository.findMomentByMomenterOrderByCreatedAtDesc(any(User.class)))
                 .willReturn(List.of(moment));
 
         given(commentRepository.findAllByMomentIn(any(List.class)))
@@ -107,7 +107,7 @@ class momentServiceTest {
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
-                () -> then(momentRepository).should(times(1)).findMomentByMomenter(any(User.class))
+                () -> then(momentRepository).should(times(1)).findMomentByMomenterOrderByCreatedAtDesc(any(User.class))
         );
     }
 

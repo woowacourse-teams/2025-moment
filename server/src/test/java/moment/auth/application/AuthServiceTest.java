@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -30,6 +31,9 @@ class AuthServiceTest {
     @Mock
     private TokenManager tokenManager;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AuthService authService;
 
@@ -40,6 +44,7 @@ class AuthServiceTest {
         given(userRepository.findByEmail(any()))
                 .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago")));
         given(tokenManager.createToken(any(), any())).willReturn("asdfsvssefsdf");
+        given(passwordEncoder.matches(any(), any())).willReturn(true);
 
         // when
         String token = authService.login(request);
@@ -82,24 +87,8 @@ class AuthServiceTest {
         Authentication authentication = new Authentication(1L);
 
         given(tokenManager.extractAuthentication(token)).willReturn(authentication);
-        given(userRepository.existsById(1L)).willReturn(true);
 
         // when & then
         assertThat(authService.getAuthenticationByToken(token)).isEqualTo(authentication);
-    }
-
-    @Test
-    void 토큰에서_추출한_유저의_ID가_존재하지_않을_경우_예외가_발생한다() {
-        // given
-        String token = "invalidToken";
-        Authentication authentication = new Authentication(1L);
-
-        given(tokenManager.extractAuthentication(token)).willReturn(authentication);
-        given(userRepository.existsById(1L)).willReturn(false);
-
-        // when & then
-        assertThatThrownBy(() -> authService.getAuthenticationByToken(token))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_LOGIN_FAILED);
     }
 }

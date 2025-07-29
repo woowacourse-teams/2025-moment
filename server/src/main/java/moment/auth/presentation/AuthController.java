@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.dto.request.LoginRequest;
@@ -45,7 +46,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<Void>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<SuccessResponse<Void>> login(@Valid @RequestBody LoginRequest request) {
         String token = authService.login(request);
 
         ResponseCookie cookie = ResponseCookie.from("token", token)

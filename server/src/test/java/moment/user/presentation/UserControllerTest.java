@@ -9,6 +9,9 @@ import moment.user.domain.User;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
+import moment.user.dto.request.EmailConflictCheckRequest;
+import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -36,7 +39,7 @@ class UserControllerTest {
     @Test
     void 유저_생성에_성공한다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "mimi");
+        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!", "mimi");
 
         // when
         SuccessResponse response = RestAssured.given().log().all()
@@ -98,6 +101,33 @@ class UserControllerTest {
 
         // then
         NicknameConflictCheckResponse expect = new NicknameConflictCheckResponse(true);
+
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.data()).isEqualTo(expect)
+        );
+    }
+  
+    @Test
+    void 이메일_중복_여부_조회를_성공한다() {
+        // given
+        String email = "mimi@icloud.com";
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
+
+        userRepository.save(new User(email, "password", "mimi"));
+
+        // when
+        SuccessResponse<EmailConflictCheckResponse> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/users/signup/email/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        // then
+        EmailConflictCheckResponse expect = new EmailConflictCheckResponse(true);
 
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),

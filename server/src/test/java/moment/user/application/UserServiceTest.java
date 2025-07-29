@@ -6,6 +6,9 @@ import moment.user.domain.User;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
+import moment.user.dto.request.EmailConflictCheckRequest;
+import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -14,6 +17,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,11 +43,17 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    private final UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
+
     @Test
     void 유저_생성에_성공한다() {
         // given
         User expect = new User("mimi@icloud.com", "mimi1234", "미미");
         given(userRepository.save(any(User.class))).willReturn(expect);
+        given(passwordEncoder.encode(expect.getPassword())).willReturn("aoijwofkdl");
 
         // when
         userService.addUser(request);
@@ -91,7 +108,21 @@ class UserServiceTest {
         // & then
         assertThat(response.isExists()).isTrue();
     }
+  
+    @Test
+    void 이미_존재하는_이메일일_경우_true를_반환한다() {
+        // given
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest("mimi@icloud.com");
 
+        given(userRepository.existsByEmail(any(String.class))).willReturn(true);
+
+        // when
+        EmailConflictCheckResponse response = userService.checkEmailConflict(request);
+
+        // & then
+        assertThat(response.isExists()).isTrue();
+    }
+  
     @Test
     void 이미_존재하는_닉네임이_아닐_경우_false를_반환한다() {
         // given
@@ -101,6 +132,20 @@ class UserServiceTest {
 
         // when
         NicknameConflictCheckResponse response = userService.checkNicknameConflict(request);
+      
+        // & then
+        assertThat(response.isExists()).isFalse();
+    }
+  
+    @Test
+    void 이미_존재하는_이메일이_아닐_경우_false를_반환한다() {
+        // given
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest("mimi@icloud.com");
+
+        given(userRepository.existsByEmail(any(String.class))).willReturn(false);
+
+        // when
+        EmailConflictCheckResponse response = userService.checkEmailConflict(request);
 
         // & then
         assertThat(response.isExists()).isFalse();
