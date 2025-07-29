@@ -36,7 +36,7 @@ export const CheckExistContainer = styled.div`
   gap: 8px;
 `;
 
-export const SuccessEmailMessage = styled.span`
+export const SuccessMessage = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.colors['green-500']};
   margin-top: 4px;
