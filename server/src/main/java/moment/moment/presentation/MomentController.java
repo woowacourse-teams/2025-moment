@@ -117,7 +117,7 @@ public class MomentController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/creation-status")
+    @GetMapping("/me/creation-status")
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {

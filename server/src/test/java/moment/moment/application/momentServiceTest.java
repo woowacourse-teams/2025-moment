@@ -1,6 +1,7 @@
 package moment.moment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.exception.ErrorCode;
 import moment.matching.application.MatchingService;
 import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
@@ -71,6 +73,7 @@ class momentServiceTest {
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
@@ -81,6 +84,21 @@ class momentServiceTest {
                 () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
                 () -> then(matchingService).should(times(1)).match(any(Long.class))
         );
+    }
+
+    @Test
+    void 모멘트_생성에_실패한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> momentService.addMomentAndMatch(request, 1L))
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_ALREADY_EXIST);
     }
 
     @Test

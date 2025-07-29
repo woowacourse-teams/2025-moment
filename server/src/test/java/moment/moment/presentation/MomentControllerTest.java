@@ -164,7 +164,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("api/v1/moments/creation-status")
+                .when().get("api/v1/moments/me/creation-status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -189,7 +189,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("api/v1/moments/creation-status")
+                .when().get("api/v1/moments/me/creation-status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
