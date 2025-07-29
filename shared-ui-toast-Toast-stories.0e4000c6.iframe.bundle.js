@@ -145,19 +145,19 @@
   min-height: 400px;
   padding: 40px 20px;
   text-align: center;
-  background: ${({theme})=>theme.colors["slate-900"]};
-  color: ${({theme})=>theme.colors.white};
+  background: #0f172a;
+  color: #ffffff;
 `,ErrorTitle=emotion_styled_browser_esm.A.h1`
   font-size: 24px;
   margin-bottom: 16px;
-  color: ${({theme})=>theme.colors.white};
+  color: #ffffff;
 `,ErrorMessage=emotion_styled_browser_esm.A.p`
   font-size: 16px;
-  color: ${({theme})=>theme.colors["gray-400"]};
+  color: #93a1b7;
   margin-bottom: 32px;
   max-width: 400px;
 `,ErrorButton=emotion_styled_browser_esm.A.button`
-  background-color: ${({theme})=>theme.colors["yellow-500"]};
+  background-color: #f1c40f;
   color: black;
   padding: 12px 24px;
   border-radius: 8px;
@@ -277,4 +277,4 @@
     outline-offset: 2px;
   }
 `,Toast=({message,variant,duration=3e3,onClose})=>{const[isExiting,setIsExiting]=(0,react.useState)(!1);(0,react.useEffect)(()=>{if(duration>0){const timer=setTimeout(()=>{handleClose()},duration);return()=>clearTimeout(timer)}},[duration]);const handleClose=()=>{setIsExiting(!0),setTimeout(()=>{onClose()},300)};return(0,jsx_runtime.jsxs)(ToastItem,{variant,isExiting,children:[(0,jsx_runtime.jsx)(ToastIconWrapper,{children:(()=>{switch(variant){case"success":return(0,jsx_runtime.jsx)(circle_check_big.A,{size:20});case"error":return(0,jsx_runtime.jsx)(circle_x.A,{size:20});default:return null}})()}),(0,jsx_runtime.jsx)(ToastMessage,{children:message}),(0,jsx_runtime.jsx)(CloseButton,{onClick:handleClose,"aria-label":"토스트 닫기",children:(0,jsx_runtime.jsx)(x.A,{size:16})})]})};Toast.__docgenInfo={description:"",methods:[],displayName:"Toast",props:{message:{required:!0,tsType:{name:"string"},description:""},variant:{required:!0,tsType:{name:"union",raw:"'success' | 'error'",elements:[{name:"literal",value:"'success'"},{name:"literal",value:"'error'"}]},description:""},duration:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"3000",computed:!1}},onClose:{required:!0,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""}}};var react_dom=__webpack_require__("./node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js");const ToastContext=(0,react.createContext)(void 0),ToastProvider=({children})=>{const[toast,setToast]=(0,react.useState)(null),removeToast=()=>{setToast(null)},contextValue={addToast:toastParams=>{setToast(toastParams)},removeToast,toast};return(0,jsx_runtime.jsxs)(ToastContext.Provider,{value:contextValue,children:[children,toast&&(0,react_dom.createPortal)((0,jsx_runtime.jsx)(ToastContainer,{children:(0,jsx_runtime.jsx)(Toast,{message:toast.message,variant:toast.variant,duration:toast.duration,onClose:removeToast},"toast")}),document.body)]})};ToastProvider.__docgenInfo={description:"",methods:[],displayName:"ToastProvider",props:{children:{required:!0,tsType:{name:"ReactNode"},description:""}}};const useToast=()=>{const{addToast,removeToast,toast}=(()=>{const context=(0,react.useContext)(ToastContext);if(!context)throw new Error("useToastContext must be used within a ToastProvider");return context})();return{showSuccess:(message,duration)=>{addToast({message,variant:"success",duration})},showError:(message,duration)=>{addToast({message,variant:"error",duration})},removeToast,toast}},Toast_stories={title:"Shared/Toast",decorators:[Story=>(0,jsx_runtime.jsx)(ToastProvider,{children:(0,jsx_runtime.jsx)(Story,{})})],parameters:{layout:"centered"}},ToastExample=()=>{const{showSuccess,showError}=useToast();return(0,jsx_runtime.jsxs)("div",{style:{display:"flex",gap:"16px",flexDirection:"column"},children:[(0,jsx_runtime.jsx)("button",{onClick:()=>showSuccess("성공적으로 처리되었습니다!"),style:{padding:"12px 24px",backgroundColor:"#10B981",color:"white",border:"none",borderRadius:"8px",cursor:"pointer"},children:"성공 메시지 보기"}),(0,jsx_runtime.jsx)("button",{onClick:()=>showError("오류가 발생했습니다. 다시 시도해주세요."),style:{padding:"12px 24px",backgroundColor:"#EF4444",color:"white",border:"none",borderRadius:"8px",cursor:"pointer"},children:"에러 메시지 보기"}),(0,jsx_runtime.jsx)("button",{onClick:()=>{showSuccess("첫 번째 메시지"),setTimeout(()=>showError("두 번째 메시지"),500),setTimeout(()=>showSuccess("세 번째 메시지"),1e3)},style:{padding:"12px 24px",backgroundColor:"#6366F1",color:"white",border:"none",borderRadius:"8px",cursor:"pointer"},children:"연속 메시지 (교체됨)"}),(0,jsx_runtime.jsx)("button",{onClick:()=>showSuccess("이 메시지는 10초 후에 사라집니다",1e4),style:{padding:"12px 24px",backgroundColor:"#F59E0B",color:"white",border:"none",borderRadius:"8px",cursor:"pointer"},children:"긴 지속 시간 메시지"})]})},Default={render:()=>(0,jsx_runtime.jsx)(ToastExample,{})},__namedExportsOrder=["Default"];Default.parameters={...Default.parameters,docs:{...Default.parameters?.docs,source:{originalSource:"{\n  render: () => <ToastExample />\n}",...Default.parameters?.docs?.source}}}}}]);
-//# sourceMappingURL=shared-ui-toast-Toast-stories.2be59f3d.iframe.bundle.js.map
+//# sourceMappingURL=shared-ui-toast-Toast-stories.0e4000c6.iframe.bundle.js.map
