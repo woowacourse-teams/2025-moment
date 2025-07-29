@@ -16,7 +16,11 @@ export const SignupForm = () => {
   const { step, setStep } = useStep();
 
   const { handleCheckEmail, errorMessage: emailErrorMessage, isEmailChecked } = useCheckEmail();
-  const { handleCheckNickname, errorMessage: nicknameErrorMessage } = useCheckNickname();
+  const {
+    handleCheckNickname,
+    errorMessage: nicknameErrorMessage,
+    isNicknameChecked,
+  } = useCheckNickname();
 
   const handlePreviousStep = () => {
     if (beforeStep) {
@@ -60,6 +64,7 @@ export const SignupForm = () => {
               onNext={!nextStep || isDisabled ? undefined : handleNextStep}
               handleCheckNickname={handleCheckNickname}
               nicknameErrorMessage={nicknameErrorMessage}
+              isNicknameChecked={isNicknameChecked}
             />
           </Step>
           <Step name="step3">
