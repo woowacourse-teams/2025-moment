@@ -11,9 +11,6 @@ jobs:
     defaults:
       run:
         working-directory: ./client
-    env:
-      PATH: '/usr/local/bin:/usr/bin:/bin:$PATH'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
