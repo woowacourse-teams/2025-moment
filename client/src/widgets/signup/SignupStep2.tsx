@@ -11,6 +11,7 @@ interface SignupStep2Props {
   onNext?: () => void;
   handleCheckNickname: (value: string) => void;
   nicknameErrorMessage: string;
+  isNicknameChecked: boolean;
 }
 
 export const SignupStep2 = ({
@@ -20,6 +21,7 @@ export const SignupStep2 = ({
   onNext,
   handleCheckNickname,
   nicknameErrorMessage,
+  isNicknameChecked,
 }: SignupStep2Props) => {
   useEnterKeyHandler(onNext);
 
@@ -37,7 +39,11 @@ export const SignupStep2 = ({
           />
           <CheckButton onClick={() => handleCheckNickname(signupData.nickname)} />
         </S.CheckExistContainer>
-        <S.ErrorMessage>{nicknameErrorMessage || errors.nickname}</S.ErrorMessage>
+        {isNicknameChecked && !nicknameErrorMessage ? (
+          <S.SuccessMessage>사용 가능한 닉네임입니다.</S.SuccessMessage>
+        ) : (
+          <S.ErrorMessage>{nicknameErrorMessage || errors.nickname}</S.ErrorMessage>
+        )}
       </S.InputGroup>
     </S.StepContainer>
   );
