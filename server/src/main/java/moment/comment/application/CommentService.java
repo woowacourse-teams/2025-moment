@@ -1,10 +1,9 @@
 package moment.comment.application;
 
-import static moment.comment.domain.CommentCreationStatus.*;
-
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
@@ -80,13 +79,13 @@ public class CommentService {
         Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
 
         if(matchedMoment.isEmpty()) {
-            return CommentCreationStatusResponse.from(NOT_MATCHED);
+            return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
         }
 
         if(commentRepository.existsByMoment(matchedMoment.get())) {
-            return CommentCreationStatusResponse.from(ALREADY_COMMENTED);
+            return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
         }
 
-        return CommentCreationStatusResponse.from(WRITABLE);
+        return CommentCreationStatusResponse.from(CommentCreationStatus.WRITABLE);
     }
 }
