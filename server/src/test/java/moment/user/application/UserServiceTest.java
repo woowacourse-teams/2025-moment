@@ -68,11 +68,10 @@ class UserServiceTest {
 
     @Test
     void 비밀번호와_비밀번호_확인_값이_일치하지_않는_경우_예외가_발생한다() {
-        // given
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi5678", "미미");
+        UserCreateRequest invalidRequest = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi5678", "미미");
 
         // when & then
-        assertThatThrownBy(() -> userService.addUser(request))
+        assertThatThrownBy(() -> userService.addUser(invalidRequest))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_MISMATCHED);
     }
