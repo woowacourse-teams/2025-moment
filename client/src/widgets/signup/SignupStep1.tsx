@@ -1,8 +1,8 @@
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
-import { Input } from '@/shared/ui/input/Input';
-import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
-import * as S from './SignupStep.styles';
 import { CheckButton } from '@/features/auth/ui/CheckButton';
+import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
+import { Input } from '@/shared/ui/input/Input';
+import * as S from './SignupStep.styles';
 
 interface SignupStep1Props {
   signupData: SignupFormData;
@@ -23,6 +23,7 @@ export const SignupStep1 = ({
 }: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
+  console.log('asdf1232312313', emailErrorMessage);
   return (
     <S.StepContainer>
       <S.InputGroup>
@@ -37,7 +38,11 @@ export const SignupStep1 = ({
           />
           <CheckButton onClick={() => handleCheckEmail(signupData.email)} />
         </S.CheckExistContainer>
-        <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
+        {!emailErrorMessage ? (
+          <S.SuccessEmailMessage>사용 가능한 이메일입니다.</S.SuccessEmailMessage>
+        ) : (
+          <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
+        )}
       </S.InputGroup>
 
       <S.InputGroup>

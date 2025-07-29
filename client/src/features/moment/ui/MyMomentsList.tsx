@@ -1,9 +1,9 @@
+import { CommonSkeletonCard } from '@/shared/ui';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
-import * as S from './MyMomentsList.styles';
 import { MyMomentsCard } from './MyMomentsCard';
+import * as S from './MyMomentsList.styles';
 import { NotFoundMyMoments } from './NotFoundMyMoments';
-import { CommonSkeletonCard } from '@/shared/ui';
 
 export const MyMomentsList = () => {
   const { data, isLoading } = useMomentsQuery();
@@ -15,7 +15,7 @@ export const MyMomentsList = () => {
     return (
       <S.MomentsContainer>
         {Array.from({ length: 3 }).map((_, index) => (
-          <CommonSkeletonCard key={index} variant="moment" />
+          <CommonSkeletonCard key={`moments-skeleton-card-${index}`} variant="moment" />
         ))}
       </S.MomentsContainer>
     );
@@ -25,7 +25,7 @@ export const MyMomentsList = () => {
     <S.MomentsContainer>
       {hasMoments ? (
         myMoments?.map((myMoment: MyMoments, index: number) => (
-          <MyMomentsCard myMoment={myMoment} index={index} />
+          <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
         ))
       ) : (
         <NotFoundMyMoments />

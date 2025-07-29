@@ -35,3 +35,12 @@ export const CheckExistContainer = styled.div`
   align-items: center;
   gap: 8px;
 `;
+
+export const SuccessEmailMessage = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors['green-500']};
+  margin-top: 4px;
+  height: 18px;
+  display: block;
+  line-height: 1.5;
+`;

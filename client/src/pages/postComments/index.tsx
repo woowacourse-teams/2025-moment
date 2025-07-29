@@ -23,7 +23,7 @@ export default function PostCommentsPage() {
         <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
         <S.MomentsContainer>
           {Array.from({ length: 3 }).map((_, index) => (
-            <CommonSkeletonCard key={index} variant="comment" />
+            <CommonSkeletonCard key={`comments-skeleton-card-${index}`} variant="comment" />
           ))}
         </S.MomentsContainer>
       </S.PostCommentsPageContainer>
