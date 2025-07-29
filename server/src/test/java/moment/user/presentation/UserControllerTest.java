@@ -36,7 +36,7 @@ class UserControllerTest {
     @Test
     void 유저_생성에_성공한다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!!", "mimi1234!!", "mimi");
+        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!", "mimi");
 
         // when
         SuccessResponse response = RestAssured.given().log().all()

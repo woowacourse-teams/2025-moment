@@ -1,6 +1,7 @@
 package moment.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import moment.user.domain.User;
@@ -27,8 +28,4 @@ public record UserCreateRequest(
         @NotBlank(message = "NICKNAME_INVALID")
         String nickname
 ) {
-
-    public User toUser() {
-        return new User(email, password, nickname);
-    }
 }

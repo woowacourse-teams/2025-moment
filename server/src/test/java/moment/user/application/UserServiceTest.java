@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,11 +33,17 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    private final UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
+
     @Test
     void 유저_생성에_성공한다() {
         // given
         User expect = new User("mimi@icloud.com", "mimi1234", "미미");
         given(userRepository.save(any(User.class))).willReturn(expect);
+        given(passwordEncoder.encode(expect.getPassword())).willReturn("aoijwofkdl");
 
         // when
         userService.addUser(request);
