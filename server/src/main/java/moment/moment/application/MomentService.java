@@ -16,7 +16,6 @@ import moment.global.exception.MomentException;
 import moment.matching.application.MatchingService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
-import moment.moment.domain.MomentCreationStatus;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
@@ -106,9 +105,9 @@ public class MomentService {
         User user = userQueryService.getUserById(id);
 
         if (momentCreatePolicy.canCreate(user)) {
-            return new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
+            return MomentCreationStatusResponse.createAllowedStatus();
         }
 
-        return new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
+        return MomentCreationStatusResponse.createDeniedStatus();
     }
 }

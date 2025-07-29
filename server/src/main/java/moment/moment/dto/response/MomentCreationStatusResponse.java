@@ -8,5 +8,12 @@ public record MomentCreationStatusResponse(
         @Schema(description = "모멘트 생성 가능 여부 상태", example = "ALLOWED")
         MomentCreationStatus status
 ) {
-    
+
+    public static MomentCreationStatusResponse createDeniedStatus() {
+        return new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
+    }
+
+    public static MomentCreationStatusResponse createAllowedStatus() {
+        return new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
+    }
 }
