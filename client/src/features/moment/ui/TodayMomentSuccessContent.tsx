@@ -2,10 +2,10 @@ import { Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
-import * as S from './TodayContent.styles';
 import { useNavigate } from 'react-router';
+import * as S from './TodayContent.styles';
 
-export const TodayMomentAllowedContent = () => {
+export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => navigate('/my-moments');
