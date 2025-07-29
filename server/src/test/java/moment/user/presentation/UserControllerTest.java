@@ -12,7 +12,6 @@ import moment.user.domain.User;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +34,7 @@ class UserControllerTest {
     @Test
     void 유저_생성에_성공한다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "mimi");
+        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!", "mimi");
 
         // when
         SuccessResponse response = RestAssured.given().log().all()

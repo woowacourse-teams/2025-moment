@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
@@ -48,7 +49,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/signup")
-    public ResponseEntity<SuccessResponse<Void>> createUser(@RequestBody UserCreateRequest request) {
+    public ResponseEntity<SuccessResponse<Void>> createUser(@Valid @RequestBody UserCreateRequest request) {
         userService.addUser(request);
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));

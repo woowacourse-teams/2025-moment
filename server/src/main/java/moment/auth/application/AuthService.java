@@ -7,6 +7,7 @@ import moment.global.exception.MomentException;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,13 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TokenManager tokenManager;
+    private final PasswordEncoder passwordEncoder;
 
     public String login(LoginRequest request) {
         User user =  userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
-        if (!user.checkPassword(request.password())) {
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
@@ -30,13 +32,6 @@ public class AuthService {
     }
 
     public Authentication getAuthenticationByToken(String token) {
-        Authentication authentication = tokenManager.extractAuthentication(token);
-
-        // TODO : 삭제
-        if(!userRepository.existsById(authentication.id())) {
-            throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
-        }
-
-        return authentication;
+        return tokenManager.extractAuthentication(token);
     }
 }
