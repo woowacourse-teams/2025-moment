@@ -2,6 +2,7 @@ import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const PASSWORD_REGEX = /^(?=.[a-z])(?=.\d)(?=.[!@#$%^&()])[a-zA-Z\d!@#$%^&*()]{8,16}$/;
 const NICKNAME_REGEX = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ ]/gim;
 
 export const validateEmail = (email: string): string => {
@@ -16,8 +17,12 @@ export const validateEmail = (email: string): string => {
 export const validatePassword = (password: string): string => {
   if (!password) {
     return '비밀번호를 입력해주세요.';
-  } else if (password.length < 4) {
-    return '비밀번호는 최소 4자 이상이어야 합니다.';
+  } else if (password.length < 8) {
+    return '비밀번호는 최소 8자 이상이어야 합니다.';
+  } else if (password.length > 16) {
+    return '비밀번호는 최대 16자 이하여야 합니다.';
+  } else if (!PASSWORD_REGEX.test(password)) {
+    return '비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.';
   }
   return '';
 };
