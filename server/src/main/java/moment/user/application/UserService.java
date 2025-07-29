@@ -8,6 +8,7 @@ import moment.user.dto.request.Authentication;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +19,18 @@ public class UserService {
 
     private final UserQueryService userQueryService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void addUser(UserCreateRequest request) {
         comparePasswordWithRepassword(request);
         validateEmail(request);
         validateNickname(request);
-        userRepository.save(request.toUser());
+
+        String encodedPassword = passwordEncoder.encode(request.password());
+        User user = new User(request.email(), encodedPassword, request.nickname());
+
+        userRepository.save(user);
     }
 
     private void comparePasswordWithRepassword(UserCreateRequest request) {
