@@ -1,8 +1,5 @@
 package moment.comment.domain;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
@@ -13,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
@@ -45,8 +45,8 @@ class CommentTest {
                         true,
                         new User("kiki@icloud.com", "1234", "kiki")
                 )
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("content가 100자를 초과해서는 안 됩니다.");
     }
 
     @ParameterizedTest
@@ -59,8 +59,8 @@ class CommentTest {
                         true,
                         new User("kiki@icloud.com", "1234", "kiki")
                 )
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("content가 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @Test
@@ -69,30 +69,30 @@ class CommentTest {
                 "정말 안타깝게 됐네요!",
                 new User("hippo@gmail.com", "1234", "hippo"),
                 null
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("moment가 null이어서는 안 됩니다.");
     }
 
     @Test
     void Comment_생성_시_Commenter가_null이면_예외가_발생한다() {
         assertThatThrownBy(() -> new Comment(
                 "정말 안타깝게 됐네요!",
-                new User("hippo@gmail.com", "1234", "hippo"),
-                null
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                null,
+                new Moment("오늘도 야근 예정이에요", new User("hippo@gmail.com", "1234", "hippo"))
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("commenter가 null이어서는 안 됩니다.");
     }
 
     @Test
     void Comment와_Moment_작성자가_아니라면_예외가_발생한다() {
         // given
-        User momenter = new User("momenter@email.com", "1234", "momenter");
+        User momenter = new User("momenter@email.com", "1234", "momter");
         ReflectionTestUtils.setField(momenter, "id", 1L);
 
-        User commenter = new User("commenter@email.com", "1234", "commenter");
+        User commenter = new User("commenter@email.com", "1234", "comter");
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
-        User unAuthorized = new User("no@email.com", "1", "unAuthorized");
+        User unAuthorized = new User("no@email.com", "1", "nouser");
         ReflectionTestUtils.setField(unAuthorized, "id", 3L);
 
         Moment moment = new Moment("오늘 야근 정말 힘들었네요", momenter);

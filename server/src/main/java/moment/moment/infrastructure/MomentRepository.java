@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MomentRepository extends JpaRepository<Moment, Long> {
 
-    List<Moment> findMomentByMomenter(User Momenter);
+    List<Moment> findMomentByMomenterOrderByCreatedAtDesc(User Momenter);
 
     @Query("""
             SELECT ma.moment FROM matchings ma
@@ -23,4 +23,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     Optional<Moment> findMatchedMomentByCommenter(@Param("commenter") User commenter,
                                                   @Param("startOfDay") LocalDateTime startOfDay,
                                                   @Param("endOfDay") LocalDateTime endOfDay);
+
+    int countByMomenterAndCreatedAtBetween(User user, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

@@ -24,9 +24,9 @@ public record MyCommentsResponse(
         @Schema(description = "Comment에 등록된 이모지 목록")
         List<EmojiDetailResponse> emojis
 ) {
-    public static MyCommentsResponse from(Entry<Comment, List<Emoji>> entry) {
-        Comment comment = entry.getKey();
-        List<Emoji> emojis = entry.getValue();
+    public static MyCommentsResponse from(Entry<Comment, List<Emoji>> commentAndEmojis) {
+        Comment comment = commentAndEmojis.getKey();
+        List<Emoji> emojis = commentAndEmojis.getValue();
 
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
 

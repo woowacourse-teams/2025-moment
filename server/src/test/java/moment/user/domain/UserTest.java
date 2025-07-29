@@ -1,16 +1,14 @@
 package moment.user.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserTest {
@@ -36,8 +34,8 @@ class UserTest {
     void 이메일_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
         // when & then
         assertThatThrownBy(() -> new User(email, "password", "mimi"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_INVALID);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유효하지 않은 이메일 형식입니다.");
     }
 
     @ParameterizedTest
@@ -50,8 +48,17 @@ class UserTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    @CsvSource(value = {"m", "!mimi", "mimimim"})
     void 닉네임_형식이_유효하지_않은_경우_예외가_발생한다(String nickname) {
+        // when & then
+        assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유효하지 않은 닉네임 형식입니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void 닉네임_형식이_빈_값인_경우_예외가_발생한다(String nickname) {
         // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
                 .isInstanceOf(IllegalArgumentException.class)

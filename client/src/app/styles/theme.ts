@@ -18,6 +18,8 @@ export const theme = {
     'amber-500': '#F59E0B',
     'red-500': '#EF4444',
     'navy-900': '#0a0a0f',
+    'navy-900_20': 'color-mix(in srgb, #0a0a0f 20%, transparent)',
+    'navy-900_40': 'color-mix(in srgb, #0a0a0f 40%, transparent)',
     'indigo-950': '#0d162b',
     'gray-200': '#CBD5E1',
     'gray-400': '#93A1B7',

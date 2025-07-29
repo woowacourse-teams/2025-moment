@@ -1,8 +1,8 @@
 package moment.user.application;
 
-import java.util.List;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
+
+import java.util.List;
 
 public interface UserQueryService {
 

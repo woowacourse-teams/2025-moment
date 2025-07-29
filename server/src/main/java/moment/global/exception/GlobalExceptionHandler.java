@@ -3,6 +3,7 @@ package moment.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.dto.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,6 +17,15 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = ErrorResponse.from(exception.getErrorCode());
         return ResponseEntity.status(exception.getStatus()).body(errorResponse);
+    }
+
+    // TODO : 임시로 작성, 검증 예외 어떻게 반환할지 다같이 고민해보기
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
+        log.error(exception.getMessage(), exception);
+
+        ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.REQUEST_INVALID);
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)
