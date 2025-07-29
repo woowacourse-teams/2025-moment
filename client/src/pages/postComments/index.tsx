@@ -69,7 +69,7 @@ export default function PostCommentsPage() {
                     <span>받은 스티커</span>
                   </S.TitleContainer>
                   <S.Emoji>
-                    {post.emojis.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+                    {(post.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
                   </S.Emoji>
                 </S.ContentContainer>
               </Card.Content>
