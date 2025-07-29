@@ -3,6 +3,12 @@ export interface MomentsResponse {
   data: MyMoments[];
 }
 
+export interface CheckMomentsResponse {
+  data: {
+    status: 'DENIED' | 'ALLOWED';
+  };
+}
+
 export interface MatchMomentsResponse {
   status: number;
   data: {
