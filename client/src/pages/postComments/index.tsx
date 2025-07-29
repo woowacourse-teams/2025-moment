@@ -1,6 +1,5 @@
 import { theme } from '@/app/styles/theme';
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
-import { useEmojisQuery } from '@/features/emoji/hooks/useEmojisQuery';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Card, CommonSkeletonCard, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
@@ -10,12 +9,6 @@ import { NotFoundMyComments } from './NotFoundMyComments';
 
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
-
-  const getEmojiData = (commentId: number) => {
-    const { data: emojiResponse } = useEmojisQuery(commentId);
-    const emojiData = emojiResponse?.data;
-    return emojiData?.map(emoji => emojiMapping(emoji.emojiType)).join(' ');
-  };
 
   if (isLoading) {
     return (
@@ -75,7 +68,9 @@ export default function PostCommentsPage() {
                     <Gift size={20} color={theme.colors['yellow-500']} />
                     <span>받은 스티커</span>
                   </S.TitleContainer>
-                  <S.Emoji>{getEmojiData(post.id)}</S.Emoji>
+                  <S.Emoji>
+                    {post.emojis.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+                  </S.Emoji>
                 </S.ContentContainer>
               </Card.Content>
             </Card>
