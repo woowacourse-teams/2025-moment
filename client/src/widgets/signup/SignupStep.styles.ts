@@ -29,3 +29,9 @@ export const ErrorMessage = styled.span`
   display: block;
   line-height: 1.5;
 `;
+
+export const CheckExistContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
