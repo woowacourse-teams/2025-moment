@@ -11,10 +11,15 @@ import { NotFoundMyComments } from './NotFoundMyComments';
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
 
+  const commentIds = commentsResponse?.data?.map(post => post.id) || [];
+  const emojiQueries = commentIds.map(id => useEmojisQuery(id));
+
   const getEmojiData = (commentId: number) => {
-    const { data: emojiResponse } = useEmojisQuery(commentId);
-    const emojiData = emojiResponse?.data;
-    return emojiData?.map(emoji => emojiMapping(emoji.emojiType)).join(' ');
+    const queryIndex = commentIds.indexOf(commentId);
+    if (queryIndex === -1) return '';
+
+    const emojiData = emojiQueries[queryIndex]?.data?.data;
+    return emojiData?.map(emoji => emojiMapping(emoji.emojiType)).join(' ') || '';
   };
 
   if (isLoading) {
