@@ -8,25 +8,25 @@ export const ErrorContainer = styled.div`
   min-height: 400px;
   padding: 40px 20px;
   text-align: center;
-  background: ${({ theme }) => theme.colors['slate-900']};
-  color: ${({ theme }) => theme.colors.white};
+  background: #0f172a;
+  color: #ffffff;
 `;
 
 export const ErrorTitle = styled.h1`
   font-size: 24px;
   margin-bottom: 16px;
-  color: ${({ theme }) => theme.colors.white};
+  color: #ffffff;
 `;
 
 export const ErrorMessage = styled.p`
   font-size: 16px;
-  color: ${({ theme }) => theme.colors['gray-400']};
+  color: #93a1b7;
   margin-bottom: 32px;
   max-width: 400px;
 `;
 
 export const ErrorButton = styled.button`
-  background-color: ${({ theme }) => theme.colors['yellow-500']};
+  background-color: #f1c40f;
   color: black;
   padding: 12px 24px;
   border-radius: 8px;
