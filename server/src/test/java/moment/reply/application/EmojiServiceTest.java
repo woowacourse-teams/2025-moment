@@ -1,13 +1,6 @@
 package moment.reply.application;
 
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
@@ -26,6 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -79,7 +79,7 @@ class EmojiServiceTest {
         Authentication authentication = new Authentication(1L);
         EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
 
-        User unAuthorized = new User("noUser@gmail.com", "1234", "unAuthorized");
+        User unAuthorized = new User("noUser@gmail.com", "1234", "noUser");
         Comment comment = mock(Comment.class);
         Moment moment = mock(Moment.class);
         given(comment.getMoment()).willReturn(moment);

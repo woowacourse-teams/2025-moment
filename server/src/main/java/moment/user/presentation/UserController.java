@@ -13,6 +13,9 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.application.UserService;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.NicknameConflictCheckRequest;
+import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
@@ -79,6 +82,24 @@ public class UserController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "닉네임 중복 여부 조회", description = "닉네임 중복 여부를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 중복 여부 조회 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [U-006] 유효하지 않은 닉네임 형식입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PostMapping("/signup/nickname/check")
+    public ResponseEntity<SuccessResponse<NicknameConflictCheckResponse>> readNicknameConflict(
+            @Valid @RequestBody NicknameConflictCheckRequest request
+    ) {
+        NicknameConflictCheckResponse response = userService.checkNicknameConflict(request);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+  
     @Operation(summary = "이메일 중복 여부 조회", description = "이메일 중복 여부를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이메일 중복 여부 조회 성공"),

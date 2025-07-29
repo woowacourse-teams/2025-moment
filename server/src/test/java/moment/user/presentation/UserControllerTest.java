@@ -6,6 +6,9 @@ import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.domain.User;
+import moment.user.dto.request.NicknameConflictCheckRequest;
+import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
@@ -78,6 +81,33 @@ class UserControllerTest {
         );
     }
 
+    @Test
+    void 닉네임_중복_여부_조회를_성공한다() {
+        // given
+        String nickname = "mimi";
+        NicknameConflictCheckRequest request = new NicknameConflictCheckRequest(nickname);
+
+        userRepository.save(new User("mimi@icloud.com", "password", nickname));
+
+        // when
+        SuccessResponse<NicknameConflictCheckResponse> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/users/signup/nickname/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        // then
+        NicknameConflictCheckResponse expect = new NicknameConflictCheckResponse(true);
+
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.data()).isEqualTo(expect)
+        );
+    }
+  
     @Test
     void 이메일_중복_여부_조회를_성공한다() {
         // given

@@ -5,6 +5,9 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.NicknameConflictCheckRequest;
+import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
@@ -58,7 +61,11 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
-    // todo existsByEmail도 QueryService에 들어가야 되는건지?
+    public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
+        boolean existsByNickname = userRepository.existsByNickname(request.nickname());
+        return new NicknameConflictCheckResponse(existsByNickname);
+    }
+
     public EmailConflictCheckResponse checkEmailConflict(EmailConflictCheckRequest request) {
         boolean existsByEmail = userRepository.existsByEmail(request.email());
         return new EmailConflictCheckResponse(existsByEmail);
