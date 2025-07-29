@@ -58,23 +58,23 @@ public class Comment extends BaseEntity {
 
     private void validateContent(String content) {
         if (content == null || content.isBlank()) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID);
+            throw new IllegalArgumentException("content가 null이거나 빈 값이어서는 안 됩니다.");
         }
 
         if (content.length() > 100) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID);
+            throw new IllegalArgumentException("content가 100자를 초과해서는 안 됩니다.");
         }
     }
 
     private void validateCommenter(User commenter) {
         if (commenter == null) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID);
+            throw new IllegalArgumentException("commenter가 null이어서는 안 됩니다.");
         }
     }
 
     private void validateMoment(Moment moment) {
         if (moment == null) {
-            throw new MomentException(ErrorCode.COMMENT_INVALID);
+            throw new IllegalArgumentException("moment가 null이어서는 안 됩니다.");
         }
     }
 

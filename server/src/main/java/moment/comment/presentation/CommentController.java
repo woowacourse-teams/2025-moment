@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
@@ -38,6 +39,9 @@ public class CommentController {
             @ApiResponse(responseCode = "201", description = "Comment 등록 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [C-002] 유효하지 않은 코멘트입니다.
+                    - [C-004] 유효하지 않은 코멘트 형식입니다.
+                    - [C-005] 유효하지 않은 코멘트 ID입니다.
+                    - [G-002] 유효하지 않은 요청 값입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
@@ -55,7 +59,7 @@ public class CommentController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<CommentCreateResponse>> createComment(
-            @RequestBody CommentCreateRequest request, @AuthenticationPrincipal Authentication authentication) {
+            @Valid @RequestBody CommentCreateRequest request, @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
         CommentCreateResponse response = commentService.addComment(request, userId);
         HttpStatus status = HttpStatus.CREATED;
