@@ -90,7 +90,7 @@ class UserControllerTest {
         SuccessResponse<EmailConflictCheckResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/users/email/check")
+                .when().post("/api/v1/users/signup/email/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
