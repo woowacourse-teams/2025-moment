@@ -48,8 +48,17 @@ class UserTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    @CsvSource(value = {"m", "!mimi", "mimimim"})
     void 닉네임_형식이_유효하지_않은_경우_예외가_발생한다(String nickname) {
+        // when & then
+        assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유효하지 않은 닉네임 형식입니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void 닉네임_형식이_빈_값인_경우_예외가_발생한다(String nickname) {
         // when & then
         assertThatThrownBy(() -> new User("mimi@icloud.com", "password", nickname))
                 .isInstanceOf(IllegalArgumentException.class)
