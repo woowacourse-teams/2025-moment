@@ -2,29 +2,42 @@ import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { Input } from '@/shared/ui/input/Input';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import * as S from './SignupStep.styles';
+import { CheckButton } from '@/features/auth/ui/CheckButton';
 
 interface SignupStep1Props {
   signupData: SignupFormData;
   errors: SignupErrors;
   handleChange: (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
   onNext?: () => void;
+  handleCheckEmail: (value: string) => void;
+  emailErrorMessage: string;
 }
 
-export const SignupStep1 = ({ signupData, errors, handleChange, onNext }: SignupStep1Props) => {
+export const SignupStep1 = ({
+  signupData,
+  errors,
+  handleChange,
+  onNext,
+  handleCheckEmail,
+  emailErrorMessage,
+}: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
   return (
     <S.StepContainer>
       <S.InputGroup>
         <S.Label htmlFor="username">이메일</S.Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="이메일을 입력해주세요"
-          value={signupData.email}
-          onChange={handleChange('email')}
-        />
-        <S.ErrorMessage>{errors.email || ''}</S.ErrorMessage>
+        <S.CheckExistContainer>
+          <Input
+            id="email"
+            type="email"
+            placeholder="이메일을 입력해주세요"
+            value={signupData.email}
+            onChange={handleChange('email')}
+          />
+          <CheckButton onClick={() => handleCheckEmail(signupData.email)} />
+        </S.CheckExistContainer>
+        <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
       </S.InputGroup>
 
       <S.InputGroup>

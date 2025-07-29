@@ -11,9 +11,11 @@ import moment.auth.application.TokenManager;
 import moment.matching.domain.Matching;
 import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentCreationStatus;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
+import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
@@ -131,7 +133,7 @@ class MomentControllerTest {
         Moment savedMoment = momentRepository.save(moment);
 
         Matching matching = new Matching(moment, commenter);
-        Matching savedMatching = matchingRepository.save(matching);
+        matchingRepository.save(matching);
 
         // when
         MatchedMomentResponse response = RestAssured.given().log().all()
@@ -149,5 +151,52 @@ class MomentControllerTest {
                 () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
         );
+    }
+
+    @Test
+    void 모멘트_생성가능_상태를_가져온다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("api/v1/moments/me/creation-status")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreationStatusResponse.class);
+
+        // then
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.ALLOWED);
+    }
+
+    @Test
+    void 모멘트_생성불가_상태를_가져온다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment = new Moment("아 행복해", true, savedMomenter);
+        momentRepository.save(moment);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("api/v1/moments/me/creation-status")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreationStatusResponse.class);
+
+        // then
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
     }
 }

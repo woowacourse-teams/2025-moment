@@ -87,4 +87,27 @@ class MomentRepositoryTest {
                 () -> assertThat(matchedMomentByCommenter.get().getId()).isEqualTo(savedMoment.getId())
         );
     }
+
+    @Test
+    void 유저가_오늘_생성한_모멘트_수를_카운트한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
+        Moment moment2 = new Moment("아 즐거워", true, savedMomenter);
+        Moment moment3 = new Moment("아 짜릿해", true, savedMomenter);
+        Moment moment4 = new Moment("아 불행해", true, savedMomenter);
+
+        momentRepository.save(moment1);
+        momentRepository.save(moment2);
+        momentRepository.save(moment3);
+        momentRepository.save(moment4);
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+
+        // when & then
+        assertThat(momentRepository.countByMomenterAndCreatedAtBetween(momenter, startOfDay, endOfDay)).isEqualTo(4);
+    }
 }

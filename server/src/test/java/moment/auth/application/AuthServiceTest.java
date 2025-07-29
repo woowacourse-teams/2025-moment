@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -30,6 +31,9 @@ class AuthServiceTest {
     @Mock
     private TokenManager tokenManager;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AuthService authService;
 
@@ -40,6 +44,7 @@ class AuthServiceTest {
         given(userRepository.findByEmail(any()))
                 .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago")));
         given(tokenManager.createToken(any(), any())).willReturn("asdfsvssefsdf");
+        given(passwordEncoder.matches(any(), any())).willReturn(true);
 
         // when
         String token = authService.login(request);

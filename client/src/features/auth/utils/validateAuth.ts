@@ -1,7 +1,9 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const NICKNAME_REGEX = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ ]/gim;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,16}$/;
 
 export const validateEmail = (email: string): string => {
   if (!email) {
@@ -15,8 +17,8 @@ export const validateEmail = (email: string): string => {
 export const validatePassword = (password: string): string => {
   if (!password) {
     return '비밀번호를 입력해주세요.';
-  } else if (password.length < 4) {
-    return '비밀번호는 최소 4자 이상이어야 합니다.';
+  } else if (!PASSWORD_REGEX.test(password)) {
+    return '비밀번호는 8-16자의 영문 소문자, 숫자, 특수문자(!@#$%^&*())를 포함해야 합니다.';
   }
   return '';
 };
@@ -35,6 +37,10 @@ export const validateNickname = (nickname: string): string => {
     return '닉네임을 입력해주세요.';
   } else if (nickname.length < 2) {
     return '닉네임은 최소 2자 이상이어야 합니다.';
+  } else if (nickname.length > 6) {
+    return '닉네임은 최대 6자 이하여야 합니다.';
+  } else if (NICKNAME_REGEX.test(nickname)) {
+    return '닉네임은 특수문자를 포함할 수 없습니다.';
   }
   return '';
 };

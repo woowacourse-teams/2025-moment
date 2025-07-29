@@ -15,6 +15,7 @@ import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
+import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -98,6 +99,29 @@ public class MomentController {
             @AuthenticationPrincipal Authentication authentication
     ) {
         MatchedMomentResponse responses = momentService.getMatchedMoment(authentication.id());
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
+    }
+
+    @Operation(summary = "모멘트 작성여부 확인", description = "유저가 오늘 모멘트를 더 보낼 수 있는지 확인입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "매칭된 모멘트 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/me/creation-status")
+    public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getMomentCreationStatus(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreationStatusResponse responses = momentService.canCreateMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
