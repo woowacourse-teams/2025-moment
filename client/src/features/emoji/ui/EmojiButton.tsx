@@ -12,10 +12,7 @@ export const EmojiButton = ({ commentId, emojiType = 'HEART' }: EmojiButtonProps
   const { mutateAsync: sendEmoji } = useEmojiMutation();
   const handleClick = async () => {
     try {
-      await sendEmoji({
-        emojiType,
-        commentId,
-      });
+      await sendEmoji({ emojiType, commentId });
     } catch {
       alert('스티커 보내기 실패');
     }
