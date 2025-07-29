@@ -11,6 +11,7 @@ interface SignupStep1Props {
   onNext?: () => void;
   handleCheckEmail: (value: string) => void;
   emailErrorMessage: string;
+  isEmailChecked: boolean;
 }
 
 export const SignupStep1 = ({
@@ -20,6 +21,7 @@ export const SignupStep1 = ({
   onNext,
   handleCheckEmail,
   emailErrorMessage,
+  isEmailChecked,
 }: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
@@ -38,7 +40,7 @@ export const SignupStep1 = ({
           />
           <CheckButton onClick={() => handleCheckEmail(signupData.email)} />
         </S.CheckExistContainer>
-        {!emailErrorMessage ? (
+        {isEmailChecked && !emailErrorMessage ? (
           <S.SuccessEmailMessage>사용 가능한 이메일입니다.</S.SuccessEmailMessage>
         ) : (
           <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>

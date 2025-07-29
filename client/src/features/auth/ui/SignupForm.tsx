@@ -5,9 +5,9 @@ import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
 import { Button } from '@/shared/ui/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
-import * as S from './SignupForm.styles';
 import { useCheckEmail } from '../hooks/useCheckEmail';
 import { useCheckNickname } from '../hooks/useCheckNickname';
+import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
   const { Funnel, Step, useStep, beforeStep, nextStep } = useFunnel(STEPS);
@@ -15,7 +15,7 @@ export const SignupForm = () => {
   const { signupData, errors, handleChange, handleClick } = useSignup();
   const { step, setStep } = useStep();
 
-  const { handleCheckEmail, errorMessage: emailErrorMessage } = useCheckEmail();
+  const { handleCheckEmail, errorMessage: emailErrorMessage, isEmailChecked } = useCheckEmail();
   const { handleCheckNickname, errorMessage: nicknameErrorMessage } = useCheckNickname();
 
   const handlePreviousStep = () => {
@@ -49,6 +49,7 @@ export const SignupForm = () => {
               onNext={!nextStep || isDisabled ? undefined : handleNextStep}
               handleCheckEmail={handleCheckEmail}
               emailErrorMessage={emailErrorMessage}
+              isEmailChecked={isEmailChecked}
             />
           </Step>
           <Step name="step2">
