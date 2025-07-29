@@ -1,7 +1,5 @@
 package moment.moment.application;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +38,7 @@ public class MomentService {
 
     private final UserQueryService userQueryService;
     private final MatchingService matchingService;
+    private final MomentQueryService momentQueryService;
 
     private final MomentCreatePolicy momentCreatePolicy;
 
@@ -92,10 +91,7 @@ public class MomentService {
     public MatchedMomentResponse getMatchedMoment(Long commenterId) {
         User commenter = userQueryService.getUserById(commenterId);
 
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-
-        Optional<Moment> matchedMoment = momentRepository.findMatchedMomentByCommenter(commenter, startOfDay, endOfDay);
+        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
 
         return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }

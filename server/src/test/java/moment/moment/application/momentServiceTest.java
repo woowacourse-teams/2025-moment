@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
@@ -55,6 +54,9 @@ class momentServiceTest {
 
     @Mock
     private UserQueryService userQueryService;
+
+    @Mock
+    private MomentQueryService momentQueryService;
 
     @Mock
     private MatchingService matchingService;
@@ -143,11 +145,9 @@ class momentServiceTest {
         Moment moment = new Moment("아 행복해..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentRepository.findMatchedMomentByCommenter(
-                any(User.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)))
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
                 .willReturn(Optional.of(moment));
+
         // when
         MatchedMomentResponse response = momentService.getMatchedMoment(1L);
 
@@ -155,11 +155,7 @@ class momentServiceTest {
         assertAll(
                 () -> assertThat(response.id()).isEqualTo(moment.getId()),
                 () -> assertThat(response.content()).isEqualTo(moment.getContent()),
-                () -> assertThat(response.createdAt()).isEqualTo(moment.getCreatedAt()),
-                () -> then(momentRepository).should(times(1)).findMatchedMomentByCommenter(
-                        any(User.class),
-                        any(LocalDateTime.class),
-                        any(LocalDateTime.class))
+                () -> assertThat(response.createdAt()).isEqualTo(moment.getCreatedAt())
         );
     }
 
@@ -169,11 +165,9 @@ class momentServiceTest {
         User commenter = new User("kiki@gmail.com", "1234", "kiki");
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentRepository.findMatchedMomentByCommenter(
-                any(User.class),
-                any(LocalDateTime.class),
-                any(LocalDateTime.class)))
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
                 .willReturn(Optional.empty());
+
         // when
         MatchedMomentResponse response = momentService.getMatchedMoment(1L);
 
@@ -181,11 +175,7 @@ class momentServiceTest {
         assertAll(
                 () -> assertThat(response.id()).isNull(),
                 () -> assertThat(response.content()).isNull(),
-                () -> assertThat(response.createdAt()).isNull(),
-                () -> then(momentRepository).should(times(1)).findMatchedMomentByCommenter(
-                        any(User.class),
-                        any(LocalDateTime.class),
-                        any(LocalDateTime.class))
+                () -> assertThat(response.createdAt()).isNull()
         );
     }
 
