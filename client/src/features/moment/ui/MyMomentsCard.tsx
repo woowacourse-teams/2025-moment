@@ -35,7 +35,9 @@ export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index:
         <SimpleCard height="small" content={myMoment.comment?.content || <NotFoundComments />} />
       </Card.Content>
       <Card.Action position="space-between">
-        {myMoment.comment?.content && <EmojiButton commentId={myMoment.comment.id} />}
+        {myMoment.comment?.content && emojis.length === 0 && (
+          <EmojiButton commentId={myMoment.comment.id} />
+        )}
         {myMoment.comment && (
           <S.EmojiContainer>
             {emojis.map(emoji => (
