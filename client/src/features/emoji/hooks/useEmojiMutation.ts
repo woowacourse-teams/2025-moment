@@ -1,15 +1,15 @@
-import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendEmoji } from '../api/sendEmoji';
+import { useToast } from '@/shared/hooks/useToast';
 
 export const useEmojiMutation = () => {
+  const queryClient = useQueryClient();
   const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: sendEmoji,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['emojis'] });
+      queryClient.invalidateQueries({ queryKey: ['moments'] });
       showSuccess('이모지를 추가했습니다!');
     },
     onError: () => {
