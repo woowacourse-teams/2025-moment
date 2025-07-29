@@ -5,7 +5,9 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,20 +41,26 @@ public class UserService {
         }
     }
 
-    private void validateEmail(UserCreateRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new MomentException(ErrorCode.USER_CONFLICT);
-        }
-    }
-
     private void validateNickname(UserCreateRequest request) {
         if (userRepository.existsByNickname(request.nickname())) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
         }
     }
 
+    private void validateEmail(UserCreateRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new MomentException(ErrorCode.USER_CONFLICT);
+        }
+    }
+
     public UserProfileResponse getUserProfile(Authentication authentication) {
         User user = userQueryService.getUserById(authentication.id());
         return UserProfileResponse.from(user);
+    }
+
+    // todo existsByEmail도 QueryService에 들어가야 되는건지?
+    public EmailConflictCheckResponse checkEmailConflict(EmailConflictCheckRequest request) {
+        boolean existsByEmail = userRepository.existsByEmail(request.email());
+        return new EmailConflictCheckResponse(existsByEmail);
     }
 }
