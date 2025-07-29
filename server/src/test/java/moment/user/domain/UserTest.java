@@ -36,8 +36,8 @@ class UserTest {
     void 이메일_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
         // when & then
         assertThatThrownBy(() -> new User(email, "password", "mimi"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_INVALID);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("email의 형식이 올바르지 않습니다.");
     }
 
     @ParameterizedTest
