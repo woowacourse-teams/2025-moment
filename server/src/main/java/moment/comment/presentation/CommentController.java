@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
-import moment.comment.dto.response.CommentStatusResponse;
+import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentsResponse;
@@ -98,11 +98,11 @@ public class CommentController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/check")
-    public ResponseEntity<SuccessResponse<CommentStatusResponse>> checkMyComments(
+    @GetMapping("/me/creation-status")
+    public ResponseEntity<SuccessResponse<CommentCreationStatusResponse>> readMyCreationStatus(
             @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
-        CommentStatusResponse commentStatus = commentService.checkCommentStatus(userId);
+        CommentCreationStatusResponse commentStatus = commentService.getCreationStatus(userId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, commentStatus));
     }

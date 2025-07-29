@@ -2,7 +2,8 @@ package moment.comment.application;
 
 import java.util.Optional;
 import moment.comment.domain.Comment;
-import moment.comment.dto.response.CommentStatusResponse;
+import moment.comment.domain.CommentCreationStatus;
+import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
@@ -174,13 +175,10 @@ class CommentServiceTest {
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.empty());
 
         // when
-        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertAll(
-                () -> assertThat(response.isAlreadyMatched()).isFalse(),
-                () -> assertThat(response.isAlreadyCommented()).isFalse()
-        );
+        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.NOT_MATCHED);
     }
 
     @Test
@@ -196,13 +194,10 @@ class CommentServiceTest {
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
 
         // when
-        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertAll(
-                () -> assertThat(response.isAlreadyMatched()).isTrue(),
-                () -> assertThat(response.isAlreadyCommented()).isTrue()
-        );
+        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED);
     }
 
     @Test
@@ -218,12 +213,9 @@ class CommentServiceTest {
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
 
         // when
-        CommentStatusResponse response = commentService.checkCommentStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertAll(
-                () -> assertThat(response.isAlreadyMatched()).isTrue(),
-                () -> assertThat(response.isAlreadyCommented()).isFalse()
-        );
+        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE);
     }
 }
