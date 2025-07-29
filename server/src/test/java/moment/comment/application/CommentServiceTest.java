@@ -79,12 +79,12 @@ class CommentServiceTest {
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(new User("hippo@gmail.com", "1234", "hippo"));
-        given(momentQueryService.getMomentById(any(Long.class))).willReturn(null);
+        given(momentQueryService.getMomentById(any(Long.class))).willThrow(new MomentException(ErrorCode.MOMENT_NOT_FOUND));
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_NOT_FOUND);
     }
 
     @Test
@@ -92,12 +92,12 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        given(userQueryService.getUserById(any(Long.class))).willReturn(null);
+        given(userQueryService.getUserById(any(Long.class))).willThrow(new MomentException(ErrorCode.USER_NOT_FOUND));
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
 
     @Test

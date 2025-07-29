@@ -45,8 +45,8 @@ class CommentTest {
                         true,
                         new User("kiki@icloud.com", "1234", "kiki")
                 )
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("content가 100자를 초과해서는 안 됩니다.");
     }
 
     @ParameterizedTest
@@ -59,8 +59,8 @@ class CommentTest {
                         true,
                         new User("kiki@icloud.com", "1234", "kiki")
                 )
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("content가 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @Test
@@ -69,18 +69,18 @@ class CommentTest {
                 "정말 안타깝게 됐네요!",
                 new User("hippo@gmail.com", "1234", "hippo"),
                 null
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("moment가 null이어서는 안 됩니다.");
     }
 
     @Test
     void Comment_생성_시_Commenter가_null이면_예외가_발생한다() {
         assertThatThrownBy(() -> new Comment(
                 "정말 안타깝게 됐네요!",
-                new User("hippo@gmail.com", "1234", "hippo"),
-                null
-        )).isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_INVALID);
+                null,
+                new Moment("오늘도 야근 예정이에요", new User("hippo@gmail.com", "1234", "hippo"))
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("commenter가 null이어서는 안 됩니다.");
     }
 
     @Test

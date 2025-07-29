@@ -39,6 +39,8 @@ public class CommentController {
             @ApiResponse(responseCode = "201", description = "Comment 등록 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [C-002] 유효하지 않은 코멘트입니다.
+                    - [C-004] 유효하지 않은 코멘트 형식입니다.
+                    - [C-005] 유효하지 않은 코멘트 ID입니다.
                     - [G-002] 유효하지 않은 요청 값입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
