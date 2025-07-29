@@ -25,7 +25,7 @@ export const MyMomentsList = () => {
     <S.MomentsContainer>
       {hasMoments ? (
         myMoments?.map((myMoment: MyMoments, index: number) => (
-          <MyMomentsCard myMoment={myMoment} index={index} />
+          <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
         ))
       ) : (
         <NotFoundMyMoments />
