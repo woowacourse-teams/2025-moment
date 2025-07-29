@@ -68,7 +68,9 @@ export default function PostCommentsPage() {
                     <Gift size={20} color={theme.colors['yellow-500']} />
                     <span>받은 스티커</span>
                   </S.TitleContainer>
-                  <S.Emoji>{post.emojis.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}</S.Emoji>
+                  <S.Emoji>
+                    {post.emojis.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+                  </S.Emoji>
                 </S.ContentContainer>
               </Card.Content>
             </Card>
