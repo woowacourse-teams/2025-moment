@@ -18,12 +18,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ✅ pnpm 캐시 대상 경로가 존재하지 않는 문제 해결용
+      - name: Ensure pnpm store exists
+        run: mkdir -p ~/.pnpm-store
+
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-          cache-dependency-path: './client/pnpm-lock.yaml' # ✅ 경로 수정
+          cache-dependency-path: './client/pnpm-lock.yaml'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
