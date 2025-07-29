@@ -73,6 +73,7 @@ class momentServiceTest {
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
