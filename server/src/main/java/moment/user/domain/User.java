@@ -11,8 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,7 +53,7 @@ public class User extends BaseEntity {
             throw new IllegalArgumentException("email이 null이거나 빈 값이어서는 안 됩니다.");
         }
         if (!email.matches(EMAIL_REGEX)) {
-            throw new MomentException(ErrorCode.EMAIL_INVALID);
+            throw new IllegalArgumentException("유효하지 않은 이메일 형식입니다.");
         }
     }
 
