@@ -1,7 +1,9 @@
 export const formatRelativeTime = (dateString: string): string => {
   const now = new Date();
   const targetDate = new Date(dateString);
-  const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
+  const targetKoreaTime = new Date(targetDate.getTime() + 9 * 60 * 60 * 1000);
+
+  const diffInSeconds = Math.floor((now.getTime() - targetKoreaTime.getTime()) / 1000);
 
   if (isNaN(targetDate.getTime())) {
     throw new Error('Invalid date string provided');
@@ -32,11 +34,12 @@ export const formatRelativeTime = (dateString: string): string => {
   }
 
   const diffInMonths =
-    (now.getFullYear() - targetDate.getFullYear()) * 12 + (now.getMonth() - targetDate.getMonth());
+    (now.getFullYear() - targetKoreaTime.getFullYear()) * 12 +
+    (now.getMonth() - targetKoreaTime.getMonth());
   if (diffInMonths < 12) {
     return `${diffInMonths}개월 전`;
   }
 
-  const diffInYears = now.getFullYear() - targetDate.getFullYear();
+  const diffInYears = now.getFullYear() - targetKoreaTime.getFullYear();
   return `${diffInYears}년 전`;
 };
