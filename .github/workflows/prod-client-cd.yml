@@ -11,16 +11,19 @@ jobs:
     defaults:
       run:
         working-directory: ./client
+    env:
+      PATH: '/usr/local/bin:/usr/bin:/bin:$PATH'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-          cache-dependency-path: ${{ github.workspace }}/client/pnpm-lock.yaml
+          cache-dependency-path: './client/pnpm-lock.yaml' # ✅ 경로 수정
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -40,7 +43,7 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Check AWS CLI and credentials
+      - name: Ensure AWS CLI is installed
         run: |
           echo "Checking AWS CLI..."
           if ! command -v aws &> /dev/null; then
