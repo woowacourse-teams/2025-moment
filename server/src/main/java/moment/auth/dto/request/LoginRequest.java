@@ -9,7 +9,7 @@ public record LoginRequest(
         String email,
 
         @Schema(description = "사용자 비밀번호", example = "1234")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d).{8,16}$")
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d).{8,16}$", message = "PASSWORD_INVALID")
         String password
 ) {
 }

@@ -13,7 +13,7 @@ public record UserCreateRequest(
         String password,
 
         @Schema(description = "비밀번호 확인", example = "1234")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d).{8,16}$")
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d).{8,16}$", message = "PASSWORD_INVALID")
         String rePassword,
 
         @Schema(description = "사용자 닉네임", example = "mimi")
