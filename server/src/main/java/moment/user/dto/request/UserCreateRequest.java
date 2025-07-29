@@ -13,12 +13,12 @@ public record UserCreateRequest(
         String email,
 
         @Schema(description = "사용자 비밀번호", example = "1234")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,16}$", message = "PASSWORD_INVALID")
+        @Pattern(regexp = "^(?=.[a-z])(?=.\\d).{8,16}$", message = "PASSWORD_INVALID")
         @NotBlank(message = "PASSWORD_INVALID")
         String password,
 
         @Schema(description = "비밀번호 확인", example = "1234")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,16}$", message = "PASSWORD_INVALID")
+        @Pattern(regexp = "^(?=.[a-z])(?=.\\d).{8,16}$", message = "PASSWORD_INVALID")
         @NotBlank(message = "PASSWORD_INVALID")
         String rePassword,
 
