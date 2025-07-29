@@ -45,32 +45,11 @@ public class JwtTokenManager implements TokenManager {
                 .compact();
     }
 
-    // TODO : 삭제
-    @Override
-    public Claims extractClaims(String token) {
-        return handleTokenException(token, (value) ->
-                Jwts.parser()
-                        .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
-                        .build()
-                        .parseSignedClaims(value)
-                        .getPayload()
-        );
-    }
-
     @Override
     public Authentication extractAuthentication(String token) {
         Long id = handleTokenException(token, this::extractIdFromToken);
 
         return Authentication.from(id);
-    }
-
-    private Long extractIdFromToken(String token) {
-        Jws<Claims> verifiedJwt = Jwts.parser()
-                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
-                .build()
-                .parseSignedClaims(token);
-
-        return Long.valueOf(verifiedJwt.getPayload().getSubject());
     }
 
     private <T> T handleTokenException(String token, Function<String, T> function) {
@@ -87,5 +66,14 @@ public class JwtTokenManager implements TokenManager {
         } catch (JwtException jwtException) {
             throw new MomentException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private Long extractIdFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return Long.valueOf(verifiedJwt.getPayload().getSubject());
     }
 }
