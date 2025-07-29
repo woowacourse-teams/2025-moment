@@ -14,6 +14,7 @@ import moment.moment.domain.Moment;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -178,7 +180,10 @@ class CommentServiceTest {
         CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.NOT_MATCHED);
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.NOT_MATCHED),
+                () -> then(momentQueryService).should(times(1)).findTodayMatchedMomentByCommenter(commenter)
+        );
     }
 
     @Test
@@ -197,7 +202,10 @@ class CommentServiceTest {
         CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED);
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED),
+                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
+        );
     }
 
     @Test
@@ -216,6 +224,9 @@ class CommentServiceTest {
         CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
 
         // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE);
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE),
+                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
+        );
     }
 }
