@@ -5,6 +5,7 @@ import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.domain.Moment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,5 +20,10 @@ public class DefaultCommentQueryService implements CommentQueryService {
     public Comment getCommentById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    @Override
+    public boolean existsByMoment(Moment moment) {
+        return commentRepository.existsByMoment(moment);
     }
 }

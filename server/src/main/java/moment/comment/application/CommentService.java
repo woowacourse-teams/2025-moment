@@ -1,8 +1,5 @@
 package moment.comment.application;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -20,6 +17,10 @@ import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,11 +30,16 @@ public class CommentService {
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
+    private final CommentQueryService commentQueryService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
         User commenter = userQueryService.getUserById(commenterId);
         Moment moment = momentQueryService.getMomentById(request.momentId());
+
+        if (commentQueryService.existsByMoment(moment)) {
+            throw new MomentException(ErrorCode.COMMENT_CONFLICT);
+        }
 
         Comment comment = request.toComment(commenter, moment);
 
@@ -47,7 +53,7 @@ public class CommentService {
             throw new MomentException(ErrorCode.USER_NOT_FOUND);
         }
 
-        List<Comment> comments = commentRepository.findCommentsByCommenterId(commenterId);
+        List<Comment> comments = commentRepository.findCommentsByCommenterIdOrderByCreatedAtDesc(commenterId);
 
         List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
 

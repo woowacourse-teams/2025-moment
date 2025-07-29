@@ -18,7 +18,6 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -105,7 +104,7 @@ class CommentControllerTest {
         Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
         Comment savedComment = commentRepository.save(comment);
 
-        Emoji emoji = new Emoji(EmojiType.HEART, savedMomenter, savedComment);
+        Emoji emoji = new Emoji("HEART", savedMomenter, savedComment);
         Emoji savedEmoji = emojiRepository.save(emoji);
 
         // when
