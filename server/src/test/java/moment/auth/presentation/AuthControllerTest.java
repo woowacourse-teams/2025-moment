@@ -36,12 +36,12 @@ class AuthControllerTest {
         userService.addUser(
                 new UserCreateRequest(
                         "ekorea623@gmail.com",
-                        "1q2w3e4r",
-                        "1q2w3e4r",
+                        "1q2w3e4r!",
+                        "1q2w3e4r!",
                         "drago"
                 )
         );
-        LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
+        LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r!");
 
         // when
         String token = RestAssured.given().log().all()
