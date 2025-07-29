@@ -142,13 +142,13 @@ describe('닉네임 유효성 검사', () => {
   });
 
   it('닉네임이 유효한 경우 빈 문자열을 반환해야 한다', () => {
-    const nickname = 'testnick';
+    const nickname = 'test';
     const result = validateNickname(nickname);
     expect(result).toBe('');
   });
 
   it('다양한 유효한 닉네임을 허용해야 한다', () => {
-    const validNicknames = ['ab', 'test', 'testuser123', '한글닉네임', '가나다라마바사'];
+    const validNicknames = ['ab', 'test', 'test12', '한글닉네임', '가나다라마바'];
 
     validNicknames.forEach(nickname => {
       const result = validateNickname(nickname);
@@ -217,7 +217,7 @@ describe('회원가입 폼 전체 유효성 검사', () => {
       email: 'test@example.com',
       password: 'Valid123!',
       rePassword: 'Valid123!',
-      nickname: 'testnick',
+      nickname: 'test',
     };
 
     const result = validateSignupForm(signupData);
@@ -251,7 +251,7 @@ describe('회원가입 폼 전체 유효성 검사', () => {
       email: 'invalid@',
       password: 'weak',
       rePassword: 'weak',
-      nickname: 'testnick',
+      nickname: 'test',
     };
 
     const result = validateSignupForm(signupData);
@@ -432,7 +432,7 @@ describe('isDataEmpty', () => {
       email: '',
       password: '',
       rePassword: '',
-      nickname: 'testnick',
+      nickname: 'test',
     };
 
     const result = isDataEmpty(signupData);
