@@ -90,7 +90,7 @@ class UserControllerTest {
         SuccessResponse<NicknameConflictCheckResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/users/nickname/check")
+                .when().post("/api/v1/users/signup/nickname/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {

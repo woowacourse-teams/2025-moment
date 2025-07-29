@@ -1,8 +1,5 @@
 package moment.comment.domain;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
@@ -13,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
@@ -86,13 +86,13 @@ class CommentTest {
     @Test
     void Comment와_Moment_작성자가_아니라면_예외가_발생한다() {
         // given
-        User momenter = new User("momenter@email.com", "1234", "momenter");
+        User momenter = new User("momenter@email.com", "1234", "momter");
         ReflectionTestUtils.setField(momenter, "id", 1L);
 
-        User commenter = new User("commenter@email.com", "1234", "commenter");
+        User commenter = new User("commenter@email.com", "1234", "comter");
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
-        User unAuthorized = new User("no@email.com", "1", "unAuthorized");
+        User unAuthorized = new User("no@email.com", "1", "nouser");
         ReflectionTestUtils.setField(unAuthorized, "id", 3L);
 
         Moment moment = new Moment("오늘 야근 정말 힘들었네요", momenter);

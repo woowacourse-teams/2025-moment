@@ -88,7 +88,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-    @PostMapping("/nickname/check")
+    @PostMapping("/signup/nickname/check")
     public ResponseEntity<SuccessResponse<NicknameConflictCheckResponse>> readNicknameConflict(
             @Valid @RequestBody NicknameConflictCheckRequest request
     ) {
