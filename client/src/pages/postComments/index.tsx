@@ -10,8 +10,12 @@ import { NotFoundMyComments } from './NotFoundMyComments';
 
 export default function PostCommentsPage() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
-  const { data: emojiResponse } = useEmojisQuery(4); // TODO: 현재 commentsResponse에 commentId 값이 없어서 임시로 설정.
-  const emojiData = emojiResponse?.data;
+
+  const getEmojiData = (commentId: number) => {
+    const { data: emojiResponse } = useEmojisQuery(commentId);
+    const emojiData = emojiResponse?.data;
+    return emojiData?.map(emoji => emojiMapping(emoji.emojiType)).join(' ');
+  };
 
   if (isLoading) {
     return (
@@ -71,14 +75,7 @@ export default function PostCommentsPage() {
                     <Gift size={20} color={theme.colors['yellow-500']} />
                     <span>받은 스티커</span>
                   </S.TitleContainer>
-                  {emojiData && emojiData.length > 0 ? (
-                    <S.Emoji>
-                      {emojiData.map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
-                    </S.Emoji>
-                  ) : (
-                    // TODO: 스티커 없을 시 디자인 논의 필요
-                    <div>스티커가 없습니다.</div>
-                  )}
+                  <S.Emoji>{getEmojiData(post.id)}</S.Emoji>
                 </S.ContentContainer>
               </Card.Content>
             </Card>
