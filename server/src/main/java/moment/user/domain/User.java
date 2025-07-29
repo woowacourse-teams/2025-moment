@@ -11,8 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +59,7 @@ public class User extends BaseEntity {
 
         Matcher matcher = EMAIL_REGEX.matcher(email);
         if (!matcher.matches()) {
-            throw new MomentException(ErrorCode.EMAIL_INVALID);
+            throw new IllegalArgumentException("유효하지 않은 이메일 형식입니다.");
         }
     }
 
@@ -78,7 +76,7 @@ public class User extends BaseEntity {
 
         Matcher matcher = NICKNAME_REGEX.matcher(nickname);
         if (!matcher.matches()) {
-            throw new MomentException(ErrorCode.NICKNAME_INVALID);
+            throw new IllegalArgumentException("유효하지 않은 닉네임 형식입니다.");
         }
     }
 
