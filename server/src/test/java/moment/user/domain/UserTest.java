@@ -1,16 +1,14 @@
 package moment.user.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserTest {
@@ -37,7 +35,7 @@ class UserTest {
         // when & then
         assertThatThrownBy(() -> new User(email, "password", "mimi"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("email의 형식이 올바르지 않습니다.");
+                .hasMessage("유효하지 않은 이메일 형식입니다.");
     }
 
     @ParameterizedTest
