@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
 import * as S from './SignupForm.styles';
 import { useCheckEmail } from '../hooks/useCheckEmail';
+import { useCheckNickname } from '../hooks/useCheckNickname';
 
 export const SignupForm = () => {
   const { Funnel, Step, useStep, beforeStep, nextStep } = useFunnel(STEPS);
@@ -15,6 +16,7 @@ export const SignupForm = () => {
   const { step, setStep } = useStep();
 
   const { handleCheckEmail, errorMessage: emailErrorMessage } = useCheckEmail();
+  const { handleCheckNickname, errorMessage: nicknameErrorMessage } = useCheckNickname();
 
   const handlePreviousStep = () => {
     if (beforeStep) {
@@ -28,7 +30,11 @@ export const SignupForm = () => {
     }
   };
 
-  const isDisabled = !isSignupFormValid(errors) || isDataEmpty(signupData) || !!emailErrorMessage;
+  const isDisabled =
+    !isSignupFormValid(errors) ||
+    isDataEmpty(signupData) ||
+    !!emailErrorMessage ||
+    !!nicknameErrorMessage;
 
   return (
     <S.SignupFormWrapper>
@@ -51,6 +57,8 @@ export const SignupForm = () => {
               errors={errors}
               handleChange={handleChange}
               onNext={!nextStep || isDisabled ? undefined : handleNextStep}
+              handleCheckNickname={handleCheckNickname}
+              nicknameErrorMessage={nicknameErrorMessage}
             />
           </Step>
           <Step name="step3">
