@@ -9,7 +9,6 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
-import moment.reply.domain.EmojiType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -42,7 +41,7 @@ class EmojiRepositoryTest {
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment));
 
-        emojiRepository.save(new Emoji(EmojiType.HEART, momenter, comment));
+        emojiRepository.save(new Emoji("HEART", momenter, comment));
 
         // when
         List<Emoji> result = emojiRepository.findAllByComment(comment);
@@ -50,7 +49,7 @@ class EmojiRepositoryTest {
         // then
         Emoji emoji = result.getFirst();
         assertAll(
-                () -> assertThat(emoji.getEmojiType()).isEqualTo(EmojiType.HEART),
+                () -> assertThat(emoji.getEmojiType()).isEqualTo("HEART"),
                 () -> assertThat(emoji.getUser()).isEqualTo(momenter)
         );
     }

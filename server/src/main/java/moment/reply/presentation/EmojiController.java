@@ -66,7 +66,8 @@ public class EmojiController {
     })
     @GetMapping("/{commentId}")
     public ResponseEntity<SuccessResponse<List<EmojiReadResponse>>> readEmojisByComment(
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal Authentication authentication
     ) {
         List<EmojiReadResponse> response = emojiService.getEmojisByCommentId(commentId);
         HttpStatus status = HttpStatus.OK;
