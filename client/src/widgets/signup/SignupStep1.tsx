@@ -25,6 +25,7 @@ export const SignupStep1 = ({
 }: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
+  console.log('asdf1232312313', emailErrorMessage);
   return (
     <S.StepContainer>
       <S.InputGroup>
