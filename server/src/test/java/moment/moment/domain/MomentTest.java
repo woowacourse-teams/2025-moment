@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -29,6 +27,18 @@ class MomentTest {
         assertThatThrownBy(() -> new Moment(content, user))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
+    }
+
+    @Test
+    void 모멘트_내용_길이가_100자가_넘는_경우_예외가_발생한다() {
+        //given
+        User user = new User("lebron@gmail.com", "1234", "르브론");
+        String longContent = "11assaskdfjajksdhfjlkashdfjkahsdkjlfhaskljdfhakljsdhfkjlashdfkjlahsdkjflhasdkjlfhakljsdhfjkalsdhfkjlahsdfjklahsdjklfhakljsdhfjkalshdfjklahsdkfjlhasldkjf";
+
+        // when & then
+        assertThatThrownBy(() -> new Moment(longContent, user))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.");
     }
 
     @Test
