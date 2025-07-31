@@ -13,9 +13,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MomentException.class)
     public ResponseEntity<ErrorResponse> handleMomentException(MomentException exception) {
-        log.error(exception.getMessage(), exception);
+        ErrorCode errorCode = exception.getErrorCode();
 
-        ErrorResponse errorResponse = ErrorResponse.from(exception.getErrorCode());
+        if(errorCode == ErrorCode.INTERNAL_SERVER_ERROR) {
+            log.error(exception.getMessage(), exception);
+        }
+        if(errorCode != ErrorCode.INTERNAL_SERVER_ERROR) {
+            log.warn(exception.getMessage(), exception);
+        }
+
+        ErrorResponse errorResponse = ErrorResponse.from(errorCode);
         return ResponseEntity.status(exception.getStatus()).body(errorResponse);
     }
 
