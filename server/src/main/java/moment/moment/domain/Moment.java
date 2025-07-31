@@ -14,8 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import moment.user.domain.User;
 
 @Entity(name = "moments")
@@ -53,9 +51,10 @@ public class Moment extends BaseEntity {
         this.isMatched = isMatched;
         this.momenter = momenter;
     }
-  
+
     private void validate(String content, User momenter) {
         validateContent(content);
+        validateContentLength(content);
         validateUser(momenter);
     }
 
@@ -68,6 +67,12 @@ public class Moment extends BaseEntity {
     private void validateUser(User momenter) {
         if (momenter == null) {
             throw new IllegalArgumentException("momenter가 null이 되어서는 안 됩니다.");
+        }
+    }
+
+    private void validateContentLength(String content) {
+        if (content.length() > 100) {
+            throw new IllegalArgumentException("모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.");
         }
     }
 

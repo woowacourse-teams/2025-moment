@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @Tag(name = "Moment API", description = "모멘트 관련 API 명세")
@@ -50,7 +51,7 @@ public class MomentController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<MomentCreateResponse>> createMoment(
-            @RequestBody MomentCreateRequest request,
+            @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
         MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
