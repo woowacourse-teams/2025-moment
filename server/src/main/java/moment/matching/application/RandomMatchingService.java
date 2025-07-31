@@ -29,7 +29,7 @@ public class RandomMatchingService implements MatchingService {
     public MatchingResult match(Long momentId) {
         Moment moment = momentQueryService.getMomentById(momentId);
         if (moment.alreadyMatched()) {
-            log.warn("ALREADY_MATCHED: [{}]", momentId);
+            log.warn("matching failed: [ALREADY_MATCHED], momentId: [{}]", momentId);
             return MatchingResult.ALREADY_MATCHED;
         }
         User momenter = userQueryService.getUserById(moment.getMomenterId());
@@ -37,7 +37,7 @@ public class RandomMatchingService implements MatchingService {
         List<User> todayNonMatchedUser = userQueryService.findNotMatchedUsersTodayByMomenter(momenter);
 
         if (todayNonMatchedUser.isEmpty()) {
-            log.warn("NO_AVAILABLE_USERS: [{}]", momentId);
+            log.warn("matching failed: [NO_AVAILABLE_USERS], momentId: [{}]", momentId);
             return MatchingResult.NO_AVAILABLE_USERS;
         }
 
@@ -48,7 +48,7 @@ public class RandomMatchingService implements MatchingService {
         matchingRepository.save(matching);
 
         moment.matchComplete();
-        log.info("MATCHED: [{}]", momentId);
+        log.info("matching success: [MATCHED], momentId: [{}]", momentId);
         return MatchingResult.MATCHED;
     }
 }
