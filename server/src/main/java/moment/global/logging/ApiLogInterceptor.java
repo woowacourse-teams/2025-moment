@@ -21,6 +21,7 @@ public class ApiLogInterceptor implements HandlerInterceptor {
         String requestURI = request.getRequestURI();
         String traceId = UUID.randomUUID().toString().substring(0, 8);
         MDC.put(TRACE_ID_KEY, traceId);
+        log.info("======================================================================");
         log.info("ip: [{}], method: [{}], uri: [{}]", request.getRemoteAddr(), request.getMethod(), requestURI);
         return true;
     }
@@ -29,6 +30,7 @@ public class ApiLogInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         String requestURI = request.getRequestURI();
         log.info("ip: [{}], method: [{}], uri: [{}], status: [{}]", request.getRemoteAddr(), request.getMethod(), requestURI, response.getStatus());
+        log.info("======================================================================");
         MDC.remove(TRACE_ID_KEY);
     }
 }

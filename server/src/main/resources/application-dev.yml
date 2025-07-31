@@ -14,7 +14,7 @@ spring:
     properties:
       hibernate:
         show_sql: false
-        format_sql: false
+        format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
   sql:
