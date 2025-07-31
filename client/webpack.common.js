@@ -45,6 +45,7 @@ const config = {
         process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1',
       ),
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
+      'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
     }),
   ],
 };
