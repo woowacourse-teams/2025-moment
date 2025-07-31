@@ -5,6 +5,10 @@ build/
 # Build
 out/
 
+# 로그
+logs/
+
 # 환경 변수
 .env
 .env.*
+
