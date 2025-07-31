@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @Tag(name = "Moment API", description = "모멘트 관련 API 명세")
 @RestController
@@ -49,7 +51,7 @@ public class MomentController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<MomentCreateResponse>> createMoment(
-            @RequestBody MomentCreateRequest request,
+            @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
         MomentCreateResponse response = momentService.addMomentAndMatch(request, authentication.id());
@@ -98,10 +100,10 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MatchedMomentResponse>> readMatchedMoment(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MatchedMomentResponse responses = momentService.getMatchedMoment(authentication.id());
+        MatchedMomentResponse response = momentService.getMatchedMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "모멘트 작성여부 확인", description = "유저가 오늘 모멘트를 더 보낼 수 있는지 확인입니다.")
@@ -121,9 +123,9 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreationStatusResponse responses = momentService.canCreateMoment(authentication.id());
+        MomentCreationStatusResponse response = momentService.canCreateMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }

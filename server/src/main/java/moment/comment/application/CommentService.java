@@ -74,7 +74,7 @@ public class CommentService {
                 .toList();
     }
 
-    public CommentCreationStatusResponse getCreationStatus(Long commenterId) {
+    public CommentCreationStatusResponse canCreateComment(Long commenterId) {
         User commenter = userQueryService.getUserById(commenterId);
         Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
 

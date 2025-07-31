@@ -17,7 +17,7 @@ const SimpleCardStyles = {
     `,
 };
 
-export const SimpleCard = styled.p<{ $height: SimpleCardHeight; $backgroundColor?: ColorKey }>`
+export const SimpleCard = styled.div<{ $height: SimpleCardHeight; $backgroundColor?: ColorKey }>`
   ${({ theme, $height, $backgroundColor }) =>
     SimpleCardStyles.simpleCard(theme, $height, $backgroundColor)}
 `;

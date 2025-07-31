@@ -106,7 +106,7 @@ public class CommentController {
     public ResponseEntity<SuccessResponse<CommentCreationStatusResponse>> readMyCreationStatus(
             @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
-        CommentCreationStatusResponse commentStatus = commentService.getCreationStatus(userId);
+        CommentCreationStatusResponse commentStatus = commentService.canCreateComment(userId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, commentStatus));
     }

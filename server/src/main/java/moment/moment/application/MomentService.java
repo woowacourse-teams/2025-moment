@@ -95,8 +95,7 @@ public class MomentService {
 
         return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }
-
-    @Transactional(readOnly = true)
+    
     public MomentCreationStatusResponse canCreateMoment(Long id) {
         User user = userQueryService.getUserById(id);
 
