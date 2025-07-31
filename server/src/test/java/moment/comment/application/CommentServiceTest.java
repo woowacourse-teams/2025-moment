@@ -14,7 +14,6 @@ import moment.moment.domain.Moment;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -177,7 +175,7 @@ class CommentServiceTest {
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.empty());
 
         // when
-        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
 
         // then
         assertAll(
@@ -199,7 +197,7 @@ class CommentServiceTest {
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
 
         // when
-        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
 
         // then
         assertAll(
@@ -221,7 +219,7 @@ class CommentServiceTest {
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
 
         // when
-        CommentCreationStatusResponse response = commentService.getCreationStatus(commenterId);
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
 
         // then
         assertAll(
