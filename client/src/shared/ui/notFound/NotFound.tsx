@@ -20,13 +20,13 @@ export const NotFound = ({
   withCard = false,
 }: NotFoundProps) => {
   const content = (
-    <S.NotFoundWrapper size={size}>
-      <S.NotFoundIconWrapper size={size}>
+    <S.NotFoundWrapper $size={size}>
+      <S.NotFoundIconWrapper $size={size}>
         <IconComponent size={iconSize} />
       </S.NotFoundIconWrapper>
-      <S.NotFoundContainer size={size}>
-        <S.NotFoundTitle size={size}>{title}</S.NotFoundTitle>
-        <S.NotFoundSubtitle size={size}>{subtitle}</S.NotFoundSubtitle>
+      <S.NotFoundContainer $size={size}>
+        <S.NotFoundTitle $size={size}>{title}</S.NotFoundTitle>
+        <S.NotFoundSubtitle $size={size}>{subtitle}</S.NotFoundSubtitle>
       </S.NotFoundContainer>
     </S.NotFoundWrapper>
   );
