@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="CUSTOM_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/moment-custom.log</file> <encoder>
-        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
+        <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>1</maxHistory>
@@ -11,9 +12,10 @@
     </appender>
 
     <appender name="STDOUT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/moment-stdout.log</file> <encoder>
-        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
+        <fileNamePattern>./logs/moment-stdout.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>./logs/moment-stdout.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>1</maxHistory>
@@ -21,10 +23,10 @@
     </appender>
 
     <logger name="moment" level="DEBUG" additivity="false">
-        <appender-ref ref="CUSTOM_FILE" />
+        <appender-ref ref="CUSTOM_FILE"/>
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT_FILE" />
+        <appender-ref ref="STDOUT_FILE"/>
     </root>
 </configuration>
