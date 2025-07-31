@@ -11,6 +11,7 @@ interface SignupStep1Props {
   onNext?: () => void;
   handleCheckEmail: (value: string) => void;
   emailErrorMessage: string;
+  isEmailChecked: boolean;
 }
 
 export const SignupStep1 = ({
@@ -20,10 +21,10 @@ export const SignupStep1 = ({
   onNext,
   handleCheckEmail,
   emailErrorMessage,
+  isEmailChecked,
 }: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
-  console.log('asdf1232312313', emailErrorMessage);
   return (
     <S.StepContainer>
       <S.InputGroup>
@@ -38,8 +39,8 @@ export const SignupStep1 = ({
           />
           <CheckButton onClick={() => handleCheckEmail(signupData.email)} />
         </S.CheckExistContainer>
-        {!emailErrorMessage ? (
-          <S.SuccessEmailMessage>사용 가능한 이메일입니다.</S.SuccessEmailMessage>
+        {isEmailChecked && !emailErrorMessage ? (
+          <S.SuccessMessage>사용 가능한 이메일입니다.</S.SuccessMessage>
         ) : (
           <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
         )}
@@ -54,7 +55,7 @@ export const SignupStep1 = ({
           value={signupData.password}
           onChange={handleChange('password')}
         />
-        {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
+
         <S.ErrorMessage>{errors.password || ''}</S.ErrorMessage>
       </S.InputGroup>
 
@@ -67,7 +68,7 @@ export const SignupStep1 = ({
           value={signupData.rePassword}
           onChange={handleChange('rePassword')}
         />
-        {/* Todo: 비밀번호 오류 처리는 추후 유효성 검사 로직 포함하여 처리 */}
+
         <S.ErrorMessage>{errors.rePassword || ''}</S.ErrorMessage>
       </S.InputGroup>
     </S.StepContainer>
