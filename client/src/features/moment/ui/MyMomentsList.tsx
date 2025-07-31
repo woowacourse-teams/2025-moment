@@ -1,9 +1,9 @@
-import { CommonSkeletonCard } from '@/shared/ui';
+import { CommonSkeletonCard, NotFound } from '@/shared/ui';
+import { Clock } from 'lucide-react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import { MyMoments } from '../types/moments';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
-import { NotFoundMyMoments } from './NotFoundMyMoments';
 
 export const MyMomentsList = () => {
   const { data, isLoading } = useMomentsQuery();
@@ -28,7 +28,12 @@ export const MyMomentsList = () => {
           <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
         ))
       ) : (
-        <NotFoundMyMoments />
+        <NotFound
+          title="아직 모멘트가 없어요"
+          subtitle="오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요"
+          icon={Clock}
+          size="large"
+        />
       )}
     </S.MomentsContainer>
   );

@@ -1,13 +1,12 @@
 import { theme } from '@/app/styles/theme';
-import { NotFoundComments } from '@/features/comment/ui/NotFoundComments';
+import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
+import { Emoji } from '@/features/emoji/ui/Emoji';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { Card, SimpleCard } from '@/shared/ui';
+import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
-import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { Emoji } from '@/features/emoji/ui/Emoji';
 import { MyMoments } from '../types/moments';
-import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index: number }) => {
@@ -32,7 +31,18 @@ export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index:
           <Send size={20} color={theme.colors['yellow-500']} />
           <span>받은 공감</span>
         </S.TitleContainer>
-        <SimpleCard height="small" content={myMoment.comment?.content || <NotFoundComments />} />
+        <SimpleCard
+          height="small"
+          content={
+            myMoment.comment?.content || (
+              <NotFound
+                title="아직 응답이 없어요."
+                subtitle="곧 누군가가 따뜻한 응답을 보내줄 거예요."
+                size="small"
+              />
+            )
+          }
+        />
       </Card.Content>
       <Card.Action position="space-between">
         {myMoment.comment?.content && emojis.length === 0 && (

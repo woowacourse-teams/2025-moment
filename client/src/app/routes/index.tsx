@@ -9,7 +9,7 @@ import SignupPage from '@/pages/signup';
 import PostCommentsPage from '@/pages/postComments';
 import TodayMomentPage from '@/pages/todayMoment';
 
-import TodayCommentPage from '@/pages/todayComment/TodayCommentPage';
+import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
