@@ -33,13 +33,11 @@ export default function PostCommentsPage() {
       <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
       {comments.length > 0 ? (
         <S.MomentsContainer>
-          {comments.map((post, index) => (
-            <Card width="large" key={index}>
-              {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
+          {comments.map(post => (
+            <Card width="large" key={`card-${post.id}`}>
               <Card.TitleContainer
                 title={
                   <S.TitleWrapper>
-                    {/* TODO: 추후 Icon 컴포넌트로 변경 필요 */}
                     <Gift size={16} color={theme.colors['gray-400']} />
                     <S.TimeStamp>{new Date(post.createdAt).toLocaleDateString()}</S.TimeStamp>
                   </S.TitleWrapper>
