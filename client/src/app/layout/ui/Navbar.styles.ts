@@ -91,7 +91,7 @@ export const MobileMenu = styled.div<{ $isOpen: boolean }>`
   background: ${({ theme }) => theme.colors['gray-800_90']};
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 99;
-  transform: translateY(-100%);
+  transform: translateY(-200%);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
