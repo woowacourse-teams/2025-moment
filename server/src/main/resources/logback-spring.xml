@@ -20,7 +20,7 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="moment" level="INFO" additivity="false">
+    <logger name="moment" level="DEBUG" additivity="false">
         <appender-ref ref="CUSTOM_FILE" />
     </logger>
 
