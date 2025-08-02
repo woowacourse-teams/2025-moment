@@ -1,17 +1,7 @@
-# 1단계: 빌드용 (Gradle 포함)
-FROM gradle:8.5-jdk21 AS builder
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-COPY . .
-
-RUN gradle build -x test
-
-# 2단계: 실행용 (최소한의 JDK 포함)
-FROM eclipse-temurin:21-jdk-jammy
-
-WORKDIR /app
-
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
