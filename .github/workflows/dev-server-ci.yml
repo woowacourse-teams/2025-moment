@@ -40,11 +40,6 @@ jobs:
       - name: build with Gradle
         run: ./gradlew build
 
-      - name: Print built JAR path
-        run: |
-            echo "Built JAR:"
-            find build/libs -name "*.jar"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
