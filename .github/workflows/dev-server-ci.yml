@@ -38,7 +38,8 @@ jobs:
           gradle-home-cache-cleanup: true
 
       - name: Test with Gradle
-        run: ./gradlew test
+        run: ./gradlew build
+        working-directory: ./server
 
   build-and-push-docker:
     needs: test
