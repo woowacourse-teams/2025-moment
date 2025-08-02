@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class MomentApplication {
     public static void main(String[] args) {
-        // ci/cd
         SpringApplication.run(MomentApplication.class, args);
     }
 }
