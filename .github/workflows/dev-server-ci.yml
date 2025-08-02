@@ -58,6 +58,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
+          context: ./server
           file: ./server/Dockerfile
           push: true
           platforms: linux/arm64
