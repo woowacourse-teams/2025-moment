@@ -29,11 +29,12 @@ class PointRewardServiceTest {
     @Test
     void 코멘트_작성시_5포인트를_부여한다() {
         // given
-        int commentPointTo = Reason.COMMENT_CREATION.getPointTo();
+        Reason reason = Reason.COMMENT_CREATION;
+        int commentPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고");
 
         // when
-        pointRewardService.rewardForCommentCreation(commenter);
+        pointRewardService.reward(commenter, reason);
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(commentPointTo);
@@ -43,11 +44,12 @@ class PointRewardServiceTest {
     @Test
     void 이모지_수신시_15포인트를_부여한다() {
         // given
-        int positiveEmojiReceivedPointTo = Reason.POSITIVE_EMOJI_RECEIVED.getPointTo();
+        Reason reason = Reason.POSITIVE_EMOJI_RECEIVED;
+        int positiveEmojiReceivedPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고");
 
         // when
-        pointRewardService.rewardForPositiveEmoji(commenter);
+        pointRewardService.reward(commenter, reason);
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(positiveEmojiReceivedPointTo);

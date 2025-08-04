@@ -1,10 +1,9 @@
 package moment.reward.application;
 
+import moment.reward.domain.Reason;
 import moment.user.domain.User;
 
 public interface RewardService {
 
-    void rewardForCommentCreation(User commenter);
-
-    void rewardForPositiveEmoji(User commenter);
+    void reward(User user, Reason reason);
 }

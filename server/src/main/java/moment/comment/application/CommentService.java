@@ -18,6 +18,8 @@ import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
     private final CommentQueryService commentQueryService;
+    private final RewardService rewardService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -44,6 +47,8 @@ public class CommentService {
         }
 
         Comment comment = request.toComment(commenter, moment);
+
+        rewardService.reward(commenter, Reason.COMMENT_CREATION);
 
         Comment savedComment = commentRepository.save(comment);
 

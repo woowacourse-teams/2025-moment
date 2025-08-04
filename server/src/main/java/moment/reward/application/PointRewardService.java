@@ -11,28 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PointRewardService implements RewardService{
+public class PointRewardService implements RewardService {
 
     private final RewardRepository rewardRepository;
 
-    @Transactional
     @Override
-    public void rewardForCommentCreation(User commenter) {
-        reward(commenter, Reason.COMMENT_CREATION);
-    }
-
     @Transactional
-    @Override
-    public void rewardForPositiveEmoji(User commenter) {
-        reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED);
-    }
-
-    private void reward(User user, Reason reason) {
-        int point = reason.getPointTo();
-
+    public void reward(final User user, final Reason reason) {
+        final int point = reason.getPointTo();
         user.addPoint(point);
 
-        PointHistory pointHistory = new PointHistory(user, point, reason);
+        final PointHistory pointHistory = new PointHistory(user, point, reason);
         rewardRepository.save(pointHistory);
     }
 }
