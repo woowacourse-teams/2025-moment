@@ -33,3 +33,5 @@ storybook-static
 # jest-cache
 .jest-cache/
 
+# cursor
+.cursor/
