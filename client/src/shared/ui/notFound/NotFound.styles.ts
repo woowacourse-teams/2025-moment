@@ -8,6 +8,7 @@ interface StyledProps {
 
 export const NotFoundWrapper = styled.div<StyledProps>`
   display: flex;
+  width: 100%;
   flex-direction: column;
   height: ${({ $size }) => ($size === 'large' ? '55vh' : 'auto')};
   align-items: center;

@@ -34,7 +34,7 @@ export default function PostCommentsPage() {
       {comments.length > 0 ? (
         <S.MomentsContainer>
           {comments.map(post => (
-            <Card width="large" key={`card-${post.id}`}>
+            <Card width="medium" key={`card-${post.id}`}>
               <Card.TitleContainer
                 title={
                   <S.TitleWrapper>

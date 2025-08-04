@@ -14,7 +14,7 @@ export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index:
   const emojis = myMoment.comment?.emojis || [];
 
   return (
-    <Card width="large" key={index}>
+    <Card width="medium" key={index}>
       {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
       <Card.TitleContainer
         title={
