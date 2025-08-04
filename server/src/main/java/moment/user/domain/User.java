@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Column(nullable = false)
-    private int currentPoint = DEFAULT_POINT;
+    private Integer currentPoint = DEFAULT_POINT;
 
     public User(String email, String password, String nickname) {
         validate(email, password, nickname);
