@@ -87,4 +87,8 @@ public class User extends BaseEntity {
     public boolean checkPassword(String loginPassword) {
         return password.equals(loginPassword);
     }
+
+    public void addPoint(int commentCreationPoint) {
+        currentPoint += commentCreationPoint;
+    }
 }
