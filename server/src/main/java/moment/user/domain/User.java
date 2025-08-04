@@ -24,6 +24,7 @@ public class User extends BaseEntity {
 
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9가-힣]{2,6}$");
+    public static final int DEFAULT_POINT = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,9 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String nickname;
+
+    @Column(nullable = false)
+    private int currentPoint = DEFAULT_POINT;
 
     public User(String email, String password, String nickname) {
         validate(email, password, nickname);

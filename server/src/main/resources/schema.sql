@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS emojis
 
 -- users에 current_point 컬럼 추가
 ALTER TABLE users
-    ADD COLUMN current_point INT NOT NULL DEFAULT 0
+    ADD COLUMN current_point INT NOT NULL DEFAULT 0;
 
 -- 포인트 히스토리 테이블 추가
 CREATE TABLE IF NOT EXISTS point_history
