@@ -24,7 +24,7 @@ public class User extends BaseEntity {
 
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9가-힣]{2,6}$");
-    public static final int DEFAULT_POINT = 0;
+    private static final int DEFAULT_POINT = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
