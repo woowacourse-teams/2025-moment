@@ -12,6 +12,8 @@ import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
 import moment.reply.dto.response.EmojiReadResponse;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -27,6 +29,7 @@ public class EmojiService {
     private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
     private final EmojiQueryService emojiQueryService;
+    private final RewardService rewardService;
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
@@ -36,6 +39,9 @@ public class EmojiService {
         validateMomenter(comment, user);
 
         Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
+
+        rewardService.reward(comment.getCommenter(), Reason.POSITIVE_EMOJI_RECEIVED);
+
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
 
         return EmojiCreateResponse.from(savedEmoji);
