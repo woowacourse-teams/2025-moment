@@ -2,6 +2,7 @@ import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
 import { Input } from '@/shared/ui/input/Input';
 import { useNavigate } from 'react-router';
 import * as S from './LoginForm.styles';
+import { GoogleLoginButton } from './GoogleLoginButton';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ export const LoginForm = () => {
         <S.LoginButton type="submit" disabled={isDisabled}>
           로그인
         </S.LoginButton>
+        <GoogleLoginButton />
         <S.LoginFooterContent>
           <S.LoginForgotPassword>비밀번호를 잊으셨나요?</S.LoginForgotPassword>
           <S.LoginSignupContainer>
