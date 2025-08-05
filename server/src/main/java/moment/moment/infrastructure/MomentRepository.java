@@ -32,8 +32,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                        @Param("cursorId") Long cursorId,
                                        Pageable pageable);
 
-    List<Moment> findMomentByMomenterOrderByCreatedAtDesc(User Momenter);
-
     @Query("""
             SELECT ma.moment FROM matchings ma
                 WHERE ma.commenter = :commenter AND ma.createdAt BETWEEN :startOfDay AND :endOfDay
