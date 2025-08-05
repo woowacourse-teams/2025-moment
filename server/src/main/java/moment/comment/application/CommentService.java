@@ -78,7 +78,7 @@ public class CommentService {
 
         List<Comment> commentsWithinCursor = new ArrayList<>();
 
-        if (cursor == null || cursor.isEmpty()) {
+        if (cursor == null || cursor.isBlank()) {
             commentsWithinCursor = commentRepository.findCommentsFirstPage(commenter, pageable);
         }
 
@@ -120,7 +120,7 @@ public class CommentService {
     private String extractCursor(List<Comment> comments, int pageSize) {
         boolean hasNext = comments.size() > pageSize;
 
-        String nextCursor = "";
+        String nextCursor = null;
 
         List<Comment> pagingComments = new ArrayList<>(comments);
 
