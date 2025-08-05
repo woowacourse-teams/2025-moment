@@ -58,7 +58,7 @@ class MomentRepositoryTest {
         Moment savedMoment4 = momentRepository.save(moment4);
 
         // when
-        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment3.getCreatedAt(), savedMoment3.getId(), PageRequest.of(0, 3));
+        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment4.getCreatedAt(), savedMoment4.getId(), PageRequest.of(0, 3));
 
         // then
         assertAll(
