@@ -3,15 +3,23 @@ import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
 import { Emoji } from '@/features/emoji/ui/Emoji';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { Card, NotFound, SimpleCard } from '@/shared/ui';
+import { Button, Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
 import * as S from './MyMomentsList.styles';
 import { MomentWithNotifications } from '../types/momentsWithNotifications';
+import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const emojis = myMoment.comment?.emojis || [];
+
+  // TODO: 서버 API 연동시 잘 동작하나 확인 필요
+  const handleCommentOpen = () => {
+    if (myMoment.read || isReadingNotification) return;
+    handleReadNotifications(myMoment.id);
+  };
 
   return (
     <Card width="medium" key={myMoment.id} shadow={!myMoment.read}>
@@ -56,6 +64,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             ))}
           </S.EmojiContainer>
         )}
+        {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
+        {!myMoment.read && <Button onClick={handleCommentOpen} title="읽음 처리" />}
       </Card.Action>
     </Card>
   );
