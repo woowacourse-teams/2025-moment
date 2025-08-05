@@ -163,8 +163,8 @@ class EmojiServiceTest {
     @Test
     void 코멘트의_마지막_이모지가_제거된_경우_포인트가_줄어든다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(comment, "id", 1L);

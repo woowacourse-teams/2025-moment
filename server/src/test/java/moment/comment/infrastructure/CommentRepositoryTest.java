@@ -75,13 +75,13 @@ class CommentRepositoryTest {
     @Disabled
     void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_원하는_커서부터_조회한다() {
         // given
-        User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter1 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter1);
 
-        User momenter2 = new User("ama@gmail.com", "1234", "ama");
+        User momenter2 = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         userRepository.save(momenter2);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
         Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);

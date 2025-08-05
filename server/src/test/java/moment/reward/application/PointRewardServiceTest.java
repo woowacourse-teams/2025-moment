@@ -55,7 +55,7 @@ class PointRewardServiceTest {
         Reason reason = Reason.POSITIVE_EMOJI_RECEIVED;
         int positiveEmojiReceivedPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
-        User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포");
+        User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
         Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
@@ -71,8 +71,8 @@ class PointRewardServiceTest {
     void 중복된_작업_요청시_포인트가_부여되지_않는다() {
         // given
         Reason reason = Reason.POSITIVE_EMOJI_RECEIVED;
-        User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포");
-        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고");
+        User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
+        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
