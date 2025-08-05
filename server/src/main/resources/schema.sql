@@ -65,13 +65,6 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
-ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
-
-ALTER TABLE users DROP INDEX email;
-
-ALTER TABLE users ADD UNIQUE (email, provider_type);
-
--- 포인트 히스토리 테이블 추가
 CREATE TABLE IF NOT EXISTS point_history
 (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
