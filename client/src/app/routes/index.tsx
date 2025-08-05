@@ -12,6 +12,7 @@ import TodayMomentPage from '@/pages/todayMoment';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
+import GoogleCallbackPage from '@/pages/login/GoogleCallbackPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ export const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.MY_MOMENTS} element={<MyMoments />} />
         <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />

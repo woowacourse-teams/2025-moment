@@ -3,13 +3,35 @@ import { Input } from '@/shared/ui/input/Input';
 import { useNavigate } from 'react-router';
 import * as S from './LoginForm.styles';
 import { GoogleLoginButton } from './GoogleLoginButton';
+import { useGoogleLoginUrlQuery } from '../hooks/useGoogleLoginUrlQuery';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const { formData, errors, isLoading, handleChange, handleSubmit, isDisabled } = useLoginForm();
+  const {
+    data: googleLoginData,
+    isLoading: isGoogleLoginUrlLoading,
+    isError: isGoogleLoginUrlError,
+  } = useGoogleLoginUrlQuery();
 
   const handleSignupClick = () => {
     navigate('/signup');
+  };
+
+  const handleGoogleLogin = () => {
+    if (isGoogleLoginUrlLoading) {
+      console.log('Google 로그인 URL 로딩중');
+      return;
+    }
+
+    if (isGoogleLoginUrlError) {
+      console.log('Google 로그인 URL 로딩 실패');
+      return;
+    }
+
+    if (googleLoginData?.redirectUrl) {
+      window.location.href = googleLoginData.redirectUrl;
+    }
   };
 
   return (
@@ -50,7 +72,7 @@ export const LoginForm = () => {
         <S.LoginButton type="submit" disabled={isDisabled}>
           로그인
         </S.LoginButton>
-        <GoogleLoginButton />
+        <GoogleLoginButton onClick={handleGoogleLogin} />
         <S.LoginFooterContent>
           <S.LoginForgotPassword>비밀번호를 잊으셨나요?</S.LoginForgotPassword>
           <S.LoginSignupContainer>
