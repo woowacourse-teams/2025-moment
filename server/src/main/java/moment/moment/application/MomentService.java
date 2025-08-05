@@ -69,6 +69,8 @@ public class MomentService {
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
+        // todo : 커서 검증 필요
+
         if (pageSize <= 0 || pageSize > 100) {
             throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
         }
