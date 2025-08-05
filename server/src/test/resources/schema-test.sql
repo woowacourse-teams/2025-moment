@@ -67,8 +67,22 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
+ALTER TABLE users ADD COLUMN current_point INT NOT NULL DEFAULT 0;
+
 ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
 
 ALTER TABLE users DROP CONSTRAINT uq_email;
 
 ALTER TABLE users ADD UNIQUE (email, provider_type);
+
+CREATE TABLE IF NOT EXISTS point_history
+(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    amount INT NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_history_users
+    FOREIGN KEY (user_id)
+    REFERENCES users (id)
+    );

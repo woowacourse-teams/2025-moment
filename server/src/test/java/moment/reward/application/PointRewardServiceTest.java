@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import moment.reward.domain.Reason;
 import moment.reward.infrastructure.RewardRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.reward.domain.PointHistory;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -31,7 +32,7 @@ class PointRewardServiceTest {
         // given
         Reason reason = Reason.COMMENT_CREATION;
         int commentPointTo = reason.getPointTo();
-        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고");
+        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
 
         // when
         pointRewardService.reward(commenter, reason);
@@ -46,7 +47,7 @@ class PointRewardServiceTest {
         // given
         Reason reason = Reason.POSITIVE_EMOJI_RECEIVED;
         int positiveEmojiReceivedPointTo = reason.getPointTo();
-        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고");
+        User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
 
         // when
         pointRewardService.reward(commenter, reason);
