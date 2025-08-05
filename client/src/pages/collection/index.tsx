@@ -29,9 +29,13 @@ export default function Collection() {
   return (
     <S.CollectionContainer>
       <S.SelectButtonContainer>
-        <Button title="나의 모멘트" variant="primary" onClick={() => handleToggle('myMoments')} />
         <Button
-          title="보낸 코멘트"
+          title={pageConfig.myMoments.title}
+          variant="primary"
+          onClick={() => handleToggle('myMoments')}
+        />
+        <Button
+          title={pageConfig.postComments.title}
           variant="primary"
           onClick={() => handleToggle('postComments')}
         />
