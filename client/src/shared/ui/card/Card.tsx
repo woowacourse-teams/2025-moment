@@ -7,10 +7,15 @@ import { CardTitleContainer } from './CardTitleContainer';
 interface CardProps {
   children: React.ReactNode;
   width: cardWidth;
+  shadow?: boolean;
 }
 
-export const Card = ({ children, width }: CardProps) => {
-  return <S.Card $width={width}>{children}</S.Card>;
+export const Card = ({ children, width, shadow = false }: CardProps) => {
+  return (
+    <S.Card $width={width} $shadow={shadow}>
+      {children}
+    </S.Card>
+  );
 };
 
 Card.TitleContainer = CardTitleContainer;
