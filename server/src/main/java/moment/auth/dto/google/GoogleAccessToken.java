@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GoogleAccessToken { // TODO : record면 안되나..?
+public class GoogleAccessToken {
     @JsonProperty("access_token")
     private String accessToken;
 
