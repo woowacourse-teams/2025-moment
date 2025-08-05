@@ -1,13 +1,20 @@
 import { theme } from '@/app/styles/theme';
-import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { Card, CommonSkeletonCard, NotFound, SimpleCard } from '@/shared/ui';
+import { Button, Card, CommonSkeletonCard, NotFound, SimpleCard } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './index.styles';
+import { useCommentsWithNotifications } from '@/features/comment/hooks/useCommentsWithNotifications';
+import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 
 export default function PostCommentsPage() {
-  const { data: commentsResponse, isLoading, error } = useCommentsQuery();
+  const { commentsWithNotifications, isLoading, error } = useCommentsWithNotifications();
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+
+  const handleCommentOpen = (commentId: number) => {
+    if (isReadingNotification) return;
+    handleReadNotifications(commentId);
+  };
 
   if (isLoading) {
     return (
@@ -26,23 +33,21 @@ export default function PostCommentsPage() {
     return <div>오류가 발생했습니다.</div>;
   }
 
-  const comments = commentsResponse?.data || [];
-
   return (
     <S.PostCommentsPageContainer>
       <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
-      {comments.length > 0 ? (
+      {commentsWithNotifications.length > 0 ? (
         <S.MomentsContainer>
-          {comments.map(post => (
-            <Card width="medium" key={`card-${post.id}`}>
+          {commentsWithNotifications.map(comment => (
+            <Card width="medium" key={`card-${comment.id}`} shadow={!comment.read}>
               <Card.TitleContainer
                 title={
                   <S.TitleWrapper>
                     <Gift size={16} color={theme.colors['gray-400']} />
-                    <S.TimeStamp>{new Date(post.createdAt).toLocaleDateString()}</S.TimeStamp>
+                    <S.TimeStamp>{new Date(comment.createdAt).toLocaleDateString()}</S.TimeStamp>
                   </S.TitleWrapper>
                 }
-                subtitle={post.moment.content}
+                subtitle={comment.moment.content}
               />
               <Card.Content>
                 <S.ContentContainer>
@@ -50,7 +55,7 @@ export default function PostCommentsPage() {
                     <MessageSquare size={20} color={theme.colors['yellow-500']} />
                     <span>보낸 코멘트</span>
                   </S.TitleContainer>
-                  <SimpleCard height="small" content={post.content} />
+                  <SimpleCard height="small" content={comment.content} />
                 </S.ContentContainer>
                 <S.ContentContainer>
                   <S.TitleContainer>
@@ -58,8 +63,12 @@ export default function PostCommentsPage() {
                     <span>받은 리액션</span>
                   </S.TitleContainer>
                   <S.Emoji>
-                    {(post.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+                    {(comment.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
                   </S.Emoji>
+                  {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
+                  {!comment.read && (
+                    <Button onClick={() => handleCommentOpen(comment.id)} title="읽음 처리" />
+                  )}
                 </S.ContentContainer>
               </Card.Content>
             </Card>

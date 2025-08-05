@@ -5,7 +5,7 @@
       "id": 1,
       "notification_type": "NEW_REPLY_ON_COMMENT",
       "target_type": "COMMENT",
-      "target_id": 1,
+      "target_id": 26,
       "message": "내 코멘트에 답장이 달렸습니다."
     }
   },
