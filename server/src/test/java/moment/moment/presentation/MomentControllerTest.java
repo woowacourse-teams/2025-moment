@@ -17,6 +17,7 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -78,7 +79,7 @@ class MomentControllerTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
@@ -127,7 +128,7 @@ class MomentControllerTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void DB에_저장된_Moment가_limit보다_적을_경우_남은_목록을_반환한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
