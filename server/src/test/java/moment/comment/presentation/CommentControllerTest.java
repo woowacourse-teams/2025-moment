@@ -61,8 +61,10 @@ class CommentControllerTest {
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
+
     @Autowired
     private CommentService commentService;
+
     @Autowired
     private MatchingRepository matchingRepository;
 

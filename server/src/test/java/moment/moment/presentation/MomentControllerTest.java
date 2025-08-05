@@ -94,15 +94,15 @@ class MomentControllerTest {
 
         momentRepository.save(moment1);
         Thread.sleep(200);
-        momentRepository.save(moment2);
+        Moment cursorMoment = momentRepository.save(moment2);
         Thread.sleep(200);
         momentRepository.save(moment3);
         Thread.sleep(200);
-        Moment saveMoment4 = momentRepository.save(moment4);
+        momentRepository.save(moment4);
 
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
-                .param("limit", 2)
+                .param("limit", 3)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
@@ -112,10 +112,10 @@ class MomentControllerTest {
                 .getObject("data", MyMomentPageResponse.class);
 
         // then
-        String expectedNextCursor = saveMoment4.getCreatedAt().toString() + "_" + saveMoment4.getId();
+        String expectedNextCursor = cursorMoment.getCreatedAt().toString() + "_" + cursorMoment.getId();
 
         assertAll(
-                () -> assertThat(response.items()).hasSize(2),
+                () -> assertThat(response.items()).hasSize(3),
                 () -> assertThat(response.items().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
@@ -123,7 +123,54 @@ class MomentControllerTest {
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
-                () -> assertThat(response.pageSize()).isEqualTo(2)
+                () -> assertThat(response.pageSize()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    @Disabled
+    void DB에_저장된_Moment가_limit보다_적을_경우_남은_목록을_반환한다() throws InterruptedException {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
+        Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
+        Moment moment3 = new Moment("아 짜증나", false, savedMomenter);
+        Moment moment4 = new Moment("아 신기해", false, savedMomenter);
+
+        momentRepository.save(moment1);
+        Thread.sleep(200);
+        Moment cursorMoment = momentRepository.save(moment2);
+        Thread.sleep(200);
+        momentRepository.save(moment3);
+        Thread.sleep(200);
+        momentRepository.save(moment4);
+
+        // when
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .param("limit", 10)
+                .cookie("token", token)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyMomentPageResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.items()).hasSize(4),
+                () -> assertThat(response.items().stream()
+                        .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
+                        .isTrue(),
+                () -> assertThat(response.items())
+                        .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
+                () -> assertThat(response.nextCursor()).isNull(),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> assertThat(response.pageSize()).isEqualTo(4)
         );
     }
 

@@ -1,9 +1,5 @@
 package moment.comment.infrastructure;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
@@ -16,8 +12,13 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -110,8 +111,8 @@ class CommentRepositoryTest {
 
         // when
         List<Comment> comments = commentRepository.findCommentsNextPage(savedCommenter,
-                savedComment3.getCreatedAt(),
-                savedComment3.getId(),
+                savedComment4.getCreatedAt(),
+                savedComment4.getId(),
                 PageRequest.of(0, 3));
 
         // then

@@ -12,8 +12,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,7 +59,7 @@ class MomentRepositoryTest {
         Moment savedMoment4 = momentRepository.save(moment4);
 
         // when
-        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment3.getCreatedAt(), savedMoment3.getId(), PageRequest.of(0, 3));
+        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment4.getCreatedAt(), savedMoment4.getId(), PageRequest.of(0, 3));
 
         // then
         assertAll(

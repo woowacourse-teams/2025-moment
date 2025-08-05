@@ -92,17 +92,16 @@ public class MomentService {
 
         List<Comment> comments = commentRepository.findAllByMomentIn(momentsWithinCursor);
 
+        boolean hasNextPage = momentsWithinCursor.size() > pageSize;
+        String nextCursor = extractCursor(momentsWithinCursor, hasNextPage);
         List<Moment> moments = extractMoments(momentsWithinCursor, pageSize);
-        String nextCursor = extractCursor(momentsWithinCursor, pageSize);
-
-        boolean hasNextPage = nextCursor != null;
 
         if (comments.isEmpty()) {
             List<MyMomentResponse> responses = moments.stream()
                     .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
                     .toList();
 
-            return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
+            return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
         Map<Moment, Comment> commentByMoment = comments.stream()
@@ -119,22 +118,23 @@ public class MomentService {
                 })
                 .toList();
 
-        return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
+        return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
     }
 
-    private List<Moment> extractMoments(List<Moment> moments, int pageSize) {
-        return moments.subList(0, pageSize);
+    private List<Moment> extractMoments(List<Moment> momentsWithinCursor, int pageSize) {
+        if (momentsWithinCursor.size() > pageSize) {
+            return momentsWithinCursor.subList(0, pageSize);
+        }
+        return momentsWithinCursor;
     }
 
-    private String extractCursor(List<Moment> moments, int pageSize) {
-        boolean hasNext = moments.size() > pageSize;
-
+    private String extractCursor(List<Moment> moments, boolean hasNext) {
         String nextCursor = null;
 
         List<Moment> pagingMoments = new ArrayList<>(moments);
 
         if (!pagingMoments.isEmpty() && hasNext) {
-            Moment cursor = pagingMoments.getFirst();
+            Moment cursor = pagingMoments.get(moments.size() - 2);
             nextCursor = cursor.getCreatedAt().toString() + CURSOR_PART_DELIMITER + cursor.getId();
         }
 
