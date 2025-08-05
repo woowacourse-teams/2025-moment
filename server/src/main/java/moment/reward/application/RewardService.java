@@ -5,5 +5,5 @@ import moment.user.domain.User;
 
 public interface RewardService {
 
-    void reward(User user, Reason reason);
+    void reward(User user, Reason reason, Long contentId);
 }

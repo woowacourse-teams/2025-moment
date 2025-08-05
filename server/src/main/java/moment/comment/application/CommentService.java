@@ -48,9 +48,9 @@ public class CommentService {
 
         Comment comment = request.toComment(commenter, moment);
 
-        rewardService.reward(commenter, Reason.COMMENT_CREATION);
-
         Comment savedComment = commentRepository.save(comment);
+
+        rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
         return CommentCreateResponse.from(savedComment);
     }
