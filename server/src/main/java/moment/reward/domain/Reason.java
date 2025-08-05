@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum Reason {
     COMMENT_CREATION(5),
-    POSITIVE_EMOJI_RECEIVED(15)
+    POSITIVE_EMOJI_RECEIVED(15),
+
+    CANCEL_POSITIVE_EMOJI_RECEIVED(-15)
     ;
 
     private final int pointTo;

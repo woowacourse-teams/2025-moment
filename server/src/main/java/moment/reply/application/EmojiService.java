@@ -70,6 +70,11 @@ public class EmojiService {
 
         emoji.checkWriter(user);
 
+        Comment comment = emoji.getComment();
         emojiRepository.delete(emoji);
+
+        if (!emojiRepository.existsByComment(comment)) {
+            rewardService.reward(comment.getCommenter(), Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        }
     }
 }
