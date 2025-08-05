@@ -40,9 +40,9 @@ public class EmojiService {
 
         Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
 
-        rewardService.reward(comment.getCommenter(), Reason.POSITIVE_EMOJI_RECEIVED);
-
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
+
+        rewardService.reward(comment.getCommenter(), Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         return EmojiCreateResponse.from(savedEmoji);
     }
@@ -70,6 +70,15 @@ public class EmojiService {
 
         emoji.checkWriter(user);
 
+        Comment comment = emoji.getComment();
         emojiRepository.delete(emoji);
+
+        cancelRewardIfLastEmoji(comment);
+    }
+
+    private void cancelRewardIfLastEmoji(Comment comment) {
+        if (!emojiRepository.existsByComment(comment)) {
+            rewardService.reward(comment.getCommenter(), Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        }
     }
 }
