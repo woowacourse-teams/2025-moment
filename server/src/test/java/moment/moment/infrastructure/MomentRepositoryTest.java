@@ -6,14 +6,13 @@ import moment.moment.domain.Moment;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +38,7 @@ class MomentRepositoryTest {
     private MatchingRepository matchingRepository;
 
     @Test
-    @Disabled
+//    @Disabled
     void 내_모멘트를_생성시간_기준_내림차순으로_정렬하여_페이지를_조회한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);

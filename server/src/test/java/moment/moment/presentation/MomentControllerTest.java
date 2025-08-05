@@ -17,7 +17,6 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,7 +78,7 @@ class MomentControllerTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
@@ -94,15 +93,15 @@ class MomentControllerTest {
 
         momentRepository.save(moment1);
         Thread.sleep(200);
-        momentRepository.save(moment2);
+        Moment cursorMoment = momentRepository.save(moment2);
         Thread.sleep(200);
         momentRepository.save(moment3);
         Thread.sleep(200);
-        Moment saveMoment4 = momentRepository.save(moment4);
+        momentRepository.save(moment4);
 
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
-                .param("limit", 2)
+                .param("limit", 3)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
@@ -112,10 +111,10 @@ class MomentControllerTest {
                 .getObject("data", MyMomentPageResponse.class);
 
         // then
-        String expectedNextCursor = saveMoment4.getCreatedAt().toString() + "_" + saveMoment4.getId();
+        String expectedNextCursor = cursorMoment.getCreatedAt().toString() + "_" + cursorMoment.getId();
 
         assertAll(
-                () -> assertThat(response.items()).hasSize(2),
+                () -> assertThat(response.items()).hasSize(3),
                 () -> assertThat(response.items().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
@@ -123,7 +122,7 @@ class MomentControllerTest {
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
-                () -> assertThat(response.pageSize()).isEqualTo(2)
+                () -> assertThat(response.pageSize()).isEqualTo(3)
         );
     }
 
