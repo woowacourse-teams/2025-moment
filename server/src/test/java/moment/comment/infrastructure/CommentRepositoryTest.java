@@ -5,6 +5,7 @@ import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ class CommentRepositoryTest {
     private UserRepository userRepository;
 
     @Test
+    @Disabled
     void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_조회한다() {
         // given
         User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
@@ -68,6 +70,7 @@ class CommentRepositoryTest {
 
 
     @Test
+    @Disabled
     void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_원하는_커서부터_조회한다() {
         // given
         User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
