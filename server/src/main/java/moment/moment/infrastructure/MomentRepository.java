@@ -24,7 +24,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
-            WHERE m.momenter = :momenter AND (m.createdAt <= :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
+            WHERE m.momenter = :momenter AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
     List<Moment> findMyMomentsNextPage(@Param("momenter") User momenter,
