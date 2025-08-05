@@ -36,17 +36,21 @@ public class PointHistory extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Reason reason;
 
-    public PointHistory(User user, Integer amount, Reason reason) {
-        validate(user, amount, reason);
+    private Long contentId;
+
+    public PointHistory(User user, Integer amount, Reason reason, Long contentId) {
+        validate(user, amount, reason, contentId);
         this.user = user;
         this.amount = amount;
         this.reason = reason;
+        this.contentId = contentId;
     }
 
-    private void validate(User user, Integer amount, Reason reason) {
+    private void validate(User user, Integer amount, Reason reason, Long contentId) {
         validateUser(user);
         validateAmount(amount);
         validateReason(reason);
+        validateContentId(contentId);
     }
 
     private void validateUser(User user) {
@@ -64,6 +68,12 @@ public class PointHistory extends BaseEntity {
     private void validateReason(Reason reason) {
         if (reason == null) {
             throw new IllegalArgumentException("reason이 null이 되어서는 안 됩니다.");
+        }
+    }
+
+    private void validateContentId(Long contentId) {
+        if (contentId == null) {
+            throw new IllegalArgumentException("contentId는 null이 되어서는 안 됩니다.");
         }
     }
 }

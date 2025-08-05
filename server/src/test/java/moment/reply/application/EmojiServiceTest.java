@@ -71,7 +71,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED);
+        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
