@@ -99,7 +99,7 @@ public class CommentService {
             List<MyCommentResponse> responses = comments.stream()
                     .map(MyCommentResponse::from)
                     .toList();
-            return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
+            return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
         Map<Comment, List<Emoji>> commentAndEmojis = emojis.stream()
@@ -109,7 +109,7 @@ public class CommentService {
                 .map(MyCommentResponse::from)
                 .toList();
 
-        return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
+        return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
     }
 
     private List<Comment> extractComments(List<Comment> commentsWithinCursor, int pageSize) {
