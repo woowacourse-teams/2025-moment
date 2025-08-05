@@ -1,9 +1,5 @@
 package moment.comment.application;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
@@ -30,6 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,10 +89,9 @@ public class CommentService {
             commentsWithinCursor = commentRepository.findCommentsNextPage(commenter, cursorDateTime, cursorId, pageable);
         }
 
-        String nextCursor = extractCursor(commentsWithinCursor, pageSize);
+        boolean hasNextPage = commentsWithinCursor.size() > pageSize;
+        String nextCursor = extractCursor(commentsWithinCursor, hasNextPage);
         List<Comment> comments = extractComments(commentsWithinCursor, pageSize);
-
-        boolean hasNextPage = !nextCursor.isBlank();
 
         List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
 
@@ -113,19 +112,20 @@ public class CommentService {
         return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
     }
 
-    private List<Comment> extractComments(List<Comment> comments, int pageSize) {
-        return comments.subList(0, pageSize);
+    private List<Comment> extractComments(List<Comment> commentsWithinCursor, int pageSize) {
+        if (commentsWithinCursor.size() > pageSize) {
+            return commentsWithinCursor.subList(0, pageSize);
+        }
+        return commentsWithinCursor;
     }
 
-    private String extractCursor(List<Comment> comments, int pageSize) {
-        boolean hasNext = comments.size() > pageSize;
-
+    private String extractCursor(List<Comment> comments, boolean hasNext) {
         String nextCursor = null;
 
         List<Comment> pagingComments = new ArrayList<>(comments);
 
         if (!pagingComments.isEmpty() && hasNext) {
-            Comment cursor = pagingComments.getFirst();
+            Comment cursor = pagingComments.get(comments.size() - 2);
             nextCursor = cursor.getCreatedAt().toString() + CURSOR_PART_DELIMITER + cursor.getId();
         }
 

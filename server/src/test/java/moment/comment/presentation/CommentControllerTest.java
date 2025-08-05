@@ -23,7 +23,6 @@ import moment.reply.infrastructure.EmojiRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -101,7 +100,7 @@ class CommentControllerTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void 나의_Comment_목록을_조회한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);

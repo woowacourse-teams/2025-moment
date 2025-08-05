@@ -25,7 +25,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"moment"})
     @Query("""
             SELECT c FROM comments c
-            WHERE c.commenter = :commenter AND (c.createdAt <= :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
+            WHERE c.commenter = :commenter AND (c.createdAt < :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
             ORDER BY c.createdAt DESC, c.id DESC
             """)
     List<Comment> findCommentsNextPage(@Param("commenter") User commenter,

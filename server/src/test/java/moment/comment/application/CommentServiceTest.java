@@ -1,17 +1,5 @@
 package moment.comment.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -39,6 +27,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -136,7 +136,7 @@ class CommentServiceTest {
 
         // given
 
-        List<Comment> expectedComments = List.of(comment1, comment2);
+        List<Comment> expectedComments = List.of(comment2, comment1);
 
         given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
@@ -149,7 +149,7 @@ class CommentServiceTest {
         // then
         assertAll(
                 () -> assertThat(actualComments.items()).hasSize(1),
-                () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now1, 1)),
+                () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now2, 2)),
                 () -> assertThat(actualComments.hasNextPage()).isTrue(),
                 () -> assertThat(actualComments.pageSize()).isEqualTo(1)
         );
@@ -190,7 +190,7 @@ class CommentServiceTest {
     void 아직_매칭된_모멘트가_존재하지_않을_경우의_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.empty());
@@ -209,8 +209,8 @@ class CommentServiceTest {
     void 이미_매칭된_모멘트에_코멘트를_작성한_경우의_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
-        User momenter = new User("hippo@icloud.com",  "1234", "hippo", ProviderType.EMAIL);
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com", "1234", "hippo", ProviderType.EMAIL);
         Moment moment = new Moment("집가고 싶어요..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
@@ -231,8 +231,8 @@ class CommentServiceTest {
     void 코멘트를_등록할_수_있는_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
-        User momenter = new User("hippo@icloud.com",  "1234", "hippo", ProviderType.EMAIL);
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com", "1234", "hippo", ProviderType.EMAIL);
         Moment moment = new Moment("집가고 싶어요..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
