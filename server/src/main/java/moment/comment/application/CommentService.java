@@ -1,12 +1,15 @@
 package moment.comment.application;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -15,14 +18,12 @@ import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
     private final CommentQueryService commentQueryService;
+    private final RewardService rewardService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -45,6 +47,8 @@ public class CommentService {
         }
 
         Comment comment = request.toComment(commenter, moment);
+
+        rewardService.reward(commenter, Reason.COMMENT_CREATION);
 
         Comment savedComment = commentRepository.save(comment);
 

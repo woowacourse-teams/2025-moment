@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 import java.util.Collections;
@@ -22,6 +23,8 @@ import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -55,6 +58,9 @@ class CommentServiceTest {
     @Mock
     private CommentQueryService commentQueryService;
 
+    @Mock
+    private RewardService rewardService;
+
     @Test
     void Comment를_등록한다() {
         // given
@@ -68,6 +74,7 @@ class CommentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        doNothing().when(rewardService).reward(commenter, Reason.COMMENT_CREATION);
 
         // when
         commentService.addComment(request, 1L);

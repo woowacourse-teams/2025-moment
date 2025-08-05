@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
@@ -16,6 +17,8 @@ import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -33,6 +36,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class EmojiServiceTest {
 
+    @InjectMocks
+    private EmojiService emojiService;
+
     @Mock
     private EmojiRepository emojiRepository;
 
@@ -45,8 +51,8 @@ class EmojiServiceTest {
     @Mock
     private EmojiQueryService emojiQueryService;
 
-    @InjectMocks
-    private EmojiService emojiService;
+    @Mock
+    private RewardService rewardService;
 
     @Test
     void 코멘트에_이모지를_추가_할_수_있다() {
@@ -66,6 +72,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
+        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED);
 
         // when
         emojiService.addEmoji(request, authentication);
