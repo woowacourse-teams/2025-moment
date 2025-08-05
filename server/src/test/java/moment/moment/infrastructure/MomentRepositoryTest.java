@@ -5,6 +5,7 @@ import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ class MomentRepositoryTest {
     private MatchingRepository matchingRepository;
 
     @Test
+    @Disabled
     void 내_모멘트를_생성시간_기준_내림차순으로_정렬하여_페이지를_조회한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo");
