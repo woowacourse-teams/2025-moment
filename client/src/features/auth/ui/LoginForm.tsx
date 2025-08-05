@@ -3,35 +3,19 @@ import { Input } from '@/shared/ui/input/Input';
 import { useNavigate } from 'react-router';
 import * as S from './LoginForm.styles';
 import { GoogleLoginButton } from './GoogleLoginButton';
-import { useGoogleLoginUrlQuery } from '../hooks/useGoogleLoginUrlQuery';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { formData, errors, isLoading, handleChange, handleSubmit, isDisabled } = useLoginForm();
-  const {
-    data: googleLoginData,
-    isLoading: isGoogleLoginUrlLoading,
-    isError: isGoogleLoginUrlError,
-  } = useGoogleLoginUrlQuery();
+  const { formData, errors, handleChange, handleSubmit, isDisabled } = useLoginForm();
 
   const handleSignupClick = () => {
     navigate('/signup');
   };
 
+  const googleLoginUrl = process.env.REACT_APP_REDIRECTION_URL || '';
+
   const handleGoogleLogin = () => {
-    if (isGoogleLoginUrlLoading) {
-      console.log('Google 로그인 URL 로딩중');
-      return;
-    }
-
-    if (isGoogleLoginUrlError) {
-      console.log('Google 로그인 URL 로딩 실패');
-      return;
-    }
-
-    if (googleLoginData?.redirectUrl) {
-      window.location.href = googleLoginData.redirectUrl;
-    }
+    window.location.href = googleLoginUrl;
   };
 
   return (
