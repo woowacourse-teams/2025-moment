@@ -15,6 +15,7 @@ import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiReadResponse;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,8 +53,8 @@ public class EmojiControllerTest {
 
     @BeforeEach
     void setUp() {
-        momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki"));
-        commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago"));
+        momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL));
+        commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
         commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter));

@@ -39,11 +39,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    public User(String email, String password, String nickname) {
+    @Column(nullable = false)
+    private ProviderType providerType;
+
+    public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.providerType = providerType;
     }
 
     private void validate(String email, String password, String nickname) {

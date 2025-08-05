@@ -1,10 +1,19 @@
 package moment.comment.application;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -13,15 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -36,8 +36,8 @@ class DefaultMomentQueryServiceTest {
     @Test
     void Comment_ID를_이용하여_조회한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
@@ -64,7 +64,7 @@ class DefaultMomentQueryServiceTest {
     @Test
     void Momment에_등록된_Comment가_존재하면_true를_반환한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
 
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
@@ -76,7 +76,7 @@ class DefaultMomentQueryServiceTest {
     @Test
     void Momment에_등록된_Comment가_존재하면_false를_반환한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
 
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);

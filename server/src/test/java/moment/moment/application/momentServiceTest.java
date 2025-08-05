@@ -26,6 +26,7 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -69,7 +70,7 @@ class momentServiceTest {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
-        User momenter = new User("lebron@gmail.com", "1234", "르브론");
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter);
         ReflectionTestUtils.setField(expect, "id", 1L);
 
@@ -93,7 +94,7 @@ class momentServiceTest {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
-        User momenter = new User("lebron@gmail.com", "1234", "르브론");
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
@@ -106,8 +107,8 @@ class momentServiceTest {
     @Test
     void 내가_작성한_모멘트를_조회한다() {
         // given
-        User momenter = new User("harden@gmail.com", "1234", "하든");
-        User commenter = new User("curry@gmail.com", "12345", "커리");
+        User momenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
+        User commenter = new User("curry@gmail.com", "12345", "커리", ProviderType.EMAIL);
 
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter);
         Comment comment = new Comment("안됐네요.", commenter, moment);
@@ -140,8 +141,8 @@ class momentServiceTest {
     @Test
     void 내가_받은_모멘트를_조회한다() {
         // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki");
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         Moment moment = new Moment("아 행복해..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
@@ -162,7 +163,7 @@ class momentServiceTest {
     @Test
     void 내가_받은_모멘트가_존재하지_않는_경우_빈_데이터를_반환한다() {
         // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki");
+        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
@@ -182,7 +183,7 @@ class momentServiceTest {
     @Test
     void 오늘_모멘트를_작성할_수_있는_상태를_반환한다() {
         // given
-        User commenter = new User("harden@gmail.com", "1234", "하든");
+        User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
@@ -196,7 +197,7 @@ class momentServiceTest {
     @Test
     void 오늘_모멘트를_작성할_수_없는_상태를_반환한다() {
         // given
-        User commenter = new User("harden@gmail.com", "1234", "하든");
+        User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);

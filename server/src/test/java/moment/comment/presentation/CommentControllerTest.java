@@ -24,6 +24,7 @@ import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -67,10 +68,10 @@ class CommentControllerTest {
         // given
         String token = jwtTokenManager.createToken(1L, "hippo@gmail.com");
 
-        User user1 = new User("hippo@gmail.com", "1234", "hippo");
+        User user1 = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(user1);
 
-        User user2 = new User("kiki@icloud.com", "1234", "kiki");
+        User user2 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.saveAndFlush(user2);
 
         Moment moment = new Moment("개발의 세계는 신비해요!", true, user2);
@@ -99,10 +100,10 @@ class CommentControllerTest {
     @Test
     void 나의_Comment_목록을_조회한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
         String token = jwtTokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
@@ -143,10 +144,10 @@ class CommentControllerTest {
     @Test
     void 매칭된_모멘트가_없는_경우_상태를_반환한다() {
         // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
         userRepository.saveAndFlush(momenter);
 
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo");
+        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(commenter);
 
         Moment moment = new Moment("오늘은 화요일", momenter);
@@ -172,10 +173,10 @@ class CommentControllerTest {
     @Test
     void 이미_코멘트를_작성한_경우_상태를_반환한다() {
         // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
         userRepository.saveAndFlush(momenter);
 
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo");
+        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(commenter);
 
         Moment moment = new Moment("오늘은 화요일", momenter);
@@ -207,10 +208,10 @@ class CommentControllerTest {
     @Test
     void 코멘트를_작성할_수_있는_상태를_반환한다() {
         // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
         userRepository.saveAndFlush(momenter);
 
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo");
+        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(commenter);
 
         Moment moment = new Moment("오늘은 화요일", momenter);

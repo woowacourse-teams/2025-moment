@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -35,7 +36,7 @@ class DefaultMomentQueryServiceTest {
     @Test
     void 모멘트를_ID로_조회한다() {
         // given
-        User user = new User("harden@gmail.com", "1234", "하든");
+        User user = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", user);
         given(momentRepository.findById(any(Long.class))).willReturn(Optional.of(moment));
 
@@ -49,8 +50,8 @@ class DefaultMomentQueryServiceTest {
     @Test
     void 코멘터에게_오늘_매칭된_모멘트를_조회한다() {
         // given
-        User commenter = new User("mimi@icloud.com", "1234", "mimi");
-        User momenter = new User("cookie@icloud.com", "1234", "cookie");
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("cookie@icloud.com", "1234", "cookie", ProviderType.EMAIL);
         Moment expect = new Moment("집가고 싶어",  momenter);
         LocalDateTime today = LocalDate.now().atStartOfDay();
         LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();

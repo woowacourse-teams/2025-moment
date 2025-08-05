@@ -27,3 +27,9 @@ jwt:
 
 expiration:
   time: ${EXPIRATION_TIME}
+
+auth:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOGGLE_CLIENT_SECRET}
+    redirect-uri: ${GOGGLE_REDIRECT_URL}

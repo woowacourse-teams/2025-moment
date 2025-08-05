@@ -1,8 +1,13 @@
 package moment.comment.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -10,12 +15,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
+@ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentRepositoryTest {
@@ -32,13 +34,13 @@ class CommentRepositoryTest {
     @Test
     void Comment_ID와_일치하는_Comment_목록을_생성_시간_내림차순으로_조회한다() {
         // given
-        User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter1 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter1);
 
-        User momenter2 = new User("ama@gmail.com", "1234", "ama");
+        User momenter2 = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         userRepository.save(momenter2);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
         Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
@@ -69,10 +71,10 @@ class CommentRepositoryTest {
     @Test
     void Momment의_Comment가_존재하면_true를_반환한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.save(commenter);
 
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
@@ -88,7 +90,7 @@ class CommentRepositoryTest {
     @Test
     void Momment의_Comment가_존재하면_false를_반환한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
 
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);

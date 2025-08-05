@@ -1,22 +1,24 @@
 CREATE TABLE IF NOT EXISTS users
 (
-	id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	email VARCHAR(255) NOT NULL UNIQUE,
-	password VARCHAR(255) NOT NULL,
-	nickname VARCHAR(255) NOT NULL UNIQUE,
-	created_at TIMESTAMP NOT NULL
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT uq_email
+        UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS moments
 (
-	id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	momenter_id BIGINT NOT NULL,
-	content VARCHAR(100) NOT NULL,
-	is_matched BOOLEAN NOT NULL,
-	created_at TIMESTAMP NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    momenter_id BIGINT NOT NULL,
+    content VARCHAR(100) NOT NULL,
+    is_matched BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_moments_users
         FOREIGN KEY (momenter_id)
-        REFERENCES users (id)
+            REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS matchings
@@ -67,6 +69,6 @@ CREATE TABLE IF NOT EXISTS emojis
 
 ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
 
-ALTER TABLE users DROP INDEX email;
+ALTER TABLE users DROP CONSTRAINT uq_email;
 
 ALTER TABLE users ADD UNIQUE (email, provider_type);
