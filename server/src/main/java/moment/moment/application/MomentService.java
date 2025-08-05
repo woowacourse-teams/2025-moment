@@ -1,11 +1,5 @@
 package moment.moment.application;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -18,19 +12,33 @@ import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MomentService {
+
+    private static final String CURSOR_PART_DELIMITER = "_";
+    private static final int CURSOR_TIME_INDEX = 0;
+    private static final int CURSOR_ID_INDEX = 1;
 
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
@@ -58,35 +66,79 @@ public class MomentService {
         return MomentCreateResponse.of(savedMoment);
     }
 
-    public List<MyMomentResponse> getMyMoments(Long userId) {
-        User momenter = userQueryService.getUserById(userId);
-        List<Moment> moments = momentRepository.findMomentByMomenterOrderByCreatedAtDesc(momenter);
+    public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
+        User momenter = userQueryService.getUserById(momenterId);
 
-        if (moments.isEmpty()) {
-            return Collections.emptyList();
+        if (pageSize <= 0 || pageSize > 100) {
+            throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
         }
 
-        Map<Moment, Comment> commentByMoment = commentRepository.findAllByMomentIn(moments).stream()
-                .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
+        PageRequest pageable = PageRequest.of(0, pageSize + 1);
 
-        if (commentByMoment.isEmpty()) {
-            return moments.stream()
+        List<Moment> momentsWithinCursor = new ArrayList<>();
+
+        if (cursor == null || cursor.isBlank()) {
+            momentsWithinCursor = momentRepository.findMyMomentFirstPage(momenter, pageable);
+        }
+
+        if (cursor != null) {
+            String[] cursorParts = cursor.split(CURSOR_PART_DELIMITER);
+            LocalDateTime cursorDateTime = LocalDateTime.parse(cursorParts[CURSOR_TIME_INDEX]);
+            Long cursorId = Long.valueOf(cursorParts[CURSOR_ID_INDEX]);
+            momentsWithinCursor = momentRepository.findMyMomentsNextPage(momenter, cursorDateTime, cursorId, pageable);
+        }
+
+        List<Comment> comments = commentRepository.findAllByMomentIn(momentsWithinCursor);
+
+        List<Moment> moments = extractMoments(momentsWithinCursor, pageSize);
+        String nextCursor = extractCursor(momentsWithinCursor, pageSize);
+
+        boolean hasNextPage = nextCursor != null;
+
+        if (comments.isEmpty()) {
+            List<MyMomentResponse> responses = moments.stream()
                     .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
                     .toList();
+
+            return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
         }
 
-        List<Comment> comments = new ArrayList<>(commentByMoment.values());
+        Map<Moment, Comment> commentByMoment = comments.stream()
+                .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
+
         Map<Comment, List<Emoji>> emojisByComment = emojiRepository.findAllByCommentIn(comments).stream()
                 .collect(Collectors.groupingBy(Emoji::getComment));
 
-        return moments.stream()
+        List<MyMomentResponse> responses = moments.stream()
                 .map(moment -> {
                     Comment comment = commentByMoment.get(moment);
                     List<Emoji> relatedEmojis = emojisByComment.getOrDefault(comment, Collections.emptyList());
                     return MyMomentResponse.of(moment, comment, relatedEmojis);
                 })
                 .toList();
+
+        return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
     }
+
+    private List<Moment> extractMoments(List<Moment> moments, int pageSize) {
+        return moments.subList(0, pageSize);
+    }
+
+    private String extractCursor(List<Moment> moments, int pageSize) {
+        boolean hasNext = moments.size() > pageSize;
+
+        String nextCursor = null;
+
+        List<Moment> pagingMoments = new ArrayList<>(moments);
+
+        if (!pagingMoments.isEmpty() && hasNext) {
+            Moment cursor = pagingMoments.getFirst();
+            nextCursor = cursor.getCreatedAt().toString() + CURSOR_PART_DELIMITER + cursor.getId();
+        }
+
+        return nextCursor;
+    }
+
 
     public MatchedMomentResponse getMatchedMoment(Long commenterId) {
         User commenter = userQueryService.getUserById(commenterId);
@@ -95,7 +147,7 @@ public class MomentService {
 
         return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }
-    
+
     public MomentCreationStatusResponse canCreateMoment(Long id) {
         User user = userQueryService.getUserById(id);
 

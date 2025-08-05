@@ -1,12 +1,7 @@
 package moment.moment.presentation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.util.Comparator;
-import java.util.List;
 import moment.auth.application.TokenManager;
 import moment.matching.domain.Matching;
 import moment.matching.infrastructure.MatchingRepository;
@@ -16,6 +11,7 @@ import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
@@ -28,6 +24,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Comparator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -76,7 +77,7 @@ class MomentControllerTest {
     }
 
     @Test
-    void 내_모멘트를_조회한다() throws InterruptedException {
+    void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo");
         User savedMomenter = userRepository.save(momenter);
@@ -94,27 +95,32 @@ class MomentControllerTest {
         Thread.sleep(10);
         momentRepository.save(moment3);
         Thread.sleep(10);
-        momentRepository.save(moment4);
+        Moment saveMoment4 = momentRepository.save(moment4);
 
         // when
-        List<MyMomentResponse> responses = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .param("limit", 2)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .jsonPath()
-                .getList("data", MyMomentResponse.class);
+                .getObject("data", MyMomentPageResponse.class);
 
         // then
+        String expectedNextCursor = saveMoment4.getCreatedAt().toString() + "_" + saveMoment4.getId();
+
         assertAll(
-                () -> assertThat(responses).hasSize(4),
-                () -> assertThat(responses.stream()
-                        .allMatch(response -> response.momenterId().equals(savedMomenter.getId())))
+                () -> assertThat(response.items()).hasSize(2),
+                () -> assertThat(response.items().stream()
+                        .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
-                () -> assertThat(responses)
-                        .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed())
+                () -> assertThat(response.items())
+                        .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
+                () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
+                () -> assertThat(response.hasNextPage()).isTrue(),
+                () -> assertThat(response.pageSize()).isEqualTo(2)
         );
     }
 

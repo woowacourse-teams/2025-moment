@@ -72,6 +72,8 @@ public class CommentService {
             throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
         }
 
+        // todo : 커서 검증 필요
+
         Pageable pageable = PageRequest.of(0, pageSize + 1);
 
         List<Comment> commentsWithinCursor = new ArrayList<>();

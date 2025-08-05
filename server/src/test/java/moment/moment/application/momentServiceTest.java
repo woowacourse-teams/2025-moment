@@ -1,15 +1,5 @@
 package moment.moment.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
-import java.util.List;
-import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -21,7 +11,7 @@ import moment.moment.domain.MomentCreationStatus;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
-import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
@@ -34,7 +24,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -104,7 +106,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 내가_작성한_모멘트를_조회한다() {
+    void 내가_작성한_모멘트를_생성_시간_순으로_정렬하여_페이지를_조회한다() {
         // given
         User momenter = new User("harden@gmail.com", "1234", "하든");
         User commenter = new User("curry@gmail.com", "12345", "커리");
@@ -116,7 +118,7 @@ class momentServiceTest {
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
 
-        given(momentRepository.findMomentByMomenterOrderByCreatedAtDesc(any(User.class)))
+        given(momentRepository.findMyMomentFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(List.of(moment));
 
         given(commentRepository.findAllByMomentIn(any(List.class)))
@@ -126,14 +128,16 @@ class momentServiceTest {
                 .willReturn(List.of(emoji));
 
         //when
-        List<MyMomentResponse> myMomentResponses = momentService.getMyMoments(1L);
-        System.out.println(myMomentResponses);
+        MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
 
         //then
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
-                () -> then(momentRepository).should(times(1)).findMomentByMomenterOrderByCreatedAtDesc(any(User.class))
+                () -> then(momentRepository).should(times(1)).findMyMomentFirstPage(any(User.class), any(Pageable.class)),
+                () -> assertThat(response.nextCursor()).isNull(),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> assertThat(response.pageSize()).isEqualTo(1)
         );
     }
 
