@@ -26,6 +26,7 @@ import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -69,8 +70,8 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
@@ -91,7 +92,7 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        given(userQueryService.getUserById(any(Long.class))).willReturn(new User("hippo@gmail.com", "1234", "hippo"));
+        given(userQueryService.getUserById(any(Long.class))).willReturn(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
         given(momentQueryService.getMomentById(any(Long.class))).willThrow(new MomentException(ErrorCode.MOMENT_NOT_FOUND));
 
         // when & then
@@ -116,9 +117,9 @@ class CommentServiceTest {
     @Test
     void Commenter가_일치하는_Comment_목록을_생성_시간_내림차순으로_페이지_사이즈만큼_페이징_처리하여_불러온다() {
         // given
-        User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
-        User momenter2 = new User("drago1@gmail.com", "1234", "drago1");
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter1 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User momenter2 = new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL);
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
 
         Moment moment1 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1);
         Moment moment2 = new Moment("오늘 하루는 행복한 하루~", true, momenter2);
@@ -170,8 +171,8 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
@@ -189,7 +190,7 @@ class CommentServiceTest {
     void 아직_매칭된_모멘트가_존재하지_않을_경우의_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com", "1234", "mimi");
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.empty());
@@ -208,8 +209,8 @@ class CommentServiceTest {
     void 이미_매칭된_모멘트에_코멘트를_작성한_경우의_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com", "1234", "mimi");
-        User momenter = new User("hippo@icloud.com", "1234", "hippo");
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com",  "1234", "hippo", ProviderType.EMAIL);
         Moment moment = new Moment("집가고 싶어요..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
@@ -230,8 +231,8 @@ class CommentServiceTest {
     void 코멘트를_등록할_수_있는_상태를_반환한다() {
         // given
         Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com", "1234", "mimi");
-        User momenter = new User("hippo@icloud.com", "1234", "hippo");
+        User commenter = new User("mimi@icloud.com",  "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com",  "1234", "hippo", ProviderType.EMAIL);
         Moment moment = new Moment("집가고 싶어요..", momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);

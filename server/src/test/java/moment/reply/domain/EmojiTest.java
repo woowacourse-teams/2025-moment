@@ -8,6 +8,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -20,7 +21,7 @@ class EmojiTest {
     @Test
     void 코멘트가_없는_경우_예외가_발생한다() {
         // given
-        User user = new User("lebron@gmail.com", "1234", "르브론");
+        User user = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         // when & then
         assertThatThrownBy(() -> new Emoji("HEART", user, null))
@@ -30,9 +31,9 @@ class EmojiTest {
     @Test
     void 이모지_작성자가_없는_경우_예외가_발생한다() {
         // given
-        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago");
+        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
         Moment moment = new Moment("오운완!", false, momenter);
-        User commenter = new User("ama@gmail.com", "1234", "ama");
+        User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         Comment comment = new Comment("오운완!", commenter, moment);
 
         // when & then
@@ -43,9 +44,9 @@ class EmojiTest {
     @Test
     void 이모지_작성자를_확인한다() {
         // given
-        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago");
+        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
         Moment moment = new Moment("오운완!", false, momenter);
-        User commenter = new User("ama@gmail.com", "1234", "ama");
+        User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         Comment comment = new Comment("오운완!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -57,11 +58,11 @@ class EmojiTest {
     @Test
     void 이모지_작성자가_아닌_경우_예외가_발생한다() {
         // given
-        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago");
+        User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
         Moment writer = new Moment("오운완!", false, momenter);
         ReflectionTestUtils.setField(writer, "id", 1L);
 
-        User commenter = new User("ama@gmail.com", "1234", "ama");
+        User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
         Comment comment = new Comment("오운완!", commenter, writer);

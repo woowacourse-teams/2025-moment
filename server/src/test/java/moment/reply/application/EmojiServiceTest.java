@@ -21,6 +21,7 @@ import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -61,8 +62,8 @@ class EmojiServiceTest {
         Authentication authentication = new Authentication(1L);
         EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -88,7 +89,7 @@ class EmojiServiceTest {
         Authentication authentication = new Authentication(1L);
         EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
 
-        User unAuthorized = new User("noUser@gmail.com", "1234", "noUser");
+        User unAuthorized = new User("noUser@gmail.com", "1234", "noUser", ProviderType.EMAIL);
         Comment comment = mock(Comment.class);
         Moment moment = mock(Moment.class);
         given(comment.getMoment()).willReturn(moment);
@@ -106,8 +107,8 @@ class EmojiServiceTest {
     @Test
     void 코멘트의_모든_이모지를_조회한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
@@ -124,8 +125,8 @@ class EmojiServiceTest {
     @Test
     void 이모지를_제거한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -145,8 +146,8 @@ class EmojiServiceTest {
     @Test
     void 이모지_작성자가_아닌_회원이_삭제요청_할_경우_예외가_발생한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -162,8 +163,8 @@ class EmojiServiceTest {
     @Test
     void 코멘트의_마지막_이모지가_제거된_경우_포인트가_줄어든다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(comment, "id", 1L);

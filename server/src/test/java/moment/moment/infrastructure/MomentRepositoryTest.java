@@ -3,6 +3,7 @@ package moment.moment.infrastructure;
 import moment.matching.domain.Matching;
 import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Disabled;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class MomentRepositoryTest {
@@ -39,7 +42,7 @@ class MomentRepositoryTest {
     @Disabled
     void 내_모멘트를_생성시간_기준_내림차순으로_정렬하여_페이지를_조회한다() throws InterruptedException {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter);
@@ -73,10 +76,10 @@ class MomentRepositoryTest {
     @Test
     void 나에게_매칭된_모멘트를_조회한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        User commenter = new User("kiki@gmail.com", "1234", "kiki");
+        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
         Moment moment = new Moment("아 행복해", true, savedMomenter);
@@ -102,7 +105,7 @@ class MomentRepositoryTest {
     @Test
     void 유저가_오늘_생성한_모멘트_수를_카운트한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter);

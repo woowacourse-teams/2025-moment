@@ -1,22 +1,24 @@
 CREATE TABLE IF NOT EXISTS users
 (
-	id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	email VARCHAR(255) NOT NULL UNIQUE,
-	password VARCHAR(255) NOT NULL,
-	nickname VARCHAR(255) NOT NULL UNIQUE,
-	created_at TIMESTAMP NOT NULL
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT uq_email
+        UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS moments
 (
-	id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	momenter_id BIGINT NOT NULL,
-	content VARCHAR(100) NOT NULL,
-	is_matched BOOLEAN NOT NULL,
-	created_at TIMESTAMP NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    momenter_id BIGINT NOT NULL,
+    content VARCHAR(100) NOT NULL,
+    is_matched BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_moments_users
         FOREIGN KEY (momenter_id)
-        REFERENCES users (id)
+            REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS matchings
@@ -65,11 +67,14 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
+ALTER TABLE users ADD COLUMN current_point INT NOT NULL DEFAULT 0;
+
 ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
 
-ALTER TABLE users DROP INDEX email;
+ALTER TABLE users DROP CONSTRAINT uq_email;
 
 ALTER TABLE users ADD UNIQUE (email, provider_type);
+
 
 -- 포인트 히스토리 테이블 추가
 CREATE TABLE IF NOT EXISTS point_history
@@ -81,8 +86,8 @@ CREATE TABLE IF NOT EXISTS point_history
     created_at TIMESTAMP NOT NULL,
     content_id BIGINT NOT NULL,
     CONSTRAINT uq_user_reason_content
-        UNIQUE (user_id, reason, content_id),
+    UNIQUE (user_id, reason, content_id),
     CONSTRAINT fk_history_users
-        FOREIGN KEY (user_id)
-            REFERENCES users (id)
-);
+    FOREIGN KEY (user_id)
+    REFERENCES users (id)
+    );

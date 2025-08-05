@@ -10,6 +10,7 @@ import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -32,8 +33,8 @@ class DefaultEmojiQueryServiceTest {
     @Test
     void id로_이모지를_조회한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);

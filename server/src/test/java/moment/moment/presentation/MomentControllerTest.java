@@ -14,6 +14,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Disabled;
@@ -51,7 +52,7 @@ class MomentControllerTest {
     @Test
     void 모멘트를_등록한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
 
@@ -81,7 +82,7 @@ class MomentControllerTest {
     @Disabled
     void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -129,10 +130,10 @@ class MomentControllerTest {
     @Test
     void 매칭된_모멘트를_조회한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        User commenter = new User("kiki@gmail.com", "1234", "kiki");
+        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
         String token = tokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
@@ -164,7 +165,7 @@ class MomentControllerTest {
     @Test
     void 모멘트_생성가능_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -186,7 +187,7 @@ class MomentControllerTest {
     @Test
     void 모멘트_생성불가_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo");
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment = new Moment("아 행복해", true, savedMomenter);

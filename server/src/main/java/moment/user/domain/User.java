@@ -41,13 +41,16 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Column(nullable = false)
+    private ProviderType providerType;
+  
     private Integer currentPoint = DEFAULT_POINT;
 
-    public User(String email, String password, String nickname) {
+    public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.providerType = providerType;
     }
 
     private void validate(String email, String password, String nickname) {
