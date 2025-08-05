@@ -22,6 +22,9 @@ export interface MyMoments {
   content: string;
   createdAt: string;
   comment: Comment | null;
+  nextCursor: string | null;
+  hasNextPage: boolean;
+  pageSize: number;
 }
 
 export interface Comment {
