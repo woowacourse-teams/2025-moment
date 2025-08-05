@@ -3,13 +3,13 @@ package moment.comment.dto.response;
 import java.util.List;
 
 public record MyCommentPageResponse(
-        List<MyCommentsResponse> items,
+        List<MyCommentResponse> items,
         String nextCursor,
         boolean hasNextPage,
         int pageSize
 ) {
     public static MyCommentPageResponse of(
-            List<MyCommentsResponse> responses,
+            List<MyCommentResponse> responses,
             String nextCursor,
             boolean hasNextPage,
             int pageSize

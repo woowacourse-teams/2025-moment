@@ -11,7 +11,7 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
-import moment.comment.dto.response.MyCommentsResponse;
+import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -97,8 +97,8 @@ public class CommentService {
         List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
 
         if (emojis.isEmpty()) {
-            List<MyCommentsResponse> responses = comments.stream()
-                    .map(MyCommentsResponse::from)
+            List<MyCommentResponse> responses = comments.stream()
+                    .map(MyCommentResponse::from)
                     .toList();
             return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);
         }
@@ -106,8 +106,8 @@ public class CommentService {
         Map<Comment, List<Emoji>> commentAndEmojis = emojis.stream()
                 .collect(Collectors.groupingBy(Emoji::getComment));
 
-        List<MyCommentsResponse> responses = commentAndEmojis.entrySet().stream()
-                .map(MyCommentsResponse::from)
+        List<MyCommentResponse> responses = commentAndEmojis.entrySet().stream()
+                .map(MyCommentResponse::from)
                 .toList();
 
         return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, pageSize);

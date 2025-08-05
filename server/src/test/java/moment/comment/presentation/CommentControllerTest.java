@@ -10,7 +10,7 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
-import moment.comment.dto.response.MyCommentsResponse;
+import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -139,8 +139,8 @@ class CommentControllerTest {
                 .getObject("data", MyCommentPageResponse.class);
 
         // then
-        List<MyCommentsResponse> myComments = response.items();
-        MyCommentsResponse firstResponse = myComments.getFirst();
+        List<MyCommentResponse> myComments = response.items();
+        MyCommentResponse firstResponse = myComments.getFirst();
 
         String cursor = savedComment2.getCreatedAt().toString() + "_" + savedComment2.getId();
 
