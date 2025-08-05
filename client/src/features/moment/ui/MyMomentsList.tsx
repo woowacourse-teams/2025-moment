@@ -23,8 +23,8 @@ export const MyMomentsList = () => {
   return (
     <S.MomentsContainer>
       {hasMoments ? (
-        momentWithNotifications?.map((myMoment: MomentWithNotifications, index: number) => (
-          <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
+        momentWithNotifications?.map((myMoment: MomentWithNotifications) => (
+          <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
         ))
       ) : (
         <NotFound

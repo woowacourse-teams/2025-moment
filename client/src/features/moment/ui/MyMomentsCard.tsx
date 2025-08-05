@@ -9,19 +9,12 @@ import { Send, Timer } from 'lucide-react';
 import * as S from './MyMomentsList.styles';
 import { MomentWithNotifications } from '../types/momentsWithNotifications';
 
-export const MyMomentsCard = ({
-  myMoment,
-  index,
-}: {
-  myMoment: MomentWithNotifications;
-  index: number;
-}) => {
+export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
   const emojis = myMoment.comment?.emojis || [];
 
   return (
-    <Card width="medium" key={index} shadow={!myMoment.read}>
-      {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
+    <Card width="medium" key={myMoment.id} shadow={!myMoment.read}>
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
