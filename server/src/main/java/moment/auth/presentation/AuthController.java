@@ -115,7 +115,7 @@ public class AuthController {
     }
 
     @GetMapping("/callback/google")
-    public ResponseEntity<SuccessResponse<Void>> googleCallback(@RequestParam String code) {
+    public ResponseEntity<Void> googleCallback(@RequestParam String code) {
         String token = googleAuthService.loginOrSignUp(code);
 
         ResponseCookie cookie = ResponseCookie.from("token", token)
@@ -126,10 +126,9 @@ public class AuthController {
                 .maxAge(1800)
                 .build();
 
-        HttpStatus status = HttpStatus.OK;
-        return ResponseEntity.status(status)
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .header(HttpHeaders.LOCATION, "http://www.connectingmoment.com")
-                .body(SuccessResponse.of(status, null));
+                .build();
     }
 }
