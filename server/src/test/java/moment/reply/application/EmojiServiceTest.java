@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
@@ -20,6 +21,7 @@ import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -29,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -59,8 +62,8 @@ class EmojiServiceTest {
         Authentication authentication = new Authentication(1L);
         EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -71,7 +74,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED);
+        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
@@ -86,7 +89,7 @@ class EmojiServiceTest {
         Authentication authentication = new Authentication(1L);
         EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
 
-        User unAuthorized = new User("noUser@gmail.com", "1234", "noUser");
+        User unAuthorized = new User("noUser@gmail.com", "1234", "noUser", ProviderType.EMAIL);
         Comment comment = mock(Comment.class);
         Moment moment = mock(Moment.class);
         given(comment.getMoment()).willReturn(moment);
@@ -104,8 +107,8 @@ class EmojiServiceTest {
     @Test
     void 코멘트의_모든_이모지를_조회한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
@@ -122,8 +125,8 @@ class EmojiServiceTest {
     @Test
     void 이모지를_제거한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -143,8 +146,8 @@ class EmojiServiceTest {
     @Test
     void 이모지_작성자가_아닌_회원이_삭제요청_할_경우_예외가_발생한다() {
         // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo");
-        User momenter = new User("kiki@icloud.com", "1234", "kiki");
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -155,5 +158,27 @@ class EmojiServiceTest {
         // when & then
         assertThatThrownBy(() -> emojiService.removeEmojiById(1L, comment.getId()))
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
+    }
+
+    @Test
+    void 코멘트의_마지막_이모지가_제거된_경우_포인트가_줄어든다() {
+        // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        ReflectionTestUtils.setField(comment, "id", 1L);
+        Emoji emoji = new Emoji("HEART", momenter, comment);
+        ReflectionTestUtils.setField(emoji, "id", 1L);
+
+        given(emojiQueryService.getEmojiById(any(Long.class))).willReturn(emoji);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(emojiRepository.existsByComment(any(Comment.class))).willReturn(false);
+
+        // when
+        emojiService.removeEmojiById(emoji.getId(), comment.getId());
+
+        // then
+        verify(rewardService).reward(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
     }
 }

@@ -17,11 +17,15 @@ public class PointRewardService implements RewardService {
 
     @Override
     @Transactional
-    public void reward(User user, Reason reason) {
+    public void reward(User user, Reason reason, Long contentId) {
+        if (rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId)) {
+            return;
+        }
+
         int point = reason.getPointTo();
         user.addPoint(point);
 
-        PointHistory pointHistory = new PointHistory(user, point, reason);
+        PointHistory pointHistory = new PointHistory(user, point, reason, contentId);
         rewardRepository.save(pointHistory);
     }
 }
