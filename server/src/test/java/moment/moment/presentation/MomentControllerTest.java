@@ -90,11 +90,11 @@ class MomentControllerTest {
         Moment moment4 = new Moment("아 신기해", false, savedMomenter);
 
         momentRepository.save(moment1);
-        Thread.sleep(10);
+        Thread.sleep(200);
         momentRepository.save(moment2);
-        Thread.sleep(10);
+        Thread.sleep(200);
         momentRepository.save(moment3);
-        Thread.sleep(10);
+        Thread.sleep(200);
         Moment saveMoment4 = momentRepository.save(moment4);
 
         // when
