@@ -26,11 +26,11 @@ export const Navbar = () => {
       <Logo />
 
       <S.DesktopNavItems>
-        {navItems.map(item => (
+        {/* {navItems.map(item => (
           <S.NavItem key={item.href} $isActive={currentPath === item.href}>
             <Link to={item.href}>{item.label}</Link>
           </S.NavItem>
-        ))}
+        ))} */}
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
