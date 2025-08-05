@@ -1,28 +1,31 @@
 package moment.comment.application;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.notification.application.NotificationService;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
+import moment.notification.dto.response.NotificationResponse;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
     private final CommentQueryService commentQueryService;
+    private final NotificationService notificationService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -44,9 +48,16 @@ public class CommentService {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
 
-        Comment comment = request.toComment(commenter, moment);
+        Comment commentWithoutId = request.toComment(commenter, moment);
+        Comment savedComment = commentRepository.save(commentWithoutId);
 
-        Comment savedComment = commentRepository.save(comment);
+        NotificationResponse response = NotificationResponse.createSseResponse(
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId()
+        );
+
+        notificationService.sendToClient(moment.getMomenterId(), "notification", response);
 
         return CommentCreateResponse.from(savedComment);
     }
@@ -78,11 +89,11 @@ public class CommentService {
         User commenter = userQueryService.getUserById(commenterId);
         Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
 
-        if(matchedMoment.isEmpty()) {
+        if (matchedMoment.isEmpty()) {
             return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
         }
 
-        if(commentRepository.existsByMoment(matchedMoment.get())) {
+        if (commentRepository.existsByMoment(matchedMoment.get())) {
             return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
         }
 

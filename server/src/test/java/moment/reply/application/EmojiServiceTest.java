@@ -1,11 +1,19 @@
 package moment.reply.application;
 
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.notification.application.NotificationService;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.infrastructure.EmojiRepository;
@@ -19,13 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +44,9 @@ class EmojiServiceTest {
 
     @Mock
     private EmojiQueryService emojiQueryService;
+
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private EmojiService emojiService;

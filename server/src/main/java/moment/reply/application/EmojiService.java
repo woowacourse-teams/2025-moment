@@ -7,6 +7,10 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.notification.application.NotificationService;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
+import moment.notification.dto.response.NotificationResponse;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
@@ -27,6 +31,14 @@ public class EmojiService {
     private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
     private final EmojiQueryService emojiQueryService;
+    private final NotificationService notificationService;
+
+    private static void validateMomenter(Comment comment, User user) {
+        Moment moment = comment.getMoment();
+        if (!moment.checkMomenter(user)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+    }
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
@@ -38,14 +50,14 @@ public class EmojiService {
         Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
 
-        return EmojiCreateResponse.from(savedEmoji);
-    }
+        NotificationResponse response = NotificationResponse.createSseResponse(
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT,
+                comment.getId()
+        );
+        notificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
 
-    private static void validateMomenter(Comment comment, User user) {
-        Moment moment = comment.getMoment();
-        if (!moment.checkMomenter(user)) {
-            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
-        }
+        return EmojiCreateResponse.from(savedEmoji);
     }
 
     public List<EmojiReadResponse> getEmojisByCommentId(Long commentId) {
