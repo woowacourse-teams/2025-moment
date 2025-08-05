@@ -26,3 +26,18 @@ export const IconText = styled.p`
   line-height: 14.52px;
   letter-spacing: -0.01em;
 `;
+export const IconBarAside = styled.aside`
+  position: fixed;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+
+  @media (max-width: 768px) {
+    right: 12px;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+`;

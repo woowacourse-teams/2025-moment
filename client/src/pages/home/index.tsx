@@ -28,9 +28,7 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
-      <S.IconBarAside>
-        <IconBar />
-      </S.IconBarAside>
+      <IconBar />
     </S.HomePageWrapper>
   );
 }
