@@ -1,6 +1,7 @@
 package moment.user.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,6 +93,37 @@ class UserRepositoryTest {
 
         // when
         Optional<User> user = userRepository.findByEmail("noUser@gmail.com");
+
+        // then
+        assertThat(user).isEmpty();
+    }
+
+    @Test
+    void 이메일과_회원가입_방식을_기준으로_사용자를_조회할_수_있다() {
+        // given
+        String email = "mimi@icloud.com";
+        ProviderType providerType = ProviderType.EMAIL;
+        userRepository.save(new User(email, "password", "mimi", providerType));
+
+        // when
+        Optional<User> user = userRepository.findByEmailAndProviderType(email, providerType);
+
+        // then
+        assertAll(
+                () -> assertThat(user).isPresent(),
+                () -> assertThat(user.get().getEmail()).isEqualTo(email)
+        );
+    }
+
+    @Test
+    void 같은_이메일이더라도_다른_회원가입_방식인_경우_조회할_수_없다() {
+        // given
+        String email = "mimi@icloud.com";
+        User googleUser = new User(email, "password", "mimi", ProviderType.GOOGLE);
+        userRepository.save(googleUser);
+
+        // when
+        Optional<User> user = userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
 
         // then
         assertThat(user).isEmpty();
