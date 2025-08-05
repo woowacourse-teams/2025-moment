@@ -7,5 +7,5 @@ export const ROUTES = {
   POST_COMMENTS: '/post-comments',
   TODAY_COMMENT: '/today-comment',
   TODAY_COMMENT_SUCCESS: '/today-comment/success',
-  GOOGLE_CALLBACK: '/auth/google/callback',
+  GOOGLE_CALLBACK: '/auth/login/google/callback',
 };
