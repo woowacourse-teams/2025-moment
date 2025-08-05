@@ -114,7 +114,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void Commenter_ID가_일치하는_Comment_목록을_생성_시간_내림차순으로_페이지_사이즈만큼_페이징_처리하여_불러온다() {
+    void Commenter가_일치하는_Comment_목록을_생성_시간_내림차순으로_페이지_사이즈만큼_페이징_처리하여_불러온다() {
         // given
         User momenter1 = new User("kiki@icloud.com", "1234", "kiki");
         User momenter2 = new User("drago1@gmail.com", "1234", "drago1");
@@ -137,9 +137,9 @@ class CommentServiceTest {
 
         List<Comment> expectedComments = List.of(comment1, comment2);
 
-        given(commentRepository.findCommentsFirstPage(any(Long.class), any(Pageable.class)))
+        given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
-        given(userQueryService.existsById(any(Long.class))).willReturn(true);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(emojiRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
         // when
@@ -157,10 +157,10 @@ class CommentServiceTest {
     @Test
     void 존재하지_않는_Commenter가_Comment_목록을_조회하는_경우_예외가_발생한다() {
         // given
-        given(userQueryService.existsById(any(Long.class))).willReturn(false);
+        given(userQueryService.getUserById(any(Long.class))).willThrow(new MomentException(ErrorCode.USER_NOT_FOUND));
 
         // when & then
-        assertThatThrownBy(() -> commentService.getCommentsByUserIdWithCursor("", 2, 1L))
+        assertThatThrownBy(() -> commentService.getCommentsByUserIdWithCursor(null, 2, 1L))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }

@@ -66,9 +66,7 @@ public class CommentService {
     }
 
     public MyCommentPageResponse getCommentsByUserIdWithCursor(String cursor, int pageSize, Long commenterId) {
-        if (!userQueryService.existsById(commenterId)) {
-            throw new MomentException(ErrorCode.USER_NOT_FOUND);
-        }
+        User commenter = userQueryService.getUserById(commenterId);
 
         if (pageSize <= 0 || pageSize > 100) {
             throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
@@ -79,14 +77,14 @@ public class CommentService {
         List<Comment> commentsWithinCursor = new ArrayList<>();
 
         if (cursor == null || cursor.isEmpty()) {
-            commentsWithinCursor = commentRepository.findCommentsFirstPage(commenterId, pageable);
+            commentsWithinCursor = commentRepository.findCommentsFirstPage(commenter, pageable);
         }
 
         if (cursor != null) {
             String[] cursorParts = cursor.split(CURSOR_PART_DELIMITER);
             LocalDateTime cursorDateTime = LocalDateTime.parse(cursorParts[CURSOR_TIME_INDEX]);
             Long cursorId = Long.valueOf(cursorParts[CURSOR_ID_INDEX]);
-            commentsWithinCursor = commentRepository.findCommentsNextPage(commenterId, cursorDateTime, cursorId, pageable);
+            commentsWithinCursor = commentRepository.findCommentsNextPage(commenter, cursorDateTime, cursorId, pageable);
         }
 
         String nextCursor = extractCursor(commentsWithinCursor, pageSize);

@@ -2,6 +2,7 @@ package moment.comment.infrastructure;
 
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,18 +17,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"moment"})
     @Query("""
             SELECT c FROM comments c
-            WHERE c.commenter.id = :commenterId
+            WHERE c.commenter = :commenter
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findCommentsFirstPage(@Param("commenterId") Long commenterId, Pageable pageable);
+    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, Pageable pageable);
 
     @EntityGraph(attributePaths = {"moment"})
     @Query("""
             SELECT c FROM comments c
-            WHERE c.commenter.id = :commenterId AND (c.createdAt <= :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
+            WHERE c.commenter = :commenter AND (c.createdAt <= :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findCommentsNextPage(@Param("commenterId") Long commenterId,
+    List<Comment> findCommentsNextPage(@Param("commenter") User commenter,
                                        @Param("cursorTime") LocalDateTime cursorDateTime,
                                        @Param("cursorId") Long cursorId,
                                        Pageable pageable);
