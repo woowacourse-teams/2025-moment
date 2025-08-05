@@ -38,6 +38,7 @@ public enum ErrorCode {
     MOMENT_NOT_FOUND("M-002", "존재하지 않는 모멘트입니다.", HttpStatus.NOT_FOUND),
     MOMENT_ALREADY_EXIST("M-003", "오늘 작성한 모멘트가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     MOMENT_LENGTH_INVALID("M-004", "모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.", HttpStatus.BAD_REQUEST),
+    MOMENTS_LIMIT_INVALID("M-005", "유효하지 않은 페이지 사이즈입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

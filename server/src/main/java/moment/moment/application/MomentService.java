@@ -72,7 +72,7 @@ public class MomentService {
         // todo : 커서 검증 필요
 
         if (pageSize <= 0 || pageSize > 100) {
-            throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
+            throw new MomentException(ErrorCode.MOMENTS_LIMIT_INVALID);
         }
 
         PageRequest pageable = PageRequest.of(0, pageSize + 1);
