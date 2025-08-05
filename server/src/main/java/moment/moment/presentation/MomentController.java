@@ -69,6 +69,7 @@ public class MomentController {
             ),
             @ApiResponse(responseCode = "404", description = """
                     - [U-002] 존재하지 않는 사용자입니다.
+                    - [M-005] 유효하지 않은 페이지 사이즈입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
