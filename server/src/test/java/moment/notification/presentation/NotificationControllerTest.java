@@ -21,6 +21,8 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
+import moment.notification.dto.response.NotificationSseResponse;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import okhttp3.Headers;
@@ -49,18 +51,27 @@ public class NotificationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private User momenter;
-    private User actor; // 코멘트 작성자 또는 이모지 반응자가 될 사용자
+    private User actor;
     private Moment moment;
+    private Moment moment2;
+    private Moment moment3;
     private String momenterToken;
     private String actorToken;
+
 
     // 1. 공통 Given 로직 추출
     @BeforeEach
     void setUp() {
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
         actor = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리"));
+
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
+        moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
+        moment3 = momentRepository.save(new Moment("반가워요", momenter));
 
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
         actorToken = tokenManager.createToken(actor.getId(), actor.getEmail());
@@ -70,7 +81,7 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_내_모멘트에_코멘트를_달면_SSE_알림을_받는다() throws InterruptedException {
         // when
-        List<NotificationResponse> receivedNotifications = new CopyOnWriteArrayList<>();
+        List<NotificationSseResponse> receivedNotifications = new CopyOnWriteArrayList<>();
 
         // 1. SSE 클라이언트를 사용하여 비동기 구독
         EventSource eventSource = subscribeToNotifications(momenterToken, receivedNotifications);
@@ -87,7 +98,7 @@ public class NotificationControllerTest {
         // then
         // Awaitility를 사용해 비동기적으로 도착하는 알림을 기다립니다.
         await().atMost(2, TimeUnit.SECONDS).until(() -> !receivedNotifications.isEmpty());
-        NotificationResponse response = receivedNotifications.get(0);
+        NotificationSseResponse response = receivedNotifications.get(0);
 
         assertAll(
                 () -> assertThat(receivedNotifications).hasSize(1),
@@ -101,9 +112,56 @@ public class NotificationControllerTest {
         eventSource.close();
     }
 
+    @Test
+    void 사용자가_읽지_않은_알림을_받는다() {
+        // given
+        CommentCreateRequest request1 = new CommentCreateRequest("굿~", moment.getId());
+        CommentCreateRequest request2 = new CommentCreateRequest("굿~", moment2.getId());
+        CommentCreateRequest request3 = new CommentCreateRequest("굿~", moment3.getId());
+
+        // when
+        RestAssured.given().log().all()
+                .cookie("token", actorToken)
+                .contentType(ContentType.JSON)
+                .body(request1)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("token", actorToken)
+                .contentType(ContentType.JSON)
+                .body(request2)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("token", actorToken)
+                .contentType(ContentType.JSON)
+                .body(request3)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        List<NotificationResponse> responses = RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .when().get("/api/v1/notifications?read=false")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath()
+                .getList("data", NotificationResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(responses).hasSize(3),
+                () -> assertThat(responses.stream()
+                        .noneMatch(NotificationResponse::isRead))
+                        .isTrue());
+    }
 
     //SSE 구독 로직
-    private EventSource subscribeToNotifications(String token, List<NotificationResponse> notificationList) {
+    private EventSource subscribeToNotifications(String token, List<NotificationSseResponse> notificationList) {
         EventHandler eventHandler = new EventHandler() {
             @Override
             public void onOpen() {
@@ -124,8 +182,8 @@ public class NotificationControllerTest {
 
             @Override
             public void onMessage(String event, MessageEvent messageEvent) throws Exception {
-                NotificationResponse notification = objectMapper.readValue(messageEvent.getData(),
-                        NotificationResponse.class);
+                NotificationSseResponse notification = objectMapper.readValue(messageEvent.getData(),
+                        NotificationSseResponse.class);
                 notificationList.add(notification);
             }
         };

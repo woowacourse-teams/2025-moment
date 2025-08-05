@@ -10,7 +10,7 @@ import moment.moment.domain.Moment;
 import moment.notification.application.NotificationService;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
-import moment.notification.dto.response.NotificationResponse;
+import moment.notification.dto.response.NotificationSseResponse;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
@@ -50,7 +50,7 @@ public class EmojiService {
         Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
 
-        NotificationResponse response = NotificationResponse.createSseResponse(
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
                 TargetType.COMMENT,
                 comment.getId()

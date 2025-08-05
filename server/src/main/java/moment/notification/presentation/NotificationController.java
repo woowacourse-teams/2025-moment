@@ -1,11 +1,17 @@
 package moment.notification.presentation;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
+import moment.global.dto.response.SuccessResponse;
 import moment.notification.application.NotificationService;
+import moment.notification.dto.response.NotificationResponse;
 import moment.user.dto.request.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -19,5 +25,16 @@ public class NotificationController {
     @GetMapping("/subscribe")
     public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication) {
         return notificationService.subscribe(authentication.id());
+    }
+
+    @GetMapping
+    public ResponseEntity<SuccessResponse<List<NotificationResponse>>> getNotifications(
+            @AuthenticationPrincipal Authentication authentication,
+            @RequestParam(value = "read", defaultValue = "false") Boolean read
+    ) {
+        List<NotificationResponse> responses = notificationService.getNotificationByUser(
+                authentication.id(), read);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, responses));
     }
 }

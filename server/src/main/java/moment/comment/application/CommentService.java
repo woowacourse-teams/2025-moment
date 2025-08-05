@@ -17,9 +17,11 @@ import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.notification.application.NotificationService;
+import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
-import moment.notification.dto.response.NotificationResponse;
+import moment.notification.dto.response.NotificationSseResponse;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
@@ -36,6 +38,7 @@ public class CommentService {
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
+    private final NotificationRepository notificationRepository;
     private final CommentQueryService commentQueryService;
     private final NotificationService notificationService;
 
@@ -51,13 +54,21 @@ public class CommentService {
         Comment commentWithoutId = request.toComment(commenter, moment);
         Comment savedComment = commentRepository.save(commentWithoutId);
 
-        NotificationResponse response = NotificationResponse.createSseResponse(
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT,
                 moment.getId()
         );
 
+        Notification notificationWithoutId = new Notification(
+                moment.getMomenter(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId());
+
         notificationService.sendToClient(moment.getMomenterId(), "notification", response);
+
+        notificationRepository.save(notificationWithoutId);
 
         return CommentCreateResponse.from(savedComment);
     }
