@@ -12,7 +12,3 @@ export interface LoginResponse {
   status: number;
   data: string;
 }
-
-export interface GoogleLoginUrlResponse {
-  redirectUrl: string;
-}
