@@ -6,15 +6,21 @@ import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
-import { MyMoments } from '../types/moments';
 import * as S from './MyMomentsList.styles';
+import { MomentWithNotifications } from '../types/momentsWithNotifications';
 
-export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index: number }) => {
+export const MyMomentsCard = ({
+  myMoment,
+  index,
+}: {
+  myMoment: MomentWithNotifications;
+  index: number;
+}) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
   const emojis = myMoment.comment?.emojis || [];
 
   return (
-    <Card width="medium" key={index}>
+    <Card width="medium" key={index} shadow={!myMoment.read}>
       {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
       <Card.TitleContainer
         title={

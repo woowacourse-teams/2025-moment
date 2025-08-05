@@ -1,15 +1,14 @@
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
-import { useMomentsQuery } from '../hook/useMomentsQuery';
-import { MyMoments } from '../types/moments';
+import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
+import { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
-  const { data, isLoading } = useMomentsQuery();
-  const myMoments = data?.data;
+  const { momentWithNotifications, isLoading } = useMomentsWithNotifications();
 
-  const hasMoments = myMoments?.length && myMoments.length > 0;
+  const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
 
   if (isLoading) {
     return (
@@ -24,7 +23,7 @@ export const MyMomentsList = () => {
   return (
     <S.MomentsContainer>
       {hasMoments ? (
-        myMoments?.map((myMoment: MyMoments, index: number) => (
+        momentWithNotifications?.map((myMoment: MomentWithNotifications, index: number) => (
           <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
         ))
       ) : (

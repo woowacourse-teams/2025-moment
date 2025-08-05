@@ -1,6 +1,12 @@
 export interface MomentsResponse {
+  // TODO: 서버측에서 Reponse 필드 바꾼 것 같음. 일단 변경된 값에 맞게 수정 후 추후 물어보기
   status: number;
-  data: MyMoments[];
+  data: {
+    hasNextPage: boolean;
+    items: MyMoments[];
+    nextCursor: any;
+    pageSize: number;
+  };
 }
 
 export interface CheckMomentsResponse {
@@ -19,6 +25,7 @@ export interface MatchMomentsResponse {
 }
 
 export interface MyMoments {
+  id: number;
   content: string;
   createdAt: string;
   comment: Comment | null;
