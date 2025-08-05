@@ -14,7 +14,7 @@ const CardStyles = {
     border-radius: 10px;
     border: 1px solid ${theme.colors['gray-700']};
     word-break: keep-all;
-    box-shadow: ${$shadow && `0px 0px 10px  ${theme.colors['yellow-300']}`};
+    box-shadow: ${$shadow && `0px 0px 10px  ${theme.colors['yellow-300_50']}`};
 
     @media (max-width: 768px) {
       width: 90%;
