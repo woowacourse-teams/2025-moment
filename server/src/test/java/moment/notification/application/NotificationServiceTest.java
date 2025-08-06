@@ -17,6 +17,7 @@ import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -80,7 +81,7 @@ class NotificationServiceTest {
     @Test
     void 사용자가_읽지_않은_알림을_조회한다() {
         // given
-        User user = new User("lebron@james.com", "james1234!", "르브론");
+        User user = new User("lebron@james.com", "james1234!", "르브론", ProviderType.EMAIL);
         Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
                 1L);
         Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
@@ -101,7 +102,7 @@ class NotificationServiceTest {
     @Test
     void 사용자가_읽은_알림을_조회한다() {
         // given
-        User user = new User("lebron@james.com", "james1234!", "르브론");
+        User user = new User("lebron@james.com", "james1234!", "르브론", ProviderType.EMAIL);
         Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
                 1L);
         Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
@@ -126,7 +127,7 @@ class NotificationServiceTest {
     @Test
     void 사용자가_알림을_읽는다() {
         // given
-        User user = new User("lebron@james.com", "james1234!", "르브론");
+        User user = new User("lebron@james.com", "james1234!", "르브론", ProviderType.EMAIL);
         Notification notification = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
                 1L);
 

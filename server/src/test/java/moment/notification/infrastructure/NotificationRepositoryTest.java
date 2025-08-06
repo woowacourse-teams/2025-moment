@@ -6,6 +6,7 @@ import java.util.List;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ class NotificationRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("lebron@james.com", "lebron1234!", "르브론");
+        user = new User("lebron@james.com", "lebron1234!", "르브론", ProviderType.EMAIL);
         userRepository.save(user);
     }
 

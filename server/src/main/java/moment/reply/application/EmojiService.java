@@ -18,6 +18,8 @@ import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
 import moment.reply.dto.response.EmojiReadResponse;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -35,6 +37,7 @@ public class EmojiService {
     private final EmojiQueryService emojiQueryService;
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
+    private final RewardService rewardService;
 
     private static void validateMomenter(Comment comment, User user) {
         Moment moment = comment.getMoment();
@@ -42,6 +45,7 @@ public class EmojiService {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
+
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
@@ -51,7 +55,10 @@ public class EmojiService {
         validateMomenter(comment, user);
 
         Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
+
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
+
+        rewardService.reward(comment.getCommenter(), Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
@@ -87,6 +94,15 @@ public class EmojiService {
 
         emoji.checkWriter(user);
 
+        Comment comment = emoji.getComment();
         emojiRepository.delete(emoji);
+
+        cancelRewardIfLastEmoji(comment);
+    }
+
+    private void cancelRewardIfLastEmoji(Comment comment) {
+        if (!emojiRepository.existsByComment(comment)) {
+            rewardService.reward(comment.getCommenter(), Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        }
     }
 }

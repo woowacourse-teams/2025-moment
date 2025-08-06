@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
@@ -38,7 +39,7 @@ class AuthControllerTest {
     void 로그인에_성공한다() {
         // given
         String encodedPassword = encoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago"));
+        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r!");
 
         // when
@@ -59,7 +60,7 @@ class AuthControllerTest {
     void 로그아웃에_성공한다() {
         // given
         String encodedPassword = encoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago"));
+        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
 
         String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
 

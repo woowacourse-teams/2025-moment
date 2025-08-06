@@ -10,6 +10,7 @@ import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ class DefaultNotificationQueryServiceTest {
     @Test
     void 알림을_ID로_조회한다() {
         // given
-        User user = new User("gg@gmail.com", "1234abd!", "gg");
+        User user = new User("gg@gmail.com", "1234abd!", "gg", ProviderType.EMAIL);
         Notification notification = new Notification(user, NotificationType.NEW_REPLY_ON_COMMENT, TargetType.MOMENT,
                 1L);
         given(notificationRepository.findById(any(Long.class))).willReturn(Optional.of(notification));

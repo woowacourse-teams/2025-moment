@@ -28,6 +28,7 @@ import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.dto.request.EmojiCreateRequest;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import okhttp3.Headers;
@@ -42,7 +43,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class NotificationControllerTest {
 
     @Autowired
@@ -77,12 +78,12 @@ public class NotificationControllerTest {
     @BeforeEach
     void setUp() {
         databaseCleaner.clean();
-        momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
+        momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
         moment3 = momentRepository.save(new Moment("반가워요", momenter));
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
-        commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리"));
+        commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
         commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
     }
 
