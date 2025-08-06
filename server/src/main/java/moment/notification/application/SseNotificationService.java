@@ -5,16 +5,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @Slf4j // 임시로그
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class SseNotificationService {
 
-    private static final long VALID_TIME = 30 * 60 * 1000L;
+    private static final long VALID_TIME = 10 * 60 * 1000L;
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public SseEmitter subscribe(Long userId) {
