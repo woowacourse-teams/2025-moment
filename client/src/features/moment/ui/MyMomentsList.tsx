@@ -7,8 +7,23 @@ import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useMomentsQuery();
-  const myMoments = data?.pages.flatMap(page => page.data.items) ?? [];
+  const {
+    data: momentsResponse,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMomentsQuery();
+
+  if (isError) {
+    console.error('Error fetching moments:', error);
+    return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
+  }
+
+  const myMoments = momentsResponse?.pages.flatMap(page => page.data.items) ?? [];
+  const hasMoments = myMoments?.length && myMoments.length > 0;
 
   const observerRef = useRef<HTMLDivElement>(null);
 
@@ -34,8 +49,6 @@ export const MyMomentsList = () => {
     return () => observer.disconnect();
   }, [handleIntersect]);
 
-  const hasMoments = myMoments?.length && myMoments.length > 0;
-
   if (isLoading) {
     return (
       <S.MomentsContainer>
@@ -51,11 +64,7 @@ export const MyMomentsList = () => {
       {hasMoments ? (
         <>
           {myMoments?.map((myMoment: MyMomentsItem, index: number) => (
-            <MyMomentsCard
-              key={`${myMoment.createdAt}-${index}`}
-              myMoment={myMoment}
-              index={index}
-            />
+            <MyMomentsCard key={`${myMoment.createdAt}-${index}`} myMoment={myMoment} />
           ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />

@@ -9,7 +9,7 @@ import { Send, Timer } from 'lucide-react';
 import type { MyMomentsItem } from '../types/moments';
 import * as S from './MyMomentsList.styles';
 
-export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMomentsItem; index: number }) => {
+export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
   const emojis = myMoment.comment?.emojis || [];
 
