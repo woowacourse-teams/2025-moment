@@ -27,9 +27,11 @@ import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.reply.application.EmojiService;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import okhttp3.Headers;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +79,8 @@ public class NotificationControllerTest {
     private String momenterToken;
     private User commenter;
     private String commenterToken;
+    @Autowired
+    private EmojiService emojiService;
 
     @BeforeEach
     void setUp() {
@@ -212,38 +216,12 @@ public class NotificationControllerTest {
         EmojiCreateRequest request3 = new EmojiCreateRequest("STAR", comment.getId());
         EmojiCreateRequest request4 = new EmojiCreateRequest("KING", comment.getId());
 
-        // when
-        RestAssured.given().log().all()
-                .cookie("token", momenterToken)
-                .contentType(ContentType.JSON)
-                .body(request1)
-                .when().post("/api/v1/emojis")
-                .then().log().all()
-                .statusCode(201);
+        Authentication authentication = new Authentication(momenter.getId());
 
-        RestAssured.given().log().all()
-                .cookie("token", momenterToken)
-                .contentType(ContentType.JSON)
-                .body(request2)
-                .when().post("/api/v1/emojis")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .cookie("token", momenterToken)
-                .contentType(ContentType.JSON)
-                .body(request3)
-                .when().post("/api/v1/emojis")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .cookie("token", momenterToken)
-                .contentType(ContentType.JSON)
-                .body(request4)
-                .when().post("/api/v1/emojis")
-                .then().log().all()
-                .statusCode(201);
+        emojiService.addEmoji(request1, authentication);
+        emojiService.addEmoji(request2, authentication);
+        emojiService.addEmoji(request3, authentication);
+        emojiService.addEmoji(request4, authentication);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
                 .cookie("token", commenterToken)

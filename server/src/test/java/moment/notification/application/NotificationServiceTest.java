@@ -135,7 +135,7 @@ class NotificationServiceTest {
         given(notificationQueryService.getNotificationById(any(Long.class))).willReturn(notification);
 
         // when
-        notificationService.markAsRead(1L);
+        notificationService.markAsRead(2L);
 
         // then
         assertThat(notification.isRead()).isTrue();
