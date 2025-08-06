@@ -1,16 +1,9 @@
 package moment.auth.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
-import java.util.Optional;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
-import moment.user.domain.NicknameGenerator;
+import moment.user.application.NicknameGenerateService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -20,6 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class GoogleAuthServiceTest {
@@ -40,7 +41,7 @@ class GoogleAuthServiceTest {
     private GoogleAuthClient googleAuthClient;
 
     @Mock
-    private NicknameGenerator nicknameGenerator;
+    private NicknameGenerateService nicknameGenerateService;
 
     @Test
     void 기존에_가입된_유저가_구글_로그인을_하면_토큰을_반환한다() {
@@ -75,7 +76,7 @@ class GoogleAuthServiceTest {
         given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
         given(userRepository.findByEmailAndProviderType(any(String.class), any(ProviderType.class))).willReturn(Optional.empty());
         given(passwordEncoder.encode(any(String.class))).willReturn("encodedPassword");
-        given(nicknameGenerator.generateNickname()).willReturn("mimi");
+        given(nicknameGenerateService.createRandomNickname()).willReturn("반짝이는 우주의 퀘이사");
         given(userRepository.save(any(User.class))).willReturn(new User("mimi@icloud.com", "encodedPassword", "mimi", ProviderType.GOOGLE));
         given(tokenManager.createToken(any(), any(String.class))).willReturn(expectedToken);
 

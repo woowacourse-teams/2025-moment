@@ -1,6 +1,5 @@
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
-import { MyCommentsPageContainer } from '@/pages/myComments';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
@@ -65,6 +64,13 @@ export const MyCommentsList = () => {
     </>
   );
 };
+
+const MyCommentsPageContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 20px;
+`;
 
 const MyCommentsListContainer = styled.section`
   display: flex;

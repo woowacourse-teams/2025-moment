@@ -8,11 +8,7 @@ export const navItems = [
     href: '/today-comment',
   },
   {
-    label: '나의 모멘트',
-    href: '/my-moments',
-  },
-  {
-    label: '보낸 코멘트',
-    href: '/my-comments',
+    label: '나만의 모음집',
+    href: '/collection',
   },
 ];
