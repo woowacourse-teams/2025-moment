@@ -3,7 +3,7 @@ import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import styled from '@emotion/styled';
+import * as S from './MyCommentsList.styles';
 
 export const MyCommentsList = () => {
   const {
@@ -34,12 +34,12 @@ export const MyCommentsList = () => {
 
   if (isLoading) {
     return (
-      <MyCommentsPageContainer>
+      <S.MyCommentsPageContainer>
         <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
         {Array.from({ length: 3 }).map((_, index) => (
           <CommonSkeletonCard key={`myComments-skeleton-card-${index}`} variant="comment" />
         ))}
-      </MyCommentsPageContainer>
+      </S.MyCommentsPageContainer>
     );
   }
 
@@ -48,13 +48,13 @@ export const MyCommentsList = () => {
   return (
     <>
       {hasComments ? (
-        <MyCommentsListContainer>
+        <S.MyCommentsListContainer>
           {myComments.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />
-        </MyCommentsListContainer>
+        </S.MyCommentsListContainer>
       ) : (
         <NotFound
           title="아직 작성한 코멘트가 없어요"
@@ -64,17 +64,3 @@ export const MyCommentsList = () => {
     </>
   );
 };
-
-const MyCommentsPageContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  margin: 20px;
-`;
-
-const MyCommentsListContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-`;
