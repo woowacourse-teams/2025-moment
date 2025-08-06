@@ -12,7 +12,7 @@ export const LoginForm = () => {
     navigate('/signup');
   };
 
-  const googleLoginUrl = process.env.REACT_APP_REDIRECTION_URL || '';
+  const googleLoginUrl = process.env.REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL || '';
 
   const handleGoogleLogin = () => {
     window.location.href = googleLoginUrl;
