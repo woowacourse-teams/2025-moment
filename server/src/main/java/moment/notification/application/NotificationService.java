@@ -30,14 +30,11 @@ public class NotificationService {
     public SseEmitter subscribe(Long userId) {
         SseEmitter emitter = new SseEmitter(VALID_TIME);
 
-        // Emitter 저장
         emitters.put(userId, emitter);
 
-        // Emitter 완료 및 타임아웃 시 처리
         emitter.onCompletion(() -> emitters.remove(userId));
         emitter.onTimeout(() -> emitters.remove(userId));
-
-        // 연결 직후 503 방지를 위해 더미 데이터 전송
+        
         sendToClient(userId, "connect", "Connection success");
 
         return emitter;
