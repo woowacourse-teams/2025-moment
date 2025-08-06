@@ -14,7 +14,6 @@ export const Navbar = styled.nav`
   right: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const NavItem = styled.div<{ $isActive?: boolean }>`

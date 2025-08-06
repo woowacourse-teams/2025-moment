@@ -4,6 +4,7 @@ import * as S from './index.styles';
 import { Button } from '@/shared/ui';
 import { useState } from 'react';
 import PostCommentsList from '../postComments';
+import { IconBar } from '@/widgets/icons/IconBar';
 
 type SelectedPage = 'myMoments' | 'postComments';
 
@@ -43,6 +44,7 @@ export default function Collection() {
       <TitleContainer title={currentConfig.title} subtitle={currentConfig.subtitle} />
 
       {selectedPage === 'myMoments' ? <MyMomentsList /> : <PostCommentsList />}
+      <IconBar />
     </S.CollectionContainer>
   );
 }

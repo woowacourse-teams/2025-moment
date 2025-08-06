@@ -4,6 +4,7 @@ import { NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { CheckCircleIcon, Users } from 'lucide-react';
 import * as S from '../todayMoment/index.styles';
+import { IconBar } from '@/widgets/icons/IconBar';
 
 export default function TodayCommentPage() {
   const { data, isLoading, error } = useCommentCreationStatusQuery();
@@ -52,6 +53,7 @@ export default function TodayCommentPage() {
         subtitle="특별한 모멘트를 공유받고 따뜻한 공감을 보내보세요"
       />
       {renderContent()}
+      <IconBar />
     </S.TodayPageWrapper>
   );
 }
