@@ -21,10 +21,12 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
+import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -53,6 +55,9 @@ public class NotificationControllerTest {
     private CommentRepository commentRepository;
 
     @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
     private TokenManager tokenManager;
 
     @Autowired
@@ -61,6 +66,7 @@ public class NotificationControllerTest {
     @Autowired
     private DatabaseCleaner databaseCleaner;
 
+    private User momenter;
     private Moment moment;
     private Moment moment2;
     private Moment moment3;
@@ -71,7 +77,7 @@ public class NotificationControllerTest {
     @BeforeEach
     void setUp() {
         databaseCleaner.clean();
-        User momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
+        momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
         moment3 = momentRepository.save(new Moment("반가워요", momenter));
@@ -254,6 +260,38 @@ public class NotificationControllerTest {
                         .noneMatch(NotificationResponse::isRead))
                         .isTrue());
     }
+
+    @Test
+    void 사용자가_알림을_확인한다() {
+        // given
+        CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
+
+        // when
+        RestAssured.given().log().all()
+                .cookie("token", commenterToken)
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
+        System.out.println(notification.getId());
+
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .contentType(ContentType.JSON)
+                .when().patch("/api/v1/notifications/" + notification.getId() + "/read")
+                .then().log().all()
+                .statusCode(204);
+
+        Notification readNotification = notificationRepository.findById(notification.getId()).get();
+        System.out.println(readNotification.getId());
+
+        // then
+        assertThat(readNotification.isRead()).isTrue();
+    }
+
 
     //SSE 구독 로직
     private EventSource subscribeToNotifications(String token, List<NotificationSseResponse> notificationList) {

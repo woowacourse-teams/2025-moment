@@ -25,6 +25,7 @@ public class NotificationService {
 
     private final UserQueryService userQueryService;
     private final NotificationRepository notificationRepository;
+    private final NotificationQueryService notificationQueryService;
 
     public SseEmitter subscribe(Long userId) {
         SseEmitter emitter = new SseEmitter(VALID_TIME);
@@ -62,5 +63,11 @@ public class NotificationService {
         return notifications.stream()
                 .map(NotificationResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void markAsRead(Long id) {
+        Notification notification = notificationQueryService.getNotificationById(id);
+        notification.checkNotification();
     }
 }

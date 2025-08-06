@@ -41,6 +41,9 @@ class NotificationServiceTest {
     @Mock
     private NotificationRepository notificationRepository;
 
+    @Mock
+    private NotificationQueryService notificationQueryService;
+
     @Test
     void 사용자가_구독하면_emitter가_생성된다() {
         // given
@@ -118,5 +121,21 @@ class NotificationServiceTest {
 
         // then
         assertThat(responses).hasSize(1);
+    }
+
+    @Test
+    void 사용자가_알림을_읽는다() {
+        // given
+        User user = new User("lebron@james.com", "james1234!", "르브론");
+        Notification notification = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                1L);
+
+        given(notificationQueryService.getNotificationById(any(Long.class))).willReturn(notification);
+
+        // when
+        notificationService.markAsRead(1L);
+
+        // then
+        assertThat(notification.isRead()).isTrue();
     }
 }
