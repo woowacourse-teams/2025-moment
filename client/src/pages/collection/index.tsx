@@ -44,7 +44,6 @@ export default function Collection() {
       <TitleContainer title={currentConfig.title} subtitle={currentConfig.subtitle} />
 
       {selectedPage === 'myMoments' ? <MyMomentsList /> : <PostCommentsList />}
-      <IconBar />
     </S.CollectionContainer>
   );
 }

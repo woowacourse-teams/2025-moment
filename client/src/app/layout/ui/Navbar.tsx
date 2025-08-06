@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
+import { IconBar } from '@/widgets/icons/IconBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -41,6 +42,7 @@ export const Navbar = () => {
             <Link to={item.href}>{item.label}</Link>
           </S.NavItem>
         ))} */}
+        <IconBar />
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>

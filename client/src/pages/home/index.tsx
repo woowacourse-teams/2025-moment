@@ -5,7 +5,6 @@ import { Hero } from '@/widgets/hero';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
-import { IconBar } from '@/widgets/icons/IconBar';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
-      <IconBar />
     </S.HomePageWrapper>
   );
 }

@@ -11,7 +11,6 @@ export default function TodayMomentPage() {
         subtitle="하루에 한 번, 당신의 특별한 모멘트를 공유해보세요"
       />
       <TodayMomentForm />
-      <IconBar />
     </S.TodayPageWrapper>
   );
 }
