@@ -10,7 +10,7 @@ export interface CommentsResponse {
   };
 }
 
-interface CommentItem {
+export interface CommentItem {
   id: number;
   content: string;
   createdAt: string;
