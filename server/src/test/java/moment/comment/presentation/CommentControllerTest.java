@@ -8,7 +8,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
-import moment.comment.application.CommentService;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -60,9 +59,6 @@ class CommentControllerTest {
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
-
-    @Autowired
-    private CommentService commentService;
 
     @Autowired
     private MatchingRepository matchingRepository;
