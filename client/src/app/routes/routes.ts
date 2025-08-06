@@ -4,7 +4,7 @@ export const ROUTES = {
   LOGIN: '/login',
   MY_MOMENTS: '/my-moments',
   TODAY_MOMENT: '/today-moment',
-  POST_COMMENTS: '/post-comments',
+  MY_COMMENTS: '/my-comments',
   TODAY_COMMENT: '/today-comment',
   TODAY_COMMENT_SUCCESS: '/today-comment/success',
 };

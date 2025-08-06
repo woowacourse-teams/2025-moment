@@ -13,6 +13,6 @@ export const navItems = [
   },
   {
     label: '보낸 코멘트',
-    href: '/post-comments',
+    href: '/my-comments',
   },
 ];

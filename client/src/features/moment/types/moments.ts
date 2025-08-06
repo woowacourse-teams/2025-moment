@@ -1,4 +1,4 @@
-import type { Comment } from '@/features/comment/types/comments';
+import type { Emoji } from '@/features/emoji/type/emoji';
 
 export interface MomentsResponse {
   status: number;
@@ -16,6 +16,13 @@ export interface MyMomentsItem {
   content: string;
   createdAt: string;
   comment?: Comment;
+}
+
+interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  emojis: Emoji[];
 }
 
 export interface CheckMomentsResponse {

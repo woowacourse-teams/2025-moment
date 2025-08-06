@@ -2,13 +2,13 @@ import { Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { Heart, MessageSquare } from 'lucide-react';
-import * as S from '../../moment/ui/TodayContent.styles';
 import { useNavigate } from 'react-router';
+import * as S from '../../moment/ui/TodayContent.styles';
 
 export const TodayCommentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/post-comments');
+  const handleNavigate = () => navigate('/my-comments');
 
   return (
     <S.TodayContentWrapper>

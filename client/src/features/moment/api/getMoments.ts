@@ -1,11 +1,11 @@
 import { api } from '@/app/lib/api';
 import type { MomentsResponse } from '../types/moments';
 
-export const getMoments = async ({
-  pageParam = null,
-}: {
+interface GetMoments {
   pageParam?: string | null;
-}): Promise<MomentsResponse> => {
+}
+
+export const getMoments = async ({ pageParam = null }: GetMoments): Promise<MomentsResponse> => {
   const params = new URLSearchParams();
   if (pageParam) {
     params.append('cursor', pageParam);

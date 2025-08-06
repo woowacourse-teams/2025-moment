@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const PostCommentsPageContainer = styled.section`
+export const MyCommentsPageContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 30px;
