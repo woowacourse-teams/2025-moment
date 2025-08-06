@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 export const TodayCommentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/post-comments');
+  const handleNavigate = () => navigate('/collection');
 
   return (
     <S.TodayContentWrapper>
@@ -22,11 +22,7 @@ export const TodayCommentSuccessContent = () => {
         />
       </Card.Content>
       <Card.Action position="center">
-        <YellowSquareButton
-          Icon={MessageSquare}
-          title="보낸 모멘트 보기"
-          onClick={handleNavigate}
-        />
+        <YellowSquareButton Icon={MessageSquare} title="모음집 보러가기" onClick={handleNavigate} />
       </Card.Action>
     </S.TodayContentWrapper>
   );

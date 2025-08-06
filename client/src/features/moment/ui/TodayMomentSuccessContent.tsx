@@ -8,7 +8,7 @@ import * as S from './TodayContent.styles';
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/my-moments');
+  const handleNavigate = () => navigate('/today-comment');
   return (
     <S.TodayContentWrapper>
       <Card.Content>
@@ -23,7 +23,7 @@ export const TodayMomentSuccessContent = () => {
       <Card.Action position="center">
         <YellowSquareButton
           Icon={MessageSquare}
-          title="나의 모멘트 보기"
+          title="코멘트 남기러가기"
           onClick={handleNavigate}
         />
       </Card.Action>

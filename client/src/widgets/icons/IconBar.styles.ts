@@ -13,6 +13,11 @@ export const IconWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 export const IconImage = styled.img`
