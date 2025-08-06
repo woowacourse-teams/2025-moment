@@ -26,7 +26,6 @@ export default function PostCommentsList() {
   const hasComments = comments?.length && comments.length > 0;
   return (
     <>
-      {' '}
       {hasComments ? (
         <S.MomentsContainer>
           {comments.map(post => (
