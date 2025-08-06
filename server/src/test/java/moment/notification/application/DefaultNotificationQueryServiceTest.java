@@ -12,6 +12,8 @@ import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class DefaultNotificationQueryServiceTest {
 
     @InjectMocks
