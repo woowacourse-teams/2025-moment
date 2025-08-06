@@ -18,13 +18,9 @@ public enum Level {
     }
 
     public static Level getLevel(Integer point) {
-        if (point == null) {
-            return METEOR;
-        }
-
         return Arrays.stream(values())
                 .filter(level -> point >= level.minPoints)
-                .max(Comparator.comparingInt(l -> l.minPoints))
+                .max(Comparator.comparingInt(filteredLevel -> filteredLevel.minPoints))
                 .orElse(METEOR);
     }
 }
