@@ -11,6 +11,7 @@ import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -39,11 +40,11 @@ class RandomMatchingServiceTest {
     @Test
     void 코멘터로_선정되지_않은_사용자와_매칭된다() {
         // given
-        User momenter = new User("mimi@icloud.com", "password1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "password1234!", "mimi", ProviderType.EMAIL);
         Moment moment = new Moment("내용", false, momenter);
         given(momentQueryService.getMomentById(any())).willReturn(moment);
 
-        User notMatchedUser = new User("hippo@gmail.com", "password1234!", "hippo");
+        User notMatchedUser = new User("hippo@gmail.com", "password1234!", "hippo", ProviderType.EMAIL);
         given(userQueryService.findNotMatchedUsersTodayByMomenter(any())).willReturn(List.of(notMatchedUser));
 
         // when
@@ -56,7 +57,7 @@ class RandomMatchingServiceTest {
     @Test
     void 모멘트가_이미_매칭된_경우_매칭되지_않는다() {
         // given
-        User momenter = new User("mimi@icloud.com", "password1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "password1234!", "mimi", ProviderType.EMAIL);
         Moment alreadyMatchedMoment = new Moment("내용", true, momenter);
         given(momentQueryService.getMomentById(any())).willReturn(alreadyMatchedMoment);
 
@@ -70,7 +71,7 @@ class RandomMatchingServiceTest {
     @Test
     void 매칭을_할_사용자가_없는_경우_매칭되지_않는다() {
         // given
-        User momenter = new User("mimi@icloud.com", "password1234!", "mimi");
+        User momenter = new User("mimi@icloud.com", "password1234!", "mimi", ProviderType.EMAIL);
         Moment moment = new Moment("내용", false, momenter);
         given(momentQueryService.getMomentById(any())).willReturn(moment);
 

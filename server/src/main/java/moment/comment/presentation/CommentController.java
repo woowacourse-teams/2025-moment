@@ -10,10 +10,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
-import moment.comment.dto.response.MyCommentsResponse;
+import moment.comment.dto.response.CommentCreationStatusResponse;
+import moment.comment.dto.response.MyCommentPageResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.dto.request.Authentication;
@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Tag(name = "Comment API", description = "Comment 관련 API 명세")
 @RestController
@@ -77,16 +76,19 @@ public class CommentController {
             ),
             @ApiResponse(responseCode = "404", description = """
                     - [U-002] 존재하지 않는 사용자입니다.
+                    - [C-005] 유효하지 않은 페이지 사이즈입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponse<List<MyCommentsResponse>>> readMyComments(
+    public ResponseEntity<SuccessResponse<MyCommentPageResponse>> readMyComments(
+            @RequestParam(required = false) String nextCursor,
+            @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
-        List<MyCommentsResponse> myComments = commentService.getCommentsByUserId(userId);
+        MyCommentPageResponse response = commentService.getCommentsByUserIdWithCursor(nextCursor, limit, userId);
         HttpStatus status = HttpStatus.OK;
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, myComments));
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "Comment 등록 전 상태 체크", description = "Comment를 등록할 수 있는 상태인지 확인합니다.")

@@ -9,6 +9,7 @@ import java.util.Optional;
 import moment.auth.dto.request.LoginRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
@@ -25,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class AuthServiceTest {
 
+    @InjectMocks
+    private AuthService authService;
+
     @Mock
     private UserRepository userRepository;
 
@@ -34,15 +38,12 @@ class AuthServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private AuthService authService;
-
     @Test
     void 로그인에_성공한다() {
         // given
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
         given(userRepository.findByEmail(any()))
-                .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago")));
+                .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL)));
         given(tokenManager.createToken(any(), any())).willReturn("asdfsvssefsdf");
         given(passwordEncoder.matches(any(), any())).willReturn(true);
 
@@ -72,7 +73,7 @@ class AuthServiceTest {
         // given
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4");
         given(userRepository.findByEmail(any()))
-                .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago")));
+                .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL)));
 
         // when & then
         assertThatThrownBy(() -> authService.login(request))
