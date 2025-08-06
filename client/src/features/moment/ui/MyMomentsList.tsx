@@ -1,6 +1,6 @@
+import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
-import { useCallback, useEffect, useRef } from 'react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
 import type { MyMomentsItem } from '../types/moments';
 import { MyMomentsCard } from './MyMomentsCard';
@@ -25,29 +25,14 @@ export const MyMomentsList = () => {
   const myMoments = momentsResponse?.pages.flatMap(page => page.data.items) ?? [];
   const hasMoments = myMoments?.length && myMoments.length > 0;
 
-  const observerRef = useRef<HTMLDivElement>(null);
-
-  const handleIntersect = useCallback(
-    (entries: globalThis.IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+  const observerRef = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
     },
-    [hasNextPage, isFetchingNextPage, fetchNextPage],
-  );
-
-  useEffect(() => {
-    if (!observerRef.current) return;
-
-    const observer = new globalThis.IntersectionObserver(handleIntersect, {
-      threshold: 0.1,
-    });
-
-    observer.observe(observerRef.current);
-
-    return () => observer.disconnect();
-  }, [handleIntersect]);
+    enabled: hasNextPage && !isFetchingNextPage,
+  });
 
   if (isLoading) {
     return (
