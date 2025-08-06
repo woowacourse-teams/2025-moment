@@ -1,13 +1,38 @@
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useMomentsQuery } from '../hook/useMomentsQuery';
-import { MyMoments } from '../types/moments';
+import type { MyMomentsItem } from '../types/moments';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
-  const { data, isLoading } = useMomentsQuery();
-  const myMoments = data?.data;
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useMomentsQuery();
+  const myMoments = data?.pages.flatMap(page => page.data.items) ?? [];
+
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  const handleIntersect = useCallback(
+    (entries: globalThis.IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage],
+  );
+
+  useEffect(() => {
+    if (!observerRef.current) return;
+
+    const observer = new globalThis.IntersectionObserver(handleIntersect, {
+      threshold: 0.1,
+    });
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [handleIntersect]);
 
   const hasMoments = myMoments?.length && myMoments.length > 0;
 
@@ -24,9 +49,25 @@ export const MyMomentsList = () => {
   return (
     <S.MomentsContainer>
       {hasMoments ? (
-        myMoments?.map((myMoment: MyMoments, index: number) => (
-          <MyMomentsCard key={myMoment.createdAt} myMoment={myMoment} index={index} />
-        ))
+        <>
+          {myMoments?.map((myMoment: MyMomentsItem, index: number) => (
+            <MyMomentsCard
+              key={`${myMoment.createdAt}-${index}`}
+              myMoment={myMoment}
+              index={index}
+            />
+          ))}
+
+          <div ref={observerRef} style={{ height: '1px' }} />
+
+          {isFetchingNextPage && (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <CommonSkeletonCard key={`mymoments-loading-skeleton-${index}`} variant="moment" />
+              ))}
+            </>
+          )}
+        </>
       ) : (
         <NotFound
           title="아직 모멘트가 없어요"

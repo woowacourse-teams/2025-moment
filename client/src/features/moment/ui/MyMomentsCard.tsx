@@ -6,22 +6,30 @@ import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
-import { MyMoments } from '../types/moments';
+import type { MyMomentsItem } from '../types/moments';
 import * as S from './MyMomentsList.styles';
 
-export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMoments; index: number }) => {
+export const MyMomentsCard = ({ myMoment, index }: { myMoment: MyMomentsItem; index: number }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
   const emojis = myMoment.comment?.emojis || [];
 
+  const getFormattedTime = (dateString: string) => {
+    try {
+      if (!dateString) return '시간 정보 없음';
+      return formatRelativeTime(dateString);
+    } catch (error) {
+      console.error('Date formatting error:', error, 'dateString:', dateString);
+      return '시간 정보 오류';
+    }
+  };
+
   return (
-    <Card width="medium" key={index}>
-      {/* TODO: 추후 key값에 id 값으로 변경 필요 */}
+    <Card width="medium" key={myMoment.id}>
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
-            {/* TODO: 추후 Icon 컴포넌트로 변경 필요 */}
-            <Timer size={16} color={theme.colors['gray-400']} />{' '}
-            <S.TimeStamp>{formatRelativeTime(myMoment.createdAt)}</S.TimeStamp>
+            <Timer size={16} color={theme.colors['gray-400']} />
+            <S.TimeStamp>{getFormattedTime(myMoment.createdAt)}</S.TimeStamp>
           </S.TitleWrapper>
         }
         subtitle={myMoment.content}
