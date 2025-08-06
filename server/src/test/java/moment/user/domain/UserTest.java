@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserTest {
+
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+    }
 
     @Test
     void 유저_생성에_성공한다() {
@@ -83,5 +91,24 @@ class UserTest {
 
         // when & then
         assertThat(user.checkPassword(password)).isFalse();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 50, 50, METEOR",
+        "50, 10, 60, ASTEROID",
+        "50, 150, 200, COMET",
+        "190, 10, 200, COMET"
+    })
+    void 포인트를_추가하고_레벨을_업데이트한다(int initialPoint, int pointToAdd, int expectedPoint, Level expectedLevel) {
+        // given
+        user.addPointAndUpdateLevel(initialPoint);
+
+        // when
+        user.addPointAndUpdateLevel(pointToAdd);
+
+        // then
+        assertThat(user.getCurrentPoint()).isEqualTo(expectedPoint);
+        assertThat(user.getLevel()).isEqualTo(expectedLevel);
     }
 }
