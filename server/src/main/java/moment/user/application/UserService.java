@@ -26,7 +26,6 @@ public class UserService {
     private final UserQueryService userQueryService;
     private final UserRepository userRepository;
     private final NicknameGenerateService nicknameGenerateService;
-    //    private final NicknameGenerator nicknameGenerator;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
