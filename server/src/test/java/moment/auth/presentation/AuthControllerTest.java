@@ -4,7 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.http.ContentType;
 import moment.auth.application.GoogleAuthService;
@@ -32,21 +31,21 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 class AuthControllerTest {
 
     @Autowired
-    JwtTokenManager jwtTokenManager;
+    private JwtTokenManager jwtTokenManager;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder passwordEncoder;
 
     @MockitoBean
-    GoogleAuthService googleAuthService;
+    private GoogleAuthService googleAuthService;
 
     @Test
     void 로그인에_성공한다() {
         // given
-        String encodedPassword = encoder.encode("1q2w3e4r!");
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
         User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r!");
 
@@ -67,8 +66,8 @@ class AuthControllerTest {
     @Test
     void 로그아웃에_성공한다() {
         // given
-        String encodedPassword = encoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
+        userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
 
         String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
 
@@ -82,9 +81,7 @@ class AuthControllerTest {
                 .extract().cookie("token");
 
         // then
-        assertAll(
-                () -> assertThat(emptyToken).isEmpty()
-        );
+        assertThat(emptyToken).isEmpty();
     }
 
     @Test
