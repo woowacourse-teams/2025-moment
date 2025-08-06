@@ -1,9 +1,14 @@
 package moment.user.domain;
 
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@Primary
+@Component
 public class MomentRandomNicknameGenerator implements NicknameGenerator {
 
     private static final List<String> ADJECTIVES = Arrays.asList(
