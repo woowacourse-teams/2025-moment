@@ -2,9 +2,8 @@ export const ROUTES = {
   ROOT: '/',
   SIGNUP: '/signup',
   LOGIN: '/login',
-  MY_MOMENTS: '/my-moments',
+  COLLECTION: '/collection',
   TODAY_MOMENT: '/today-moment',
-  POST_COMMENTS: '/post-comments',
   TODAY_COMMENT: '/today-comment',
   TODAY_COMMENT_SUCCESS: '/today-comment/success',
 };

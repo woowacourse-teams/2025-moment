@@ -6,10 +6,21 @@ import { Logo } from '@/shared/ui/logo/Logo';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
+import { IconBar } from '@/widgets/icons/IconBar';
+
+type Level = 'METEOR' | 'ASTEROID' | 'COMET';
+
+const levelMap = {
+  METEOR: '/meteor.png',
+  ASTEROID: '/asteroid.png',
+  COMET: '/comet.png',
+};
 
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { data: profile } = useProfileQuery();
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -26,14 +37,11 @@ export const Navbar = () => {
       <Logo />
 
       <S.DesktopNavItems>
-        {navItems.map(item => (
-          <S.NavItem key={item.href} $isActive={currentPath === item.href}>
-            <Link to={item.href}>{item.label}</Link>
-          </S.NavItem>
-        ))}
+        <IconBar />
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
+        {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
         <AuthButton />
       </S.DesktopAuthButton>
 

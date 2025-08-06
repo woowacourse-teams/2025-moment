@@ -13,12 +13,12 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.application.UserService;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
-import moment.user.dto.response.NicknameConflictCheckResponse;
-import moment.user.dto.request.EmailConflictCheckRequest;
-import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
+import moment.user.dto.response.MomentRandomNicknameResponse;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,7 +99,22 @@ public class UserController {
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
-  
+
+    @Operation(summary = "랜덤 닉네임 생성하기", description = "사용 가능한 랜덤 닉네임을 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "랜덤 닉네임 생성 성공"),
+            @ApiResponse(responseCode = "409", description = """
+                    - [U-010] 사용 가능한 닉네임을 생성할 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/signup/nickname")
+    public ResponseEntity<SuccessResponse<MomentRandomNicknameResponse>> readRandomNickname() {
+        MomentRandomNicknameResponse response = userService.createRandomNickname();
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
     @Operation(summary = "이메일 중복 여부 조회", description = "이메일 중복 여부를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이메일 중복 여부 조회 성공"),

@@ -1,7 +1,17 @@
 import { api } from '@/app/lib/api';
-import { MomentsResponse } from '../types/moments';
+import type { MomentsResponse } from '../types/moments';
 
-export const getMoments = async (): Promise<MomentsResponse> => {
-  const response = await api.get('/moments/me');
+interface GetMoments {
+  pageParam?: string | null;
+}
+
+export const getMoments = async ({ pageParam = null }: GetMoments): Promise<MomentsResponse> => {
+  const params = new URLSearchParams();
+  if (pageParam) {
+    params.append('nextCursor', pageParam);
+  }
+  params.append('pageSize', '10');
+
+  const response = await api.get(`/moments/me?${params.toString()}`);
   return response.data;
 };

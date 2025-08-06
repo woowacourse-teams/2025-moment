@@ -10,6 +10,7 @@ import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
+import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -24,6 +25,7 @@ public class UserService {
 
     private final UserQueryService userQueryService;
     private final UserRepository userRepository;
+    private final NicknameGenerateService nicknameGenerateService;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -59,6 +61,11 @@ public class UserService {
     public UserProfileResponse getUserProfile(Authentication authentication) {
         User user = userQueryService.getUserById(authentication.id());
         return UserProfileResponse.from(user);
+    }
+
+    public MomentRandomNicknameResponse createRandomNickname() {
+        String randomNickname = nicknameGenerateService.createRandomNickname();
+        return new MomentRandomNicknameResponse(randomNickname);
     }
 
     public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {

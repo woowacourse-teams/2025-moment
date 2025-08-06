@@ -1,7 +1,7 @@
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import * as S from '../todayMoment/index.styles';
 import { TodayCommentSuccessContent } from '@/features/comment/ui/TodayCommentSuccessContent';
 import { Card } from '@/shared/ui';
+import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import * as S from './index.styles';
 
 export default function TodayCommentSuccessPage() {
   return (

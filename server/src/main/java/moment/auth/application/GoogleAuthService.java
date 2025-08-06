@@ -1,17 +1,18 @@
 package moment.auth.application;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
-import moment.user.domain.NicknameGenerator;
+import moment.user.application.NicknameGenerateService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class GoogleAuthService {
     private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthClient googleAuthClient;
-    private final NicknameGenerator nicknameGenerator;
+    private final NicknameGenerateService nicknameGenerateService;
 
     @Transactional
     public String loginOrSignUp(String authorizationCode) {
@@ -45,7 +46,7 @@ public class GoogleAuthService {
 
     private User addUser(String email, String sub) {
         String encodedPassword = passwordEncoder.encode(sub);
-        User user = new User(email, encodedPassword, nicknameGenerator.generateNickname(), ProviderType.GOOGLE);
+        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(), ProviderType.GOOGLE);
 
         return userRepository.save(user);
     }

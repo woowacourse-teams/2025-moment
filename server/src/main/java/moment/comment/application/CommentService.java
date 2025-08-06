@@ -1,5 +1,11 @@
 package moment.comment.application;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
@@ -13,6 +19,12 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.notification.application.NotificationService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
+import moment.notification.dto.response.NotificationSseResponse;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
@@ -23,13 +35,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +51,8 @@ public class CommentService {
     private final EmojiRepository emojiRepository;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
+    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -56,9 +63,24 @@ public class CommentService {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
 
-        Comment comment = request.toComment(commenter, moment);
+        Comment commentWithoutId = request.toComment(commenter, moment);
+        Comment savedComment = commentRepository.save(commentWithoutId);
 
-        Comment savedComment = commentRepository.save(comment);
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId()
+        );
+
+        Notification notificationWithoutId = new Notification(
+                moment.getMomenter(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId());
+
+        notificationService.sendToClient(moment.getMomenterId(), "notification", response);
+
+        notificationRepository.save(notificationWithoutId);
 
         rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
@@ -86,7 +108,8 @@ public class CommentService {
             String[] cursorParts = cursor.split(CURSOR_PART_DELIMITER);
             LocalDateTime cursorDateTime = LocalDateTime.parse(cursorParts[CURSOR_TIME_INDEX]);
             Long cursorId = Long.valueOf(cursorParts[CURSOR_ID_INDEX]);
-            commentsWithinCursor = commentRepository.findCommentsNextPage(commenter, cursorDateTime, cursorId, pageable);
+            commentsWithinCursor = commentRepository.findCommentsNextPage(commenter, cursorDateTime, cursorId,
+                    pageable);
         }
 
         boolean hasNextPage = commentsWithinCursor.size() > pageSize;

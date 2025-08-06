@@ -1,6 +1,28 @@
+import type { Emoji } from '@/features/emoji/type/emoji';
+
 export interface MomentsResponse {
   status: number;
-  data: MyMoments[];
+  data: {
+    items: MyMomentsItem[];
+    nextCursor: string | null;
+    hasNextPage: boolean;
+    pageSize: number;
+  };
+}
+
+export interface MyMomentsItem {
+  id: number;
+  momenterId: number;
+  content: string;
+  createdAt: string;
+  comment?: Comment;
+}
+
+interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  emojis: Emoji[];
 }
 
 export interface CheckMomentsResponse {
@@ -16,23 +38,4 @@ export interface MatchMomentsResponse {
     content: string;
     createdAt: string;
   };
-}
-
-export interface MyMoments {
-  content: string;
-  createdAt: string;
-  comment: Comment | null;
-}
-
-export interface Comment {
-  id: number;
-  content: string;
-  createdAt: string;
-  emojis: Emoji[];
-}
-
-export interface Emoji {
-  id: number;
-  emojiType: string;
-  userName: string;
 }

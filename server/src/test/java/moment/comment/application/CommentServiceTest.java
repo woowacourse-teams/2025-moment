@@ -1,5 +1,18 @@
 package moment.comment.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -10,6 +23,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.notification.application.NotificationService;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
@@ -25,20 +40,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -61,6 +62,12 @@ class CommentServiceTest {
 
     @Mock
     private CommentQueryService commentQueryService;
+
+    @Mock
+    private NotificationService notificationService;
+
+    @Mock
+    private NotificationRepository notificationRepository;
 
     @Mock
     private RewardService rewardService;
@@ -92,8 +99,10 @@ class CommentServiceTest {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
-        given(userQueryService.getUserById(any(Long.class))).willReturn(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
-        given(momentQueryService.getMomentById(any(Long.class))).willThrow(new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+        given(userQueryService.getUserById(any(Long.class))).willReturn(
+                new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
+        given(momentQueryService.getMomentById(any(Long.class))).willThrow(
+                new MomentException(ErrorCode.MOMENT_NOT_FOUND));
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
