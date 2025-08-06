@@ -41,5 +41,4 @@ class DefaultNotificationQueryServiceTest {
         // then
         then(notificationRepository).should(times(1)).findById(any(Long.class));
     }
-
 }
