@@ -111,7 +111,7 @@ class NotificationServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(user);
         given(notificationRepository.findAllByUserAndIsRead(any(User.class), any(Boolean.class)))
-                .willReturn(List.of(notification1));
+                .willReturn(List.of(notification3));
 
         // when
         List<NotificationResponse> responses = notificationService.getNotificationByUser(1L, true);

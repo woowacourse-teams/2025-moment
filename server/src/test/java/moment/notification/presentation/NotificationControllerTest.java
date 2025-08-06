@@ -15,14 +15,17 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import moment.auth.application.TokenManager;
+import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.infrastructure.CommentRepository;
+import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
-import moment.notification.infrastructure.NotificationRepository;
+import moment.reply.dto.request.EmojiCreateRequest;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import okhttp3.Headers;
@@ -32,11 +35,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class NotificationControllerTest {
 
     @Autowired
@@ -46,37 +50,35 @@ public class NotificationControllerTest {
     private MomentRepository momentRepository;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private TokenManager tokenManager;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private DatabaseCleaner databaseCleaner;
 
-    private User momenter;
-    private User actor;
     private Moment moment;
     private Moment moment2;
     private Moment moment3;
     private String momenterToken;
-    private String actorToken;
+    private User commenter;
+    private String commenterToken;
 
-
-    // 1. 공통 Given 로직 추출
     @BeforeEach
     void setUp() {
-        momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
-        actor = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리"));
-
+        databaseCleaner.clean();
+        User momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론"));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
         moment3 = momentRepository.save(new Moment("반가워요", momenter));
-
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
-        actorToken = tokenManager.createToken(actor.getId(), actor.getEmail());
+        commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리"));
+        commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
     }
-
 
     @Test
     void 사용자가_내_모멘트에_코멘트를_달면_SSE_알림을_받는다() throws InterruptedException {
@@ -88,7 +90,7 @@ public class NotificationControllerTest {
 
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
         RestAssured.given().log().all()
-                .cookie("token", actorToken) // 코멘트 작성자로 인증
+                .cookie("token", commenterToken) // 코멘트 작성자로 인증
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
@@ -105,7 +107,7 @@ public class NotificationControllerTest {
                 () -> assertThat(response.notificationType()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT),
                 () -> assertThat(response.targetType()).isEqualTo(TargetType.MOMENT),
                 () -> assertThat(response.targetId()).isEqualTo(moment.getId()),
-                () -> assertThat(response.message()).isEqualTo("내 모멘트에 새로운 코멘트가 달렸습니다."),
+                () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT.getMessage()),
                 () -> assertThat(response.isRead()).isFalse()
         );
 
@@ -113,7 +115,42 @@ public class NotificationControllerTest {
     }
 
     @Test
-    void 사용자가_읽지_않은_알림을_받는다() {
+    void 사용자가_코멘트에_반응을_달면_SSE_알림을_받는다() throws InterruptedException {
+        // when
+        List<NotificationSseResponse> receivedNotifications = new CopyOnWriteArrayList<>();
+
+        // 1. SSE 클라이언트를 사용하여 비동기 구독
+        EventSource eventSource = subscribeToNotifications(commenterToken, receivedNotifications);
+        Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
+
+        EmojiCreateRequest request = new EmojiCreateRequest("HEART", comment.getId());
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken) // 모멘트 작성자가 이모지를 달음
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/emojis")
+                .then().log().all()
+                .statusCode(201);
+
+        // then
+        // Awaitility를 사용해 비동기적으로 도착하는 알림을 기다립니다.
+        await().atMost(2, TimeUnit.SECONDS).until(() -> !receivedNotifications.isEmpty());
+        NotificationSseResponse response = receivedNotifications.get(0);
+
+        assertAll(
+                () -> assertThat(receivedNotifications).hasSize(1),
+                () -> assertThat(response.notificationType()).isEqualTo(NotificationType.NEW_REPLY_ON_COMMENT),
+                () -> assertThat(response.targetType()).isEqualTo(TargetType.COMMENT),
+                () -> assertThat(response.targetId()).isEqualTo(comment.getId()),
+                () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_REPLY_ON_COMMENT.getMessage()),
+                () -> assertThat(response.isRead()).isFalse()
+        );
+
+        eventSource.close();
+    }
+
+    @Test
+    void 사용자가_읽지_않은_모멘트_알림을_받는다() {
         // given
         CommentCreateRequest request1 = new CommentCreateRequest("굿~", moment.getId());
         CommentCreateRequest request2 = new CommentCreateRequest("굿~", moment2.getId());
@@ -121,7 +158,7 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-                .cookie("token", actorToken)
+                .cookie("token", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request1)
                 .when().post("/api/v1/comments")
@@ -129,7 +166,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", actorToken)
+                .cookie("token", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request2)
                 .when().post("/api/v1/comments")
@@ -137,7 +174,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", actorToken)
+                .cookie("token", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request3)
                 .when().post("/api/v1/comments")
@@ -155,6 +192,64 @@ public class NotificationControllerTest {
         // then
         assertAll(
                 () -> assertThat(responses).hasSize(3),
+                () -> assertThat(responses.stream()
+                        .noneMatch(NotificationResponse::isRead))
+                        .isTrue());
+    }
+
+    @Test
+    void 사용자가_읽지_않은_코멘트_알림을_받는다() {
+        // given
+        Comment comment = commentRepository.save(new Comment("하하", commenter, moment2));
+        EmojiCreateRequest request1 = new EmojiCreateRequest("HEART", comment.getId());
+        EmojiCreateRequest request2 = new EmojiCreateRequest("DDABONG", comment.getId());
+        EmojiCreateRequest request3 = new EmojiCreateRequest("STAR", comment.getId());
+        EmojiCreateRequest request4 = new EmojiCreateRequest("KING", comment.getId());
+
+        // when
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .contentType(ContentType.JSON)
+                .body(request1)
+                .when().post("/api/v1/emojis")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .contentType(ContentType.JSON)
+                .body(request2)
+                .when().post("/api/v1/emojis")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .contentType(ContentType.JSON)
+                .body(request3)
+                .when().post("/api/v1/emojis")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("token", momenterToken)
+                .contentType(ContentType.JSON)
+                .body(request4)
+                .when().post("/api/v1/emojis")
+                .then().log().all()
+                .statusCode(201);
+
+        List<NotificationResponse> responses = RestAssured.given().log().all()
+                .cookie("token", commenterToken)
+                .when().get("/api/v1/notifications?read=false")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath()
+                .getList("data", NotificationResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(responses).hasSize(4),
                 () -> assertThat(responses.stream()
                         .noneMatch(NotificationResponse::isRead))
                         .isTrue());

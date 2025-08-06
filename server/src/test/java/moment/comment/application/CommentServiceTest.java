@@ -22,6 +22,7 @@ import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.notification.application.NotificationService;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
@@ -57,6 +58,9 @@ class CommentServiceTest {
 
     @Mock
     private NotificationService notificationService;
+
+    @Mock
+    private NotificationRepository notificationRepository;
 
     @Test
     void Comment를_등록한다() {

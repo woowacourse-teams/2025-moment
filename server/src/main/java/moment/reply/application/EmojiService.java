@@ -8,9 +8,11 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.notification.application.NotificationService;
+import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
+import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
 import moment.reply.dto.response.EmojiCreateResponse;
@@ -32,6 +34,7 @@ public class EmojiService {
     private final UserQueryService userQueryService;
     private final EmojiQueryService emojiQueryService;
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     private static void validateMomenter(Comment comment, User user) {
         Moment moment = comment.getMoment();
@@ -55,7 +58,15 @@ public class EmojiService {
                 TargetType.COMMENT,
                 comment.getId()
         );
+
+        Notification notificationWithoutId = new Notification(
+                comment.getCommenter(),
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT,
+                comment.getId());
+
         notificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
+        notificationRepository.save(notificationWithoutId);
 
         return EmojiCreateResponse.from(savedEmoji);
     }
