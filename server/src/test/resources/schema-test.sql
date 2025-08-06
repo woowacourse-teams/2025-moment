@@ -91,3 +91,6 @@ CREATE TABLE IF NOT EXISTS point_history
     FOREIGN KEY (user_id)
     REFERENCES users (id)
     );
+
+-- 유저에 레벨 컬럼 추가
+ALTER TABLE users ADD COLUMN level VARCHAR(10) NOT NULL;
