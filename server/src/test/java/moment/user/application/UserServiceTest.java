@@ -2,7 +2,6 @@ package moment.user.application;
 
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.domain.NicknameGenerator;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.EmailConflictCheckRequest;
@@ -42,7 +41,10 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private NicknameGenerator nicknameGenerator;
+    private UserQueryService userQueryService;
+
+    @Mock
+    private NicknameGenerateService nicknameGenerateService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -152,22 +154,20 @@ class UserServiceTest {
     @Test
     void 닉네임을_랜덤으로_생성한다() {
         // given
-        given(nicknameGenerator.generateNickname()).willReturn("초록 초원의 히포");
-        given(userRepository.existsByNickname(any(String.class))).willReturn(false);
+        String nickname = "깊은 물속의 하마";
+        given(nicknameGenerateService.createRandomNickname()).willReturn(nickname);
 
         // when & then
         assertAll(
                 () -> assertThatCode(() -> userService.createRandomNickname()).doesNotThrowAnyException(),
-                () -> then(userRepository).should(times(1)).existsByNickname(any(String.class)),
-                () -> then(nicknameGenerator).should(times(1)).generateNickname()
+                () -> then(nicknameGenerateService).should(times(1)).createRandomNickname()
         );
     }
 
     @Test
     void 랜덤으로_생성한_닉네임이_존재하는_경우_임계치_이후_예외가_발생합니다() {
         // given
-        given(nicknameGenerator.generateNickname()).willReturn("초록 초원의 히포");
-        given(userRepository.existsByNickname(any(String.class))).willReturn(true);
+        given(nicknameGenerateService.createRandomNickname()).willThrow(new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED));
 
         // when & then
         assertThatThrownBy(() -> userService.createRandomNickname())

@@ -3,7 +3,6 @@ package moment.user.application;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.domain.NicknameGenerator;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -26,7 +25,8 @@ public class UserService {
 
     private final UserQueryService userQueryService;
     private final UserRepository userRepository;
-    private final NicknameGenerator nicknameGenerator;
+    private final NicknameGenerateService nicknameGenerateService;
+    //    private final NicknameGenerator nicknameGenerator;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -65,21 +65,8 @@ public class UserService {
     }
 
     public MomentRandomNicknameResponse createRandomNickname() {
-        int tryCount = 0;
-
-        while (true) {
-            if (tryCount > 5) {
-                throw new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED);
-            }
-
-            String nickname = nicknameGenerator.generateNickname();
-            boolean exists = userRepository.existsByNickname(nickname);
-            if (!exists) {
-                return new MomentRandomNicknameResponse(nickname);
-            }
-
-            tryCount++;
-        }
+        String randomNickname = nicknameGenerateService.createRandomNickname();
+        return new MomentRandomNicknameResponse(randomNickname);
     }
 
     public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
