@@ -7,14 +7,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +25,7 @@ import moment.global.domain.BaseEntity;
 public class User extends BaseEntity {
 
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-    private static final Pattern NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9가-힣]{2,6}$");
+    private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
     private static final int DEFAULT_POINT = 0;
 
     @Id
@@ -44,7 +45,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
-  
+
     private Integer currentPoint = DEFAULT_POINT;
 
     @Enumerated(EnumType.STRING)
