@@ -8,7 +8,7 @@ export const navItems = [
     href: '/today-comment',
   },
   {
-    label: '모음집',
+    label: '나만의 모음집',
     href: '/collection',
   },
 ];

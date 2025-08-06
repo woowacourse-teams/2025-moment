@@ -16,6 +16,11 @@ export const Navbar = styled.nav`
   backdrop-filter: blur(10px);
 `;
 
+export const LevelIcon = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+
 export const NavItem = styled.div<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;

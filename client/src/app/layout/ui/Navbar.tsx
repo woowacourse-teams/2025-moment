@@ -8,6 +8,14 @@ import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 
+type Level = 'METEOR' | 'ASTEROID' | 'COMET';
+
+const levelMap = {
+  METEOR: '/meteor.png',
+  ASTEROID: '/asteroid.png',
+  COMET: '/comet.png',
+};
+
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -36,7 +44,7 @@ export const Navbar = () => {
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        <p>{profile?.level}</p>
+        {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
         <AuthButton />
       </S.DesktopAuthButton>
 
