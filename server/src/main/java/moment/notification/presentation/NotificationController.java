@@ -24,7 +24,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping("/subscribe")
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication) {
         return notificationService.subscribe(authentication.id());
     }
