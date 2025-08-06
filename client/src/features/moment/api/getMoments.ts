@@ -8,7 +8,7 @@ interface GetMoments {
 export const getMoments = async ({ pageParam = null }: GetMoments): Promise<MomentsResponse> => {
   const params = new URLSearchParams();
   if (pageParam) {
-    params.append('cursor', pageParam);
+    params.append('nextCursor', pageParam);
   }
   params.append('pageSize', '10');
 
