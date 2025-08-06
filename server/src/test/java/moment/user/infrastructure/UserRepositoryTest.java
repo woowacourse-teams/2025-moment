@@ -31,71 +31,35 @@ import org.springframework.test.context.ActiveProfiles;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserRepositoryTest {
 
+    private final String email = "mimi@icloud.com";
+
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void 이메일을_가진_유저가_있다면_참을_반환한다() {
+    void 이메일과_회원가입_방식을_기준으로_사용자_존재_여부를_확인할_수_있다() {
         // given
-        String existedEmail = "mimi@icloud.com";
-        userRepository.save(new User(existedEmail, "password", "mimi", ProviderType.EMAIL));
-
-        // when & then
-        assertThat(userRepository.existsByEmail(existedEmail)).isTrue();
-    }
-
-    @Test
-    void 이메일을_가진_유저가_없다면_거짓을_반환한다() {
-        // given
-        String notExistedEmail = "mimi@icloud.com";
-        userRepository.save(new User("hippo@gmail.com", "password", "hippo", ProviderType.EMAIL));
-
-        // when & then
-        assertThat(userRepository.existsByEmail(notExistedEmail)).isFalse();
-    }
-
-    @Test
-    void 닉네임을_가진_유저가_있다면_참을_반환한다() {
-        // given
-        String existedNickname = "mimi";
-        userRepository.save(new User("mimi@icloud.com", "password", existedNickname, ProviderType.EMAIL));
-
-        // when & then
-        assertThat(userRepository.existsByNickname(existedNickname)).isTrue();
-    }
-
-    @Test
-    void 닉네임을_가진_유저가_없다면_거짓을_반환한다() {
-        // given
-        String notExistedNickname = "hippo";
-        userRepository.save(new User("mimi@icloud.com", "password", "mimi", ProviderType.EMAIL));
-
-        // when & then
-        assertThat(userRepository.existsByNickname(notExistedNickname)).isFalse();
-    }
-
-    @Test
-    void 이메일을_가진_유저를_찾는다() {
-        // given
-        userRepository.save(new User("mimi@icloud.com", "password", "mimi", ProviderType.EMAIL));
+        ProviderType providerType = ProviderType.EMAIL;
+        userRepository.save(new User(email, "password", "mimi", providerType));
 
         // when
-        Optional<User> user = userRepository.findByEmail("mimi@icloud.com");
+        boolean result = userRepository.existsByEmailAndProviderType(email, providerType);
 
         // then
-        assertThat(user).isPresent();
+        assertThat(result).isTrue();
     }
 
     @Test
-    void 가입되지_않은_이메일은_찾을_수_없다() {
+    void 같은_이메일이더라도_다른_회원가입_방식인_경우_존재_여부를_확인할_수_없다() {
         // given
-        userRepository.save(new User("mimi@icloud.com", "password", "mimi", ProviderType.EMAIL));
+        User googleUser = new User(email, "password", "mimi", ProviderType.GOOGLE);
+        userRepository.save(googleUser);
 
         // when
-        Optional<User> user = userRepository.findByEmail("noUser@gmail.com");
+        boolean result = userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL);
 
         // then
-        assertThat(user).isEmpty();
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -123,10 +87,30 @@ class UserRepositoryTest {
         userRepository.save(googleUser);
 
         // when
-        Optional<User> user = userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
+        Optional<User> emailSignUpUser = userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
 
         // then
-        assertThat(user).isEmpty();
+        assertThat(emailSignUpUser).isEmpty();
+    }
+
+    @Test
+    void 닉네임을_가진_유저가_있다면_참을_반환한다() {
+        // given
+        String existedNickname = "mimi";
+        userRepository.save(new User("mimi@icloud.com", "password", existedNickname, ProviderType.EMAIL));
+
+        // when & then
+        assertThat(userRepository.existsByNickname(existedNickname)).isTrue();
+    }
+
+    @Test
+    void 닉네임을_가진_유저가_없다면_거짓을_반환한다() {
+        // given
+        String notExistedNickname = "hippo";
+        userRepository.save(new User("mimi@icloud.com", "password", "mimi", ProviderType.EMAIL));
+
+        // when & then
+        assertThat(userRepository.existsByNickname(notExistedNickname)).isFalse();
     }
 
     @TestConfiguration
