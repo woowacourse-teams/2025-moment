@@ -1,13 +1,13 @@
 import { navItems } from '@/app/layout/types/navItems';
+import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
+import { IconBar } from '@/widgets/icons/IconBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
-import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
-import { IconBar } from '@/widgets/icons/IconBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
