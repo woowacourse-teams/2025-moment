@@ -1,7 +1,15 @@
 package moment.user.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
@@ -17,13 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -42,7 +43,7 @@ class UserServiceTest {
     @Test
     void 유저_생성에_성공한다() {
         // given
-        User expect = new User("mimi@icloud.com", "mimi1234", "미미");
+        User expect = new User("mimi@icloud.com", "mimi1234", "미미", ProviderType.EMAIL);
         given(userRepository.save(any(User.class))).willReturn(expect);
         given(passwordEncoder.encode(expect.getPassword())).willReturn("aoijwofkdl");
 
