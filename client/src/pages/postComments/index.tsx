@@ -2,23 +2,19 @@ import { theme } from '@/app/styles/theme';
 import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Card, CommonSkeletonCard, NotFound, SimpleCard } from '@/shared/ui';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './index.styles';
 
-export default function PostCommentsPage() {
+export default function PostCommentsList() {
   const { data: commentsResponse, isLoading, error } = useCommentsQuery();
 
   if (isLoading) {
     return (
-      <S.PostCommentsPageContainer>
-        <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
-        <S.MomentsContainer>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <CommonSkeletonCard key={`comments-skeleton-card-${index}`} variant="comment" />
-          ))}
-        </S.MomentsContainer>
-      </S.PostCommentsPageContainer>
+      <S.MomentsContainer>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <CommonSkeletonCard key={`comments-skeleton-card-${index}`} variant="comment" />
+        ))}
+      </S.MomentsContainer>
     );
   }
 
@@ -27,11 +23,10 @@ export default function PostCommentsPage() {
   }
 
   const comments = commentsResponse?.data || [];
-
+  const hasComments = comments?.length && comments.length > 0;
   return (
-    <S.PostCommentsPageContainer>
-      <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
-      {comments.length > 0 ? (
+    <>
+      {hasComments ? (
         <S.MomentsContainer>
           {comments.map(post => (
             <Card width="medium" key={`card-${post.id}`}>
@@ -71,6 +66,6 @@ export default function PostCommentsPage() {
           subtitle="다른 사용자의 모멘트에 따뜻한 공감을 보내보세요"
         />
       )}
-    </S.PostCommentsPageContainer>
+    </>
   );
 }

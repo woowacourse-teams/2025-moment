@@ -1,6 +1,7 @@
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './index.styles';
+import { IconBar } from '@/widgets/icons/IconBar';
 
 export default function TodayMomentPage() {
   return (

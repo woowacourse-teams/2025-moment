@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const MyMomentsPageContainer = styled.section`
+export const CollectionContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -38,4 +38,11 @@ export const MomentsContainer = styled.section`
   flex-direction: column;
   align-items: center;
   gap: 16px;
+`;
+
+export const SelectButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
 `;

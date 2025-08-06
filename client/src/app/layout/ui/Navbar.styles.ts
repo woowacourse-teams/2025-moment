@@ -14,7 +14,11 @@ export const Navbar = styled.nav`
   right: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+export const LevelIcon = styled.img`
+  width: 40px;
+  height: 40px;
 `;
 
 export const NavItem = styled.div<{ $isActive?: boolean }>`
@@ -50,6 +54,7 @@ export const DesktopNavItems = styled.div`
 
 export const DesktopAuthButton = styled.div`
   display: flex;
+  align-items: center;
   margin-right: 24px;
 
   @media (max-width: 768px) {
@@ -88,7 +93,7 @@ export const MobileMenu = styled.div<{ $isOpen: boolean }>`
   top: 80px;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme.colors['gray-800_90']};
+  background: ${({ theme }) => theme.colors['gray-800']};
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 99;
   transform: translateY(-200%);
