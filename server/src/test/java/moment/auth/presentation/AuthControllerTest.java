@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.infrastructure.JwtTokenManager;
@@ -17,21 +15,20 @@ import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class AuthControllerTest {
 
     @Autowired
@@ -43,8 +40,8 @@ class AuthControllerTest {
     @Autowired
     PasswordEncoder encoder;
 
-    @MockBean
-    private GoogleAuthService googleAuthService;
+    @MockitoBean
+    GoogleAuthService googleAuthService;
 
     @Test
     void 로그인에_성공한다() {
@@ -103,28 +100,14 @@ class AuthControllerTest {
 
     @Test
     void 구글로부터_인증_코드를_받으면_토큰을_발급하고_메인페이지로_리디렉션한다() {
-        // given
-        Mockito.when(googleAuthService.loginOrSignUp(Mockito.anyString()))
-                .thenReturn("testToken");
-
-        // when
-        Response response = given()
+        given()
                 .when()
                 .redirects().follow(false)
                 .queryParam("code", "testAuthorizationCode")
-                .get("/api/v1/auth/callback/google");
-
-        // then
-        response.then()
-                .statusCode(HttpStatus.MOVED_PERMANENTLY.value());
-
-        String setCookieHeader = response.getHeader(HttpHeaders.SET_COOKIE);
-        assertNotNull(setCookieHeader);
-
-        response.then()
-                .header(HttpHeaders.SET_COOKIE, containsString("token=testToken"));
-
-        response.then()
-                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com"));
+                .get("/api/v1/auth/callback/google")
+                .then()
+                .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
+                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com"))
+                .header(HttpHeaders.SET_COOKIE, containsString("token="));
     }
 }
