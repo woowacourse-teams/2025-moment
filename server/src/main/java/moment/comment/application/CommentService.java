@@ -19,7 +19,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
-import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
@@ -51,8 +51,8 @@ public class CommentService {
     private final EmojiRepository emojiRepository;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
-    private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
+    private final SseNotificationService sseNotificationService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -78,7 +78,7 @@ public class CommentService {
                 TargetType.MOMENT,
                 moment.getId());
 
-        notificationService.sendToClient(moment.getMomenterId(), "notification", response);
+        sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
 
         notificationRepository.save(notificationWithoutId);
 
