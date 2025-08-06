@@ -57,5 +57,4 @@ class NicknameGenerateServiceTest {
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_GENERATION_FAILED);
     }
-
 }
