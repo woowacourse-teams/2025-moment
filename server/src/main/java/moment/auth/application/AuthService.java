@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.dto.request.LoginRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
@@ -21,7 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public String login(LoginRequest request) {
-        User user =  userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmailAndProviderType(request.email(), ProviderType.EMAIL)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
