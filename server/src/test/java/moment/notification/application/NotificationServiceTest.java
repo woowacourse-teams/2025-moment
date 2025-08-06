@@ -2,6 +2,7 @@ package moment.notification.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -90,7 +91,7 @@ class NotificationServiceTest {
                 3L);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(user);
-        given(notificationRepository.findAllByUserAndIsRead(any(User.class), any(Boolean.class)))
+        given(notificationRepository.findAllByUserAndIsRead(any(User.class), eq(false)))
                 .willReturn(List.of(notification1, notification2, notification3));
         // when
         List<NotificationResponse> responses = notificationService.getNotificationByUser(1L, false);
@@ -114,7 +115,7 @@ class NotificationServiceTest {
         notification2.checkNotification();
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(user);
-        given(notificationRepository.findAllByUserAndIsRead(any(User.class), any(Boolean.class)))
+        given(notificationRepository.findAllByUserAndIsRead(any(User.class), eq(true)))
                 .willReturn(List.of(notification3));
 
         // when
