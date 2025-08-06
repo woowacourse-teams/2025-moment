@@ -1,0 +1,44 @@
+package moment.notification.application;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
+import java.util.Optional;
+import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
+import moment.notification.infrastructure.NotificationRepository;
+import moment.user.domain.User;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class DefaultNotificationQueryServiceTest {
+
+    @InjectMocks
+    private DefaultNotificationQueryService defaultNotificationQueryService;
+
+    @Mock
+    private NotificationRepository notificationRepository;
+
+    @Test
+    void 알림을_ID로_조회한다() {
+        // given
+        User user = new User("gg@gmail.com", "1234abd!", "gg");
+        Notification notification = new Notification(user, NotificationType.NEW_REPLY_ON_COMMENT, TargetType.MOMENT,
+                1L);
+        given(notificationRepository.findById(any(Long.class))).willReturn(Optional.of(notification));
+
+        // when
+        defaultNotificationQueryService.getNotificationById(1L);
+
+        // then
+        then(notificationRepository).should(times(1)).findById(any(Long.class));
+    }
+
+}
