@@ -1,23 +1,24 @@
+import type { Emoji } from '@/features/emoji/type/emoji';
+
 export interface CommentsResponse {
   status: number;
-  data: [
-    {
-      id: number;
-      content: string;
-      createdAt: string;
-      moment: {
-        content: string;
-        createdAt: string;
-      };
-      emojis: [
-        {
-          id: number;
-          emojiType: string;
-          userId: number;
-        },
-      ];
-    },
-  ];
+  data: {
+    items: CommentItem[];
+    nextCursor: string | null;
+    hasNextPage: boolean;
+    pageSize: number;
+  };
+}
+
+interface CommentItem {
+  id: number;
+  content: string;
+  createdAt: string;
+  moment: {
+    content: string;
+    createdAt: string;
+  };
+  emojis: Emoji[];
 }
 
 export interface SendCommentsData {
