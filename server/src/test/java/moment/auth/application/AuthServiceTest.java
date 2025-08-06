@@ -26,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class AuthServiceTest {
 
+    @InjectMocks
+    private AuthService authService;
+
     @Mock
     private UserRepository userRepository;
 
@@ -34,9 +37,6 @@ class AuthServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
-    @InjectMocks
-    private AuthService authService;
 
     @Test
     void 로그인에_성공한다() {
