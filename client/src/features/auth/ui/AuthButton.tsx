@@ -54,7 +54,7 @@ export const AuthButton = ({ onClick }: AuthButtonProps) => {
 
   return (
     <S.AuthButtonContainer ref={buttonRef} onClick={handleNicknameClick}>
-      {profile.nickname}
+      <S.AuthButtonText>{profile.nickname}</S.AuthButtonText>
 
       <S.DropdownContainer ref={dropdownRef} $isOpen={isDropdownOpen}>
         <S.DropdownItem onClick={handleLogoutClick}>로그아웃</S.DropdownItem>

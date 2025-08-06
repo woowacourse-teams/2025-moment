@@ -67,14 +67,15 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
-ALTER TABLE users ADD COLUMN current_point INT NOT NULL DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS current_point INT NOT NULL DEFAULT 0;
 
-ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_type VARCHAR(20) NOT NULL;
 
-ALTER TABLE users DROP CONSTRAINT uq_email;
+ALTER TABLE users DROP CONSTRAINT IF EXISTS uq_email;
 
-ALTER TABLE users ADD UNIQUE (email, provider_type);
+ALTER TABLE users DROP CONSTRAINT IF EXISTS uq_email_provider;
 
+ALTER TABLE users ADD CONSTRAINT uq_email_provider UNIQUE (email, provider_type);
 
 -- 포인트 히스토리 테이블 추가
 CREATE TABLE IF NOT EXISTS point_history
@@ -91,3 +92,21 @@ CREATE TABLE IF NOT EXISTS point_history
     FOREIGN KEY (user_id)
     REFERENCES users (id)
     );
+
+CREATE TABLE IF NOT EXISTS notifications
+(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    notification_type VARCHAR(255) NOT NULL,
+    target_type VARCHAR(255) NOT NULL,
+    target_id BIGINT NOT NULL,
+    is_read BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_notifications_users
+    FOREIGN KEY (user_id)
+    REFERENCES users (id)
+);
+
+-- 유저에 레벨 컬럼 추가
+ALTER TABLE users ADD COLUMN IF NOT EXISTS level VARCHAR(10) NOT NULL;
+

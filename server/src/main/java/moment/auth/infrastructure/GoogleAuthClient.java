@@ -1,6 +1,5 @@
 package moment.auth.infrastructure;
 
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.dto.google.GoogleAccessToken;
@@ -29,12 +28,13 @@ public class GoogleAuthClient {
     private String redirectUri;
 
     public GoogleAccessToken getAccessToken(String authorizationCode) {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", authorizationCode);
-        params.put("client_id", clientId);
-        params.put("client_secret", clientSecret);
-        params.put("redirect_uri", redirectUri);
-        params.put("grant_type", "authorization_code");
+        Map<String, String> params = Map.of(
+                "code", authorizationCode,
+                "client_id", clientId,
+                "client_secret", clientSecret,
+                "redirect_uri", redirectUri,
+                "grant_type", "authorization_code"
+        );
 
         ResponseEntity<GoogleAccessToken> response = restTemplate.postForEntity(
                 "https://oauth2.googleapis.com/token",

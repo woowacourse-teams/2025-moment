@@ -65,6 +65,20 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
+CREATE TABLE IF NOT EXISTS notifications
+(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    notification_type VARCHAR(255) NOT NULL,
+    target_type VARCHAR(255) NOT NULL,
+    target_id BIGINT NOT NULL,
+    is_read BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_notifications_users
+        FOREIGN KEY (user_id)
+            REFERENCES users (id)
+);
+
 CREATE TABLE IF NOT EXISTS point_history
 (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

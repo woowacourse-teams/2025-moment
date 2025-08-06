@@ -47,6 +47,9 @@ public class User extends BaseEntity {
   
     private Integer currentPoint = DEFAULT_POINT;
 
+    @Enumerated(EnumType.STRING)
+    private Level level = Level.METEOR;
+
     public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
         this.email = email;
@@ -93,7 +96,8 @@ public class User extends BaseEntity {
         return password.equals(loginPassword);
     }
 
-    public void addPoint(int commentCreationPoint) {
-        currentPoint += commentCreationPoint;
+    public void addPointAndUpdateLevel(int pointToAdd) {
+        this.currentPoint += pointToAdd;
+        this.level = Level.getLevel(this.currentPoint);
     }
 }

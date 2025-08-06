@@ -23,7 +23,7 @@ public class PointRewardService implements RewardService {
         }
 
         int point = reason.getPointTo();
-        user.addPoint(point);
+        user.addPointAndUpdateLevel(point);
 
         PointHistory pointHistory = new PointHistory(user, point, reason, contentId);
         rewardRepository.save(pointHistory);
