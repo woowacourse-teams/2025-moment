@@ -49,6 +49,7 @@ export const DesktopNavItems = styled.div`
 
 export const DesktopAuthButton = styled.div`
   display: flex;
+  align-items: center;
   margin-right: 24px;
 
   @media (max-width: 768px) {

@@ -6,10 +6,12 @@ import { Logo } from '@/shared/ui/logo/Logo';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { data: profile } = useProfileQuery();
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -34,6 +36,7 @@ export const Navbar = () => {
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
+        <p>{profile?.level}</p>
         <AuthButton />
       </S.DesktopAuthButton>
 
