@@ -65,3 +65,17 @@ CREATE TABLE IF NOT EXISTS emojis
         UNIQUE (user_id, comment_id, type)
 );
 
+CREATE TABLE IF NOT EXISTS point_history
+(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    amount INT NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    content_id BIGINT NOT NULL,
+    CONSTRAINT uq_user_reason_content
+        UNIQUE (user_id, reason, content_id),
+    CONSTRAINT fk_history_users
+        FOREIGN KEY (user_id)
+            REFERENCES users (id)
+);
