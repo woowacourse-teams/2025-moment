@@ -95,7 +95,6 @@ public class NotificationControllerTest {
         // when
         List<NotificationSseResponse> receivedNotifications = new CopyOnWriteArrayList<>();
 
-        // 1. SSE 클라이언트를 사용하여 비동기 구독
         EventSource eventSource = subscribeToNotifications(momenterToken, receivedNotifications);
 
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
@@ -108,7 +107,6 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         // then
-        // Awaitility를 사용해 비동기적으로 도착하는 알림을 기다립니다.
         await().atMost(2, TimeUnit.SECONDS).until(() -> !receivedNotifications.isEmpty());
         NotificationSseResponse response = receivedNotifications.get(0);
 
@@ -129,7 +127,6 @@ public class NotificationControllerTest {
         // when
         List<NotificationSseResponse> receivedNotifications = new CopyOnWriteArrayList<>();
 
-        // 1. SSE 클라이언트를 사용하여 비동기 구독
         EventSource eventSource = subscribeToNotifications(commenterToken, receivedNotifications);
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
 
@@ -143,7 +140,6 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         // then
-        // Awaitility를 사용해 비동기적으로 도착하는 알림을 기다립니다.
         await().atMost(2, TimeUnit.SECONDS).until(() -> !receivedNotifications.isEmpty());
         NotificationSseResponse response = receivedNotifications.get(0);
 
@@ -280,7 +276,6 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
-        System.out.println(notification.getId());
 
         RestAssured.given().log().all()
                 .cookie("token", momenterToken)
@@ -333,7 +328,6 @@ public class NotificationControllerTest {
 
         eventSource.start();
 
-        // SSE 연결이 수립될 시간을 약간 기다려주는 것이 안정적입니다.
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
