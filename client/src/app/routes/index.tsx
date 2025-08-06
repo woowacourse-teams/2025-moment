@@ -1,14 +1,14 @@
 import { Layout } from '@/app/layout/ui';
 import { ProtectedRoute } from '@/app/routes/ProtectedRoute';
 import { ROUTES } from '@/app/routes/routes';
+import Collection from '@/pages/collection';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 import SignupPage from '@/pages/signup';
-import TodayMomentPage from '@/pages/todayMoment';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
+import TodayMomentPage from '@/pages/todayMoment';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
-import Collection from '@/pages/collection';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(

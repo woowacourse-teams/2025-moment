@@ -1,10 +1,9 @@
+import { MyCommentsList } from '@/features/comment/ui/MyCommentsList';
 import { MyMomentsList } from '@/features/moment/ui/MyMomentsList';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import * as S from './index.styles';
 import { Button } from '@/shared/ui';
+import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { useState } from 'react';
-import PostCommentsList from '../postComments';
-import { IconBar } from '@/widgets/icons/IconBar';
+import * as S from './index.styles';
 
 type SelectedPage = 'myMoments' | 'postComments';
 
@@ -43,7 +42,7 @@ export default function Collection() {
       </S.SelectButtonContainer>
       <TitleContainer title={currentConfig.title} subtitle={currentConfig.subtitle} />
 
-      {selectedPage === 'myMoments' ? <MyMomentsList /> : <PostCommentsList />}
+      {selectedPage === 'myMoments' ? <MyMomentsList /> : <MyCommentsList />}
     </S.CollectionContainer>
   );
 }
