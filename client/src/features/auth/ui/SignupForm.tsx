@@ -28,8 +28,8 @@ export const SignupForm = () => {
     }
   };
 
-  console.log('???????????????????????', signupData);
-  console.log('@@@@@@@@@@@@@@@@@@@@@', errors);
+  const isDisabled =
+    (nextStep && isFirstStepDisabled) || !isEmailChecked || emailErrorMessage !== '';
 
   return (
     <S.SignupFormWrapper>
@@ -41,7 +41,7 @@ export const SignupForm = () => {
               signupData={signupData}
               errors={errors}
               handleChange={handleChange}
-              onNext={!nextStep || isFirstStepDisabled ? undefined : handleNextStep}
+              onNext={isDisabled ? undefined : handleNextStep}
               handleCheckEmail={handleCheckEmail}
               emailErrorMessage={emailErrorMessage}
               isEmailChecked={isEmailChecked}
@@ -62,11 +62,7 @@ export const SignupForm = () => {
 
       <S.ButtonContainer>
         <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
-        <Button
-          title="다음"
-          onClick={handleNextStep}
-          disabled={!nextStep || (step === 'step1' && isFirstStepDisabled)}
-        />
+        <Button title="다음" onClick={handleNextStep} disabled={isDisabled} />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );
