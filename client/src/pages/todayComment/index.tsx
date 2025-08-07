@@ -4,7 +4,6 @@ import { NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { CheckCircleIcon, Users } from 'lucide-react';
 import * as S from '../todayMoment/index.styles';
-import { IconBar } from '@/widgets/icons/IconBar';
 
 export default function TodayCommentPage() {
   const { data, isLoading, error } = useCommentCreationStatusQuery();

@@ -4,7 +4,7 @@ import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
-import { IconBar } from '@/widgets/icons/IconBar';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
@@ -37,7 +37,7 @@ export const Navbar = () => {
       <Logo />
 
       <S.DesktopNavItems>
-        <IconBar />
+        <NavigatorsBar />
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
