@@ -20,6 +20,7 @@ const levelMap = {
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const isHomePage = currentPath === '/';
   const { data: profile } = useProfileQuery();
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -36,9 +37,7 @@ export const Navbar = () => {
     <S.Navbar>
       <Logo />
 
-      <S.DesktopNavItems>
-        <IconBar $isNavBar={true} />
-      </S.DesktopNavItems>
+      <S.DesktopNavItems>{!isHomePage && <IconBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
