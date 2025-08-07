@@ -1,5 +1,6 @@
 package moment.notification.presentation;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -27,7 +28,8 @@ public class NotificationController {
     private final SseNotificationService sseNotificationService;
 
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication) {
+    public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication, HttpServletResponse response) {
+        response.setHeader("X-Accel-Buffering", "no");
         return sseNotificationService.subscribe(authentication.id());
     }
 

@@ -35,7 +35,6 @@ import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import okhttp3.Headers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,6 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@Disabled
 public class NotificationControllerTest {
 
     @Autowired
