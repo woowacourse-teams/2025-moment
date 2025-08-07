@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class MomentApplication {
     public static void main(String[] args) {
-        //굿
         SpringApplication.run(MomentApplication.class, args);
     }
 }
