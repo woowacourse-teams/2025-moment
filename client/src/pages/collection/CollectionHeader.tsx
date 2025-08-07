@@ -5,8 +5,6 @@ import * as S from './index.styles';
 export const CollectionHeader = () => {
   const currentpath = useLocation().pathname;
 
-  console.log('currentpath', currentpath);
-
   return (
     <S.CollectionHeaderContainer>
       <S.CollectionHeaderLinkContainer

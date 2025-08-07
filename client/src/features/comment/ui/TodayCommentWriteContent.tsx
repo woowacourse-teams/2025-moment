@@ -5,7 +5,7 @@ import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
 
 export const TodayCommentWriteContent = () => {
-  const MAX_LENGTH = 300;
+  const MAX_LENGTH = 200;
 
   const { momentsData, comment, handleChange, handleSubmit } = useSendComments();
   const currentLength = comment.length;

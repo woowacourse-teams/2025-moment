@@ -12,7 +12,7 @@ export const useCheckEmail = () => {
       setErrorMessage(isExists ? '이미 존재하는 이메일입니다.' : '');
       setIsEmailChecked(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert('중복 확인 실패');
       setIsEmailChecked(false);
     }
