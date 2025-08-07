@@ -12,7 +12,7 @@ import { useReadNotifications } from '../../notification/hooks/useReadNotificati
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications(); // NOTE: 내꺼 코드
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const emojis = myMoment.comment?.emojis || [];
 
   const handleMomentOpen = () => {

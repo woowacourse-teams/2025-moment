@@ -2,7 +2,7 @@ import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
 import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications'; // NOTE: 내꺼 코드
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
