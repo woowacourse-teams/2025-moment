@@ -20,7 +20,6 @@ import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -33,10 +32,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@Disabled
 class NotificationServiceTest {
 
-    private final SseNotificationService sseNotificationService = new SseNotificationService();
+    private final SseNotificationService SseNotificationService = new SseNotificationService();
 
     @InjectMocks
     private NotificationService notificationService;
@@ -53,7 +51,7 @@ class NotificationServiceTest {
     @Test
     void 사용자가_구독하면_emitter가_생성된다() {
         // given
-        SseEmitter emitter = sseNotificationService.subscribe(1L);
+        SseEmitter emitter = SseNotificationService.subscribe(1L);
 
         // when & then
         assertThat(emitter).isNotNull();
@@ -66,7 +64,7 @@ class NotificationServiceTest {
         SseEmitter mockEmitter = mock(SseEmitter.class);
 
         Map<Long, SseEmitter> emitters =
-                (Map<Long, SseEmitter>) ReflectionTestUtils.getField(notificationService, "emitters");
+                (Map<Long, SseEmitter>) ReflectionTestUtils.getField(SseNotificationService, "emitters");
         emitters.put(userId, mockEmitter);
 
         String eventName = "notification";
@@ -77,7 +75,7 @@ class NotificationServiceTest {
         );
 
         // when
-        sseNotificationService.sendToClient(userId, eventName, response);
+        SseNotificationService.sendToClient(userId, eventName, response);
 
         // then
         verify(mockEmitter, times(1)).send(any(SseEmitter.SseEventBuilder.class));

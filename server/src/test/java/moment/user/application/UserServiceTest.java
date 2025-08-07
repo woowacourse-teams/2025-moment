@@ -1,5 +1,14 @@
 package moment.user.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
@@ -19,20 +28,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserServiceTest {
 
-    private final UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi1234", "미미");
+    private final String email = "mimi@icloud.com";
+    private final UserCreateRequest request = new UserCreateRequest(email, "mimi1234", "mimi1234", "미미");
 
     @InjectMocks
     private UserService userService;
@@ -64,9 +65,11 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_존재하는_유저일_경우_예외가_발생한다() {
+    void 일반_회원가입시_이미_존재하는_유저일_경우_예외가_발생한다() {
         // given
-        given(userRepository.existsByEmail(any(String.class))).willReturn(true);
+
+        userRepository.save(new User(email, "password", "mimi", ProviderType.EMAIL));
+        given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request))
@@ -75,7 +78,7 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_존재하는_닉네임일_경우_예외가_발생한다() {
+    void 일반_회원가입시_이미_존재하는_닉네임일_경우_예외가_발생한다() {
         // given
         given(userRepository.existsByNickname(any(String.class))).willReturn(true);
 
@@ -86,7 +89,7 @@ class UserServiceTest {
     }
 
     @Test
-    void 비밀번호와_비밀번호_확인_값이_일치하지_않는_경우_예외가_발생한다() {
+    void 일반_회원가입시_비밀번호와_비밀번호_확인_값이_일치하지_않는_경우_예외가_발생한다() {
         UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi5678", "미미");
 
         // when & then
@@ -96,7 +99,7 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_존재하는_닉네임일_경우_true를_반환한다() {
+    void 이미_존재하는_닉네임일_경우_참을_반환한다() {
         // given
         NicknameConflictCheckRequest request = new NicknameConflictCheckRequest("mimi");
 
@@ -110,21 +113,22 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_존재하는_이메일일_경우_true를_반환한다() {
+    void 일반_회원가입에서_중복_이메일_확인시_이미_존재하는_이메일일_경우_참을_반환한다() {
         // given
-        EmailConflictCheckRequest request = new EmailConflictCheckRequest("mimi@icloud.com");
+        String email = "mimi@icloud.com";
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
 
-        given(userRepository.existsByEmail(any(String.class))).willReturn(true);
+        given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(true);
 
         // when
-        EmailConflictCheckResponse response = userService.checkEmailConflict(request);
+        EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
 
         // & then
         assertThat(response.isExists()).isTrue();
     }
 
     @Test
-    void 이미_존재하는_닉네임이_아닐_경우_false를_반환한다() {
+    void 이미_존재하는_닉네임이_아닐_경우_거짓을_반환한다() {
         // given
         NicknameConflictCheckRequest request = new NicknameConflictCheckRequest("mimi");
 
@@ -138,14 +142,15 @@ class UserServiceTest {
     }
 
     @Test
-    void 이미_존재하는_이메일이_아닐_경우_false를_반환한다() {
+    void 이미_존재하는_이메일이_아닐_경우_거짓을_반환한다() {
         // given
-        EmailConflictCheckRequest request = new EmailConflictCheckRequest("mimi@icloud.com");
+        String email = "mimi@icloud.com";
+        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
 
-        given(userRepository.existsByEmail(any(String.class))).willReturn(false);
+        given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(false);
 
         // when
-        EmailConflictCheckResponse response = userService.checkEmailConflict(request);
+        EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
 
         // & then
         assertThat(response.isExists()).isFalse();
@@ -165,7 +170,7 @@ class UserServiceTest {
     }
 
     @Test
-    void 랜덤으로_생성한_닉네임이_존재하는_경우_임계치_이후_예외가_발생합니다() {
+    void 랜덤으로_생성한_닉네임이_존재하는_경우_임계치_이후_예외가_발생한다() {
         // given
         given(nicknameGenerateService.createRandomNickname()).willThrow(new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED));
 

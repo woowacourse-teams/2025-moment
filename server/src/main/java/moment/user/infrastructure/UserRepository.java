@@ -11,11 +11,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    boolean existsByEmail(String email);
-
     boolean existsByNickname(String nickname);
 
-    Optional<User> findByEmail(String email);
+    boolean existsByEmailAndProviderType(String email, ProviderType providerType);
+
+    Optional<User> findByEmailAndProviderType(String email, ProviderType providerType);
 
     @Query("""
     SELECT u FROM users u
@@ -29,6 +29,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findNotMatchedUsersToday(@Param("startOfDay") LocalDateTime startOfDay,
                                         @Param("endOfDay") LocalDateTime endOfDay,
                                         @Param("momenter") User momenter);
-
-    Optional<User> findByEmailAndProviderType(String email, ProviderType providerType);
 }

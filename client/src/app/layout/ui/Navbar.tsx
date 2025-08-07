@@ -1,13 +1,14 @@
 import { navItems } from '@/app/layout/types/navItems';
+import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
+
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
-import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
-import { IconBar } from '@/widgets/icons/IconBar';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -37,7 +38,7 @@ export const Navbar = () => {
     <S.Navbar>
       <Logo />
 
-      <S.DesktopNavItems>{!isHomePage && <IconBar $isNavBar={true} />}</S.DesktopNavItems>
+      <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}

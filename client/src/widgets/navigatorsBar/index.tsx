@@ -1,10 +1,10 @@
-import { Link } from 'react-router';
-import * as S from './IconBar.styles';
 import { ROUTES } from '@/app/routes/routes';
+import { Link } from 'react-router';
+import * as S from './index.styles';
 
-export const IconBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
+export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   return (
-    <S.IconBarContainer $isNavBar={$isNavBar}>
+    <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT}>
         <S.LinkContainer $isNavBar={$isNavBar}>
           <S.IconImage src="/bluePlanet.png" alt="bluePlanet"></S.IconImage>
@@ -19,12 +19,12 @@ export const IconBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
         </S.LinkContainer>
       </Link>
 
-      <Link to={ROUTES.COLLECTION}>
+      <Link to={ROUTES.COLLECTION_MYMOMENT}>
         <S.LinkContainer $isNavBar={$isNavBar}>
           <S.IconImage src="/starPlanet.png" alt="starPlanet"></S.IconImage>
           <S.IconText>나만의 모음집</S.IconText>
         </S.LinkContainer>
       </Link>
-    </S.IconBarContainer>
+    </S.NavigatorsBarContainer>
   );
 };

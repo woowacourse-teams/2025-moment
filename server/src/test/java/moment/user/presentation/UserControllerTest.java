@@ -1,5 +1,8 @@
 package moment.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -23,9 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -38,7 +38,7 @@ class UserControllerTest {
     private TokenManager tokenManager;
 
     @Test
-    void 유저_생성에_성공한다() {
+    void 일반_회원가입시_유저_생성에_성공한다() {
         // given
         UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!", "mimi");
 
@@ -54,7 +54,7 @@ class UserControllerTest {
         // then
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(userRepository.existsByEmail("mimi@icloud.com")).isTrue()
+                () -> assertThat(userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
         );
     }
 

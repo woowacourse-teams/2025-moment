@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const IconBarContainer = styled.div<{ $isNavBar?: boolean }>`
+export const NavigatorsBarContainer = styled.div<{ $isNavBar?: boolean }>`
   display: flex;
   flex-direction: ${({ $isNavBar }) => ($isNavBar ? 'row' : 'column')};
   align-items: center;

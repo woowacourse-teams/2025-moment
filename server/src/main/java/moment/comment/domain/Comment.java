@@ -32,7 +32,7 @@ public class Comment extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,8 +61,8 @@ public class Comment extends BaseEntity {
             throw new IllegalArgumentException("content가 null이거나 빈 값이어서는 안 됩니다.");
         }
 
-        if (content.length() > 100) {
-            throw new IllegalArgumentException("content가 100자를 초과해서는 안 됩니다.");
+        if (content.length() > 200) {
+            throw new IllegalArgumentException("content가 200자를 초과해서는 안 됩니다.");
         }
     }
 

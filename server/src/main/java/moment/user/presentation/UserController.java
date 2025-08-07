@@ -128,7 +128,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<EmailConflictCheckResponse>> readEmailConflict(
             @Valid @RequestBody EmailConflictCheckRequest request
     ) {
-        EmailConflictCheckResponse response = userService.checkEmailConflict(request);
+        EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

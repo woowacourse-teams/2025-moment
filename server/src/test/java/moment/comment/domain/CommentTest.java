@@ -1,8 +1,5 @@
 package moment.comment.domain;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
@@ -14,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
@@ -34,9 +34,9 @@ class CommentTest {
     }
 
     @Test
-    void Comment가_100자를_넘으면_예외가_발생한다() {
+    void Comment가_200자를_넘으면_예외가_발생한다() {
         // given
-        String longContent = "a".repeat(101);
+        String longContent = "a".repeat(201);
 
         // when & then
         assertThatThrownBy(() -> new Comment(
@@ -47,7 +47,7 @@ class CommentTest {
                         new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL)
                 )
         )).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("content가 100자를 초과해서는 안 됩니다.");
+                .hasMessage("content가 200자를 초과해서는 안 됩니다.");
     }
 
     @ParameterizedTest
