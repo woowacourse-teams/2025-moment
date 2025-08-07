@@ -71,7 +71,7 @@ public class EmojiService {
                 TargetType.COMMENT,
                 comment.getId());
 
-        //sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
+        sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
         notificationRepository.save(notificationWithoutId);
 
         return EmojiCreateResponse.from(savedEmoji);

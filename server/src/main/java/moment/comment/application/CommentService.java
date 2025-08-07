@@ -78,7 +78,7 @@ public class CommentService {
                 TargetType.MOMENT,
                 moment.getId());
 
-        //sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
+        sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
 
         notificationRepository.save(notificationWithoutId);
 
