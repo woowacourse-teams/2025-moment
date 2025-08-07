@@ -36,6 +36,7 @@ export default function HomePage() {
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
       <S.BlackHoleContainer>
+        <S.BlackHoleText>click me</S.BlackHoleText>
         <button onClick={handleWidgetClick}>
           <S.BlackHoleImage src="/blackHole.png" alt="blackHole" />
         </button>
