@@ -18,7 +18,7 @@ export const useSignup = () => {
     nickname: '',
   });
 
-  const { mutateAsync: signup, isPending, error, isError } = useSignupMutation();
+  const { mutateAsync: signup, isPending, isError } = useSignupMutation();
 
   const handleChange = useCallback(
     (field: keyof SignupFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,10 +56,21 @@ export const useSignup = () => {
     try {
       await signup(signupData);
     } catch (error) {
-      // 추후 UI 레벨에서 에러 처리 -> 여기서 토스트, 에러 메시지 등 표시 필요
       console.error('Signup failed:', error);
     }
   }, [signup, signupData]);
+
+  const updateNickname = useCallback(
+    (nickname: string) => {
+      setSignupData(prev => ({ ...prev, nickname }));
+      const fieldError = validateSignupField('nickname', nickname, { ...signupData, nickname });
+      setErrors(prev => ({ ...prev, nickname: fieldError }));
+    },
+    [signupData],
+  );
+
+  const isFormDataEmpty = !signupData.email || !signupData.password || !signupData.rePassword;
+  const isFirstStepDisabled = isFormDataEmpty || !isSignupFormValid(errors);
 
   return {
     signupData,
@@ -69,6 +80,9 @@ export const useSignup = () => {
     isError,
     handleChange,
     handleClick,
+    updateNickname,
     isSignupFormValid: isSignupFormValid(errors),
+    isFirstStepDisabled,
+    isFormDataEmpty,
   };
 };

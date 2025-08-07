@@ -31,7 +31,7 @@ public class UserService {
     @Transactional
     public void addUser(UserCreateRequest request) {
         comparePasswordWithRepassword(request);
-        validateEmail(request);
+        validateEmailInBasicSignUp(request);
         validateNickname(request);
 
         String encodedPassword = passwordEncoder.encode(request.password());
@@ -52,8 +52,8 @@ public class UserService {
         }
     }
 
-    private void validateEmail(UserCreateRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+    private void validateEmailInBasicSignUp(UserCreateRequest request) {
+        if (userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL)) {
             throw new MomentException(ErrorCode.USER_CONFLICT);
         }
     }
@@ -73,8 +73,8 @@ public class UserService {
         return new NicknameConflictCheckResponse(existsByNickname);
     }
 
-    public EmailConflictCheckResponse checkEmailConflict(EmailConflictCheckRequest request) {
-        boolean existsByEmail = userRepository.existsByEmail(request.email());
+    public EmailConflictCheckResponse checkEmailConflictInBasicSignUp(EmailConflictCheckRequest request) {
+        boolean existsByEmail = userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL);
         return new EmailConflictCheckResponse(existsByEmail);
     }
 }

@@ -49,3 +49,48 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
     padding: 12px;
   }
 `;
+
+export const BlackHoleContainer = styled.aside`
+  position: fixed;
+  left: 60px;
+  transform: translateY(-50%);
+  transform: rotate(-20deg);
+  z-index: 50;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+`;
+
+export const BlackHoleImage = styled.img`
+  width: 150px;
+  height: 150px;
+`;
+
+export const BlackHoleText = styled.p`
+  position: absolute;
+  left: -20px;
+  top: -10px;
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: 600;
+  pointer-events: none;
+`;
+
+export const WidgetContainer = styled.div<{ isWidgetOpen: boolean }>`
+  position: fixed;
+  left: 90px;
+  transform: translateY(-110%);
+  z-index: 51;
+  opacity: ${({ isWidgetOpen }) => (isWidgetOpen ? 1 : 0)};
+  visibility: ${({ isWidgetOpen }) => (isWidgetOpen ? 'visible' : 'hidden')};
+  transition:
+    opacity 0.3s ease-in-out,
+    visibility 0.3s ease-in-out;
+`;

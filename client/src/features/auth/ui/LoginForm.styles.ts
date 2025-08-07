@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const LoginFormWrapper = styled.form`
+export const LoginFormWrapper = styled.div`
   width: 80%;
   max-width: 500px;
   height: 100%;
@@ -14,13 +14,23 @@ export const LoginFormWrapper = styled.form`
   gap: 20px;
 `;
 
+export const LoginFormContainer = styled.form`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+`;
+
 export const LoginFormTitleContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
 `;
 
 export const LoginLogoTitleContainer = styled.div`
@@ -60,7 +70,6 @@ export const LoginFormContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
 `;
 
 export const InputGroup = styled.div`

@@ -15,7 +15,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
@@ -56,7 +56,7 @@ class EmojiServiceTest {
     private EmojiQueryService emojiQueryService;
 
     @Mock
-    private NotificationService notificationService;
+    private SseNotificationService SseNotificationService;
 
     @Mock
     private NotificationRepository notificationRepository;

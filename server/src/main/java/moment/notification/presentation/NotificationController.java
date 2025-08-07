@@ -1,10 +1,12 @@
 package moment.notification.presentation;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.SuccessResponse;
 import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.dto.response.NotificationResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -23,10 +25,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final SseNotificationService sseNotificationService;
 
-    @GetMapping("/subscribe")
-    public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication) {
-        return notificationService.subscribe(authentication.id());
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication, HttpServletResponse response) {
+        response.setHeader("X-Accel-Buffering", "no");
+        return sseNotificationService.subscribe(authentication.id());
     }
 
     @GetMapping

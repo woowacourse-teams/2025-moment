@@ -34,6 +34,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class NotificationServiceTest {
 
+    private final SseNotificationService SseNotificationService = new SseNotificationService();
+
     @InjectMocks
     private NotificationService notificationService;
 
@@ -49,7 +51,7 @@ class NotificationServiceTest {
     @Test
     void 사용자가_구독하면_emitter가_생성된다() {
         // given
-        SseEmitter emitter = notificationService.subscribe(1L);
+        SseEmitter emitter = SseNotificationService.subscribe(1L);
 
         // when & then
         assertThat(emitter).isNotNull();
@@ -62,7 +64,7 @@ class NotificationServiceTest {
         SseEmitter mockEmitter = mock(SseEmitter.class);
 
         Map<Long, SseEmitter> emitters =
-                (Map<Long, SseEmitter>) ReflectionTestUtils.getField(notificationService, "emitters");
+                (Map<Long, SseEmitter>) ReflectionTestUtils.getField(SseNotificationService, "emitters");
         emitters.put(userId, mockEmitter);
 
         String eventName = "notification";
@@ -73,7 +75,7 @@ class NotificationServiceTest {
         );
 
         // when
-        notificationService.sendToClient(userId, eventName, response);
+        SseNotificationService.sendToClient(userId, eventName, response);
 
         // then
         verify(mockEmitter, times(1)).send(any(SseEmitter.SseEventBuilder.class));

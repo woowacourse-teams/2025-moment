@@ -3,15 +3,24 @@ import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
 import { Emoji } from '@/features/emoji/ui/Emoji';
 import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
 import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { Card, NotFound, SimpleCard } from '@/shared/ui';
+import { Button, Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
-import type { MyMomentsItem } from '../types/moments';
 import * as S from './MyMomentsList.styles';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
+import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 
-export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
+export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const emojis = myMoment.comment?.emojis || [];
+
+  const handleMomentOpen = () => {
+    if (myMoment.read || isReadingNotification) return;
+    if (myMoment.notificationId) {
+      handleReadNotifications(myMoment.notificationId);
+    }
+  };
 
   const getFormattedTime = (dateString: string) => {
     try {
@@ -24,7 +33,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   };
 
   return (
-    <Card width="medium" key={myMoment.id}>
+    <Card width="medium" key={myMoment.id} shadow={!myMoment.read}>
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
@@ -65,6 +74,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
             ))}
           </S.EmojiContainer>
         )}
+        {/* TODO: 임시방편.추후 모멘트 모달 버튼으로 대체 */}
+        {!myMoment.read && <Button onClick={handleMomentOpen} title="확인" />}
       </Card.Action>
     </Card>
   );

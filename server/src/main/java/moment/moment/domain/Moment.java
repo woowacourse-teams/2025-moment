@@ -28,7 +28,7 @@ public class Moment extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String content;
 
     @Column(nullable = false)
@@ -71,8 +71,8 @@ public class Moment extends BaseEntity {
     }
 
     private void validateContentLength(String content) {
-        if (content.length() > 100) {
-            throw new IllegalArgumentException("모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.");
+        if (content.length() > 200) {
+            throw new IllegalArgumentException("모멘트는 1자 이상, 200자 이하로만 작성 가능합니다.");
         }
     }
 

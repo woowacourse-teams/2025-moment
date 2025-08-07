@@ -1,7 +1,7 @@
 import { LoginFormData } from '@/features/auth/types/login';
 import { SignupFormData } from '@/features/auth/types/signup';
 import {
-  isDataEmpty,
+  isLoginFormEmpty,
   isLoginFormValid,
   isSignupFormValid,
   validateEmail,
@@ -141,6 +141,18 @@ describe('닉네임 유효성 검사', () => {
     expect(result).toBe('닉네임은 최소 2자 이상이어야 합니다.');
   });
 
+  it('닉네임이 15자를 초과하는 경우 에러를 반환해야 한다', () => {
+    const nickname = 'a'.repeat(16); // 16자
+    const result = validateNickname(nickname);
+    expect(result).toBe('닉네임은 최대 15자 이하여야 합니다.');
+  });
+
+  it('닉네임에 특수문자가 포함된 경우 에러를 반환해야 한다', () => {
+    const nickname = 'test!';
+    const result = validateNickname(nickname);
+    expect(result).toBe('닉네임은 특수문자를 포함할 수 없습니다.');
+  });
+
   it('닉네임이 유효한 경우 빈 문자열을 반환해야 한다', () => {
     const nickname = 'test';
     const result = validateNickname(nickname);
@@ -148,12 +160,18 @@ describe('닉네임 유효성 검사', () => {
   });
 
   it('다양한 유효한 닉네임을 허용해야 한다', () => {
-    const validNicknames = ['ab', 'test', 'test12', '한글닉네임', '가나다라마바'];
+    const validNicknames = ['ab', 'test', 'test12', '한글닉네임', '가나다라마바사아자차카타파'];
 
     validNicknames.forEach(nickname => {
       const result = validateNickname(nickname);
       expect(result).toBe('');
     });
+  });
+
+  it('15자 정확히인 닉네임은 유효해야 한다', () => {
+    const nickname = '가'.repeat(15); // 정확히 15자
+    const result = validateNickname(nickname);
+    expect(result).toBe('');
   });
 });
 
@@ -391,14 +409,14 @@ describe('isSignupFormValid', () => {
   });
 });
 
-describe('isDataEmpty', () => {
+describe('isLoginFormEmpty', () => {
   it('로그인 데이터가 모두 비어있는 경우 true를 반환해야 한다', () => {
     const loginData: LoginFormData = {
       email: '',
       password: '',
     };
 
-    const result = isDataEmpty(loginData);
+    const result = isLoginFormEmpty(loginData);
 
     expect(result).toBe(true);
   });
@@ -409,12 +427,12 @@ describe('isDataEmpty', () => {
       password: '',
     };
 
-    const result = isDataEmpty(loginData);
+    const result = isLoginFormEmpty(loginData);
 
     expect(result).toBe(false);
   });
 
-  it('회원가입 데이터가 모두 비어있는 경우 true를 반환해야 한다', () => {
+  it('회원가입 데이터가 모두 비어있는 경우를 체크해야 한다', () => {
     const signupData: SignupFormData = {
       email: '',
       password: '',
@@ -422,12 +440,12 @@ describe('isDataEmpty', () => {
       nickname: '',
     };
 
-    const result = isDataEmpty(signupData);
+    const isSignupFormEmpty = Object.values(signupData).every(value => value === '');
 
-    expect(result).toBe(true);
+    expect(isSignupFormEmpty).toBe(true);
   });
 
-  it('회원가입 데이터가 일부라도 채워져 있는 경우 false를 반환해야 한다', () => {
+  it('회원가입 데이터가 일부라도 채워져 있는 경우를 체크해야 한다', () => {
     const signupData: SignupFormData = {
       email: '',
       password: '',
@@ -435,8 +453,8 @@ describe('isDataEmpty', () => {
       nickname: 'test',
     };
 
-    const result = isDataEmpty(signupData);
+    const isSignupFormEmpty = Object.values(signupData).every(value => value === '');
 
-    expect(result).toBe(false);
+    expect(isSignupFormEmpty).toBe(false);
   });
 });
