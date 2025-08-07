@@ -47,6 +47,9 @@ jobs:
   build-and-push:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
     steps:
       - name: Checkout
         uses: actions/checkout@v4
