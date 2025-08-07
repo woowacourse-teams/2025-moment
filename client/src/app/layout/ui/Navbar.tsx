@@ -4,10 +4,11 @@ import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
-import { NavigatorsBar } from '@/widgets/navigatorsBar';
+
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -20,6 +21,7 @@ const levelMap = {
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const isHomePage = currentPath === '/';
   const { data: profile } = useProfileQuery();
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -36,9 +38,7 @@ export const Navbar = () => {
     <S.Navbar>
       <Logo />
 
-      <S.DesktopNavItems>
-        <NavigatorsBar />
-      </S.DesktopNavItems>
+      <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
