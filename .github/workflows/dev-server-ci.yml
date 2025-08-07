@@ -11,6 +11,7 @@ on:
 
 jobs:
   test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -42,10 +43,10 @@ jobs:
 
       - name: build with Gradle
         run: ./gradlew clean test
+
   build-and-push:
-    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -90,6 +91,7 @@ jobs:
           context: ./server
           file: ./server/Dockerfile
           push: true
+          platforms: linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/moment:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ github.sha }}
