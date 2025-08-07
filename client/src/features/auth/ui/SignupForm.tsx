@@ -1,26 +1,20 @@
 import { useSignup } from '@/features/auth/hooks/useSignup';
-import { isDataEmpty, isSignupFormValid } from '@/features/auth/utils/validateAuth';
 import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
 import { Button } from '@/shared/ui/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
 import { useCheckEmail } from '../hooks/useCheckEmail';
-import { useCheckNickname } from '../hooks/useCheckNickname';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
   const { Funnel, Step, useStep, beforeStep, nextStep } = useFunnel(STEPS);
 
-  const { signupData, errors, handleChange, handleClick } = useSignup();
+  const { signupData, errors, handleChange, handleClick, updateNickname, isFirstStepDisabled } =
+    useSignup();
   const { step, setStep } = useStep();
 
   const { handleCheckEmail, errorMessage: emailErrorMessage, isEmailChecked } = useCheckEmail();
-  const {
-    handleCheckNickname,
-    errorMessage: nicknameErrorMessage,
-    isNicknameChecked,
-  } = useCheckNickname();
 
   const handlePreviousStep = () => {
     if (beforeStep) {
@@ -34,11 +28,8 @@ export const SignupForm = () => {
     }
   };
 
-  const isDisabled =
-    !isSignupFormValid(errors) ||
-    isDataEmpty(signupData) ||
-    !!emailErrorMessage ||
-    !!nicknameErrorMessage;
+  console.log('???????????????????????', signupData);
+  console.log('@@@@@@@@@@@@@@@@@@@@@', errors);
 
   return (
     <S.SignupFormWrapper>
@@ -50,7 +41,7 @@ export const SignupForm = () => {
               signupData={signupData}
               errors={errors}
               handleChange={handleChange}
-              onNext={!nextStep || isDisabled ? undefined : handleNextStep}
+              onNext={!nextStep || isFirstStepDisabled ? undefined : handleNextStep}
               handleCheckEmail={handleCheckEmail}
               emailErrorMessage={emailErrorMessage}
               isEmailChecked={isEmailChecked}
@@ -59,12 +50,8 @@ export const SignupForm = () => {
           <Step name="step2">
             <SignupStep2
               signupData={signupData}
-              errors={errors}
-              handleChange={handleChange}
-              onNext={!nextStep || isDisabled ? undefined : handleNextStep}
-              handleCheckNickname={handleCheckNickname}
-              nicknameErrorMessage={nicknameErrorMessage}
-              isNicknameChecked={isNicknameChecked}
+              onNext={!nextStep ? undefined : handleNextStep}
+              updateNickname={updateNickname}
             />
           </Step>
           <Step name="step3">
@@ -74,8 +61,12 @@ export const SignupForm = () => {
       </S.SignupFormContent>
 
       <S.ButtonContainer>
-        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep || isDisabled} />
-        <Button title="다음" onClick={handleNextStep} disabled={!nextStep || isDisabled} />
+        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
+        <Button
+          title="다음"
+          onClick={handleNextStep}
+          disabled={!nextStep || (step === 'step1' && isFirstStepDisabled)}
+        />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );
