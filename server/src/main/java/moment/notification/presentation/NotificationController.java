@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.SuccessResponse;
 import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.dto.response.NotificationResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final SseNotificationService sseNotificationService;
 
-    @GetMapping("/subscribe")
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal Authentication authentication) {
-        return notificationService.subscribe(authentication.id());
+        return sseNotificationService.subscribe(authentication.id());
     }
 
     @GetMapping

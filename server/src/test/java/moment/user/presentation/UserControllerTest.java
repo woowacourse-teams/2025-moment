@@ -1,8 +1,5 @@
 package moment.user.presentation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -14,6 +11,7 @@ import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.EmailConflictCheckResponse;
+import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -24,6 +22,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -107,7 +108,25 @@ class UserControllerTest {
                 () -> assertThat(response.data()).isEqualTo(expect)
         );
     }
-  
+
+
+    @Test
+    void 회원가입에_사용_가능한_랜덤_닉네임_조회에_성공한다() {
+        // given
+        SuccessResponse<MomentRandomNicknameResponse> response = RestAssured.given().log().all()
+                .when().get("/api/v1/users/signup/nickname")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        // then
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.data().randomNickname()).isNotBlank()
+        );
+    }
+
     @Test
     void 이메일_중복_여부_조회를_성공한다() {
         // given

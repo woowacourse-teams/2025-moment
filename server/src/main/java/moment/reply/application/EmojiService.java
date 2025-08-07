@@ -7,7 +7,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
@@ -35,7 +35,7 @@ public class EmojiService {
     private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
     private final EmojiQueryService emojiQueryService;
-    private final NotificationService notificationService;
+    private final SseNotificationService sseNotificationService;
     private final NotificationRepository notificationRepository;
     private final RewardService rewardService;
 
@@ -45,7 +45,6 @@ public class EmojiService {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
-
 
     @Transactional
     public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
@@ -72,7 +71,7 @@ public class EmojiService {
                 TargetType.COMMENT,
                 comment.getId());
 
-        notificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
+        //sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
         notificationRepository.save(notificationWithoutId);
 
         return EmojiCreateResponse.from(savedEmoji);

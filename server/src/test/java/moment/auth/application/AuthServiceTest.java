@@ -42,7 +42,7 @@ class AuthServiceTest {
     void 로그인에_성공한다() {
         // given
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
-        given(userRepository.findByEmail(any()))
+        given(userRepository.findByEmailAndProviderType(any(), any(ProviderType.class)))
                 .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL)));
         given(tokenManager.createToken(any(), any())).willReturn("asdfsvssefsdf");
         given(passwordEncoder.matches(any(), any())).willReturn(true);
@@ -59,7 +59,7 @@ class AuthServiceTest {
     void 로그인시_존재하지_않는_이메일을_입력한_경우_예외가_발생한다() {
         // given
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r");
-        given(userRepository.findByEmail(any()))
+        given(userRepository.findByEmailAndProviderType(any(), any(ProviderType.class)))
                 .willReturn(Optional.empty());
 
         // when & then
@@ -72,7 +72,7 @@ class AuthServiceTest {
     void 로그인시_비밀번호를_잘못_입력한_경우_예외가_발생한다() {
         // given
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4");
-        given(userRepository.findByEmail(any()))
+        given(userRepository.findByEmailAndProviderType(any(), any(ProviderType.class)))
                 .willReturn(Optional.of(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL)));
 
         // when & then

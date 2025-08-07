@@ -2,13 +2,13 @@ import { Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { Heart, MessageSquare } from 'lucide-react';
-import * as S from '../../moment/ui/TodayContent.styles';
 import { useNavigate } from 'react-router';
+import * as S from '../../moment/ui/TodayContent.styles';
 
 export const TodayCommentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/post-comments');
+  const handleNavigate = () => navigate('/collection');
 
   return (
     <S.TodayContentWrapper>
@@ -22,11 +22,7 @@ export const TodayCommentSuccessContent = () => {
         />
       </Card.Content>
       <Card.Action position="center">
-        <YellowSquareButton
-          Icon={MessageSquare}
-          title="보낸 모멘트 보기"
-          onClick={handleNavigate}
-        />
+        <YellowSquareButton Icon={MessageSquare} title="모음집 보러가기" onClick={handleNavigate} />
       </Card.Action>
     </S.TodayContentWrapper>
   );

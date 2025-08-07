@@ -6,30 +6,39 @@ import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Button, Card, NotFound, SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Send, Timer } from 'lucide-react';
+import type { MyMomentsItem } from '../types/moments';
 import * as S from './MyMomentsList.styles';
-import { MomentWithNotifications } from '../types/momentsWithNotifications';
-import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
+// import { MomentWithNotifications } from '../types/momentsWithNotifications';
+// import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 
-export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
+// export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => { // NOTE: 내꺼 코드
+export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const { handleDeleteEmoji } = useDeleteEmoji();
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+  // const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications(); // NOTE: 내꺼 코드
   const emojis = myMoment.comment?.emojis || [];
 
-  const handleCommentOpen = () => {
-    if (myMoment.read || isReadingNotification) return;
-    if (myMoment.notificationId) {
-      handleReadNotifications(myMoment.notificationId);
+  // const handleCommentOpen = () => { // NOTE: 내꺼 코드
+  //   if (myMoment.read || isReadingNotification) return;
+  //   if (myMoment.notificationId) {
+  //     handleReadNotifications(myMoment.notificationId);
+  const getFormattedTime = (dateString: string) => {
+    try {
+      if (!dateString) return '시간 정보 없음';
+      return formatRelativeTime(dateString);
+    } catch (error) {
+      console.error('Date formatting error:', error, 'dateString:', dateString);
+      return '시간 정보 오류';
     }
   };
 
   return (
-    <Card width="medium" key={myMoment.id} shadow={!myMoment.read}>
+    // <Card width="medium" key={myMoment.id} shadow={!myMoment.read}> // NOTE: 내꺼 코드
+    <Card width="medium" key={myMoment.id}>
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
-            {/* TODO: 추후 Icon 컴포넌트로 변경 필요 */}
-            <Timer size={16} color={theme.colors['gray-400']} />{' '}
-            <S.TimeStamp>{formatRelativeTime(myMoment.createdAt)}</S.TimeStamp>
+            <Timer size={16} color={theme.colors['gray-400']} />
+            <S.TimeStamp>{getFormattedTime(myMoment.createdAt)}</S.TimeStamp>
           </S.TitleWrapper>
         }
         subtitle={myMoment.content}
@@ -65,8 +74,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             ))}
           </S.EmojiContainer>
         )}
-        {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
-        {!myMoment.read && <Button onClick={handleCommentOpen} title="읽음 처리" />}
+        {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체
+        {!myMoment.read && <Button onClick={handleCommentOpen} title="읽음 처리" />} */}
       </Card.Action>
     </Card>
   );

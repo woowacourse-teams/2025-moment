@@ -1,14 +1,43 @@
+import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
-import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
-import { MomentWithNotifications } from '../types/momentsWithNotifications';
+// import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
+// import { MomentWithNotifications } from '../types/momentsWithNotifications'; // NOTE: 내꺼 코드
+import { useMomentsQuery } from '../hook/useMomentsQuery';
+import type { MyMomentsItem } from '../types/moments';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
-  const { momentWithNotifications, isLoading } = useMomentsWithNotifications();
+  // const { momentWithNotifications, isLoading } = useMomentsWithNotifications(); // NOTE: 내꺼 코드
 
-  const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
+  // const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
+  const {
+    data: momentsResponse,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMomentsQuery();
+
+  if (isError) {
+    console.error('Error fetching moments:', error);
+    return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
+  }
+
+  const myMoments = momentsResponse?.pages.flatMap(page => page.data.items) ?? [];
+  const hasMoments = myMoments?.length && myMoments.length > 0;
+
+  const observerRef = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    enabled: hasNextPage && !isFetchingNextPage,
+  });
 
   if (isLoading) {
     return (
@@ -23,9 +52,24 @@ export const MyMomentsList = () => {
   return (
     <S.MomentsContainer>
       {hasMoments ? (
-        momentWithNotifications?.map((myMoment: MomentWithNotifications) => (
-          <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
-        ))
+        // momentWithNotifications?.map((myMoment: MomentWithNotifications) => ( // NOTE: 내꺼 코드
+        //   <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
+        // ))
+        <>
+          {myMoments?.map((myMoment: MyMomentsItem, index: number) => (
+            <MyMomentsCard key={`${myMoment.createdAt}-${index}`} myMoment={myMoment} />
+          ))}
+
+          <div ref={observerRef} style={{ height: '1px' }} />
+
+          {isFetchingNextPage && (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <CommonSkeletonCard key={`mymoments-loading-skeleton-${index}`} variant="moment" />
+              ))}
+            </>
+          )}
+        </>
       ) : (
         <NotFound
           title="아직 모멘트가 없어요"

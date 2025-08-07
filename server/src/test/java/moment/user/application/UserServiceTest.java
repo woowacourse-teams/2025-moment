@@ -1,12 +1,5 @@
 package moment.user.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
@@ -26,6 +19,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserServiceTest {
@@ -34,8 +36,15 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserQueryService userQueryService;
+
+    @Mock
+    private NicknameGenerateService nicknameGenerateService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -140,5 +149,29 @@ class UserServiceTest {
 
         // & then
         assertThat(response.isExists()).isFalse();
+    }
+
+    @Test
+    void 닉네임을_랜덤으로_생성한다() {
+        // given
+        String nickname = "깊은 물속의 하마";
+        given(nicknameGenerateService.createRandomNickname()).willReturn(nickname);
+
+        // when & then
+        assertAll(
+                () -> assertThatCode(() -> userService.createRandomNickname()).doesNotThrowAnyException(),
+                () -> then(nicknameGenerateService).should(times(1)).createRandomNickname()
+        );
+    }
+
+    @Test
+    void 랜덤으로_생성한_닉네임이_존재하는_경우_임계치_이후_예외가_발생합니다() {
+        // given
+        given(nicknameGenerateService.createRandomNickname()).willThrow(new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED));
+
+        // when & then
+        assertThatThrownBy(() -> userService.createRandomNickname())
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_GENERATION_FAILED);
     }
 }

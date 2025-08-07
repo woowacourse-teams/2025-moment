@@ -13,10 +13,7 @@ export const TodayCommentWriteContent = () => {
 
   return (
     <S.TodayContentWrapper>
-      <Card.TitleContainer
-        title={''} // 추후 공용 컴포넌트 추가 후 수정
-        subtitle={momentsData || ''}
-      />
+      <Card.TitleContainer title={''} subtitle={momentsData || ''} />
       <Card.Content>
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."

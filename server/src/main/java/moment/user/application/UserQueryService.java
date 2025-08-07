@@ -10,5 +10,7 @@ public interface UserQueryService {
 
     boolean existsById(Long id);
 
+    boolean existsByNickname(String nickname);
+
     List<User> findNotMatchedUsersTodayByMomenter(User momenter);
 }

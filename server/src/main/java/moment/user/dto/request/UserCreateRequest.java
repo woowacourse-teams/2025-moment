@@ -1,10 +1,8 @@
 package moment.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import moment.user.domain.User;
 
 @Schema(description = "회원가입 요청")
 public record UserCreateRequest(
@@ -24,7 +22,7 @@ public record UserCreateRequest(
         String rePassword,
 
         @Schema(description = "사용자 닉네임", example = "mimi")
-        @Pattern(regexp = "^[a-zA-Z0-9가-힣]{2,6}$", message = "NICKNAME_INVALID")
+        @Pattern(regexp = "^.{1,15}$", message = "NICKNAME_INVALID")
         @NotBlank(message = "NICKNAME_INVALID")
         String nickname
 ) {

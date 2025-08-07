@@ -1,14 +1,14 @@
 export interface CommentsResponse {
   status: number;
   data: {
+    items: CommentItem[];
+    nextCursor: string | null;
     hasNextPage: boolean;
-    items: MyComments[];
-    nextCursor: any; // TODO: 추후 타입 정의 필요
     pageSize: number;
   };
 }
 
-export interface MyComments {
+export interface CommentItem {
   id: number;
   content: string;
   createdAt: string;
@@ -16,13 +16,7 @@ export interface MyComments {
     content: string;
     createdAt: string;
   };
-  emojis: [
-    {
-      id: number;
-      emojiType: string;
-      userId: number;
-    },
-  ];
+  emojis: Emoji[];
 }
 
 export interface Emoji {

@@ -23,7 +23,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
-import moment.notification.application.NotificationService;
+import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.reward.application.RewardService;
@@ -64,7 +64,7 @@ class CommentServiceTest {
     private CommentQueryService commentQueryService;
 
     @Mock
-    private NotificationService notificationService;
+    private SseNotificationService SseNotificationService;
 
     @Mock
     private NotificationRepository notificationRepository;

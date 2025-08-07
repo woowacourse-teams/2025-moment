@@ -42,7 +42,7 @@ export const Comment: Story = {
     docs: {
       description: {
         story:
-          'PostComments 페이지에서 사용되는 스켈레톤 카드입니다. 원본 모멘트, 보낸 공감, 받은 스티커 영역을 포함합니다.',
+          'MyComments 페이지에서 사용되는 스켈레톤 카드입니다. 원본 모멘트, 보낸 공감, 받은 스티커 영역을 포함합니다.',
       },
     },
   },
