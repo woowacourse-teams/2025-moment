@@ -1,6 +1,6 @@
-// import { MyMoments } from './moments';
+import { MyMomentsItem } from './moments';
 
-// export interface MomentWithNotifications extends MyMoments {
-//   notificationId: number | null;
-//   read: boolean;
-// }
+export interface MomentWithNotifications extends MyMomentsItem {
+  notificationId: number | null;
+  read: boolean;
+}

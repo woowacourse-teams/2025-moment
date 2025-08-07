@@ -1,34 +1,29 @@
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
-// import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
-// import { MomentWithNotifications } from '../types/momentsWithNotifications'; // NOTE: 내꺼 코드
-import { useMomentsQuery } from '../hook/useMomentsQuery';
-import type { MyMomentsItem } from '../types/moments';
+import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications'; // NOTE: 내꺼 코드
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 
 export const MyMomentsList = () => {
-  // const { momentWithNotifications, isLoading } = useMomentsWithNotifications(); // NOTE: 내꺼 코드
-
-  // const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
   const {
-    data: momentsResponse,
+    momentWithNotifications,
     isLoading,
     isError,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useMomentsQuery();
+  } = useMomentsWithNotifications();
+
+  console.log('momentWithNotifications', momentWithNotifications);
+  const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
 
   if (isError) {
     console.error('Error fetching moments:', error);
     return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
   }
-
-  const myMoments = momentsResponse?.pages.flatMap(page => page.data.items) ?? [];
-  const hasMoments = myMoments?.length && myMoments.length > 0;
 
   const observerRef = useIntersectionObserver({
     onIntersect: () => {
@@ -52,12 +47,9 @@ export const MyMomentsList = () => {
   return (
     <S.MomentsContainer>
       {hasMoments ? (
-        // momentWithNotifications?.map((myMoment: MomentWithNotifications) => ( // NOTE: 내꺼 코드
-        //   <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
-        // ))
         <>
-          {myMoments?.map((myMoment: MyMomentsItem, index: number) => (
-            <MyMomentsCard key={`${myMoment.createdAt}-${index}`} myMoment={myMoment} />
+          {momentWithNotifications?.map((myMoment: MomentWithNotifications) => (
+            <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
           ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />
