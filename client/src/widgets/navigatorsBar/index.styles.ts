@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const IconBarContainer = styled.div`
+export const NavigatorsBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

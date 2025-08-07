@@ -1,10 +1,10 @@
-import { Link } from 'react-router';
-import * as S from './IconBar.styles';
 import { ROUTES } from '@/app/routes/routes';
+import { Link } from 'react-router';
+import * as S from './index.styles';
 
-export const IconBar = () => {
+export const NavigatorsBar = () => {
   return (
-    <S.IconBarContainer>
+    <S.NavigatorsBarContainer>
       <Link to={ROUTES.TODAY_MOMENT}>
         <S.LinkContainer>
           <S.IconImage src="/bluePlanet.png" alt="bluePlanet"></S.IconImage>
@@ -19,12 +19,12 @@ export const IconBar = () => {
         </S.LinkContainer>
       </Link>
 
-      <Link to={ROUTES.COLLECTION}>
+      <Link to={ROUTES.COLLECTION_MYMOMENT}>
         <S.LinkContainer>
           <S.IconImage src="/starPlanet.png" alt="starPlanet"></S.IconImage>
           <S.IconText>나만의 모음집</S.IconText>
         </S.LinkContainer>
       </Link>
-    </S.IconBarContainer>
+    </S.NavigatorsBarContainer>
   );
 };
