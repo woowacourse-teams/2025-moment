@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { subscribeNotifications } from '../api/subscribeNotifications';
-import { NotificationItem, NotificationResponse } from '../types/notifications';
+import { NotificationItem } from '../types/notifications';
 import { SSENotification } from '../types/sseNotification';
 import { useToast } from '@/shared/hooks/useToast';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
+import { NotificationResponse } from '../types/notifications';
 
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
@@ -26,24 +27,25 @@ export const useSSENotifications = () => {
     const eventSource = subscribeNotifications();
 
     eventSource.onopen = event => {
-      console.log('✅ [전역 SSE] 연결 성공', event);
+      console.log('✅ [SSE] 연결 성공', event);
     };
 
     eventSource.addEventListener('heartbeat', event => {
-      console.log('💓 [전역 SSE] heartbeat 수신:', event.data);
+      console.log('💓 [SSE] heartbeat 수신:', event.data);
     });
 
     eventSource.addEventListener('connect', event => {
-      console.log('🔗 [전역 SSE] connect 이벤트 수신:', event.data);
+      console.log('🔗 [SSE] connect 이벤트 수신:', event.data);
     });
 
     eventSource.addEventListener('notification', event => {
-      console.log('🔔 [전역 SSE] notification 수신:', event.data);
+      console.log('🔔 [SSE] notification 수신:', event.data);
 
       try {
         const sseData: SSENotification = JSON.parse(event.data);
+        console.log('sseData', sseData);
 
-        const newNotificationResponse: SSENotification = {
+        const newNotification: NotificationItem = {
           notificationType: sseData.notificationType,
           targetType: sseData.targetType,
           targetId: sseData.targetId,
@@ -51,17 +53,22 @@ export const useSSENotifications = () => {
           isRead: false,
         };
 
-        const currentNotifications =
-          queryClient.getQueryData<NotificationItem[]>(['notifications']) || [];
+        const currentData = queryClient.getQueryData<NotificationResponse>(['notifications']);
+        const currentNotifications = currentData?.data || [];
 
-        const updatedNotifications = [newNotificationResponse, ...currentNotifications];
+        const updatedNotifications = [newNotification, ...currentNotifications];
 
-        queryClient.setQueryData(['notifications'], updatedNotifications);
+        const updatedData: NotificationResponse = {
+          status: 200,
+          data: updatedNotifications,
+        };
+
+        queryClient.setQueryData(['notifications'], updatedData);
 
         if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
-          showSuccess('새로운 댓글이 달렸습니다!');
+          showSuccess('나의 모멘트에 코멘트가 달렸습니다!');
         } else if (sseData.notificationType === 'NEW_REPLY_ON_COMMENT') {
-          showSuccess('댓글에 답장이 달렸습니다!');
+          showSuccess('나의 코멘트에 이모지가 달렸습니다!');
         }
 
         if (sseData.targetType === 'MOMENT') {
@@ -70,17 +77,17 @@ export const useSSENotifications = () => {
           queryClient.invalidateQueries({ queryKey: ['comments'] });
         }
       } catch (error) {
-        console.error('❌ [전역 SSE] 데이터 파싱 에러:', error);
+        console.error(error);
         showError('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
       }
     });
 
     eventSource.onerror = error => {
-      console.error('❌ [전역 SSE] 연결 에러:', error);
+      console.error('❌ [SSE] 연결 에러:', error);
     };
 
     return () => {
-      console.log('🔌 [전역 SSE] 연결 해제...');
+      console.log('🔌 [SSE] 연결 해제...');
       eventSource.close();
     };
   }, [isLoggedIn, queryClient, showError, showSuccess]);
