@@ -26,11 +26,6 @@ public class DefaultUserQueryService implements UserQueryService {
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return userRepository.existsById(id);
-    }
-
-    @Override
     public boolean existsByNickname(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
