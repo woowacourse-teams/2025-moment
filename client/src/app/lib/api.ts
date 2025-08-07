@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { AxiosError } from 'axios';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
+export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
 
 export const api = axios.create({
   baseURL: BASE_URL,

@@ -1,5 +1,3 @@
-import type { Emoji } from '@/features/emoji/type/emoji';
-
 export interface CommentsResponse {
   status: number;
   data: {
@@ -19,6 +17,12 @@ export interface CommentItem {
     createdAt: string;
   };
   emojis: Emoji[];
+}
+
+export interface Emoji {
+  id: number;
+  emojiType: string;
+  userId: number;
 }
 
 export interface SendCommentsData {
