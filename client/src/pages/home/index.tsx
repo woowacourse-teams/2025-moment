@@ -5,8 +5,8 @@ import { Hero } from '@/widgets/hero';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
-import { IconBar } from '@/widgets/icons/IconBar';
 import { useState } from 'react';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -42,7 +42,7 @@ export default function HomePage() {
         </button>
       </S.BlackHoleContainer>
       <S.WidgetContainer isWidgetOpen={isWidgetOpen}>
-        <IconBar $isNavBar={false} />
+        <NavigatorsBar $isNavBar={false} />
       </S.WidgetContainer>
     </S.HomePageWrapper>
   );
