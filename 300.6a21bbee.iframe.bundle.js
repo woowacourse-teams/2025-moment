@@ -134,7 +134,7 @@
   background: linear-gradient(
     90deg,
     ${theme.w.colors["slate-800_60"]} 25%,
-    ${theme.w.colors["gray-400"]} 50%,
+    ${theme.w.colors["gray-700"]} 50%,
     ${theme.w.colors["slate-800_60"]} 75%
   );
   background-size: 200px 100%;
@@ -151,7 +151,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: ${theme.w.typography.cardWidth.large};
+  width: ${theme.w.typography.cardWidth.medium};
   padding: 20px 30px;
   background-color: ${theme.w.colors["slate-800_60"]};
   border-radius: 10px;
@@ -306,4 +306,4 @@
     outline-offset: 2px;
   }
 `}}]);
-//# sourceMappingURL=300.af7ac9a3.iframe.bundle.js.map
+//# sourceMappingURL=300.6a21bbee.iframe.bundle.js.map
