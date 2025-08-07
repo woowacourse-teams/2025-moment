@@ -5,8 +5,12 @@ import { Hero } from '@/widgets/hero';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
+import { IconBar } from '@/widgets/icons/IconBar';
+import { useState } from 'react';
 
 export default function HomePage() {
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
@@ -19,6 +23,10 @@ export default function HomePage() {
     navigate(ROUTES.TODAY_MOMENT);
   };
 
+  const handleWidgetClick = () => {
+    setIsWidgetOpen(!isWidgetOpen);
+  };
+
   return (
     <S.HomePageWrapper>
       <S.HeroSection>
@@ -27,6 +35,14 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
+      <S.BlackHoleContainer>
+        <button onClick={handleWidgetClick}>
+          <S.BlackHoleImage src="/blackHole.png" alt="blackHole" />
+        </button>
+      </S.BlackHoleContainer>
+      <S.WidgetContainer isWidgetOpen={isWidgetOpen}>
+        <IconBar $isNavBar={false} />
+      </S.WidgetContainer>
     </S.HomePageWrapper>
   );
 }

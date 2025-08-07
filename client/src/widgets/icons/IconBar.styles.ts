@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 
-export const IconBarContainer = styled.div`
+export const IconBarContainer = styled.div<{ $isNavBar?: boolean }>`
   display: flex;
+  flex-direction: ${({ $isNavBar }) => ($isNavBar ? 'row' : 'column')};
   align-items: center;
   justify-content: center;
   gap: 60px;
@@ -11,11 +12,11 @@ export const IconBarContainer = styled.div`
   }
 `;
 
-export const LinkContainer = styled.div`
+export const LinkContainer = styled.div<{ $isNavBar?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: row;
+  flex-direction: ${({ $isNavBar }) => ($isNavBar ? 'row' : 'column')};
   gap: 12px;
 
   &:hover {
@@ -39,10 +40,3 @@ export const IconText = styled.p`
     font-size: 1.1rem;
   }
 `;
-
-// export const IconBarAside = styled.aside`
-//   position: fixed;
-//   left: 60px;
-//   top: 50%;
-//   transform: translateY(-50%);
-//   z-index: 50;

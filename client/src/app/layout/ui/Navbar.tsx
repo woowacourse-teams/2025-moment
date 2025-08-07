@@ -37,7 +37,7 @@ export const Navbar = () => {
       <Logo />
 
       <S.DesktopNavItems>
-        <IconBar />
+        <IconBar $isNavBar={true} />
       </S.DesktopNavItems>
 
       <S.DesktopAuthButton>
