@@ -44,21 +44,29 @@ export const MyCommentsList = () => {
   }
 
   return (
-    <>
+    <S.MyCommentsListContainer>
       {hasComments ? (
-        <S.MyCommentsListContainer>
+        <>
           {commentsWithNotifications.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />
-        </S.MyCommentsListContainer>
+
+          {isFetchingNextPage && (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <CommonSkeletonCard key={`mymoments-loading-skeleton-${index}`} variant="moment" />
+              ))}
+            </>
+          )}
+        </>
       ) : (
         <NotFound
           title="아직 작성한 코멘트가 없어요"
           subtitle="다른 사용자의 모멘트에 따뜻한 공감을 보내보세요"
         />
       )}
-    </>
+    </S.MyCommentsListContainer>
   );
 };
