@@ -3,7 +3,6 @@ spring:
     name: moment
   config:
     import: optional:file:.env[.properties]
-  jpa.open-in-view: false
 
   datasource:
     url: jdbc:h2:mem:database-test
@@ -16,6 +15,7 @@ spring:
         show_sql: false
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
 
   sql:
     init:

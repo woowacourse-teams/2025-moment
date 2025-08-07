@@ -1,7 +1,7 @@
 spring:
   application:
     name: moment
-  jpa.open-in-view: false
+
 
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
@@ -17,6 +17,7 @@ spring:
         show_sql: false
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
 
   sql:
     init:
