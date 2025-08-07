@@ -14,7 +14,7 @@ export const TodayMomentWriteContent = ({
   handleSendContent,
   content,
 }: TodayMomentWriteContent) => {
-  const MAX_LENGTH = 300;
+  const MAX_LENGTH = 200;
 
   return (
     <S.TodayContentWrapper>
