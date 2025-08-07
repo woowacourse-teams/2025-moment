@@ -1,6 +1,7 @@
 spring:
   application:
     name: moment
+  jpa.open-in-view: false
 
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}

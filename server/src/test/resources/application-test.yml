@@ -3,6 +3,7 @@ spring:
     name: moment
   config:
     import: optional:file:.env[.properties]
+  jpa.open-in-view: false
 
   datasource:
     url: jdbc:h2:mem:database-test
