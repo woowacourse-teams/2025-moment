@@ -50,6 +50,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
+        EventSource: 'readonly',
+        MessageEvent: 'readonly',
         alert: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
