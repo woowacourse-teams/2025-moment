@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew clean test
 
   build-and-push:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
