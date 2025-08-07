@@ -11,6 +11,7 @@ on:
 
 jobs:
   test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -42,8 +43,8 @@ jobs:
 
       - name: build with Gradle
         run: ./gradlew clean test
+
   build-and-push:
-    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04-arm64
     steps:
