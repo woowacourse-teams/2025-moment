@@ -23,7 +23,7 @@ export const SkeletonContainer = styled.div<{
   background: linear-gradient(
     90deg,
     ${theme.colors['slate-800_60']} 25%,
-    ${theme.colors['gray-400']} 50%,
+    ${theme.colors['gray-700']} 50%,
     ${theme.colors['slate-800_60']} 75%
   );
   background-size: 200px 100%;
