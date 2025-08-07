@@ -1,9 +1,5 @@
 package moment.moment.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -13,6 +9,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class MomentTest {
@@ -31,15 +31,15 @@ class MomentTest {
     }
 
     @Test
-    void 모멘트_내용_길이가_100자가_넘는_경우_예외가_발생한다() {
+    void 모멘트_내용_길이가_200자가_넘는_경우_예외가_발생한다() {
         //given
         User user = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
-        String longContent = "11assaskdfjajksdhfjlkashdfjkahsdkjlfhaskljdfhakljsdhfkjlashdfkjlahsdkjflhasdkjlfhakljsdhfjkalsdhfkjlahsdfjklahsdjklfhakljsdhfjkalshdfjklahsdkfjlhasldkjf";
+        String longContent = "=".repeat(201);
 
         // when & then
         assertThatThrownBy(() -> new Moment(longContent, user))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.");
+                .hasMessage("모멘트는 1자 이상, 200자 이하로만 작성 가능합니다.");
     }
 
     @Test

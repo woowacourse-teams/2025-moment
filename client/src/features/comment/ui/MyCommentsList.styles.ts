@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 export const MyCommentsPageContainer = styled.section`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 30px;
   margin: 20px;
 `;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -40,20 +41,20 @@ public class SseNotificationService {
         }
     }
 
-//    @Scheduled(fixedRate = 45_000) // 45초마다 실행
-//    public void sendHeartbeat() {
-//        emitters.forEach((userId, emitter) -> {
-//            try {
-//                // comment 이벤트, 데이터는 현재 시간
-//                emitter.send(SseEmitter.event()
-//                        .name("heartbeat")
-//                        .comment("keeping connection alive"));
-//                log.info("Sent heartbeat to user {}", userId); // 임시로그
-//            } catch (IOException e) {
-//                // 연결이 끊겼다고 판단하고 emitter 제거
-//                log.info("User {} connection lost. Removing emitter.", userId); // 임시로그
-//                emitters.remove(userId);
-//            }
-//        });
-//    }
+    @Scheduled(fixedRate = 45_000) // 45초마다 실행
+    public void sendHeartbeat() {
+        emitters.forEach((userId, emitter) -> {
+            try {
+                // comment 이벤트, 데이터는 현재 시간
+                emitter.send(SseEmitter.event()
+                        .name("heartbeat")
+                        .comment("keeping connection alive"));
+                log.info("Sent heartbeat to user {}", userId); // 임시로그
+            } catch (IOException e) {
+                // 연결이 끊겼다고 판단하고 emitter 제거
+                log.info("User {} connection lost. Removing emitter.", userId); // 임시로그
+                emitters.remove(userId);
+            }
+        });
+    }
 }
