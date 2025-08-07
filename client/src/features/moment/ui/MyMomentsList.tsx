@@ -17,7 +17,6 @@ export const MyMomentsList = () => {
     isFetchingNextPage,
   } = useMomentsWithNotifications();
 
-  console.log('momentWithNotifications', momentWithNotifications);
   const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
 
   if (isError) {

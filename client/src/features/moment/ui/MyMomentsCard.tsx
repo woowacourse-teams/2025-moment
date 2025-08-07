@@ -15,7 +15,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications(); // NOTE: 내꺼 코드
   const emojis = myMoment.comment?.emojis || [];
 
-  const handleCommentOpen = () => {
+  const handleMomentOpen = () => {
     if (myMoment.read || isReadingNotification) return;
     if (myMoment.notificationId) {
       handleReadNotifications(myMoment.notificationId);
@@ -74,8 +74,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             ))}
           </S.EmojiContainer>
         )}
-        {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
-        {!myMoment.read && <Button onClick={handleCommentOpen} title="확인" />}
+        {/* TODO: 임시방편.추후 모멘트 모달 버튼으로 대체 */}
+        {!myMoment.read && <Button onClick={handleMomentOpen} title="확인" />}
       </Card.Action>
     </Card>
   );

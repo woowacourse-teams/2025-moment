@@ -1,27 +1,27 @@
-import { useCommentsQuery } from '@/features/comment/hooks/useCommentsQuery';
 import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './MyCommentsList.styles';
+import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
 
 export const MyCommentsList = () => {
   const {
-    data: commentsResponse,
+    commentsWithNotifications,
     isLoading,
     isError,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useCommentsQuery();
+  } = useCommentsWithNotifications();
+
+  const hasComments = commentsWithNotifications?.length && commentsWithNotifications.length > 0;
 
   if (isError) {
     console.error('Error fetching comments:', error);
     return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
   }
-
-  const myComments = commentsResponse?.pages.flatMap(page => page.data.items) ?? [];
 
   const observerRef = useIntersectionObserver({
     onIntersect: () => {
@@ -43,13 +43,11 @@ export const MyCommentsList = () => {
     );
   }
 
-  const hasComments = myComments?.length > 0;
-
   return (
     <>
       {hasComments ? (
         <S.MyCommentsListContainer>
-          {myComments.map(myComment => (
+          {commentsWithNotifications.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 

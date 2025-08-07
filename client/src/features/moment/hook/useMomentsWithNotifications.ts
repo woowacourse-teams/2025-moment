@@ -20,9 +20,6 @@ export const useMomentsWithNotifications = () => {
     [],
   );
 
-  console.log('moments', moments);
-  console.log('momentsData', momentsData);
-  console.log('notifications', notifications);
   useEffect(() => {
     if (!momentsData) {
       return;
