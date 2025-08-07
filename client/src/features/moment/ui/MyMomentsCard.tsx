@@ -15,10 +15,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const emojis = myMoment.comment?.emojis || [];
 
-  // TODO: 서버 API 연동시 잘 동작하나 확인 필요
   const handleCommentOpen = () => {
     if (myMoment.read || isReadingNotification) return;
-    handleReadNotifications(myMoment.id);
+    if (myMoment.notificationId) {
+      handleReadNotifications(myMoment.notificationId);
+    }
   };
 
   return (

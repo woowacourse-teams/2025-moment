@@ -13,7 +13,10 @@ export default function PostCommentsPage() {
 
   const handleCommentOpen = (commentId: number) => {
     if (isReadingNotification) return;
-    handleReadNotifications(commentId);
+    const comment = commentsWithNotifications.find(comment => comment.id === commentId);
+    if (comment?.notificationId) {
+      handleReadNotifications(comment.notificationId);
+    }
   };
 
   if (isLoading) {
