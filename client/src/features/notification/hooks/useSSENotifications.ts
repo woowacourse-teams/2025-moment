@@ -43,7 +43,6 @@ export const useSSENotifications = () => {
 
       try {
         const sseData: SSENotification = JSON.parse(event.data);
-        console.log('sseData', sseData);
 
         const newNotification: NotificationItem = {
           notificationType: sseData.notificationType,
