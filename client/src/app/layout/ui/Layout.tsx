@@ -5,6 +5,7 @@ import { ErrorBoundary } from '@/shared/ui';
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import * as S from './Layout.styles';
+import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
 
 const GATracker = () => {
   const location = useLocation();
@@ -21,6 +22,8 @@ const GATracker = () => {
 };
 
 export const Layout: React.FC = () => {
+  useSSENotifications();
+
   return (
     <S.Wrapper>
       <GATracker />

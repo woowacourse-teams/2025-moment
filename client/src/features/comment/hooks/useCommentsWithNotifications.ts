@@ -19,7 +19,6 @@ export const useCommentsWithNotifications = () => {
   const [commentsWithNotifications, setCommentsWithNotifications] = useState<
     CommentWithNotifications[]
   >([]);
-  console.log('notifications', notifications);
 
   useEffect(() => {
     if (!commentsData) {

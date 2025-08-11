@@ -12,6 +12,7 @@ export default merge(common, {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
     clean: true,
   },
   devServer: {

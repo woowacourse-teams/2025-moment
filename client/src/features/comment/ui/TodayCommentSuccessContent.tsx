@@ -1,3 +1,4 @@
+import { ROUTES } from '@/app/routes/routes';
 import { Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
@@ -5,10 +6,12 @@ import { Heart, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from '../../moment/ui/TodayContent.styles';
 
+const GO_TO_MY_COMMENT_COLLECTION = ROUTES.COLLECTION_MYMOMENT;
+
 export const TodayCommentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/collection');
+  const handleNavigate = () => navigate(GO_TO_MY_COMMENT_COLLECTION);
 
   return (
     <S.TodayContentWrapper>
