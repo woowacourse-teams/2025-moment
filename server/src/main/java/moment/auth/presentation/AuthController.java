@@ -126,9 +126,15 @@ public class AuthController {
                 .maxAge(1800)
                 .build();
 
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://www.connectingmoment.com")
+                .path("/auth/callback")
+                .queryParam("success", "true")
+                .build()
+                .toUriString();
+
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .header(HttpHeaders.LOCATION, "http://www.connectingmoment.com")
+                .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
     }
 }
