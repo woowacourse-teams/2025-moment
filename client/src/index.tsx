@@ -21,6 +21,16 @@ if ('serviceWorker' in navigator) {
       const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
       await navigator.serviceWorker.ready; // 등록 완료 보장
       console.log('[SW] ready:', reg.scope);
+
+      const { requestFCMPermissionAndToken, setupForegroundMessage } = await import(
+        '@/shared/lib/firebase/firebase'
+      );
+      const token = await requestFCMPermissionAndToken(); // 내부에서 vapidKey 사용
+      console.log('[FCM] token:', token);
+      if (token) {
+        localStorage.setItem('fcmToken', token); // (선택) 나중에 쉽게 꺼내보려고 저장
+        await setupForegroundMessage(); // 포그라운드 알림 리스너 설치
+      }
     } catch (e) {
       console.error('[SW] registration failed:', e);
     }

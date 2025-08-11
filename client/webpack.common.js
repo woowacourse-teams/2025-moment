@@ -56,9 +56,9 @@ const config = {
       patterns: [
         {
           from: 'public',
-          to: '', // 출력 루트(dist/)로 복사
+          to: '',
           globOptions: {
-            ignore: ['**/index.html'], // index.html은 HtmlWebpackPlugin이 처리
+            ignore: ['**/index.html'],
           },
         },
       ],
