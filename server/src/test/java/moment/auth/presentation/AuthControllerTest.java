@@ -104,7 +104,7 @@ class AuthControllerTest {
                 .get("/api/v1/auth/callback/google")
                 .then()
                 .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
-                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com"))
+                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com/auth/callback?success=true"))
                 .header(HttpHeaders.SET_COOKIE, containsString("token="));
     }
 }
