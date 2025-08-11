@@ -1,5 +1,5 @@
 import { useLogoutMutation } from '@/features/auth/hooks/useLogoutMutation';
-import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
+import { Profile } from '@/features/auth/types/profile';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Button } from '@/shared/ui/button/Button';
@@ -9,11 +9,11 @@ import * as S from './AuthButton.styles';
 
 interface AuthButtonProps {
   onClick?: () => void;
+  profile: Profile | undefined;
 }
 
-export const AuthButton = ({ onClick }: AuthButtonProps) => {
+export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
   const navigate = useNavigate();
-  const { data: profile, isError } = useProfileQuery();
   const { mutate: logout } = useLogoutMutation();
   const { isOpen: isDropdownOpen, toggle: toggleDropdown } = useToggle(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -48,7 +48,7 @@ export const AuthButton = ({ onClick }: AuthButtonProps) => {
     onClick?.();
   };
 
-  if (isError || !profile) {
+  if (!profile) {
     return <Button title="로그인" onClick={handleLoginClick} variant="primary" />;
   }
 
