@@ -6,6 +6,7 @@ import MyMomentCollectionPage from '@/pages/collection/mymoment';
 import GoogleCallbackPage from '@/pages/googleCallback/page';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
+import NotFoundPage from '@/pages/notFound';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
@@ -26,6 +27,7 @@ export const router = createBrowserRouter(
         <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
         <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Route>,
   ),
 );
