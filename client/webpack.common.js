@@ -50,6 +50,18 @@ const config = {
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
     }),
+
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'public',
+          to: '', // 출력 루트(dist/)로 복사
+          globOptions: {
+            ignore: ['**/index.html'], // index.html은 HtmlWebpackPlugin이 처리
+          },
+        },
+      ],
+    }),
   ],
 };
 
