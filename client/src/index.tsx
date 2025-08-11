@@ -14,6 +14,19 @@ async function enableMocking() {
   });
 }
 
+// MSW랑 같이 켜지않도록 주의
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      await navigator.serviceWorker.ready; // 등록 완료 보장
+      console.log('[SW] ready:', reg.scope);
+    } catch (e) {
+      console.error('[SW] registration failed:', e);
+    }
+  });
+}
+
 async function startApp() {
   // await enableMocking();
   // cd
