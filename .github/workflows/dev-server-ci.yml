@@ -101,4 +101,11 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/moment:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/moment:buildcache,mode=max
 
+      - name: Save image tag to file
+        run: echo ${{ github.sha }} > ./image-tag.txt
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: server/image-tag.txt

@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class MomentApplication {
-    //굿
     public static void main(String[] args) {
+        // hi hi hi hi hi hi hi
         SpringApplication.run(MomentApplication.class, args);
     }
 }
