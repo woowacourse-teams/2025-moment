@@ -1,9 +1,9 @@
-import { useAuthContext } from '@/features/auth/context/useAuthContext';
+import { useToast } from '@/shared/hooks/useToast';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function GoogleCallbackPage() {
-  const { setIsLoggedIn } = useAuthContext();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,10 +11,9 @@ export default function GoogleCallbackPage() {
     const success = urlParams.get('success');
 
     if (success === 'true') {
-      setIsLoggedIn(true);
+      showSuccess('구글 로그인에 성공했습니다.');
     } else {
-      setIsLoggedIn(false);
-      console.error('Google login failed. Please try again.');
+      showError('구글 로그인에 실패했습니다. 다시 시도해주세요.');
     }
     navigate('/');
   }, []);
