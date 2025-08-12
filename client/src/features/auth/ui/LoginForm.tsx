@@ -62,8 +62,9 @@ export const LoginForm = () => {
         <S.LoginFooterContent>
           <S.LoginForgotPassword>비밀번호를 잊으셨나요?</S.LoginForgotPassword>
           <S.LoginSignupContainer>
-            <span>아직 회원이 아니신가요?</span>
-            <S.LoginSignupLink onClick={handleSignupClick}>회원가입</S.LoginSignupLink>
+            <S.LoginSignupLink onClick={handleSignupClick}>
+              아직 회원이 아니신가요?
+            </S.LoginSignupLink>
           </S.LoginSignupContainer>
         </S.LoginFooterContent>
       </S.LoginFooter>
