@@ -5,7 +5,7 @@ import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
 
-import { useAuthContext } from '@/features/auth/context/useAuthContext';
+import { sendEvent } from '@/shared/lib/ga';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -30,6 +30,23 @@ export const Navbar = () => {
     excludeRefs: [dropdownButtonRef],
   });
 
+  const handleDesktopAuthButtonClick = () => {
+    sendEvent({
+      category: 'HomePage',
+      action: 'Click Desktop Auth Button',
+      label: 'Desktop Auth Button',
+    });
+  };
+
+  const handleMobileAuthButtonClick = () => {
+    toggleMobileMenu();
+    sendEvent({
+      category: 'HomePage',
+      action: 'Click Mobile Auth Button',
+      label: 'Mobile Auth Button',
+    });
+  };
+
   return (
     <S.Navbar>
       <Logo />
@@ -38,7 +55,7 @@ export const Navbar = () => {
 
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
-        <AuthButton profile={profile} />
+        <AuthButton onClick={handleDesktopAuthButtonClick} />
       </S.DesktopAuthButton>
 
       <S.DropdownButton
@@ -59,7 +76,7 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <AuthButton onClick={toggleMobileMenu} profile={profile} />
+            <AuthButton onClick={handleMobileAuthButtonClick} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
       </S.MobileMenu>
