@@ -8,12 +8,16 @@ import static org.hamcrest.Matchers.equalTo;
 import io.restassured.http.ContentType;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -106,5 +110,56 @@ class AuthControllerTest {
                 .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
                 .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com/auth/callback?success=true"))
                 .header(HttpHeaders.SET_COOKIE, containsString("token="));
+    }
+
+    @Test
+    void 쿠키로_토큰을_가지고_있으면_로그인_상태로_참을_반환한다() {
+        // given
+        String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
+
+        // when
+        LoginCheckResponse response = given().log().all()
+                .cookie("token", token)
+                .when().get("/api/v1/auth/login/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", LoginCheckResponse.class);
+
+        // then
+        assertThat(response.isLogged()).isTrue();
+    }
+
+    @Test
+    void 쿠키가_없으면_로그인_상태로_거짓을_반환한다() {
+        // when
+        LoginCheckResponse response = given().log().all()
+                .when().get("/api/v1/auth/login/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", LoginCheckResponse.class);
+
+        // then
+        assertThat(response.isLogged()).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "   "})
+    void 쿠키에_빈_토큰이_있으면_로그인_상태로_거짓을_반환한다(String token) {
+        // when
+        LoginCheckResponse response = given().log().all()
+                .cookie("token", token) // This will send a cookie with an empty or blank value
+                .when().get("/api/v1/auth/login/check")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", LoginCheckResponse.class);
+
+        // then
+        assertThat(response.isLogged()).isFalse();
     }
 }

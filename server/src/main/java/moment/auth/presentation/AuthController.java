@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -136,5 +138,16 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
+    }
+
+    @Operation(summary = "로그인 상태 확인", description = "사용자가 로그인 상태인지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 상태 확인 성공"),
+    })
+    @GetMapping("/login/check")
+    public ResponseEntity<SuccessResponse<LoginCheckResponse>> checkLogin(@CookieValue(value = "token", required = false) String token) {
+        LoginCheckResponse response = authService.loginCheck(token);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.ok(SuccessResponse.of(status, response));
     }
 }
