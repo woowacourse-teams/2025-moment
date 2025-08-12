@@ -27,8 +27,18 @@ jobs:
             sudo docker rm -f moment-app-server
           fi
 
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+
+      - name: Extract deploy tag
+        run: |
+          export DEPLOY_TAG=$(cat image_tag.txt)
+          echo "Deploying version: $DEPLOY_TAG"
+
       - name: Pull latest image
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:latest
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:$DEPLOY_TAG
 
       - name: Deploy with Docker Compose
         run: |
