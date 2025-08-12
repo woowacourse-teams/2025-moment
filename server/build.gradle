@@ -32,6 +32,8 @@ dependencies {
     implementation 'org.springframework.security:spring-security-crypto'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.flywaydb:flyway-core'
+    
+    developmentOnly 'org.flywaydb:flyway-mysql'
 
     compileOnly 'org.projectlombok:lombok'
 
