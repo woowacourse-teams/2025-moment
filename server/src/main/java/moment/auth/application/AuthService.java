@@ -2,6 +2,7 @@ package moment.auth.application;
 
 import lombok.RequiredArgsConstructor;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
@@ -34,5 +35,12 @@ public class AuthService {
 
     public Authentication getAuthenticationByToken(String token) {
         return tokenManager.extractAuthentication(token);
+    }
+
+    public LoginCheckResponse loginCheck(String token) {
+        if (token == null || token.isEmpty()) {
+            return LoginCheckResponse.createNotLogged();
+        }
+        return LoginCheckResponse.createLogged();
     }
 }

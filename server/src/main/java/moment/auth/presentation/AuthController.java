@@ -146,13 +146,8 @@ public class AuthController {
     })
     @GetMapping("/login/check")
     public ResponseEntity<SuccessResponse<LoginCheckResponse>> checkLogin(@CookieValue(value = "token", required = false) String token) {
-        if(token == null || token.isEmpty()) {
-            return ResponseEntity.ok(
-                    SuccessResponse.of(HttpStatus.OK,
-                    LoginCheckResponse.createNotLogged()));
-        }
-        return ResponseEntity.ok(
-                SuccessResponse.of(HttpStatus.OK,
-                        LoginCheckResponse.createLogged()));
+        LoginCheckResponse response = authService.loginCheck(token);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.ok(SuccessResponse.of(status, response));
     }
 }
