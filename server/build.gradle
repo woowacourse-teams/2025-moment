@@ -31,6 +31,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'org.springframework.security:spring-security-crypto'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.flywaydb:flyway-core'
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -44,7 +45,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'com.launchdarkly:okhttp-eventsource:2.7.1'
-	
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

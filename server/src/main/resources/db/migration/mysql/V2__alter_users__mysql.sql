@@ -1,0 +1,9 @@
+ALTER TABLE users ADD COLUMN current_point INT NOT NULL DEFAULT 0;
+
+ALTER TABLE users ADD COLUMN provider_type VARCHAR(20) NOT NULL;
+
+ALTER TABLE users DROP CONSTRAINT uq_users_email;
+
+ALTER TABLE users ADD UNIQUE (email, provider_type);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS level VARCHAR(10) NOT NULL;
