@@ -5,7 +5,7 @@ spring:
     import: optional:file:.env[.properties]
 
   datasource:
-    url: jdbc:h2:mem:database-test
+    url: jdbc:h2:mem:database-test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
 
   jpa:
     hibernate:
@@ -16,11 +16,14 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
     open-in-view: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration/h2
 
   sql:
     init:
-      mode: always
-      schema-locations: classpath:schema-test.sql
+      mode: never
 
   h2:
     console:
