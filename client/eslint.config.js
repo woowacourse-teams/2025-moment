@@ -58,8 +58,6 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         URLSearchParams: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
         // DOM types
         Node: 'readonly',
         Element: 'readonly',
