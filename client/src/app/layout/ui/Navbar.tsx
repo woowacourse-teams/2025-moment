@@ -10,6 +10,7 @@ import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { sendEvent } from '@/shared/lib/ga';
+import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -59,6 +60,7 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
+        <EXPBar progress={60} />
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
         <AuthButton onClick={handleDesktopAuthButtonClick} />
       </S.DesktopAuthButton>
