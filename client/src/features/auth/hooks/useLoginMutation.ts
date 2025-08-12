@@ -17,10 +17,8 @@ export const useLoginMutation = () => {
       showSuccess('로그인에 성공했습니다!');
       navigate('/');
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message || '로그인에 실패했습니다. 다시 시도해주세요.';
-      showError(errorMessage);
+    onError: () => {
+      showError('로그인에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };
