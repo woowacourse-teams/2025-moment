@@ -4,6 +4,7 @@ import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './MyCommentsList.styles';
 import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
+import { AlertCircle } from 'lucide-react';
 
 export const MyCommentsList = () => {
   const {
@@ -20,7 +21,14 @@ export const MyCommentsList = () => {
 
   if (isError) {
     console.error('Error fetching comments:', error);
-    return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
+    return (
+      <NotFound
+        title="데이터를 불러올 수 없습니다"
+        subtitle="잠시 후 다시 시도해주세요"
+        icon={AlertCircle}
+        size="large"
+      />
+    );
   }
 
   const observerRef = useIntersectionObserver({
