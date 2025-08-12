@@ -28,7 +28,7 @@ jobs:
           fi
 
       - name: Pull latest image
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:latest
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:latest
 
       - name: Deploy with Docker Compose
         run: |
@@ -37,7 +37,7 @@ jobs:
           sudo docker compose up --no-deps -d app
           
           echo "=== Checking if image exists locally ==="
-          docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
+          sudo docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
 
       - name: Prune old images
-        run: docker image prune -f
+        run: sudo docker image prune -f
