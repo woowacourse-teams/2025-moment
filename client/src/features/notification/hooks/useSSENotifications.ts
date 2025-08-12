@@ -1,4 +1,4 @@
-import { useAuthContext } from '@/features/auth/context/useAuthContext';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -9,7 +9,7 @@ import { SSENotification } from '../types/sseNotification';
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
   const { showError, showSuccess } = useToast();
-  const { isLoggedIn } = useAuthContext();
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
     if (!isLoggedIn) {

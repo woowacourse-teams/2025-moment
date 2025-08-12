@@ -5,6 +5,7 @@ import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
 
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { sendEvent } from '@/shared/lib/ga';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef } from 'react';
@@ -17,11 +18,15 @@ export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
-  const { isLoggedIn } = useAuthContext();
-  const { data: profile } = useProfileQuery({ enabled: isLoggedIn });
+  const { data: isLoggedIn, isError, error } = useCheckIfLoggedInQuery();
+  const { data: profile } = useProfileQuery({ enabled: isLoggedIn ?? false });
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+
+  if (isError) {
+    console.error('checkIfLoggedInQuery error', error);
+  }
 
   useOutsideClick({
     ref: mobileMenuRef,
