@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR(255) NOT NULL,
     nickname VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL,
-    CONSTRAINT uq_email
-        UNIQUE (email)
-);
+    CONSTRAINT uq_users_email UNIQUE (email),
+    CONSTRAINT uq_users_nickname UNIQUE (nickname)
+    );
 
 CREATE TABLE IF NOT EXISTS moments
 (
@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS moments
     is_matched BOOLEAN NOT NULL,
     created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_moments_users
-        FOREIGN KEY (momenter_id)
-            REFERENCES users (id)
-);
+    FOREIGN KEY (momenter_id)
+    REFERENCES users (id)
+    );
 
 CREATE TABLE IF NOT EXISTS matchings
 (
@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS matchings
     commenter_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_matchings_moments
-        FOREIGN KEY (moment_id)
-            REFERENCES moments (id),
+    FOREIGN KEY (moment_id)
+    REFERENCES moments (id),
     CONSTRAINT fk_matchings_users
-        FOREIGN KEY (commenter_id)
-            REFERENCES users (id)
-);
+    FOREIGN KEY (commenter_id)
+    REFERENCES users (id)
+    );
 
 CREATE TABLE IF NOT EXISTS comments
 (
@@ -43,12 +43,12 @@ CREATE TABLE IF NOT EXISTS comments
     content VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_comments_moments
-        FOREIGN KEY (moment_id)
-            REFERENCES moments (id),
+    FOREIGN KEY (moment_id)
+    REFERENCES moments (id),
     CONSTRAINT fk_comments_users
-        FOREIGN KEY (commenter_id)
-            REFERENCES users (id)
-);
+    FOREIGN KEY (commenter_id)
+    REFERENCES users (id)
+    );
 
 CREATE TABLE IF NOT EXISTS emojis
 (
@@ -58,24 +58,14 @@ CREATE TABLE IF NOT EXISTS emojis
     created_at TIMESTAMP NOT NULL,
     type VARCHAR(255) NOT NULL,
     CONSTRAINT fk_emojis_users
-        FOREIGN KEY (user_id)
-            REFERENCES users (id),
+    FOREIGN KEY (user_id)
+    REFERENCES users (id),
     CONSTRAINT fk_emojis_comments
-        FOREIGN KEY (comment_id)
-            REFERENCES comments (id),
+    FOREIGN KEY (comment_id)
+    REFERENCES comments (id),
     CONSTRAINT uq_emojis_user_comment_type
-        UNIQUE (user_id, comment_id, type)
-);
-
-ALTER TABLE users ADD COLUMN IF NOT EXISTS current_point INT NOT NULL DEFAULT 0;
-
-ALTER TABLE users ADD COLUMN IF NOT EXISTS provider_type VARCHAR(20) NOT NULL;
-
-ALTER TABLE users DROP CONSTRAINT IF EXISTS uq_email;
-
-ALTER TABLE users DROP CONSTRAINT IF EXISTS uq_email_provider;
-
-ALTER TABLE users ADD CONSTRAINT uq_email_provider UNIQUE (email, provider_type);
+    UNIQUE (user_id, comment_id, type)
+    );
 
 -- 포인트 히스토리 테이블 추가
 CREATE TABLE IF NOT EXISTS point_history
@@ -105,8 +95,4 @@ CREATE TABLE IF NOT EXISTS notifications
     CONSTRAINT fk_notifications_users
     FOREIGN KEY (user_id)
     REFERENCES users (id)
-);
-
--- 유저에 레벨 컬럼 추가
-ALTER TABLE users ADD COLUMN IF NOT EXISTS level VARCHAR(10) NOT NULL;
-
+    );
