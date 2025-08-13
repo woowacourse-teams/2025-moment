@@ -35,16 +35,15 @@ jobs:
         with:
           name: build-artifact
           run-id: ${{ github.event.workflow_run.id }}
-          repository: ${{ github.event.workflow_run.repository.full_name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract deploy tag
         run: |
-          export DEPLOY_TAG=$(cat image_tag.txt)
-          echo "Deploying version: $DEPLOY_TAG"
+          echo "DEPLOY_TAG=$(cat image_tag.txt)" >> $GITHUB_ENV
+          echo "Deploying version: $(cat image_tag.txt)"
 
       - name: Pull latest image
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:$DEPLOY_TAG
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
 
       - name: Deploy with Docker Compose
         run: |
