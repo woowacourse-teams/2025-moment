@@ -1,4 +1,5 @@
 import { queryClient } from '@/app/lib/queryClient';
+import { getProfile } from '@/features/auth/api/getProfile';
 import { loginUser } from '@/features/auth/api/loginUser';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
@@ -10,15 +11,14 @@ export const useLoginMutation = () => {
 
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    onSuccess: async () => {
+      queryClient.setQueryData(['checkIfLoggedIn'], true);
+      await queryClient.prefetchQuery({ queryKey: ['profile'], queryFn: getProfile });
       showSuccess('로그인에 성공했습니다!');
       navigate('/');
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.message || '로그인에 실패했습니다. 다시 시도해주세요.';
-      showError(errorMessage);
+    onError: () => {
+      showError('로그인에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

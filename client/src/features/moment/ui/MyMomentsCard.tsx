@@ -46,7 +46,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
       <Card.Content>
         <S.TitleContainer>
           <Send size={20} color={theme.colors['yellow-500']} />
-          <span>받은 공감</span>
+          <p>받은 공감</p>
         </S.TitleContainer>
         <SimpleCard
           height="small"

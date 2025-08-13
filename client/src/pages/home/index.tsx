@@ -44,7 +44,7 @@ export default function HomePage() {
       <S.BlackHoleContainer>
         <S.BlackHoleText>click me</S.BlackHoleText>
         <button onClick={handleWidgetClick}>
-          <S.BlackHoleImage src="/blackHole.png" alt="blackHole" />
+          <S.BlackHoleImage src="/blackHole.png" alt="네비게이션 메뉴 열기" />
         </button>
       </S.BlackHoleContainer>
       <S.WidgetContainer isWidgetOpen={isWidgetOpen}>

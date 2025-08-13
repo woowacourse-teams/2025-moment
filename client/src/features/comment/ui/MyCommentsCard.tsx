@@ -31,14 +31,14 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
         <S.ContentContainer>
           <S.TitleContainer>
             <MessageSquare size={20} color={theme.colors['yellow-500']} />
-            <span>보낸 코멘트</span>
+            <p>보낸 코멘트</p>
           </S.TitleContainer>
           <SimpleCard height="small" content={myComment.content} />
         </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
             <Send size={20} color={theme.colors['yellow-500']} />
-            <span>받은 리액션</span>
+            <p>받은 리액션</p>
           </S.TitleContainer>
           <S.Emoji>
             {(myComment.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
