@@ -40,7 +40,7 @@ jobs:
           cd /home/ubuntu/moment
           
           echo "Deploying with image tag: $IMAGE_TAG"
-          sudo -E docker-compose up --no-deps -d app
+          sudo -E docker compose up --no-deps -d app
 
       - name: Prune old images
         run: sudo docker image prune -f
