@@ -4,11 +4,20 @@ import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
+import { sendEvent } from '@/shared/lib/ga';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => navigate('/today-comment');
+  const handleNavigate = () => {
+    sendEvent({
+      category: 'TodayMoment',
+      action: 'Click MoveToTodayComment Button',
+      label: 'MoveToTodayComment Button',
+    });
+
+    navigate('/today-comment');
+  };
   return (
     <S.TodayContentWrapper>
       <Card.Content>
