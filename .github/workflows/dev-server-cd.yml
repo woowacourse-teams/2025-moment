@@ -11,7 +11,7 @@ jobs:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push'
-    runs-on: [ self-hosted, backend ]
+    runs-on: [ self-hosted, backend, dev ]
 
     permissions:
       actions: read
@@ -47,9 +47,12 @@ jobs:
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
 
       - name: Deploy with Docker Compose
+        env:
+          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
         run: |
           cd /home/ubuntu/moment
           
+          echo "Deploying with image tag: $IMAGE_TAG"
           sudo docker compose up --no-deps -d app
           
           echo "=== Checking if image exists locally ==="
