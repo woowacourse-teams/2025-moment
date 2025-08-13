@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useState } from 'react';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
-import { LevelTable } from '@/widgets/levelTable/LevelTable';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -44,7 +43,7 @@ export default function HomePage() {
       <S.BlackHoleContainer>
         <S.BlackHoleText>click me</S.BlackHoleText>
         <button onClick={handleWidgetClick}>
-          <S.BlackHoleImage src="/blackHole.png" alt="네비게이션 메뉴 열기" />
+          <S.BlackHoleImage src="/images/blackHole.png" alt="네비게이션 메뉴 열기" />
         </button>
       </S.BlackHoleContainer>
       <S.WidgetContainer isWidgetOpen={isWidgetOpen}>

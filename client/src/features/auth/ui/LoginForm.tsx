@@ -17,7 +17,7 @@ export const LoginForm = () => {
       <S.LoginFormContainer onSubmit={handleSubmit}>
         <S.LoginFormTitleContainer>
           <S.LoginLogoTitleContainer>
-            <S.LogoImage src="/logo.webp" alt="" />
+            <S.LogoImage src="/images/logo.webp" alt="" />
             <S.LogoTitle>모멘트</S.LogoTitle>
           </S.LoginLogoTitleContainer>
           <S.LoginTitle>로그인</S.LoginTitle>

@@ -14,7 +14,7 @@ export const navItems = [
 ];
 
 export const levelMap = {
-  METEOR: '/meteor.png',
-  ASTEROID: '/asteroid.png',
-  COMET: '/comet.png',
+  METEOR: '/images/meteor.png',
+  ASTEROID: '/images/asteroid.png',
+  COMET: '/images/comet.png',
 };
