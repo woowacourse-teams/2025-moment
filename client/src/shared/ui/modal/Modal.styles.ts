@@ -21,11 +21,24 @@ export const ModalFrame = styled.div<{
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: ${({ theme, $size }) => theme.typography.cardWidth[$size]};
+  width: ${({ theme, $size, $position }) =>
+    $position === 'center' ? theme.typography.cardWidth[$size] : '100%'};
   padding: 20px 30px;
   background-color: ${({ theme }) => theme.colors['slate-800_60']};
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.colors['gray-700']};
+  position: ${({ $position }) => ($position === 'center' ? 'absolute' : 'fixed')};
+  bottom: ${({ $position }) => ($position === 'bottom' ? '0' : 'auto')};
+`;
+
+export const ModalCloseButton = styled.button`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors['gray-700']};
+  }
 `;
 
 export const ModalHeader = styled.div<{ $hasTitle: boolean }>`
@@ -33,4 +46,16 @@ export const ModalHeader = styled.div<{ $hasTitle: boolean }>`
   width: 100%;
   justify-content: ${({ $hasTitle }) => ($hasTitle ? 'space-between' : 'right')};
   align-items: center;
+`;
+
+export const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const ModalFooter = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 `;
