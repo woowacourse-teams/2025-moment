@@ -10,7 +10,7 @@ on:
 
 jobs:
   rollback:
-    runs-on: [ self-hosted, backend, dev ]
+    runs-on: [ self-hosted, backend, prod ]
     steps:
       - name: Checkout repository for docker-compose file
         uses: actions/checkout@v4
