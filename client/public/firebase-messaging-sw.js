@@ -50,11 +50,11 @@ self.addEventListener('activate', event => {
 
 // 네트워크 요청 가로채기
 self.addEventListener('fetch', event => {
+  // 네비게이션 요청 (페이지 로드)만 처리
   if (event.request.mode === 'navigate') {
     event.respondWith(fetch(event.request).catch(() => caches.match('/offline.html')));
-  } else {
-    event.respondWith(caches.match(event.request).then(res => res || fetch(event.request)));
   }
+  // 다른 요청들은 기본 동작 유지 (가로채지 않음)
 });
 
 // 알림 클릭
