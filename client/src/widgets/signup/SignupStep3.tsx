@@ -26,8 +26,8 @@ export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Pro
       </S.InfoContainer>
 
       <S.Description>
-        <span>입력하신 정보가 맞는지 확인해 주세요.</span>
-        <span>확인 후 회원가입 버튼을 눌러주세요.</span>
+        <p>입력하신 정보가 맞는지 확인해 주세요.</p>
+        <p>확인 후 회원가입 버튼을 눌러주세요.</p>
       </S.Description>
 
       <S.ButtonContainer>
