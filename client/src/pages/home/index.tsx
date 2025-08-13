@@ -24,6 +24,11 @@ export default function HomePage() {
   };
 
   const handleWidgetClick = () => {
+    sendEvent({
+      category: 'HomePage',
+      action: 'Click BlackHole Button',
+      label: 'BlackHole Button',
+    });
     setIsWidgetOpen(!isWidgetOpen);
   };
 

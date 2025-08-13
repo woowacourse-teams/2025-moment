@@ -1,31 +1,32 @@
-import { navItems } from '@/app/layout/types/navItems';
+import { levelMap, navItems } from '@/app/layout/data/navItems';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
+import { sendEvent } from '@/shared/lib/ga';
 import { Logo } from '@/shared/ui/logo/Logo';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
-import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
-
-const levelMap = {
-  METEOR: '/meteor.png',
-  ASTEROID: '/asteroid.png',
-  COMET: '/comet.png',
-};
 
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
-  const { data: profile } = useProfileQuery();
+  const { data: isLoggedIn, isError, error } = useCheckIfLoggedInQuery();
+  const { data: profile } = useProfileQuery({ enabled: isLoggedIn ?? false });
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+
+  if (isError) {
+    console.error('checkIfLoggedInQuery error', error);
+  }
 
   useOutsideClick({
     ref: mobileMenuRef,
@@ -33,6 +34,23 @@ export const Navbar = () => {
     isActive: isMobileMenuOpen,
     excludeRefs: [dropdownButtonRef],
   });
+
+  const handleDesktopAuthButtonClick = () => {
+    sendEvent({
+      category: 'HomePage',
+      action: 'Click Desktop Auth Button',
+      label: 'Desktop Auth Button',
+    });
+  };
+
+  const handleMobileAuthButtonClick = () => {
+    toggleMobileMenu();
+    sendEvent({
+      category: 'HomePage',
+      action: 'Click Mobile Auth Button',
+      label: 'Mobile Auth Button',
+    });
+  };
 
   return (
     <S.Navbar>
@@ -42,7 +60,7 @@ export const Navbar = () => {
 
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
-        <AuthButton />
+        <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 
       <S.DropdownButton
@@ -63,7 +81,7 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <AuthButton onClick={toggleMobileMenu} />
+            <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
       </S.MobileMenu>

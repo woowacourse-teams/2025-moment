@@ -7,7 +7,19 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./.env
+      - .env
+    #    environment:
+    #      - DB_HOST=${DB_HOST}
+    #      - DB_PORT=${DB_PORT}
+    #      - DB_NAME=${DB_NAME}
+    #      - DB_USER=${DB_USER}
+    #      - DB_PASSWORD=${DB_PASSWORD}
+    #      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    #      - EXPIRATION_TIME=${EXPIRATION_TIME}
+    #      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    #      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    #      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    #      - GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL}
     depends_on:
       db:
         condition: service_healthy
@@ -18,7 +30,15 @@ services:
     ports:
       - "3306:3306"
     env_file:
-      - ./.env
+      - .env
+    #    environment:
+    #      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    #      - MYSQL_USER=${MYSQL_USER}
+    #      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    #      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:

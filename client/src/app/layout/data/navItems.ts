@@ -12,3 +12,9 @@ export const navItems = [
     href: '/collection',
   },
 ];
+
+export const levelMap = {
+  METEOR: '/meteor.png',
+  ASTEROID: '/asteroid.png',
+  COMET: '/comet.png',
+};

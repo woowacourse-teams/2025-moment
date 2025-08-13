@@ -96,10 +96,10 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment:latest
-            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment:buildcache,mode=max
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:latest
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:buildcache,mode=max
 
       - name: Save image tag to file
         run: echo ${{ github.sha }} > ./image-tag.txt
