@@ -5,5 +5,10 @@ export const LevelTableWrapper = styled.table`
   border-collapse: collapse;
   border: 1px solid #000;
   text-align: center;
-  border: 1px solid #fff;
+  border: 1px solid ${({ theme }) => theme.colors.white};
+  th,
+  td {
+    border-right: 1px solid ${({ theme }) => theme.colors.white};
+    padding: 8px;
+  }
 `;
