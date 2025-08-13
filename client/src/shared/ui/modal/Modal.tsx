@@ -59,7 +59,7 @@ const Header = ({ title, showCloseButton = true }: ModalHeader) => {
   const { handleClose } = context;
 
   return (
-    <S.ModalHeader>
+    <S.ModalHeader $hasTitle={!!title}>
       {title}
       {showCloseButton && <button onClick={handleClose}>X</button>}
     </S.ModalHeader>

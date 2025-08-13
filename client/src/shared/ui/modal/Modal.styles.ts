@@ -28,8 +28,9 @@ export const ModalFrame = styled.div<{
   border: 1px solid ${({ theme }) => theme.colors['gray-700']};
 `;
 
-export const ModalHeader = styled.div`
+export const ModalHeader = styled.div<{ $hasTitle: boolean }>`
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  justify-content: ${({ $hasTitle }) => ($hasTitle ? 'space-between' : 'right')};
   align-items: center;
 `;
