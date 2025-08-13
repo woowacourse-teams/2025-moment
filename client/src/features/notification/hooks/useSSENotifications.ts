@@ -1,26 +1,19 @@
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { subscribeNotifications } from '../api/subscribeNotifications';
-import { NotificationItem } from '../types/notifications';
-import { SSENotification } from '../types/sseNotification';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
-import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
-import { NotificationResponse } from '../types/notifications';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { subscribeNotifications } from '../api/subscribeNotifications';
+import { NotificationItem, NotificationResponse } from '../types/notifications';
+import { SSENotification } from '../types/sseNotification';
 
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
   const { showError, showSuccess } = useToast();
-  const { data: profile, isLoading, isSuccess } = useProfileQuery();
-
-  const isLoggedIn = isSuccess && profile && !isLoading;
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log('🚫 SSE 미실행 - 로그인 필요', {
-        isSuccess,
-        hasProfile: !!profile,
-        isLoading,
-      });
+      console.log('🚫 SSE 미실행 - 로그인 필요');
       return;
     }
 

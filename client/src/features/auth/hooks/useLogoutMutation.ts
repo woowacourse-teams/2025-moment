@@ -11,7 +11,7 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ['profile'] });
+      queryClient.clear();
       showSuccess('로그아웃 되었습니다.');
       navigate('/login');
     },
