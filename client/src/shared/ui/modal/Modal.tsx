@@ -1,0 +1,79 @@
+import { createPortal } from 'react-dom';
+import * as S from './Modal.styles';
+import { createContext, useContext, useEffect } from 'react';
+import {
+  ModalProps,
+  ModalContent,
+  ModalContextType,
+  ModalFooter,
+  ModalHeader,
+} from '@/shared/types/modal';
+
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
+
+export function Modal({
+  children,
+  position = 'center',
+  size = 'medium',
+  isOpen,
+  onClose: handleClose,
+}: ModalProps) {
+  if (!isOpen) return null;
+
+  const handleCloseByBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleClose]);
+
+  return createPortal(
+    <ModalContext.Provider value={{ handleClose }}>
+      <S.ModalWrapper onClick={handleCloseByBackdrop}>
+        <S.ModalFrame
+          role="dialog"
+          aria-modal="true"
+          $position={position}
+          $size={size}
+          onClick={e => e.stopPropagation()}
+        >
+          {children}
+        </S.ModalFrame>
+      </S.ModalWrapper>
+    </ModalContext.Provider>,
+    document.body,
+  );
+}
+
+const Header = ({ title, showCloseButton = true }: ModalHeader) => {
+  const context = useContext(ModalContext);
+  if (!context) throw new Error('Modal.Header는 Modal 컴포넌트 내부에서 사용되어야 합니다.');
+
+  const { handleClose } = context;
+
+  return (
+    <S.ModalHeader>
+      {title}
+      {showCloseButton && <button onClick={handleClose}>X</button>}
+    </S.ModalHeader>
+  );
+};
+
+const Content = ({ children }: ModalContent) => {
+  return <div>{children}</div>;
+};
+
+const Footer = ({ children }: ModalFooter) => {
+  return <div>{children}</div>;
+};
+
+Modal.Header = Header;
+Modal.Content = Content;
+Modal.Footer = Footer;
