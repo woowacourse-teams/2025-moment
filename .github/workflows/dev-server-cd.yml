@@ -39,8 +39,8 @@ jobs:
 
       - name: Extract deploy tag
         run: |
-          echo "DEPLOY_TAG=$(cat server/image_tag.txt)" >> $GITHUB_ENV
-          echo "Deploying version: $(cat server/image_tag.txt)"
+          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
+          echo "Deploying version: $(cat image-tag.txt)"
 
       - name: Pull latest image
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
