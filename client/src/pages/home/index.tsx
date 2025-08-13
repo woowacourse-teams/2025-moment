@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useState } from 'react';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
+import { LevelTable } from '@/widgets/levelTable/LevelTable';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
+      <LevelTable />
       <S.BlackHoleContainer>
         <S.BlackHoleText>click me</S.BlackHoleText>
         <button onClick={handleWidgetClick}>
