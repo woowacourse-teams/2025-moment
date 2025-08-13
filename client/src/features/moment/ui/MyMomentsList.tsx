@@ -1,6 +1,6 @@
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
-import { Clock } from 'lucide-react';
+import { AlertCircle, Clock } from 'lucide-react';
 import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
@@ -21,7 +21,14 @@ export const MyMomentsList = () => {
 
   if (isError) {
     console.error('Error fetching moments:', error);
-    return <div>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>;
+    return (
+      <NotFound
+        title="데이터를 불러올 수 없습니다"
+        subtitle="잠시 후 다시 시도해주세요"
+        icon={AlertCircle}
+        size="large"
+      />
+    );
   }
 
   const observerRef = useIntersectionObserver({
