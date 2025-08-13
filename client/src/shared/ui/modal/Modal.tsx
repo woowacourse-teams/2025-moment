@@ -8,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@/shared/types/modal';
+import useModalFocus from '@/shared/hooks/useModalFocus';
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
@@ -19,6 +20,8 @@ export function Modal({
   onClose: handleClose,
 }: ModalProps) {
   if (!isOpen) return null;
+
+  const modalRef = useModalFocus(isOpen);
 
   const handleCloseByBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -43,6 +46,7 @@ export function Modal({
           $position={position}
           $size={size}
           onClick={e => e.stopPropagation()}
+          ref={modalRef}
         >
           {children}
         </S.ModalFrame>
@@ -61,17 +65,17 @@ const Header = ({ title, showCloseButton = true }: ModalHeader) => {
   return (
     <S.ModalHeader $hasTitle={!!title}>
       {title}
-      {showCloseButton && <button onClick={handleClose}>X</button>}
+      {showCloseButton && <S.ModalCloseButton onClick={handleClose}>X</S.ModalCloseButton>}
     </S.ModalHeader>
   );
 };
 
 const Content = ({ children }: ModalContent) => {
-  return <div>{children}</div>;
+  return <S.ModalContent>{children}</S.ModalContent>;
 };
 
 const Footer = ({ children }: ModalFooter) => {
-  return <div>{children}</div>;
+  return <S.ModalFooter>{children}</S.ModalFooter>;
 };
 
 Modal.Header = Header;
