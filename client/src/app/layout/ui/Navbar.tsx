@@ -1,13 +1,13 @@
 import { levelMap, navItems } from '@/app/layout/data/navItems';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
-import { Logo } from '@/shared/ui/logo/Logo';
-
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { sendEvent } from '@/shared/lib/ga';
+import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
+
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
@@ -61,6 +61,7 @@ export const Navbar = () => {
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
+        <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 
       <S.DropdownButton
@@ -81,6 +82,7 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
+            <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
             <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
