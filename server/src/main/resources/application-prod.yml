@@ -38,6 +38,6 @@ auth:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: ${GOOGLE_REDIRECT_URL}
-    
+
 logging:
   config: classpath:logback-prod.xml
