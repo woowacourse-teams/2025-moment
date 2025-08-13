@@ -41,7 +41,6 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
-      <LevelTable />
       <S.BlackHoleContainer>
         <S.BlackHoleText>click me</S.BlackHoleText>
         <button onClick={handleWidgetClick}>

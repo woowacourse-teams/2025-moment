@@ -60,8 +60,14 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        <EXPBar progress={60} />
-        {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
+        {profile?.level ? (
+          <S.LevelIconWrapper>
+            <S.LevelIcon src={levelMap[profile?.level as Level]} alt="레벨 등급표" />
+            <S.EXPBarTooltip>
+              <EXPBar progress={60} />
+            </S.EXPBarTooltip>
+          </S.LevelIconWrapper>
+        ) : null}
         <AuthButton onClick={handleDesktopAuthButtonClick} />
       </S.DesktopAuthButton>
 

@@ -26,6 +26,6 @@ export const EXPBarProgress = styled.div<{ progress: number }>`
   height: 100%;
   border-radius: 100px;
   background: linear-gradient(to bottom, yellow, #a2d24c);
-  animation: ${fillAnimation} 1.5s ease-in-out;
+  animation: ${fillAnimation} 4s ease-in-out;
   --target-width: ${({ progress }) => progress}%;
 `;
