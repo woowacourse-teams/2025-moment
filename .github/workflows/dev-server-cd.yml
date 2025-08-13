@@ -37,7 +37,6 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: Extract deploy tag
         run: |
           echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
