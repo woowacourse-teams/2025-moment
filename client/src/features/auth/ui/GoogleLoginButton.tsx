@@ -1,12 +1,14 @@
 import * as S from './GoogleLoginButton.styles';
 
-interface GoogleLoginButtonProps {
-  onClick: () => void;
-}
+const googleLoginUrl = process.env.REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL || '';
 
-export const GoogleLoginButton = ({ onClick }: GoogleLoginButtonProps) => {
+const handleGoogleLogin = () => {
+  window.location.href = googleLoginUrl;
+};
+
+export const GoogleLoginButton = () => {
   return (
-    <S.GoogleLoginButton onClick={onClick}>
+    <S.GoogleLoginButton onClick={handleGoogleLogin}>
       <S.GoogleLoginButtonIcon src="/google.png" alt="google" />
       Sign in with Google
     </S.GoogleLoginButton>

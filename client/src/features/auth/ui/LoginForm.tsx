@@ -12,12 +12,6 @@ export const LoginForm = () => {
     navigate('/signup');
   };
 
-  const googleLoginUrl = process.env.REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL || '';
-
-  const handleGoogleLogin = () => {
-    window.location.href = googleLoginUrl;
-  };
-
   return (
     <S.LoginFormWrapper>
       <S.LoginFormContainer onSubmit={handleSubmit}>
@@ -58,7 +52,7 @@ export const LoginForm = () => {
         </S.LoginButton>
       </S.LoginFormContainer>
       <S.LoginFooter>
-        <GoogleLoginButton onClick={handleGoogleLogin} />
+        <GoogleLoginButton />
         <S.LoginFooterContent>
           <S.LoginSignupContainer>
             <p>아직 회원이 아니신가요?</p>

@@ -11,7 +11,10 @@ jobs:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push'
-    runs-on: [ self-hosted, backend ]
+    runs-on: [ self-hosted, backend, dev ]
+
+    permissions:
+      actions: read
 
     steps:
       - name: Login to Docker Hub
@@ -27,17 +30,32 @@ jobs:
             sudo docker rm -f moment-app-server
           fi
 
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract deploy tag
+        run: |
+          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
+          echo "Deploying version: $(cat image-tag.txt)"
+
       - name: Pull latest image
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:latest
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
 
       - name: Deploy with Docker Compose
+        env:
+          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
         run: |
           cd /home/ubuntu/moment
           
-          sudo docker compose up --no-deps -d app
+          echo "Deploying with image tag: $IMAGE_TAG"
+          sudo -E docker compose up --no-deps -d app
           
           echo "=== Checking if image exists locally ==="
-          docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
+          sudo docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
 
       - name: Prune old images
-        run: docker image prune -f
+        run: sudo docker image prune -f
