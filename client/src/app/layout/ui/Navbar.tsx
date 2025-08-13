@@ -61,7 +61,6 @@ export const Navbar = () => {
       <S.DesktopAuthButton>
         {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
-        <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 
       <S.DropdownButton
@@ -82,7 +81,6 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
             <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
           </S.MobileNavItems>
         </S.MobileMenuContent>
