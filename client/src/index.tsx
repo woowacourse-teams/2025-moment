@@ -2,17 +2,17 @@ import App from '@/app/App';
 import { createRoot } from 'react-dom/client';
 import '../instrument';
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return;
-  }
+// async function enableMocking() {
+//   if (process.env.NODE_ENV !== 'development') {
+//     return;
+//   }
 
-  const { worker } = await import('./mocks/browser');
+//   const { worker } = await import('./mocks/browser');
 
-  return worker.start({
-    onUnhandledRequest: 'warn',
-  });
-}
+//   return worker.start({
+//     onUnhandledRequest: 'warn',
+//   });
+// }
 
 window.addEventListener('beforeinstallprompt', e => {
   console.log('[PWA] beforeinstallprompt 이벤트 발생');

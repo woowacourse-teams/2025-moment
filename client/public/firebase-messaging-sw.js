@@ -20,54 +20,69 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// --- 백그라운드 메시지 처리 ---
 messaging.onBackgroundMessage(payload => {
   const notificationTitle = payload.notification?.title || '새 알림';
+
   const notificationOptions = {
-    body: payload.notification?.body || '',
-    icon: '/icon-192x192.png',
+    body: payload.notification?.body || '내용 없음',
+    icon: '/icon-512x512.png',
     data: payload.data,
+    tag: payload.data.eventId || 'default',
+    requireInteraction: true,
   };
+
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// --- Service Worker 이벤트 처리 ---
-
-// 설치(필수 파일 캐싱)
 self.addEventListener('install', event => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting()),
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => {
+        return self.skipWaiting();
+      }),
   );
 });
 
-// 활성화(즉시 제어권)
 self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
-// 네트워크 요청 가로채기
 self.addEventListener('fetch', event => {
-  // 네비게이션 요청 (페이지 로드)만 처리
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).catch(() => caches.match('/offline.html')));
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/offline.html');
+      }),
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || fetch(event.request);
+      }),
+    );
   }
-  // 다른 요청들은 기본 동작 유지 (가로채지 않음)
 });
 
-// 알림 클릭
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const urlToOpen = event.notification.data?.url || '/';
+  const urlToOpen = event.notification.data?.redirectUrl || '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(clientList => {
       for (const client of clientList) {
-        if (client.url === urlToOpen && 'focus' in client) return client.focus();
+        if (client.url.startsWith(self.location.origin)) {
+          client.navigate(urlToOpen);
+          return client.focus();
+        }
       }
-      return clients.openWindow(urlToOpen);
+
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
     }),
   );
 });
