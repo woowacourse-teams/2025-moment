@@ -6,8 +6,9 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.matching.application.MatchingService;
+import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentCreatePolicy;
+import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
@@ -48,13 +49,14 @@ public class MomentService {
     private final MatchingService matchingService;
     private final MomentQueryService momentQueryService;
 
-    private final MomentCreatePolicy momentCreatePolicy;
+    private final BasicMomentCreatePolicy basicMomentCreatePolicy;
+    private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
 
     @Transactional
     public MomentCreateResponse addMomentAndMatch(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        if (!momentCreatePolicy.canCreate(momenter)) {
+        if (!basicMomentCreatePolicy.canCreate(momenter)) {
             throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
         }
 
@@ -153,8 +155,18 @@ public class MomentService {
     public MomentCreationStatusResponse canCreateMoment(Long id) {
         User user = userQueryService.getUserById(id);
 
-        if (momentCreatePolicy.canCreate(user)) {
+        if (basicMomentCreatePolicy.canCreate(user)) {
             return MomentCreationStatusResponse.createAllowedStatus();
+        }
+
+        return MomentCreationStatusResponse.createDeniedStatus();
+    }
+
+    public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
+        User user = userQueryService.getUserById(id);
+
+        if (extraMomentCreatePolicy.canCreate(user)) {
+            return  MomentCreationStatusResponse.createAllowedStatus();
         }
 
         return MomentCreationStatusResponse.createDeniedStatus();

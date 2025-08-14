@@ -8,10 +8,10 @@ import moment.user.domain.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-@Component("onceADayPolicy") // Spring Bean으로 등록
+@Component
 @RequiredArgsConstructor
 @Primary
-public class OnceADayPolicy implements MomentCreatePolicy {
+public class OnceADayPolicy implements BasicMomentCreatePolicy {
 
     private final MomentRepository momentRepository;
 
