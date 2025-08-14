@@ -5,6 +5,7 @@ export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 10px;
 `;
 
 export const TitleWrapper = styled.div`
@@ -27,14 +28,38 @@ export const Title = styled.span`
 `;
 
 export const MomentsContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  ${({ theme }) => theme.mediaQueries.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 12px;
+  }
 `;
 
 export const EmojiContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+`;
+
+export const Content = styled.p`
+  height: 100%;
+`;
+
+export const EmpathyContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
