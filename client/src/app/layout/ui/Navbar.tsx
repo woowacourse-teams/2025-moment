@@ -12,6 +12,7 @@ import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
+import { mockData } from '@/widgets/EXPBar/mockData';
 
 type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -53,6 +54,10 @@ export const Navbar = () => {
     });
   };
 
+  const EXPBarProgress =
+    //(profile?.expStar / (profile?.nextStepExp + profile?.expStar)) * 100;
+    (mockData.data.expStar / (mockData.data.nextStepExp + mockData.data.expStar)) * 100;
+
   return (
     <S.Navbar>
       <Logo />
@@ -62,9 +67,9 @@ export const Navbar = () => {
       <S.DesktopAuthButton>
         {profile?.level ? (
           <S.LevelIconWrapper>
-            <S.LevelIcon src={levelMap[profile?.level as Level]} alt="레벨 등급표" />
+            <S.LevelIcon src={levelMap[profile?.level as Level].FIRST} alt="레벨 등급표" />
             <S.EXPBarTooltip>
-              <EXPBar progress={60} />
+              <EXPBar progress={EXPBarProgress} />
             </S.EXPBarTooltip>
           </S.LevelIconWrapper>
         ) : null}
