@@ -3,12 +3,9 @@ package moment.moment.presentation;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
-import moment.matching.domain.Matching;
-import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
@@ -42,9 +39,6 @@ class MomentControllerTest {
 
     @Autowired
     private MomentRepository momentRepository;
-
-    @Autowired
-    private MatchingRepository matchingRepository;
 
     @Autowired
     private TokenManager tokenManager;
@@ -171,41 +165,6 @@ class MomentControllerTest {
                 () -> assertThat(response.nextCursor()).isNull(),
                 () -> assertThat(response.hasNextPage()).isFalse(),
                 () -> assertThat(response.pageSize()).isEqualTo(4)
-        );
-    }
-
-    @Test
-    void 매칭된_모멘트를_조회한다() {
-        // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User savedMomenter = userRepository.save(momenter);
-
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-        User savedCommenter = userRepository.save(commenter);
-
-        String token = tokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
-
-        Moment moment = new Moment("아 행복해", true, savedMomenter);
-        Moment savedMoment = momentRepository.save(moment);
-
-        Matching matching = new Matching(moment, commenter);
-        matchingRepository.save(matching);
-
-        // when
-        MatchedMomentResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", token)
-                .when().get("/api/v1/moments/matching")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", MatchedMomentResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
-                () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
         );
     }
 

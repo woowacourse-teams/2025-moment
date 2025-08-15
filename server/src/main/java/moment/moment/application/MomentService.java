@@ -45,7 +45,6 @@ public class MomentService {
     private final EmojiRepository emojiRepository;
 
     private final UserQueryService userQueryService;
-    private final MatchingService matchingService;
     private final MomentQueryService momentQueryService;
 
     private final MomentCreatePolicy momentCreatePolicy;
@@ -60,8 +59,6 @@ public class MomentService {
 
         Moment momentWithoutId = new Moment(request.content(), momenter);
         Moment savedMoment = momentRepository.save(momentWithoutId);
-
-        matchingService.match(savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }

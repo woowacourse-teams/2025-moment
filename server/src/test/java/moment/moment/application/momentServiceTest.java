@@ -3,8 +3,6 @@ package moment.moment.application;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
-import moment.matching.application.MatchingService;
-import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
@@ -62,9 +60,6 @@ class momentServiceTest {
     private MomentQueryService momentQueryService;
 
     @Mock
-    private MatchingService matchingService;
-
-    @Mock
     private MomentCreatePolicy momentCreatePolicy;
 
     @Test
@@ -79,16 +74,12 @@ class momentServiceTest {
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
-        given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
         momentService.addBasicMoment(request, 1L);
 
         // then
-        assertAll(
-                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
-                () -> then(matchingService).should(times(1)).match(any(Long.class))
-        );
+        then(momentRepository).should(times(1)).save(any(Moment.class));
     }
 
     @Test
