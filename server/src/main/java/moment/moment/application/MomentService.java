@@ -51,7 +51,7 @@ public class MomentService {
     private final MomentCreatePolicy momentCreatePolicy;
 
     @Transactional
-    public MomentCreateResponse addMomentAndMatch(MomentCreateRequest request, Long momenterId) {
+    public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
         if (!momentCreatePolicy.canCreate(momenter)) {

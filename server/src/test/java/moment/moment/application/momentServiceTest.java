@@ -82,7 +82,7 @@ class momentServiceTest {
         given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
-        momentService.addMomentAndMatch(request, 1L);
+        momentService.addBasicMoment(request, 1L);
 
         // then
         assertAll(
@@ -102,7 +102,7 @@ class momentServiceTest {
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> momentService.addMomentAndMatch(request, 1L))
+        assertThatThrownBy(() -> momentService.addBasicMoment(request, 1L))
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_ALREADY_EXIST);
     }
 
