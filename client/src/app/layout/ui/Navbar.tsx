@@ -68,6 +68,7 @@ export const Navbar = () => {
         {profile?.level ? (
           <S.LevelIconWrapper>
             <S.LevelIcon src={levelMap[profile?.level as Level].FIRST} alt="레벨 등급표" />
+            {/* DB와 표기법 맞추고 수정 */}
             <S.EXPBarTooltip>
               <EXPBar progress={EXPBarProgress} />
             </S.EXPBarTooltip>

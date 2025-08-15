@@ -14,7 +14,29 @@ export const navItems = [
 ];
 
 export const levelMap = {
-  METEOR: '/images/meteor.png',
-  ASTEROID: '/images/asteroid.png',
-  COMET: '/images/comet.png',
+  ASTEROID: {
+    FIRST: '/images/firstAsteroid.png',
+    SECOND: '/images/secondAsteroid.png',
+    THIRD: '/images/thirdAsteroid.png',
+  },
+  METEOR: {
+    FIRST: '/images/firstMeteor.png',
+    SECOND: '/images/secondMeteor.png',
+    THIRD: '/images/thirdMeteor.png',
+  },
+  COMET: {
+    FIRST: '/images/firstComet.png',
+    SECOND: '/images/secondComet.png',
+    THIRD: '/images/thirdComet.png',
+  },
+  PLANET: {
+    FIRST: '/images/firstPlanet.png',
+    SECOND: '/images/secondPlanet.png',
+    THIRD: '/images/thirdPlanet.png',
+  },
+  BIG_PLANET: {
+    FIRST: '/images/firstBigPlanet.png',
+    SECOND: '/images/secondBigPlanet.png',
+    THIRD: '/images/thirdBigPlanet.png',
+  },
 };
