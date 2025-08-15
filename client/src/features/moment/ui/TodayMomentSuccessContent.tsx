@@ -5,17 +5,13 @@ import { CheckCircle, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
 import { sendEvent } from '@/shared/lib/ga';
+import { TodayMomentAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    sendEvent({
-      category: 'TodayMoment',
-      action: 'Click MoveToTodayComment Button',
-      label: 'MoveToTodayComment Button',
-    });
-
+    sendEvent(TodayMomentAnalyticsEvent.ClickMoveToTodayCommentButton);
     navigate('/today-comment');
   };
   return (
