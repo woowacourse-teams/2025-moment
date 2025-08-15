@@ -187,7 +187,7 @@ class CommentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
-        given(commentQueryService.existsByMoment(any(Moment.class))).willReturn(true);
+        given(commentQueryService.existsByMomentAndUser(any(Moment.class), any(User.class))).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
@@ -224,7 +224,7 @@ class CommentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
-        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
+        given(commentRepository.existsByMomentAndCommenter(any(Moment.class), any(User.class))).willReturn(true);
 
         // when
         CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
@@ -232,29 +232,26 @@ class CommentServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED),
-                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
+                () -> then(commentRepository).should(times(1)).existsByMomentAndCommenter(moment, commenter)
         );
     }
 
     @Test
     void 코멘트를_등록할_수_있는_상태를_반환한다() {
         // given
-        Long commenterId = 1L;
-        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
-        User momenter = new User("hippo@icloud.com", "1234", "hippo", ProviderType.EMAIL);
-        Moment moment = new Moment("집가고 싶어요..", momenter);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
-        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(commentQueryService.existsByMomentAndUser(moment, commenter)).willReturn(true);
 
-        // when
-        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
-
-        // then
-        assertAll(
-                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE),
-                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
-        );
+        // when & then
+        assertThatThrownBy(() -> commentService.addComment(request, 1L))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_CONFLICT);
     }
 }

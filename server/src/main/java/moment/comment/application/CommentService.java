@@ -59,7 +59,7 @@ public class CommentService {
         User commenter = userQueryService.getUserById(commenterId);
         Moment moment = momentQueryService.getMomentById(request.momentId());
 
-        if (commentQueryService.existsByMoment(moment)) {
+        if (commentQueryService.existsByMomentAndUser(moment, commenter)) {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
 
@@ -163,7 +163,7 @@ public class CommentService {
             return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
         }
 
-        if (commentRepository.existsByMoment(matchedMoment.get())) {
+        if (commentRepository.existsByMomentAndCommenter(matchedMoment.get(), commenter)) {
             return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
         }
 

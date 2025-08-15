@@ -62,26 +62,34 @@ class DefaultMomentQueryServiceTest {
     }
 
     @Test
-    void Momment에_등록된_Comment가_존재하면_true를_반환한다() {
+    void Moment와_User로_작성한_Comment가_존재하면_true를_반환한다() {
         // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
 
-        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
+        given(commentRepository.existsByMomentAndCommenter(moment, commenter)).willReturn(true);
 
-        // when & then
-        assertThat(defaultCommentQueryService.existsByMoment(moment)).isTrue();
+        // when
+        boolean result = defaultCommentQueryService.existsByMomentAndUser(moment, commenter);
+
+        // then
+        assertThat(result).isTrue();
     }
 
     @Test
-    void Momment에_등록된_Comment가_존재하면_false를_반환한다() {
+    void Moment와_User로_작성한_Comment가_존재하지_않으면_false를_반환한다() {
         // given
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
 
-        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
+        given(commentRepository.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
 
-        // when & then
-        assertThat(defaultCommentQueryService.existsByMoment(moment)).isFalse();
+        // when
+        boolean result = defaultCommentQueryService.existsByMomentAndUser(moment, commenter);
+
+        // then
+        assertThat(result).isFalse();
     }
 }
