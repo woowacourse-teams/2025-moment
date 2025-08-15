@@ -5,7 +5,6 @@ import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.matching.application.MatchingService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
 import moment.moment.dto.request.MomentCreateRequest;
@@ -136,15 +135,6 @@ public class MomentService {
         }
 
         return nextCursor;
-    }
-
-
-    public MatchedMomentResponse getMatchedMoment(Long commenterId) {
-        User commenter = userQueryService.getUserById(commenterId);
-
-        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
-
-        return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }
 
     public MomentCreationStatusResponse canCreateMoment(Long id) {

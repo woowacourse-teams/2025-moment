@@ -154,19 +154,4 @@ public class CommentService {
 
         return nextCursor;
     }
-
-    public CommentCreationStatusResponse canCreateComment(Long commenterId) {
-        User commenter = userQueryService.getUserById(commenterId);
-        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
-
-        if (matchedMoment.isEmpty()) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
-        }
-
-        if (commentRepository.existsByMoment(matchedMoment.get())) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
-        }
-
-        return CommentCreationStatusResponse.from(CommentCreationStatus.WRITABLE);
-    }
 }

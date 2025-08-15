@@ -1,7 +1,5 @@
 package moment.moment.infrastructure;
 
-import moment.matching.domain.Matching;
-import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -19,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,9 +31,6 @@ class MomentRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private MatchingRepository matchingRepository;
 
     @Test
     @Disabled
@@ -68,37 +62,6 @@ class MomentRepositoryTest {
                 () -> assertThat(moments.getFirst()).isEqualTo(savedMoment3),
                 () -> assertThat(moments.get(1)).isEqualTo(savedMoment2),
                 () -> assertThat(moments.getLast()).isEqualTo(savedMoment1)
-        );
-
-
-    }
-
-    @Test
-    void 나에게_매칭된_모멘트를_조회한다() {
-        // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User savedMomenter = userRepository.save(momenter);
-
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-        User savedCommenter = userRepository.save(commenter);
-
-        Moment moment = new Moment("아 행복해", true, savedMomenter);
-        Moment savedMoment = momentRepository.save(moment);
-
-        Matching matching = new Matching(moment, commenter);
-        Matching savedMatching = matchingRepository.save(matching);
-
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-
-        // when
-        Optional<Moment> matchedMomentByCommenter = momentRepository.findMatchedMomentByCommenter(savedCommenter,
-                startOfDay, endOfDay);
-
-        // then
-        assertAll(
-                () -> assertThat(matchedMomentByCommenter).isPresent(),
-                () -> assertThat(matchedMomentByCommenter.get().getId()).isEqualTo(savedMoment.getId())
         );
     }
 

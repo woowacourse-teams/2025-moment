@@ -134,48 +134,6 @@ class momentServiceTest {
     }
 
     @Test
-    void 내가_받은_모멘트를_조회한다() {
-        // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        Moment moment = new Moment("아 행복해..", momenter);
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
-                .willReturn(Optional.of(moment));
-
-        // when
-        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
-
-        // then
-        assertAll(
-                () -> assertThat(response.id()).isEqualTo(moment.getId()),
-                () -> assertThat(response.content()).isEqualTo(moment.getContent()),
-                () -> assertThat(response.createdAt()).isEqualTo(moment.getCreatedAt())
-        );
-    }
-
-    @Test
-    void 내가_받은_모멘트가_존재하지_않는_경우_빈_데이터를_반환한다() {
-        // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
-                .willReturn(Optional.empty());
-
-        // when
-        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
-
-        // then
-        assertAll(
-                () -> assertThat(response.id()).isNull(),
-                () -> assertThat(response.content()).isNull(),
-                () -> assertThat(response.createdAt()).isNull()
-        );
-    }
-
-    @Test
     void 오늘_모멘트를_작성할_수_있는_상태를_반환한다() {
         // given
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);

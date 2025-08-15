@@ -85,29 +85,6 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "매칭된 모멘트 조회", description = "사용자에게 매칭된 모멘트를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "매칭된 모멘트 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/matching")
-    public ResponseEntity<SuccessResponse<MatchedMomentResponse>> readMatchedMoment(
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        MatchedMomentResponse response = momentService.getMatchedMoment(authentication.id());
-        HttpStatus status = HttpStatus.OK;
-
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
     @Operation(summary = "모멘트 작성여부 확인", description = "유저가 오늘 모멘트를 더 보낼 수 있는지 확인입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "매칭된 모멘트 조회 성공"),
