@@ -58,7 +58,7 @@ class AuthEmailServiceTest {
 
         // when & then
         assertThatCode(() -> authEmailService.verifyCode(request))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -70,8 +70,8 @@ class AuthEmailServiceTest {
 
         // when & then
         assertThatThrownBy(() -> authEmailService.sendVerificationEmail(request))
-            .isInstanceOf(MomentException.class)
-            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
     }
 
     @Test
@@ -83,13 +83,13 @@ class AuthEmailServiceTest {
         EmailVerifyRequest request = new EmailVerifyRequest(email, code);
 
         // 만료 시간 조작
-        AuthEmailService.VerificationInfo info = getVerificationInfo(email);
-        ReflectionTestUtils.setField(info, "expiryTime", LocalDateTime.now().minusSeconds(1));
+        Object verificationInfo = getVerificationInfo(email);
+        ReflectionTestUtils.setField(verificationInfo, "expiryTime", LocalDateTime.now().minusSeconds(1));
 
         // when & then
         assertThatThrownBy(() -> authEmailService.verifyCode(request))
-            .isInstanceOf(MomentException.class)
-            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
     }
 
     @Test
@@ -101,20 +101,21 @@ class AuthEmailServiceTest {
 
         // when & then
         assertThatThrownBy(() -> authEmailService.verifyCode(request))
-            .isInstanceOf(MomentException.class)
-            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
     }
 
     private String getVerificationCode(String email) {
-        return getVerificationInfo(email).getCode();
+        Object verificationInfo = getVerificationInfo(email);
+        return (String) ReflectionTestUtils.getField(verificationInfo, "code");
     }
 
-    private AuthEmailService.VerificationInfo getVerificationInfo(String email) {
+    private Object getVerificationInfo(String email) {
         try {
             java.lang.reflect.Field field = AuthEmailService.class.getDeclaredField("verificationInfos");
             field.setAccessible(true);
-            java.util.Map<String, AuthEmailService.VerificationInfo> verificationInfos =
-                (java.util.Map<String, AuthEmailService.VerificationInfo>) field.get(authEmailService);
+            java.util.Map<String, Object> verificationInfos =
+                    (java.util.Map<String, Object>) field.get(authEmailService);
             return verificationInfos.get(email);
         } catch (Exception e) {
             throw new RuntimeException(e);

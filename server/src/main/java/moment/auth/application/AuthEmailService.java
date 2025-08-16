@@ -3,9 +3,9 @@ package moment.auth.application;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moment.auth.domain.VerificationInfo;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.global.exception.ErrorCode;
@@ -67,32 +67,5 @@ public class AuthEmailService implements EmailService{
     public void cleanExpiredVerificationInfos() {
         verificationInfos.entrySet().removeIf(entry -> entry.getValue().isExpired());
         log.info("만료된 이메일 인증 정보 정리 완료. 남은 정보 수: {}", verificationInfos.size());
-    }
-
-    @Getter
-    public static class VerificationInfo {
-        private final String code;
-        private final LocalDateTime expiryTime;
-        private final LocalDateTime timestamp;
-
-        public VerificationInfo(String code, LocalDateTime expiryTime) {
-            this.code = code;
-            this.expiryTime = expiryTime;
-            this.timestamp = LocalDateTime.now();
-        }
-
-        public boolean isExpired() {
-            return LocalDateTime.now().isAfter(expiryTime);
-        }
-
-        public boolean isCoolTime(long coolDownSeconds) {
-            return this.timestamp
-                    .plusSeconds(coolDownSeconds)
-                    .isAfter(LocalDateTime.now());
-        }
-
-        public boolean hasSameCode(String code) {
-            return this.code.equals(code);
-        }
     }
 }
