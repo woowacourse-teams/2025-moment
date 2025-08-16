@@ -3,6 +3,8 @@ package moment.reward.infrastructure;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.user.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +26,7 @@ public interface RewardRepository extends JpaRepository<RewardHistory, Long> {
                                           @Param("reason") Reason reason,
                                           @Param("startOfToday") LocalDateTime startOfToday,
                                           @Param("endOfToday") LocalDateTime endOfToday);
+
+
+    Page<RewardHistory> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 }
