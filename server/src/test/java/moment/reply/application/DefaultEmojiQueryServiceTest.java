@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
 import moment.user.domain.ProviderType;
@@ -35,7 +36,7 @@ class DefaultEmojiQueryServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 

@@ -79,7 +79,7 @@ public class CommentService {
 
         notificationRepository.save(notificationWithoutId);
 
-        rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
+        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
         return CommentCreateResponse.from(savedComment);
     }

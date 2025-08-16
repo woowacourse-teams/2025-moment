@@ -8,6 +8,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -32,7 +33,7 @@ class EmojiTest {
     void 이모지_작성자가_없는_경우_예외가_발생한다() {
         // given
         User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
-        Moment moment = new Moment("오운완!", false, momenter);
+        Moment moment = new Moment("오운완!", false, momenter, WriteType.BASIC);
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         Comment comment = new Comment("오운완!", commenter, moment);
 
@@ -45,7 +46,7 @@ class EmojiTest {
     void 이모지_작성자를_확인한다() {
         // given
         User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
-        Moment moment = new Moment("오운완!", false, momenter);
+        Moment moment = new Moment("오운완!", false, momenter, WriteType.BASIC);
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         Comment comment = new Comment("오운완!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -59,7 +60,7 @@ class EmojiTest {
     void 이모지_작성자가_아닌_경우_예외가_발생한다() {
         // given
         User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
-        Moment writer = new Moment("오운완!", false, momenter);
+        Moment writer = new Moment("오운완!", false, momenter,WriteType.BASIC);
         ReflectionTestUtils.setField(writer, "id", 1L);
 
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);

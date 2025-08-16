@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.reward.domain.Reason;
 import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
@@ -38,11 +39,11 @@ class PointRewardServiceTest {
         int commentPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForComment(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(commentPointTo);
@@ -56,11 +57,11 @@ class PointRewardServiceTest {
         int positiveEmojiReceivedPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForEcho(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(positiveEmojiReceivedPointTo);
@@ -73,14 +74,14 @@ class PointRewardServiceTest {
         Reason reason = Reason.POSITIVE_EMOJI_RECEIVED;
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         given(rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, comment.getId()))
                 .willReturn(true);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForComment(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(0);

@@ -21,6 +21,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.infrastructure.EmojiRepository;
@@ -77,13 +78,13 @@ class CommentServiceTest {
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        doNothing().when(rewardService).reward(commenter, Reason.COMMENT_CREATION, comment.getId());
+        doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
 
         // when
         commentService.addComment(request, 1L);
@@ -128,8 +129,8 @@ class CommentServiceTest {
         User momenter2 = new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL);
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
 
-        Moment moment1 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1);
-        Moment moment2 = new Moment("오늘 하루는 행복한 하루~", true, momenter2);
+        Moment moment1 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1, WriteType.BASIC);
+        Moment moment2 = new Moment("오늘 하루는 행복한 하루~", true, momenter2, WriteType.BASIC);
 
         Comment comment1 = new Comment("moment1 comment", commenter, moment1);
         LocalDateTime now1 = LocalDateTime.now();
@@ -179,7 +180,7 @@ class CommentServiceTest {
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
@@ -199,7 +200,7 @@ class CommentServiceTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         ReflectionTestUtils.setField(commenter, "id", 1L);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment newComment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(newComment, "id", 1L);
 

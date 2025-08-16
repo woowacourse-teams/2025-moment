@@ -15,6 +15,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
@@ -34,7 +35,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -72,7 +72,7 @@ class EmojiServiceTest {
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -82,7 +82,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
+        doNothing().when(rewardService).rewardForEcho(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
@@ -117,7 +117,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
@@ -135,7 +135,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -156,7 +156,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -173,7 +173,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(comment, "id", 1L);
         Emoji emoji = new Emoji("HEART", momenter, comment);
@@ -187,6 +187,6 @@ class EmojiServiceTest {
         emojiService.removeEmojiById(emoji.getId(), comment.getId());
 
         // then
-        verify(rewardService).reward(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        verify(rewardService).rewardForEcho(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
     }
 }

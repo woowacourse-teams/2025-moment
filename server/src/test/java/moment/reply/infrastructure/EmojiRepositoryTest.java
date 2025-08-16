@@ -7,6 +7,7 @@ import java.util.List;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.user.domain.ProviderType;
@@ -41,7 +42,7 @@ class EmojiRepositoryTest {
         // given
         User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
         User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
-        Moment moment = momentRepository.save(new Moment("오런완!", true, momenter));
+        Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment));
 
         emojiRepository.save(new Emoji("HEART", momenter, comment));
