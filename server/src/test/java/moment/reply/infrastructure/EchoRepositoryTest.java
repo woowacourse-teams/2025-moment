@@ -57,4 +57,46 @@ class EchoRepositoryTest {
                 () -> assertThat(echo.getUser()).isEqualTo(momenter)
         );
     }
+
+    @Test
+    void 유저가_코멘트에_이미_에코_타입을_보냈으면_참을_반환한다() {
+        // given
+        User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        userRepository.save(momenter);
+        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        userRepository.save(commenter);
+        Moment moment = new Moment("하이", momenter, WriteType.BASIC);
+        momentRepository.save(moment);
+        Comment comment = new Comment("바이", commenter, moment);
+        commentRepository.save(comment);
+        Echo existingEcho = new Echo("THANKS", commenter, comment);
+        echoRepository.save(existingEcho);
+
+        // when
+        boolean result = echoRepository.existsByCommentAndUserAndEchoType(comment, commenter, "THANKS");
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 유저가_코멘트에_다른_에코_타입을_보냈으면_거짓을_반환한다() {
+        // given
+        User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        userRepository.save(momenter);
+        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        userRepository.save(commenter);
+        Moment moment = new Moment("하이", momenter, WriteType.BASIC);
+        momentRepository.save(moment);
+        Comment comment = new Comment("바이", commenter, moment);
+        commentRepository.save(comment);
+        Echo existingEcho = new Echo("THANKS", commenter, comment);
+        echoRepository.save(existingEcho);
+
+        // when
+        boolean result = echoRepository.existsByCommentAndUserAndEchoType(comment, commenter, "COMFORTED");
+
+        // then
+        assertThat(result).isFalse();
+    }
 }
