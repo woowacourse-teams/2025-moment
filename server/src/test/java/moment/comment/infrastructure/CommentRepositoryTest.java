@@ -2,6 +2,7 @@ package moment.comment.infrastructure;
 
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -47,10 +48,10 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
         Comment comment1 = new Comment("moment1 comment", commenter, moment1);
@@ -85,16 +86,16 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
-        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1);
+        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment3 = momentRepository.save(moment3);
 
-        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment4 = momentRepository.save(moment4);
 
         Comment comment1 = new Comment("moment1 comment", commenter, savedMoment1);
@@ -133,7 +134,7 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.save(commenter);
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         Comment comment = new Comment("첫 번째 댓글", commenter, moment);
@@ -149,7 +150,7 @@ class CommentRepositoryTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         // when & then

@@ -3,18 +3,18 @@ package moment.moment.application;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
-import moment.matching.application.MatchingService;
-import moment.matching.domain.MatchingResult;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -29,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -59,13 +58,10 @@ class momentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private MomentQueryService momentQueryService;
-
-    @Mock
-    private MatchingService matchingService;
-
-    @Mock
     private MomentCreatePolicy momentCreatePolicy;
+
+    @Mock
+    private RewardService rewardService;
 
     @Test
     void 모멘트_생성에_성공한다() {
@@ -73,22 +69,18 @@ class momentServiceTest {
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
-        Moment expect = new Moment(momentContent, momenter);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
-        given(matchingService.match(any(Long.class))).willReturn(MatchingResult.MATCHED);
 
         // when
-        momentService.addMomentAndMatch(request, 1L);
+        momentService.addBasicMoment(request, 1L);
 
         // then
-        assertAll(
-                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
-                () -> then(matchingService).should(times(1)).match(any(Long.class))
-        );
+        then(momentRepository).should(times(1)).save(any(Moment.class));
     }
 
     @Test
@@ -102,7 +94,7 @@ class momentServiceTest {
         given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> momentService.addMomentAndMatch(request, 1L))
+        assertThatThrownBy(() -> momentService.addBasicMoment(request, 1L))
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_ALREADY_EXIST);
     }
 
@@ -112,7 +104,7 @@ class momentServiceTest {
         User momenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
         User commenter = new User("curry@gmail.com", "12345", "커리", ProviderType.EMAIL);
 
-        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter);
+        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Emoji emoji = new Emoji("HEART", commenter, comment);
 
@@ -143,49 +135,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 내가_받은_모멘트를_조회한다() {
-        // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        Moment moment = new Moment("아 행복해..", momenter);
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
-                .willReturn(Optional.of(moment));
-
-        // when
-        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
-
-        // then
-        assertAll(
-                () -> assertThat(response.id()).isEqualTo(moment.getId()),
-                () -> assertThat(response.content()).isEqualTo(moment.getContent()),
-                () -> assertThat(response.createdAt()).isEqualTo(moment.getCreatedAt())
-        );
-    }
-
-    @Test
-    void 내가_받은_모멘트가_존재하지_않는_경우_빈_데이터를_반환한다() {
-        // given
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class)))
-                .willReturn(Optional.empty());
-
-        // when
-        MatchedMomentResponse response = momentService.getMatchedMoment(1L);
-
-        // then
-        assertAll(
-                () -> assertThat(response.id()).isNull(),
-                () -> assertThat(response.content()).isNull(),
-                () -> assertThat(response.createdAt()).isNull()
-        );
-    }
-
-    @Test
-    void 오늘_모멘트를_작성할_수_있는_상태를_반환한다() {
+    void 오늘_기본_모멘트를_작성할_수_있는_상태를_반환한다() {
         // given
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
@@ -199,7 +149,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 오늘_모멘트를_작성할_수_없는_상태를_반환한다() {
+    void 오늘_기본_모멘트를_작성할_수_없는_상태를_반환한다() {
         // given
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
@@ -210,5 +160,28 @@ class momentServiceTest {
 
         // when & then
         assertThat(momentService.canCreateMoment(1L)).isEqualTo(response);
+    }
+
+    @Test
+    void 오늘_기본_모멘트를_작성한_경우_사용자의_포인트가_추가된다() {
+        // given
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미",  ProviderType.EMAIL);
+        Moment savedMoment = new Moment("레벨3 (리)바이", momenter, WriteType.BASIC);
+        Long momentId = 1L;
+        ReflectionTestUtils.setField(savedMoment, "id", momentId);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
+
+
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여");
+
+        // when
+        momentService.addBasicMoment(request, 1L);
+
+        // then
+        then(rewardService).should(times(1))
+                .rewardForMoment(momenter, Reason.MOMENT_CREATION, momentId);
     }
 }

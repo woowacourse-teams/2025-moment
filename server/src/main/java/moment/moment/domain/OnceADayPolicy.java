@@ -8,7 +8,7 @@ import moment.user.domain.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-@Component("onceADayPolicy") // Spring Bean으로 등록
+@Component("onceADayPolicy")
 @RequiredArgsConstructor
 @Primary
 public class OnceADayPolicy implements MomentCreatePolicy {
@@ -20,7 +20,11 @@ public class OnceADayPolicy implements MomentCreatePolicy {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
-        int todayMomentCount = momentRepository.countByMomenterAndCreatedAtBetween(user, startOfDay, endOfDay);
+        int todayMomentCount = momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(
+                user,
+                WriteType.BASIC,
+                startOfDay,
+                endOfDay);
 
         return todayMomentCount < 1;
     }

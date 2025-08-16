@@ -82,7 +82,7 @@ public class CommentService {
 
         notificationRepository.save(notificationWithoutId);
 
-        rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
+        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
         return CommentCreateResponse.from(savedComment);
     }
@@ -153,20 +153,5 @@ public class CommentService {
         }
 
         return nextCursor;
-    }
-
-    public CommentCreationStatusResponse canCreateComment(Long commenterId) {
-        User commenter = userQueryService.getUserById(commenterId);
-        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
-
-        if (matchedMoment.isEmpty()) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
-        }
-
-        if (commentRepository.existsByMoment(matchedMoment.get())) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
-        }
-
-        return CommentCreationStatusResponse.from(CommentCreationStatus.WRITABLE);
     }
 }
