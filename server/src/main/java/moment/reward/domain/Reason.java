@@ -4,10 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum Reason {
-    COMMENT_CREATION(5),
-    POSITIVE_EMOJI_RECEIVED(15),
-
-    CANCEL_POSITIVE_EMOJI_RECEIVED(-15)
+    MOMENT_CREATION(5),
+    COMMENT_CREATION(2),
+    ECHO_RECEIVED(3),
     ;
 
     private final int pointTo;

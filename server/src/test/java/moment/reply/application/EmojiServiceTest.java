@@ -1,15 +1,6 @@
 package moment.reply.application;
 
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
@@ -34,6 +25,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -82,7 +82,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).reward(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
+        doNothing().when(rewardService).reward(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
@@ -187,6 +187,6 @@ class EmojiServiceTest {
         emojiService.removeEmojiById(emoji.getId(), comment.getId());
 
         // then
-        verify(rewardService).reward(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        verify(rewardService).reward(commenter, Reason.ECHO_RECEIVED, comment.getId());
     }
 }

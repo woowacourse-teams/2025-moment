@@ -1,6 +1,5 @@
 package moment.reply.application;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
@@ -25,6 +24,8 @@ import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class EmojiService {
 
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
 
-        rewardService.reward(comment.getCommenter(), Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
+        rewardService.reward(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
@@ -101,7 +102,7 @@ public class EmojiService {
 
     private void cancelRewardIfLastEmoji(Comment comment) {
         if (!emojiRepository.existsByComment(comment)) {
-            rewardService.reward(comment.getCommenter(), Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+            rewardService.reward(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
         }
     }
 }
