@@ -1,6 +1,8 @@
 package moment.reply.infrastructure;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.reply.domain.Echo;
 import moment.user.domain.User;
@@ -15,5 +17,5 @@ public interface EchoRepository extends JpaRepository<Echo, Long> {
     @EntityGraph(attributePaths = {"comment"})
     List<Echo> findAllByCommentIn(List<Comment> comments);
 
-    boolean existsByCommentAndUserAndEchoType(Comment comment, User user, String echoType);
+    List<Echo> findByCommentAndUserAndEchoTypeIn(Comment comment, User user, Collection<String> echoTypes);
 }

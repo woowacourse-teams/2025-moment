@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
@@ -59,7 +60,7 @@ class EchoRepositoryTest {
     }
 
     @Test
-    void 유저가_코멘트에_이미_에코_타입을_보냈으면_참을_반환한다() {
+    void 유저가_코멘트에_이미_에코_타입을_보낸_경우_조회하여_반환한다() {
         // given
         User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
         userRepository.save(momenter);
@@ -69,18 +70,20 @@ class EchoRepositoryTest {
         momentRepository.save(moment);
         Comment comment = new Comment("바이", commenter, moment);
         commentRepository.save(comment);
-        Echo existingEcho = new Echo("THANKS", commenter, comment);
-        echoRepository.save(existingEcho);
+        Echo existingEcho1 = new Echo("THANKS", commenter, comment);
+        echoRepository.save(existingEcho1);
+        Echo existingEcho2 = new Echo("COMFORTED", commenter, comment);
+        echoRepository.save(existingEcho2);
 
         // when
-        boolean result = echoRepository.existsByCommentAndUserAndEchoType(comment, commenter, "THANKS");
+        List<Echo> result = echoRepository.findByCommentAndUserAndEchoTypeIn(comment, commenter, Set.of("THANKS", "COMFORTED"));
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result).hasSize(2);
     }
 
     @Test
-    void 유저가_코멘트에_다른_에코_타입을_보냈으면_거짓을_반환한다() {
+    void 유저가_코멘트에_다른_에코_타입을_보냈으면_조회하지_않는다() {
         // given
         User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
         userRepository.save(momenter);
@@ -94,9 +97,9 @@ class EchoRepositoryTest {
         echoRepository.save(existingEcho);
 
         // when
-        boolean result = echoRepository.existsByCommentAndUserAndEchoType(comment, commenter, "COMFORTED");
+        List<Echo> result = echoRepository.findByCommentAndUserAndEchoTypeIn(comment, commenter, Set.of("COMFORTED"));
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result).hasSize(0);
     }
 }

@@ -1,6 +1,7 @@
 package moment.reply.application;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
@@ -48,16 +49,21 @@ public class EchoService {
 
         validateMomenter(comment, user);
 
-        Set<String> echoTypes = request.echoTypes();
-        for(String echoType : echoTypes) {
-            if(echoRepository.existsByCommentAndUserAndEchoType(comment, user, echoType)) {
-                throw new MomentException(ErrorCode.ECHO_CONFLICT);
-            }
-            Echo echoWithoutId = new Echo(echoType, user, comment);
-            echoRepository.save(echoWithoutId);
+        List<Echo> existing = echoRepository.findByCommentAndUserAndEchoTypeIn(comment, user, request.echoTypes());
+        Set<String> existingTypes = existing.stream()
+                .map(Echo::getEchoType)
+                .collect(Collectors.toSet());
+
+        List<Echo> newEchos = request.echoTypes().stream()
+                .filter(type -> !existingTypes.contains(type))
+                .map(type -> new Echo(type, user, comment))
+                .toList();
+
+        if (!newEchos.isEmpty()) {
+            echoRepository.saveAll(newEchos);
         }
 
-        // TODO : 논의 필요, 여러 개의 에코 중에 어떤 에코를 기준으로 잡을지, 현재는 임시로 comment id를 저장한 상태, 특정 commentId에 echo가 처음 달릴 때만 보상을 줄 수 있다고 생각
+        // TODO : 논의 필요
         rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
