@@ -1,9 +1,13 @@
-export interface EmojiRequest {
-  emojiType: string;
+import { ECHO_TYPE } from '../const/echoType';
+
+export type EchoTypeKey = keyof typeof ECHO_TYPE;
+
+export interface EchoRequest {
+  echoTypes: EchoTypeKey[];
   commentId: number;
 }
 
-export interface EmojiResponse {
+export interface EchoResponse {
   status: number;
   data: Echos[];
 }
