@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
+import java.util.Set;
 import moment.auth.application.TokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -74,8 +75,8 @@ public class EchoControllerTest {
     @Test
     void 에코를_등록한다() {
         // given
-        String emojiType = "HEART";
-        EchoCreateRequest request = new EchoCreateRequest(emojiType, comment.getId());
+        Set<String> echoTypes = Set.of("HEART");
+        EchoCreateRequest request = new EchoCreateRequest(echoTypes, comment.getId());
 
         // when
         RestAssured.given().log().all()
@@ -90,7 +91,7 @@ public class EchoControllerTest {
         List<Echo> echoes = echoRepository.findAllByComment(comment);
         assertAll(
                 () -> assertThat(echoes).hasSize(1),
-                () -> assertThat(echoes.get(0).getEchoType()).isEqualTo(emojiType),
+                () -> assertThat(echoes.get(0).getEchoType()).isEqualTo("HEART"),
                 () -> assertThat(echoes.get(0).getUser().getId()).isEqualTo(momenter.getId()),
                 () -> assertThat(echoes.get(0).getComment().getId()).isEqualTo(momenter.getId())
         );

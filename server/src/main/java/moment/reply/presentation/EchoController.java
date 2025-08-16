@@ -17,7 +17,6 @@ import moment.reply.dto.response.EchoReadResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,13 +48,17 @@ public class EchoController {
                     - [U-002] 존재하지 않는 사용자입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = """
+                    - [E-002] 해당 에코가 이미 존재합니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping()
-    public ResponseEntity<SuccessResponse<Void>> createEcho(
+    public ResponseEntity<SuccessResponse<Void>> createEchos(
             @RequestBody EchoCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        echoService.addEcho(request, authentication);
+        echoService.addEchos(request, authentication);
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }

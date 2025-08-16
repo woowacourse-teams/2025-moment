@@ -1,6 +1,7 @@
 package moment.reply.application;
 
 
+import java.util.Set;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
@@ -66,7 +67,7 @@ class EchoServiceTest {
     void 코멘트에_에코를_추가_할_수_있다() {
         // given
         Authentication authentication = new Authentication(1L);
-        EchoCreateRequest request = new EchoCreateRequest("HEART", 1L);
+        EchoCreateRequest request = new EchoCreateRequest(Set.of("HEART"), 1L);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -83,7 +84,7 @@ class EchoServiceTest {
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
-        echoService.addEcho(request, authentication);
+        echoService.addEchos(request, authentication);
 
         // then
         then(echoRepository).should(times(1)).save(any(Echo.class));
@@ -93,7 +94,7 @@ class EchoServiceTest {
     void 모멘트와_작성자_아닌_사용자가_에코를_등록하면_예외가_발생한다() {
         // given
         Authentication authentication = new Authentication(1L);
-        EchoCreateRequest request = new EchoCreateRequest("HEART", 1L);
+        EchoCreateRequest request = new EchoCreateRequest(Set.of("HEART"), 1L);
 
         User unAuthorized = new User("noUser@gmail.com", "1234", "noUser", ProviderType.EMAIL);
         Comment comment = mock(Comment.class);
@@ -105,7 +106,7 @@ class EchoServiceTest {
         given(moment.checkMomenter(any(User.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> echoService.addEcho(request, authentication))
+        assertThatThrownBy(() -> echoService.addEchos(request, authentication))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
     }

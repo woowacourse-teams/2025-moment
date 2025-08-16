@@ -12,6 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import moment.auth.application.TokenManager;
@@ -135,7 +136,7 @@ public class NotificationControllerTest {
         EventSource eventSource = subscribeToNotifications(commenterToken, receivedNotifications);
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
 
-        EchoCreateRequest request = new EchoCreateRequest("HEART", comment.getId());
+        EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
         RestAssured.given().log().all()
                 .cookie("token", momenterToken) // 모멘트 작성자가 에코를 달음
                 .contentType(ContentType.JSON)
@@ -212,17 +213,17 @@ public class NotificationControllerTest {
     void 사용자가_읽지_않은_코멘트_알림을_받는다() {
         // given
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment2));
-        EchoCreateRequest request1 = new EchoCreateRequest("HEART", comment.getId());
-        EchoCreateRequest request2 = new EchoCreateRequest("DDABONG", comment.getId());
-        EchoCreateRequest request3 = new EchoCreateRequest("STAR", comment.getId());
-        EchoCreateRequest request4 = new EchoCreateRequest("KING", comment.getId());
+        EchoCreateRequest request1 = new EchoCreateRequest(Set.of("HEART"), comment.getId());
+        EchoCreateRequest request2 = new EchoCreateRequest(Set.of("DDABONG"), comment.getId());
+        EchoCreateRequest request3 = new EchoCreateRequest(Set.of("STAR"), comment.getId());
+        EchoCreateRequest request4 = new EchoCreateRequest(Set.of("KING"), comment.getId());
 
         Authentication authentication = new Authentication(momenter.getId());
 
-        echoService.addEcho(request1, authentication);
-        echoService.addEcho(request2, authentication);
-        echoService.addEcho(request3, authentication);
-        echoService.addEcho(request4, authentication);
+        echoService.addEchos(request1, authentication);
+        echoService.addEchos(request2, authentication);
+        echoService.addEchos(request3, authentication);
+        echoService.addEchos(request4, authentication);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
                 .cookie("token", commenterToken)

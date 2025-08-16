@@ -1,5 +1,6 @@
 package moment.reply.application;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
@@ -40,25 +41,24 @@ public class EchoService {
     private final NotificationRepository notificationRepository;
     private final RewardService rewardService;
 
-    private static void validateMomenter(Comment comment, User user) {
-        Moment moment = comment.getMoment();
-        if (!moment.checkMomenter(user)) {
-            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
-        }
-    }
-
     @Transactional
-    public EchoCreateResponse addEcho(EchoCreateRequest request, Authentication authentication) {
+    public EchoCreateResponse addEchos(EchoCreateRequest request, Authentication authentication) {
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
         validateMomenter(comment, user);
 
-        Echo echoWithoutId = new Echo(request.echoType(), user, comment);
+        Set<String> echoTypes = request.echoTypes();
+        for(String echoType : echoTypes) {
+            if(echoRepository.existsByCommentAndUserAndEchoType(comment, user, echoType)) {
+                throw new MomentException(ErrorCode.ECHO_CONFLICT);
+            }
+            Echo echoWithoutId = new Echo(echoType, user, comment);
+            echoRepository.save(echoWithoutId);
+        }
 
-        Echo savedEcho = echoRepository.save(echoWithoutId);
-
-        rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, savedEcho.getId());
+        // TODO : 논의 필요, 여러 개의 에코 중에 어떤 에코를 기준으로 잡을지, 현재는 임시로 comment id를 저장한 상태, 특정 commentId에 echo가 처음 달릴 때만 보상을 줄 수 있다고 생각
+        rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
@@ -75,7 +75,14 @@ public class EchoService {
         sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
         notificationRepository.save(notificationWithoutId);
 
-        return EchoCreateResponse.from(savedEcho);
+        return new EchoCreateResponse(echoTypes, comment.getId(), user.getId(), comment.getCreatedAt());
+    }
+
+    private void validateMomenter(Comment comment, User user) {
+        Moment moment = comment.getMoment();
+        if (!moment.checkMomenter(user)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
     }
 
     public List<EchoReadResponse> getEchosByCommentId(Long commentId) {
