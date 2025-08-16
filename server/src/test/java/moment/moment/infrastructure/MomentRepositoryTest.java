@@ -2,6 +2,8 @@ package moment.moment.infrastructure;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import moment.comment.domain.Comment;
+import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
@@ -32,6 +34,9 @@ class MomentRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     @Disabled
@@ -112,5 +117,28 @@ class MomentRepositoryTest {
 
         // when & then
         assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, extraWriteType, startOfDay, endOfDay)).isEqualTo(1);
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트를_조회한다() {
+        // given
+        User user = userRepository.save(new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL));
+        User other = userRepository.save(new User("hippo@gmail.com", "hippo1234!","hippo", ProviderType.EMAIL));
+
+        Moment myMoment = momentRepository.save(new Moment("내가 쓴 모멘트", user, WriteType.BASIC));
+
+        Moment recentMoment = momentRepository.save(new Moment("다른 사람 모멘트", other, WriteType.BASIC));
+
+        // TODO : 시간을 DB에서 처리하고 있어서 컨트롤 불가능
+
+        Moment commentedMoment = momentRepository.save(new Moment("이미 코멘트를 단 모멘트", other, WriteType.BASIC));
+        commentRepository.save(new Comment("희희", user, commentedMoment));
+
+        // when
+        List<Moment> results = momentRepository.findCommentableMoments(user, LocalDateTime.now().minusDays(3));
+
+        // then
+        assertThat(results).containsExactly(recentMoment);
+        assertThat(results).doesNotContain(myMoment, commentedMoment);
     }
 }

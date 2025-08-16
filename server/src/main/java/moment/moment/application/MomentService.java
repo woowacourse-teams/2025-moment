@@ -1,5 +1,6 @@
 package moment.moment.application;
 
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -14,6 +15,7 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
@@ -159,5 +161,20 @@ public class MomentService {
         }
 
         return MomentCreationStatusResponse.createDeniedStatus();
+    }
+
+    public CommentableMomentResponse getCommentableMoment(Long id) {
+        User user = userQueryService.getUserById(id);
+
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+
+        if(commentableMoments.isEmpty()) {
+            return CommentableMomentResponse.empty();
+        }
+
+        Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
+
+        return CommentableMomentResponse.from(moment);
     }
 }

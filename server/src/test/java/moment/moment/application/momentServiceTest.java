@@ -1,5 +1,6 @@
 package moment.moment.application;
 
+import java.util.Collections;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -9,6 +10,7 @@ import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -223,5 +225,38 @@ class momentServiceTest {
         // then
         then(rewardService).should(times(1))
                 .rewardForMoment(momenter, Reason.MOMENT_CREATION, momentId);
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트를_반환한다() {
+        // given
+        Long userId = 1L;
+        User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment = new Moment("안녕", user, WriteType.BASIC);
+
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(momentRepository.findCommentableMoments(any(), any())).willReturn(List.of(moment));
+
+        // when
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+
+        // then
+        assertThat(response.id()).isEqualTo(moment.getId());
+        assertThat(response.content()).isEqualTo(moment.getContent());
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트가_없는_경우_빈_값을_반환한다() {
+        // given
+        Long userId = 1L;
+        User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(momentRepository.findCommentableMoments(any(), any())).willReturn(Collections.emptyList());
+
+        // when
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+
+        // then
+        assertThat(response).isEqualTo(CommentableMomentResponse.empty());
     }
 }

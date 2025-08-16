@@ -7,6 +7,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
@@ -15,6 +16,7 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
@@ -197,7 +200,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -217,4 +220,37 @@ class MomentControllerTest {
     }
 
     // TODO: 추가 모멘트 작성 가능 상태 확인 api에 대한 테스트를 user의 포인트를 조정하는 로직이 들어오면 작성할 예정
+
+    @Test
+    void 코멘트를_작성할_수_있는_모멘트를_조회한다() {
+        // given
+        User user = new User("mimi@gmail.com", "mimi1234!", "mimi", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        User momenter = new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        String token = tokenManager.createToken(savedUser.getId(), savedUser.getEmail());
+
+        // when
+        CommentableMomentResponse response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("api/v1/moments/commentable")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", CommentableMomentResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
+                () -> assertThat(response.nickname()).isEqualTo(savedMomenter.getNickname()),
+                () -> assertThat(response.level()).isEqualTo(savedMomenter.getLevel()),
+                () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
+        );
+    }
 }
