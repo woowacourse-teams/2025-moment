@@ -35,8 +35,10 @@ class UserControllerTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private TokenManager tokenManager;
 
@@ -185,7 +187,7 @@ class UserControllerTest {
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
-                () -> assertThat(passwordEncoder.matches(request.password(), changePasswordUser.getPassword())).isTrue()
+                () -> assertThat(passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
         );
     }
 }

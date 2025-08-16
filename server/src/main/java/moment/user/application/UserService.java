@@ -84,9 +84,9 @@ public class UserService {
         User user = userQueryService.getUserById(userId);
 
         validateChangeablePasswordUser(user);
-        comparePasswordWithRepassword(request.password(), request.rePassword());
+        comparePasswordWithRepassword(request.newPassword(), request.checkedPassword());
 
-        String encodedChangePassword = passwordEncoder.encode(request.password());
+        String encodedChangePassword = passwordEncoder.encode(request.newPassword());
         validateNotSameAsOldPassword(user, encodedChangePassword);
 
         user.changePassword(encodedChangePassword);
