@@ -32,16 +32,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     }
   };
 
-  const getFormattedTime = (dateString: string) => {
-    try {
-      if (!dateString) return '시간 정보 없음';
-      return formatRelativeTime(dateString);
-    } catch (error) {
-      console.error('Date formatting error:', error, 'dateString:', dateString);
-      return '시간 정보 오류';
-    }
-  };
-
   const hasComments = myMoment.comments.length > 0;
 
   return (
@@ -54,7 +44,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
       >
         <S.TitleWrapper>
           <Timer size={16} color={theme.colors['gray-400']} />
-          <S.TimeStamp>{getFormattedTime(myMoment.createdAt)}</S.TimeStamp>
+          <S.TimeStamp>{formatRelativeTime(myMoment.createdAt)}</S.TimeStamp>
         </S.TitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
       </S.MyMomentsCard>
@@ -80,7 +70,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                 </S.CommenterInfoContainer>
                 <S.TitleWrapper>
                   <Timer size={16} color={theme.colors['gray-400']} />
-                  <S.TimeStamp>{getFormattedTime(myMoment.comments[0].createdAt)}</S.TimeStamp>
+                  <S.TimeStamp>{formatRelativeTime(myMoment.comments[0].createdAt)}</S.TimeStamp>
                 </S.TitleWrapper>
               </S.MyMomentsModalHeader>
 
