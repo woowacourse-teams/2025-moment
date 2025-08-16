@@ -246,5 +246,49 @@ class MomentControllerTest {
         assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
     }
 
-    // TODO: 추가 모멘트 작성 가능 상태 확인 api에 대한 테스트를 user의 포인트를 조정하는 로직이 들어오면 작성할 예정
+    @Test
+    void 추가_모멘트_작성_가능_상태를_가져온다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("api/v1/moments/writable/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreationStatusResponse.class);
+
+        // then
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.ALLOWED);
+    }
+
+    @Test
+    void 추가_모멘트_작성_불가능_상태를_가져온다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(9);
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
+                .cookie("token", token)
+                .when().get("api/v1/moments/writable/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreationStatusResponse.class);
+
+        // then
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
+    }
 }
