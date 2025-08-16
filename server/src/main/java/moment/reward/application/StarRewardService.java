@@ -7,6 +7,11 @@ import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.User;
+import moment.user.dto.response.MyRewardHistoryPageResponse;
+import moment.user.dto.response.MyRewardHistoryResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,5 +82,17 @@ public class StarRewardService implements RewardService {
 
         RewardHistory rewardHistory = new RewardHistory(user, star, reason, contentId);
         rewardRepository.save(rewardHistory);
+    }
+
+    @Override
+    public MyRewardHistoryPageResponse getRewardHistoryByUser(User user, Integer pageNum, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+
+        Page<RewardHistory> rewardHistoryPage = rewardRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+
+        Page<MyRewardHistoryResponse> page = rewardHistoryPage.map(MyRewardHistoryResponse::from);
+
+        return MyRewardHistoryPageResponse.from(page);
     }
 }

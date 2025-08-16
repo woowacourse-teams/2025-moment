@@ -10,9 +10,14 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Comparator;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -53,5 +58,34 @@ class RewardRepositoryTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void 유저의_보상_기록을_CreatedAt_내림차순으로_조회한다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+
+        userRepository.save(user);
+
+        createTestRewardHistory(user);
+
+        Page<RewardHistory> page = rewardRepository.findByUserOrderByCreatedAtDesc(user, PageRequest.of(0, 10));
+
+        // when & then
+        assertAll(
+                () -> assertThat(page.getTotalPages()).isEqualTo(2),
+                () -> assertThat(page.getSize()).isEqualTo(10),
+                () -> assertThat(page.getContent().size()).isEqualTo(10),
+                () -> assertThat(page.getNumber()).isEqualTo(0),
+                () -> assertThat(page.getContent())
+                        .extracting(RewardHistory::getCreatedAt)
+                        .isSortedAccordingTo(Comparator.reverseOrder())
+        );
+    }
+
+    private void createTestRewardHistory(User user) {
+        for (int i = 0; i < 20; i++) {
+            rewardRepository.save(new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
+        }
     }
 }

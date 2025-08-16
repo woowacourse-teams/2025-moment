@@ -2,6 +2,7 @@ package moment.reward.application;
 
 import moment.reward.domain.Reason;
 import moment.user.domain.User;
+import moment.user.dto.response.MyRewardHistoryPageResponse;
 
 public interface RewardService {
 
@@ -12,4 +13,6 @@ public interface RewardService {
     void rewardForEcho(User user, Reason reason, Long contentId);
 
     void useReward(User user, Reason reason, Long contentId);
+
+    MyRewardHistoryPageResponse getRewardHistoryByUser(User user, Integer pageNum, Integer pageSize);
 }
