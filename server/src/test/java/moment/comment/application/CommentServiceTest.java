@@ -210,7 +210,7 @@ class CommentServiceTest {
         doNothing().when(rewardService).reward(any(), any(), any());
 
         // when & then
-        assertThatCode(() -> commentService.addComment(request, newComment.getId()))
+        assertThatCode(() -> commentService.addComment(request, commenter.getId()))
                 .doesNotThrowAnyException();
     }
 }
