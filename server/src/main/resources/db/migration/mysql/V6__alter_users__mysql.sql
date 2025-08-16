@@ -6,6 +6,6 @@ ALTER TABLE users
 UPDATE users
 SET exp_star = available_star;
 
-ALTER TABLE users ALTER COLUMN level VARCHAR(100);
+ALTER TABLE users MODIFY COLUMN level VARCHAR(100);
 
-ALTER TABLE point_history RENAME TO reward_history;
+RENAME TABLE point_history TO reward_history;
