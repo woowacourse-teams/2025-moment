@@ -63,7 +63,7 @@ public class AuthEmailService implements EmailService{
         return String.valueOf((int) (Math.random() * 900000) + 100000);
     }
 
-    @Scheduled(fixedRate = 3600000) // 1시간마다 실행
+    @Scheduled(fixedRate = 3600_000) // 1시간마다 실행
     public void cleanExpiredVerificationInfos() {
         verificationInfos.entrySet().removeIf(entry -> entry.getValue().isExpired());
         log.info("만료된 이메일 인증 정보 정리 완료. 남은 정보 수: {}", verificationInfos.size());
