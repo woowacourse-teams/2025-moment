@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,18 +60,16 @@ class momentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private MomentCreatePolicy momentCreatePolicy;
-
-    @Mock
     private BasicMomentCreatePolicy basicMomentCreatePolicy;
 
     @Mock
     private ExtraMomentCreatePolicy extraMomentCreatePolicy;
 
+    @Mock
     private RewardService rewardService;
 
     @Test
-    void 모멘트_생성에_성공한다() {
+    void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
@@ -81,6 +80,7 @@ class momentServiceTest {
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
 
         // when
         momentService.addBasicMoment(request, 1L);
@@ -90,7 +90,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 모멘트_생성에_실패한다() {
+    void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
@@ -200,6 +200,7 @@ class momentServiceTest {
 
         // then
         assertThat(response).isEqualTo(expect);
+    }
 
     @Test
     void 오늘_기본_모멘트를_작성한_경우_사용자의_포인트가_추가된다() {
@@ -210,7 +211,7 @@ class momentServiceTest {
         ReflectionTestUtils.setField(savedMoment, "id", momentId);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
 
 
