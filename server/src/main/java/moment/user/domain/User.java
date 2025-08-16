@@ -27,27 +27,23 @@ public class User extends BaseEntity {
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
     private static final int DEFAULT_POINT = 0;
-
+    @Column(nullable = false)
+    private final Integer expStar = DEFAULT_POINT;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private String nickname;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
-
-    private Integer currentPoint = DEFAULT_POINT;
-
+    @Column(nullable = false)
+    private Integer availableStar = DEFAULT_POINT;
     @Enumerated(EnumType.STRING)
     private Level level = Level.METEOR;
 
@@ -98,7 +94,7 @@ public class User extends BaseEntity {
     }
 
     public void addPointAndUpdateLevel(int pointToAdd) {
-        this.currentPoint += pointToAdd;
-        this.level = Level.getLevel(this.currentPoint);
+        this.availableStar += pointToAdd;
+        this.level = Level.getLevel(this.availableStar);
     }
 }

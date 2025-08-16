@@ -45,7 +45,7 @@ class PointRewardServiceTest {
         pointRewardService.reward(commenter, reason, comment.getId());
 
         // then
-        assertThat(commenter.getCurrentPoint()).isEqualTo(commentPointTo);
+        assertThat(commenter.getAvailableStar()).isEqualTo(commentPointTo);
         verify(rewardRepository).save(any(PointHistory.class));
     }
 
@@ -63,7 +63,7 @@ class PointRewardServiceTest {
         pointRewardService.reward(commenter, reason, comment.getId());
 
         // then
-        assertThat(commenter.getCurrentPoint()).isEqualTo(positiveEmojiReceivedPointTo);
+        assertThat(commenter.getAvailableStar()).isEqualTo(positiveEmojiReceivedPointTo);
         verify(rewardRepository).save(any(PointHistory.class));
     }
 
@@ -83,6 +83,6 @@ class PointRewardServiceTest {
         pointRewardService.reward(commenter, reason, comment.getId());
 
         // then
-        assertThat(commenter.getCurrentPoint()).isEqualTo(0);
+        assertThat(commenter.getAvailableStar()).isEqualTo(0);
     }
 }

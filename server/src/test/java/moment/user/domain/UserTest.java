@@ -111,7 +111,7 @@ class UserTest {
         user.addPointAndUpdateLevel(pointToAdd);
 
         // then
-        assertThat(user.getCurrentPoint()).isEqualTo(expectedPoint);
+        assertThat(user.getAvailableStar()).isEqualTo(expectedPoint);
         assertThat(user.getLevel()).isEqualTo(expectedLevel);
     }
 }

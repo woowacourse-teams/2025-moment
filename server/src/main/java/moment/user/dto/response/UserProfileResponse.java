@@ -10,13 +10,13 @@ public record UserProfileResponse(
         String nickname,
 
         @Schema(description = "사용자 포인트", example = "100")
-        Integer currentPoint,
+        Integer availableStar,
 
         @Schema(description = "사용자 레벨", example = "METEOR")
         Level level
 ) {
 
     public static UserProfileResponse from(User user) {
-        return new UserProfileResponse(user.getNickname(), user.getCurrentPoint(), user.getLevel());
+        return new UserProfileResponse(user.getNickname(), user.getAvailableStar(), user.getLevel());
     }
 }
