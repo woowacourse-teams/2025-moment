@@ -7,7 +7,8 @@ export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean
   width: 100%;
   height: 350px;
   padding: 20px 30px;
-  background-color: ${theme.colors['slate-800_60']};
+  background-color: ${({ $hasComment }) =>
+    $hasComment ? theme.colors['slate-800_60'] : theme.colors['gray-600_20']};
   border-radius: 10px;
   border: 1px solid ${theme.colors['gray-700']};
   word-break: keep-all;
@@ -32,10 +33,56 @@ export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean
 `;
 
 export const MyMomentsContent = styled.p`
-  height: calc(100% - 20px);
+  height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const MyMomentsModalContent = styled.div`
+  height: 100%;
+  width: 100%;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 768px) {
+    padding: 16px 0px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 0px;
+  }
+`;
+
+export const CommentContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const MyMomentsModalHeader = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const CommenterInfoContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const LevelIcon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 export const TitleContainer = styled.div`
@@ -65,14 +112,14 @@ export const Title = styled.span`
   color: ${({ theme }) => theme.colors.white};
 `;
 
-export const EmojiContainer = styled.div`
+export const EchoContainer = styled.div`
   display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-export const EmpathyContainer = styled.div`
-  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
+`;
+export const EchoButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;

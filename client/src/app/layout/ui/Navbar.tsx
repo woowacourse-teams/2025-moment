@@ -12,7 +12,7 @@ import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 
-type Level = 'METEOR' | 'ASTEROID' | 'COMET';
+export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
 export const Navbar = () => {
   const location = useLocation();

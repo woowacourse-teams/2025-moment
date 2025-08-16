@@ -1,17 +1,19 @@
 import { theme } from '@/app/styles/theme';
-import { SimpleCard } from '@/shared/ui';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { Send, Timer } from 'lucide-react';
+import { Timer } from 'lucide-react';
 import * as S from './MyMomentsCard.styles';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { EmpathyButton } from '@/features/emoji/ui/EmpathyButton';
+import { EchoButton } from '@/features/echo/ui/EchoButton';
 import { Heart } from 'lucide-react';
+import { ECHO_TYPE } from '@/features/echo/const/echoType';
+import { Level } from '@/app/layout/ui/Navbar';
+import { levelMap } from '@/app/layout/data/navItems';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications(); // TODO: 알림 읽음 처리 필요
 
   const getFormattedTime = (dateString: string) => {
     try {
@@ -29,8 +31,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     <>
       <S.MyMomentsCard
         key={myMoment.id}
-        $hasComment={!!myMoment.comment?.content}
-        onClick={!!myMoment.comment?.content ? handleOpen : undefined}
+        $hasComment={myMoment.comments.length > 0}
+        onClick={!!myMoment.comments.length ? handleOpen : undefined}
         $shadow={!myMoment.read}
       >
         <S.TitleWrapper>
@@ -40,24 +42,38 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
       </S.MyMomentsCard>
       {isOpen && (
-        <Modal isOpen={true} onClose={handleClose} position="center" size="medium">
+        <Modal isOpen={true} onClose={handleClose} variant="memoji" position="center" size="small">
           <Modal.Header showCloseButton={true} />
           <Modal.Content>
-            <p>{myMoment.content}</p>
-            <S.TitleContainer>
-              <Send size={20} color={theme.colors['yellow-500']} />
-              <span>받은 공감</span>
-            </S.TitleContainer>
-            <SimpleCard height="small" content={<div>{myMoment.comment?.content}</div>} />
-            <S.TitleContainer>
-              <Heart size={20} color={theme.colors['yellow-500']} />
-              <span>공감 보내기</span>
-            </S.TitleContainer>
-            <S.EmpathyContainer>
-              <EmpathyButton title="마음 고마워요" onClick={handleClose} />
-              <EmpathyButton title="감동 받았어요" onClick={handleClose} />
-              <EmpathyButton title="위로가 됐어요" onClick={handleClose} />
-            </S.EmpathyContainer>
+            <S.MyMomentsModalContent>
+              <S.MyMomentsModalHeader>
+                <S.CommenterInfoContainer>
+                  <S.LevelIcon
+                    src={levelMap[myMoment.comments[0].commenterLevel as Level]}
+                    alt="level"
+                  />
+                  <span>{myMoment.comments[0].commenterName}</span>
+                </S.CommenterInfoContainer>
+                <S.TitleWrapper>
+                  <Timer size={16} color={theme.colors['gray-400']} />
+                  <S.TimeStamp>{getFormattedTime(myMoment.comments[0].createdAt)}</S.TimeStamp>
+                </S.TitleWrapper>
+              </S.MyMomentsModalHeader>
+              <S.CommentContainer>
+                <div>{myMoment.comments[0].content}</div>
+              </S.CommentContainer>
+              <S.EchoContainer>
+                <S.TitleContainer>
+                  <Heart size={20} color={theme.colors['yellow-500']} />
+                  <span>에코 보내기</span>
+                </S.TitleContainer>
+                <S.EchoButtonContainer>
+                  <EchoButton title={ECHO_TYPE.THANKS} onClick={handleClose} />
+                  <EchoButton title={ECHO_TYPE.TOUCHED} onClick={handleClose} />
+                  <EchoButton title={ECHO_TYPE.COMFORTED} onClick={handleClose} />
+                </S.EchoButtonContainer>
+              </S.EchoContainer>
+            </S.MyMomentsModalContent>
           </Modal.Content>
         </Modal>
       )}
