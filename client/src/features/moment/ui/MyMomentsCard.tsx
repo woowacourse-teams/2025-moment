@@ -13,8 +13,16 @@ import { Level } from '@/app/layout/ui/Navbar';
 import { levelMap } from '@/app/layout/data/navItems';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications(); // TODO: 알림 읽음 처리 필요
+  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+  const { handleOpen, handleClose, isOpen } = useModal();
 
+  const handleMomentClick = () => {
+    handleOpen();
+    if (myMoment.read || isReadingNotification) return;
+    if (myMoment.notificationId) {
+      handleReadNotifications(myMoment.notificationId);
+    }
+  };
   const getFormattedTime = (dateString: string) => {
     try {
       if (!dateString) return '시간 정보 없음';
@@ -25,14 +33,12 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     }
   };
 
-  const { handleOpen, handleClose, isOpen } = useModal();
-
   return (
     <>
       <S.MyMomentsCard
         key={myMoment.id}
         $hasComment={myMoment.comments.length > 0}
-        onClick={!!myMoment.comments.length ? handleOpen : undefined}
+        onClick={!!myMoment.comments.length ? handleMomentClick : undefined}
         $shadow={!myMoment.read}
       >
         <S.TitleWrapper>
