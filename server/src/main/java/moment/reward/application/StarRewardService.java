@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StarRewardService implements RewardService {
+
     private final RewardRepository rewardRepository;
 
     @Override
