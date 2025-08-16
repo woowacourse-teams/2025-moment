@@ -42,7 +42,7 @@ public class EchoService {
     private final RewardService rewardService;
 
     @Transactional
-    public EchoCreateResponse addEchos(EchoCreateRequest request, Authentication authentication) {
+    public void addEchos(EchoCreateRequest request, Authentication authentication) {
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
@@ -74,8 +74,6 @@ public class EchoService {
 
         sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
         notificationRepository.save(notificationWithoutId);
-
-        return new EchoCreateResponse(echoTypes, comment.getId(), user.getId(), comment.getCreatedAt());
     }
 
     private void validateMomenter(Comment comment, User user) {
