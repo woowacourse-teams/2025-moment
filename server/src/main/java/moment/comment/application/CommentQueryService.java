@@ -8,5 +8,5 @@ public interface CommentQueryService {
 
     Comment getCommentById(Long id);
 
-    boolean existsByMomentAndUser(Moment moment, User user);
+    boolean existsByMomentAndCommenter(Moment moment, User commenter);
 }

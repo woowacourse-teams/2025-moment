@@ -184,7 +184,7 @@ class CommentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
-        given(commentQueryService.existsByMomentAndUser(any(Moment.class), any(User.class))).willReturn(true);
+        given(commentQueryService.existsByMomentAndCommenter(any(Moment.class), any(User.class))).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))

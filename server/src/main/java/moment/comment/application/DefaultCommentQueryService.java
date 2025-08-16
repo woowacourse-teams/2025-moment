@@ -24,7 +24,7 @@ public class DefaultCommentQueryService implements CommentQueryService {
     }
 
     @Override
-    public boolean existsByMomentAndUser(Moment moment, User user) {
+    public boolean existsByMomentAndCommenter(Moment moment, User user) {
         return commentRepository.existsByMomentAndCommenter(moment, user);
     }
 }

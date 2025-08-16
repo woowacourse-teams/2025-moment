@@ -56,7 +56,7 @@ public class CommentService {
         User commenter = userQueryService.getUserById(commenterId);
         Moment moment = momentQueryService.getMomentById(request.momentId());
 
-        if (commentQueryService.existsByMomentAndUser(moment, commenter)) {
+        if (commentQueryService.existsByMomentAndCommenter(moment, commenter)) {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
 

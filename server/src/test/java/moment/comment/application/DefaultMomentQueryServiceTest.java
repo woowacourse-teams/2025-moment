@@ -71,7 +71,7 @@ class DefaultMomentQueryServiceTest {
         given(commentRepository.existsByMomentAndCommenter(moment, commenter)).willReturn(true);
 
         // when
-        boolean result = defaultCommentQueryService.existsByMomentAndUser(moment, commenter);
+        boolean result = defaultCommentQueryService.existsByMomentAndCommenter(moment, commenter);
 
         // then
         assertThat(result).isTrue();
@@ -87,7 +87,7 @@ class DefaultMomentQueryServiceTest {
         given(commentRepository.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
 
         // when
-        boolean result = defaultCommentQueryService.existsByMomentAndUser(moment, commenter);
+        boolean result = defaultCommentQueryService.existsByMomentAndCommenter(moment, commenter);
 
         // then
         assertThat(result).isFalse();
