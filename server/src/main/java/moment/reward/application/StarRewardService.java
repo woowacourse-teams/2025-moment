@@ -22,37 +22,37 @@ public class StarRewardService implements RewardService {
 
     @Override
     @Transactional
-    public void rewardForMoment(User user, Reason reason, Long contentId) {
+    public void rewardForMoment(User momenter, Reason reason, Long momentId) {
         LocalDate today = LocalDate.now();
 
         LocalDateTime startOfToday = today.atStartOfDay();
         LocalDateTime endOfToday = today.plusDays(1).atStartOfDay();
 
-        if (rewardRepository.existsByUserAndReasonAndToday(user, reason, startOfToday, endOfToday)) {
+        if (rewardRepository.existsByUserAndReasonAndToday(momenter, reason, startOfToday, endOfToday)) {
             return;
         }
 
-        updateStar(user, reason, contentId);
+        updateStar(momenter, reason, momentId);
     }
 
     @Override
     @Transactional
-    public void rewardForComment(User user, Reason reason, Long contentId) {
-        if (rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId)) {
+    public void rewardForComment(User commenter, Reason reason, Long commentId) {
+        if (rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, commentId)) {
             return;
         }
 
-        updateStar(user, reason, contentId);
+        updateStar(commenter, reason, commentId);
     }
 
     @Override
     @Transactional
-    public void rewardForEcho(User user, Reason reason, Long contentId) {
-        if (rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId)) {
+    public void rewardForEcho(User commenter, Reason reason, Long echoId) {
+        if (rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, echoId)) {
             return;
         }
 
-        updateStar(user, reason, contentId);
+        updateStar(commenter, reason, echoId);
     }
 
     @Override
