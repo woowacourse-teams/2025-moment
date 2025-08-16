@@ -114,11 +114,11 @@ public class MomentService {
                 .map(moment -> {
                     List<Comment> momentComments = commentsByMoment.getOrDefault(moment, List.of());
 
-                    Map<Long, List<Echo>> echomap = momentComments.stream()
+                    Map<Long, List<Echo>> commentEchos = momentComments.stream()
                             .collect(Collectors.toMap(Comment::getId,
                                     comment -> echosByComment.getOrDefault(comment, List.of())));
 
-                    return MyMomentResponse.of(moment, momentComments, echomap);
+                    return MyMomentResponse.of(moment, momentComments, commentEchos);
                 })
                 .toList();
 
