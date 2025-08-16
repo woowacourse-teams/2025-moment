@@ -1,4 +1,4 @@
-import { CustomTheme, theme } from '@/app/styles/theme';
+import { theme } from '@/app/styles/theme';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { Timer } from 'lucide-react';
 import * as S from './MyMomentsCard.styles';
@@ -9,17 +9,15 @@ import { Modal } from '@/shared/ui/modal/Modal';
 import { Heart } from 'lucide-react';
 import { Level } from '@/app/layout/ui/Navbar';
 import { levelMap } from '@/app/layout/data/navItems';
-import { Button } from '@/shared/ui';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { EchoButtonGroup } from '@/features/echo/ui/EchoButtonGroup';
-import { useEchoMutation } from '@/features/echo/hooks/useEchoMutation';
+import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
-  const { mutateAsync: sendEchos } = useEchoMutation();
 
   const handleModalClose = () => {
     clearSelection();
@@ -32,11 +30,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     if (myMoment.notificationId) {
       handleReadNotifications(myMoment.notificationId);
     }
-  };
-
-  const handleSendEchos = () => {
-    sendEchos({ echoTypes: Array.from(selectedEchos), commentId: myMoment.comments[0].id });
-    clearSelection();
   };
 
   const getFormattedTime = (dateString: string) => {
@@ -103,12 +96,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                 <S.EchoButtonContainer>
                   <EchoButtonGroup onToggle={toggleEcho} isSelected={isSelected} />
                 </S.EchoButtonContainer>
-                <Button
-                  title="전송"
-                  variant="primary"
-                  disabled={!hasSelection}
-                  externalVariant={() => buttonVariant(theme, hasSelection)}
-                  onClick={handleSendEchos}
+                <SendEchoButton
+                  commentId={myMoment.comments[0].id}
+                  selectedEchos={selectedEchos}
+                  hasSelection={hasSelection}
                 />
               </S.EchoContainer>
             </S.MyMomentsModalContent>
@@ -118,9 +109,3 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     </>
   );
 };
-
-const buttonVariant = (theme: CustomTheme, isSelected: boolean) => `
-  width: 100%;
-  color: ${theme.colors['white']};
-  background-color: ${isSelected ? theme.colors['gray-600'] : theme.colors['gray-600_20']};
-`;
