@@ -28,31 +28,39 @@ public class StarRewardService implements RewardService {
         LocalDateTime startOfToday = today.atStartOfDay();
         LocalDateTime endOfToday = today.plusDays(1).atStartOfDay();
 
-        if (rewardRepository.existsByUserAndReasonAndToday(momenter, reason, startOfToday, endOfToday)) {
+        if (stopIfDuplicateMomentRewardFound(momenter, reason, startOfToday, endOfToday)) {
             return;
         }
 
         updateStar(momenter, reason, momentId);
     }
 
+    private boolean stopIfDuplicateMomentRewardFound(User momenter, Reason reason, LocalDateTime startOfToday, LocalDateTime endOfToday) {
+        return rewardRepository.existsByUserAndReasonAndToday(momenter, reason, startOfToday, endOfToday);
+    }
+
     @Override
     @Transactional
     public void rewardForComment(User commenter, Reason reason, Long commentId) {
-        if (rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, commentId)) {
-            return;
-        }
+        if (stopIfDuplicateCommentRewardFound(commenter, reason, commentId)) return;
 
         updateStar(commenter, reason, commentId);
+    }
+
+    private boolean stopIfDuplicateCommentRewardFound(User commenter, Reason reason, Long commentId) {
+        return rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, commentId);
     }
 
     @Override
     @Transactional
     public void rewardForEcho(User commenter, Reason reason, Long echoId) {
-        if (rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, echoId)) {
-            return;
-        }
+        if (stopIfDuplicateEchoRewardFound(commenter, reason, echoId)) return;
 
         updateStar(commenter, reason, echoId);
+    }
+
+    private boolean stopIfDuplicateEchoRewardFound(User commenter, Reason reason, Long echoId) {
+        return rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, echoId);
     }
 
     @Override
