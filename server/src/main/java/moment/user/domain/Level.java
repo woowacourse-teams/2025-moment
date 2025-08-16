@@ -6,20 +6,20 @@ import java.util.Arrays;
 
 @Getter
 public enum Level {
-    ASTEROID_WHITE(0, 5),
-    ASTEROID_YELLOW(5, 10),
-    ASTEROID_SKY(10, 20),
-    METEOR_WHITE(20, 50),
-    METEOR_YELLOW(50, 100),
-    METEOR_SKY(100, 200),
-    COMET_WHITE(200, 350),
-    COMET_YELLOW(350, 700),
-    COMET_SKY(700, 1200),
-    ROCKY_PLANET_WHITE(1200, 2000),
-    ROCKY_PLANET_YELLOW(2000, 4000),
-    ROCKY_PLANET_SKY(4000, 8000),
-    GAS_GIANT_WHITE(8000, 16000),
-    GAS_GIANT_YELLOW(16000, 32000),
+    ASTEROID_WHITE(0, 4),
+    ASTEROID_YELLOW(5, 9),
+    ASTEROID_SKY(10, 19),
+    METEOR_WHITE(20, 49),
+    METEOR_YELLOW(50, 99),
+    METEOR_SKY(100, 199),
+    COMET_WHITE(200, 349),
+    COMET_YELLOW(350, 699),
+    COMET_SKY(700, 1199),
+    ROCKY_PLANET_WHITE(1200, 1999),
+    ROCKY_PLANET_YELLOW(2000, 3999),
+    ROCKY_PLANET_SKY(4000, 7999),
+    GAS_GIANT_WHITE(8000, 15999),
+    GAS_GIANT_YELLOW(16000, 31999),
     GAS_GIANT_SKY(32000, Integer.MAX_VALUE),
     ;
 
@@ -38,6 +38,6 @@ public enum Level {
     }
 
     public boolean isMatch(Integer point) {
-        return point >= minPoints && point < maxPoints;
+        return point >= minPoints && point <= maxPoints;
     }
 }
