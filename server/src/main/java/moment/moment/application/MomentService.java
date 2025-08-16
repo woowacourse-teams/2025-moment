@@ -16,6 +16,8 @@ import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,8 @@ public class MomentService {
 
     private final MomentCreatePolicy momentCreatePolicy;
 
+    private final RewardService rewardService;
+
     @Transactional
     public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
@@ -57,6 +60,7 @@ public class MomentService {
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
+        rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }

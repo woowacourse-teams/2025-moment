@@ -43,7 +43,7 @@ class PointRewardServiceTest {
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForComment(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(commentPointTo);
@@ -61,7 +61,7 @@ class PointRewardServiceTest {
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForEmoji(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(positiveEmojiReceivedPointTo);
@@ -81,7 +81,7 @@ class PointRewardServiceTest {
                 .willReturn(true);
 
         // when
-        pointRewardService.reward(commenter, reason, comment.getId());
+        pointRewardService.rewardForComment(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(0);

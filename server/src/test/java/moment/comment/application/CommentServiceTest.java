@@ -83,7 +83,7 @@ class CommentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        doNothing().when(rewardService).reward(commenter, Reason.COMMENT_CREATION, comment.getId());
+        doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
 
         // when
         commentService.addComment(request, 1L);

@@ -13,6 +13,8 @@ import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -57,6 +59,9 @@ class momentServiceTest {
 
     @Mock
     private MomentCreatePolicy momentCreatePolicy;
+
+    @Mock
+    private RewardService rewardService;
 
     @Test
     void 모멘트_생성에_성공한다() {
@@ -130,7 +135,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 오늘_모멘트를_작성할_수_있는_상태를_반환한다() {
+    void 오늘_기본_모멘트를_작성할_수_있는_상태를_반환한다() {
         // given
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
@@ -144,7 +149,7 @@ class momentServiceTest {
     }
 
     @Test
-    void 오늘_모멘트를_작성할_수_없는_상태를_반환한다() {
+    void 오늘_기본_모멘트를_작성할_수_없는_상태를_반환한다() {
         // given
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
@@ -155,5 +160,28 @@ class momentServiceTest {
 
         // when & then
         assertThat(momentService.canCreateMoment(1L)).isEqualTo(response);
+    }
+
+    @Test
+    void 오늘_기본_모멘트를_작성한_경우_사용자의_포인트가_추가된다() {
+        // given
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미",  ProviderType.EMAIL);
+        Moment savedMoment = new Moment("레벨3 (리)바이", momenter, WriteType.BASIC);
+        Long momentId = 1L;
+        ReflectionTestUtils.setField(savedMoment, "id", momentId);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
+
+
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여");
+
+        // when
+        momentService.addBasicMoment(request, 1L);
+
+        // then
+        then(rewardService).should(times(1))
+                .rewardForMoment(momenter, Reason.MOMENT_CREATION, momentId);
     }
 }
