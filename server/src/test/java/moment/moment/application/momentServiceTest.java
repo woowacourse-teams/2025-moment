@@ -15,6 +15,7 @@ import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -66,6 +67,9 @@ class momentServiceTest {
 
     @Mock
     private MomentCreatePolicy momentCreatePolicy;
+
+    @Mock
+    private RewardService rewardService;
 
     @Test
     void 모멘트_생성에_성공한다() {

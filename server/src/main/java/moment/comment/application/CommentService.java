@@ -1,11 +1,5 @@
 package moment.comment.application;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentCreationStatus;
@@ -35,6 +29,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +83,7 @@ public class CommentService {
 
         notificationRepository.save(notificationWithoutId);
 
-        rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
+        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
         return CommentCreateResponse.from(savedComment);
     }

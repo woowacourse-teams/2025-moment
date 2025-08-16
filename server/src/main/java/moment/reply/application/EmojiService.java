@@ -58,7 +58,7 @@ public class EmojiService {
 
         Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
 
-        rewardService.reward(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
+        rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, savedEmoji.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
@@ -96,13 +96,5 @@ public class EmojiService {
 
         Comment comment = emoji.getComment();
         emojiRepository.delete(emoji);
-
-        cancelRewardIfLastEmoji(comment);
-    }
-
-    private void cancelRewardIfLastEmoji(Comment comment) {
-        if (!emojiRepository.existsByComment(comment)) {
-            rewardService.reward(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
-        }
     }
 }

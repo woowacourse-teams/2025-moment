@@ -27,8 +27,6 @@ public class User extends BaseEntity {
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
     private static final int DEFAULT_POINT = 0;
-    @Column(nullable = false)
-    private final Integer expStar = DEFAULT_POINT;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -44,6 +42,8 @@ public class User extends BaseEntity {
     private ProviderType providerType;
     @Column(nullable = false)
     private Integer availableStar = DEFAULT_POINT;
+    @Column(nullable = false)
+    private Integer expStar = DEFAULT_POINT;
     @Enumerated(EnumType.STRING)
     private Level level = Level.ASTEROID_WHITE;
 
@@ -93,8 +93,9 @@ public class User extends BaseEntity {
         return password.equals(loginPassword);
     }
 
-    public void addPointAndUpdateLevel(int pointToAdd) {
+    public void addStarAndUpdateLevel(int pointToAdd) {
         this.availableStar += pointToAdd;
-        this.level = Level.getLevel(this.availableStar);
+        this.expStar += pointToAdd;
+        this.level = Level.getLevel(this.expStar);
     }
 }

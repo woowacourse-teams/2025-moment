@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 import moment.global.domain.BaseEntity;
 import moment.user.domain.User;
 
-@Entity(name = "point_history")
+@Entity(name = "reward_history")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class PointHistory extends BaseEntity {
+public class RewardHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class PointHistory extends BaseEntity {
 
     private Long contentId;
 
-    public PointHistory(User user, Integer amount, Reason reason, Long contentId) {
+    public RewardHistory(User user, Integer amount, Reason reason, Long contentId) {
         validate(user, amount, reason, contentId);
         this.user = user;
         this.amount = amount;

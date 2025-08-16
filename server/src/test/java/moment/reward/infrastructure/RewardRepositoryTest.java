@@ -1,7 +1,7 @@
 package moment.reward.infrastructure;
 
-import moment.reward.domain.PointHistory;
 import moment.reward.domain.Reason;
+import moment.reward.domain.RewardHistory;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -32,7 +32,7 @@ class RewardRepositoryTest {
         Reason reason = Reason.ECHO_RECEIVED;
         Long contentId = 1L;
 
-        rewardRepository.save(new PointHistory(user, reason.getPointTo(), reason, contentId));
+        rewardRepository.save(new RewardHistory(user, reason.getPointTo(), reason, contentId));
 
         // when
         boolean result = rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId);

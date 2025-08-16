@@ -142,10 +142,10 @@ class UserTest {
     })
     void 포인트를_추가하고_레벨을_업데이트한다(int initialPoint, int pointToAdd, int expectedPoint, Level expectedLevel) {
         // given
-        user.addPointAndUpdateLevel(initialPoint);
+        user.addStarAndUpdateLevel(initialPoint);
 
         // when
-        user.addPointAndUpdateLevel(pointToAdd);
+        user.addStarAndUpdateLevel(pointToAdd);
 
         // then
         assertThat(user.getAvailableStar()).isEqualTo(expectedPoint);

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +32,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -82,7 +80,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).reward(commenter, Reason.ECHO_RECEIVED, comment.getId());
+        doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
@@ -166,27 +164,5 @@ class EmojiServiceTest {
         // when & then
         assertThatThrownBy(() -> emojiService.removeEmojiById(1L, comment.getId()))
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
-    }
-
-    @Test
-    void 코멘트의_마지막_이모지가_제거된_경우_포인트가_줄어든다() {
-        // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
-        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        ReflectionTestUtils.setField(comment, "id", 1L);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
-        ReflectionTestUtils.setField(emoji, "id", 1L);
-
-        given(emojiQueryService.getEmojiById(any(Long.class))).willReturn(emoji);
-        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(emojiRepository.existsByComment(any(Comment.class))).willReturn(false);
-
-        // when
-        emojiService.removeEmojiById(emoji.getId(), comment.getId());
-
-        // then
-        verify(rewardService).reward(commenter, Reason.ECHO_RECEIVED, comment.getId());
     }
 }

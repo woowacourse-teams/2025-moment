@@ -17,6 +17,8 @@ import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +49,7 @@ public class MomentService {
     private final UserQueryService userQueryService;
     private final MatchingService matchingService;
     private final MomentQueryService momentQueryService;
+    private final RewardService rewardService;
 
     private final MomentCreatePolicy momentCreatePolicy;
 
@@ -62,6 +65,8 @@ public class MomentService {
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
         matchingService.match(savedMoment.getId());
+
+        rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }
