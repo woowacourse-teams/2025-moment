@@ -6,6 +6,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Emoji;
@@ -32,7 +33,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -70,7 +70,7 @@ class EmojiServiceTest {
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -115,7 +115,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
@@ -133,7 +133,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 
@@ -154,7 +154,7 @@ class EmojiServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Emoji emoji = new Emoji("HEART", momenter, comment);
 

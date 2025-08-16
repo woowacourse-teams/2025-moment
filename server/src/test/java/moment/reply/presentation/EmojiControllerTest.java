@@ -11,6 +11,7 @@ import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.dto.request.EmojiCreateRequest;
@@ -66,7 +67,7 @@ public class EmojiControllerTest {
         commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
         commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
-        moment = momentRepository.save(new Moment("아 행복해", true, momenter));
+        moment = momentRepository.save(new Moment("아 행복해", true, momenter, WriteType.BASIC));
         comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment));
     }
 

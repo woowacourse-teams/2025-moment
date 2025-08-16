@@ -3,6 +3,7 @@ package moment.comment.domain;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -26,7 +27,8 @@ class CommentTest {
                             new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL),
                             new Moment("오늘 면접에서 떨어졌어요...ㅜㅜ",
                                     true,
-                                    new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL)
+                                    new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL),
+                                    WriteType.BASIC
                             )
                     );
                 }
@@ -44,7 +46,8 @@ class CommentTest {
                 new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL),
                 new Moment("오늘 면접에서 떨어졌어요...ㅜㅜ",
                         true,
-                        new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL)
+                        new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL),
+                        WriteType.BASIC
                 )
         )).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("content가 200자를 초과해서는 안 됩니다.");
@@ -58,7 +61,8 @@ class CommentTest {
                 new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL),
                 new Moment("오늘 면접에서 떨어졌어요...ㅜㅜ",
                         true,
-                        new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL)
+                        new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL),
+                        WriteType.BASIC
                 )
         )).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("content가 null이거나 빈 값이어서는 안 됩니다.");
@@ -79,7 +83,8 @@ class CommentTest {
         assertThatThrownBy(() -> new Comment(
                 "정말 안타깝게 됐네요!",
                 null,
-                new Moment("오늘도 야근 예정이에요", new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL))
+                new Moment("오늘도 야근 예정이에요", new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL),
+                        WriteType.BASIC)
         )).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("commenter가 null이어서는 안 됩니다.");
     }
@@ -96,7 +101,7 @@ class CommentTest {
         User unAuthorized = new User("no@email.com", "1", "nouser", ProviderType.EMAIL);
         ReflectionTestUtils.setField(unAuthorized, "id", 3L);
 
-        Moment moment = new Moment("오늘 야근 정말 힘들었네요", momenter);
+        Moment moment = new Moment("오늘 야근 정말 힘들었네요", momenter, WriteType.BASIC);
         Comment comment = new Comment("수고하셨습니다.!", commenter, moment);
 
         // when & then

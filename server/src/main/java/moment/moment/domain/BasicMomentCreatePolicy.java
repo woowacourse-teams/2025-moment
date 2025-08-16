@@ -2,7 +2,7 @@ package moment.moment.domain;
 
 import moment.user.domain.User;
 
-public interface MomentCreatePolicy {
+public interface BasicMomentCreatePolicy {
 
     boolean canCreate(User user);
 }
