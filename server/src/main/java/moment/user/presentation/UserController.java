@@ -13,6 +13,7 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.application.UserService;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
@@ -20,7 +21,9 @@ import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -131,5 +134,42 @@ public class UserController {
         EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "사용자가 마이페이지 내에서 비밀번호를 변경합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [U-005] 유효하지 않은 비밀번호 형식입니다.
+                    - [U-012] 새 비밀번호가 기존의 비밀번호와 동일합니다.
+                    - [U-013] 일반 회원가입 사용자가 아닌 경우 비밀번호를 변경할 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/my/password")
+    public ResponseEntity<SuccessResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        ResponseCookie cookie = ResponseCookie.from("token", null)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        HttpStatus status = HttpStatus.OK;
+
+        userService.changePassword(request, authentication.id());
+
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(SuccessResponse.of(status, null));
     }
 }

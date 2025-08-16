@@ -105,4 +105,11 @@ public class User extends BaseEntity {
         return (availableStar + requiredStars) < 0;
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public boolean checkProviderType(ProviderType providerType) {
+        return this.providerType == providerType;
+    }
 }
