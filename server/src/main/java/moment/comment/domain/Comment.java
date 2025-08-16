@@ -84,4 +84,8 @@ public class Comment extends BaseEntity {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
+
+    public boolean hasNotMomenter(User user) {
+        return this.moment.checkMomenter(user);
+    }
 }

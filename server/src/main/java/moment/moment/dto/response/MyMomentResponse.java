@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
-import moment.reply.domain.Emoji;
+import moment.reply.domain.Echo;
 
 @Schema(description = "내 모멘트 조회 응답")
 public record MyMomentResponse(
@@ -24,9 +24,9 @@ public record MyMomentResponse(
         MyMomentCommentResponse comment
 ) {
 
-    public static MyMomentResponse of(Moment moment, Comment comment, List<Emoji> emojis) {
+    public static MyMomentResponse of(Moment moment, Comment comment, List<Echo> echoes) {
         if (comment != null) {
-            MyMomentCommentResponse myMomentCommentResponse = MyMomentCommentResponse.of(comment, emojis);
+            MyMomentCommentResponse myMomentCommentResponse = MyMomentCommentResponse.of(comment, echoes);
             
             return new MyMomentResponse(
                     moment.getId(),

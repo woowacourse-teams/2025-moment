@@ -24,7 +24,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -54,7 +54,7 @@ class CommentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private EmojiRepository emojiRepository;
+    private EchoRepository echoRepository;
 
     @Mock
     private CommentRepository commentRepository;
@@ -149,7 +149,7 @@ class CommentServiceTest {
         given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(emojiRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+        given(echoRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
         // when
         MyCommentPageResponse actualComments = commentService.getCommentsByUserIdWithCursor(null, 1, 1L);

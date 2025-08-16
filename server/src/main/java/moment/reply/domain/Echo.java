@@ -19,12 +19,12 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.User;
 
-@Entity(name = "emojis")
+@Entity(name = "echos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString
-public class Emoji extends BaseEntity {
+public class Echo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Emoji extends BaseEntity {
     private Long id;
 
     @Column(name = "type")
-    private String emojiType;
+    private String echoType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
@@ -42,9 +42,9 @@ public class Emoji extends BaseEntity {
     @JoinColumn(nullable = false, name = "comment_id")
     private Comment comment;
 
-    public Emoji(String emojiType, User user, Comment comment) {
+    public Echo(String echoType, User user, Comment comment) {
         validate(user, comment);
-        this.emojiType = emojiType;
+        this.echoType = echoType;
         this.user = user;
         this.comment = comment;
     }

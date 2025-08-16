@@ -19,8 +19,8 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -52,7 +52,7 @@ class CommentControllerTest {
     private CommentRepository commentRepository;
 
     @Autowired
-    private EmojiRepository emojiRepository;
+    private EchoRepository echoRepository;
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
@@ -109,8 +109,8 @@ class CommentControllerTest {
         Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
         Comment savedComment = commentRepository.save(comment);
 
-        Emoji emoji = new Emoji("HEART", savedMomenter, savedComment);
-        Emoji savedEmoji = emojiRepository.save(emoji);
+        Echo echo = new Echo("HEART", savedMomenter, savedComment);
+        Echo savedEcho = echoRepository.save(echo);
 
         Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
@@ -118,8 +118,8 @@ class CommentControllerTest {
         Comment comment2 = new Comment("즐거운 댓글", savedCommenter, savedMoment2);
         Comment savedComment2 = commentRepository.save(comment2);
 
-        Emoji emoji2 = new Emoji("HEART", savedMomenter, savedComment2);
-        Emoji savedEmoji2 = emojiRepository.save(emoji2);
+        Echo echo2 = new Echo("HEART", savedMomenter, savedComment2);
+        Echo savedEcho2 = echoRepository.save(echo2);
 
         // when
         MyCommentPageResponse response = RestAssured.given().log().all()
@@ -146,8 +146,8 @@ class CommentControllerTest {
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment2.getContent()),
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment2.getContent()),
                 () -> assertThat(firstResponse.moment().content()).isEqualTo(savedMoment2.getContent()),
-                () -> assertThat(firstResponse.emojis().getFirst().id()).isEqualTo(savedEmoji2.getId()),
-                () -> assertThat(firstResponse.emojis().getFirst().emojiType()).isEqualTo(savedEmoji2.getEmojiType())
+                () -> assertThat(firstResponse.echos().getFirst().id()).isEqualTo(savedEcho2.getId()),
+                () -> assertThat(firstResponse.echos().getFirst().emojiType()).isEqualTo(savedEcho2.getEchoType())
         );
     }
 }
