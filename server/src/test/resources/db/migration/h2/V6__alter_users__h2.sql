@@ -5,3 +5,5 @@ ALTER TABLE users
 
 UPDATE users
 SET exp_star = available_star;
+
+ALTER TABLE users ALTER COLUMN level VARCHAR(100);

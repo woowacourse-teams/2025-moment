@@ -45,7 +45,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Integer availableStar = DEFAULT_POINT;
     @Enumerated(EnumType.STRING)
-    private Level level = Level.METEOR;
+    private Level level = Level.ASTEROID_WHITE;
 
     public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
