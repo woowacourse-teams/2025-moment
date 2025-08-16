@@ -45,7 +45,9 @@ public enum ErrorCode {
     MOMENTS_LIMIT_INVALID("M-005", "유효하지 않은 페이지 사이즈입니다.", HttpStatus.BAD_REQUEST),
 
     NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
-    ;
+
+    EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
