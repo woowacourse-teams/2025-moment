@@ -9,8 +9,8 @@ import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -23,30 +23,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class DefaultEmojiQueryServiceTest {
+class DefaultEchoQueryServiceTest {
 
     @Mock
-    EmojiRepository emojiRepository;
+    EchoRepository echoRepository;
 
     @InjectMocks
-    DefaultEmojiQueryService defaultEmojiQueryService;
+    DefaultEchoQueryService defaultEmojiQueryService;
 
     @Test
-    void id로_이모지를_조회한다() {
+    void id로_에코를_조회한다() {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
+        Echo echo = new Echo("HEART", momenter, comment);
 
-        given(emojiRepository.findById(any(Long.class)))
-                .willReturn(Optional.of(emoji));
+        given(echoRepository.findById(any(Long.class)))
+                .willReturn(Optional.of(echo));
 
         // when
         defaultEmojiQueryService.getEmojiById(1L);
 
         // then
-        then(emojiRepository).should(times(1)).findById(any(Long.class));
+        then(echoRepository).should(times(1)).findById(any(Long.class));
     }
 }

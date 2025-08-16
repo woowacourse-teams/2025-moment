@@ -12,11 +12,11 @@ import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.dto.request.EmojiCreateRequest;
-import moment.reply.dto.response.EmojiCreateResponse;
-import moment.reply.dto.response.EmojiReadResponse;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.dto.request.EchoCreateRequest;
+import moment.reply.dto.response.EchoCreateResponse;
+import moment.reply.dto.response.EchoReadResponse;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -30,12 +30,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EmojiService {
+public class EchoService {
 
-    private final EmojiRepository emojiRepository;
+    private final EchoRepository echoRepository;
     private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
-    private final EmojiQueryService emojiQueryService;
+    private final EchoQueryService echoQueryService;
     private final SseNotificationService sseNotificationService;
     private final NotificationRepository notificationRepository;
     private final RewardService rewardService;
@@ -48,17 +48,17 @@ public class EmojiService {
     }
 
     @Transactional
-    public EmojiCreateResponse addEmoji(EmojiCreateRequest request, Authentication authentication) {
+    public EchoCreateResponse addEcho(EchoCreateRequest request, Authentication authentication) {
         Comment comment = commentQueryService.getCommentById(request.commentId());
         User user = userQueryService.getUserById(authentication.id());
 
         validateMomenter(comment, user);
 
-        Emoji emojiWithoutId = new Emoji(request.emojiType(), user, comment);
+        Echo echoWithoutId = new Echo(request.echoType(), user, comment);
 
-        Emoji savedEmoji = emojiRepository.save(emojiWithoutId);
+        Echo savedEcho = echoRepository.save(echoWithoutId);
 
-        rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, savedEmoji.getId());
+        rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, savedEcho.getId());
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 NotificationType.NEW_REPLY_ON_COMMENT,
@@ -75,26 +75,15 @@ public class EmojiService {
         sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
         notificationRepository.save(notificationWithoutId);
 
-        return EmojiCreateResponse.from(savedEmoji);
+        return EchoCreateResponse.from(savedEcho);
     }
 
-    public List<EmojiReadResponse> getEmojisByCommentId(Long commentId) {
+    public List<EchoReadResponse> getEchosByCommentId(Long commentId) {
         Comment comment = commentQueryService.getCommentById(commentId);
-        List<Emoji> emojis = emojiQueryService.getEmojisByComment(comment);
+        List<Echo> echoes = echoQueryService.getEmojisByComment(comment);
 
-        return emojis.stream()
-                .map(EmojiReadResponse::from)
+        return echoes.stream()
+                .map(EchoReadResponse::from)
                 .toList();
-    }
-
-    @Transactional
-    public void removeEmojiById(Long emojiId, Long userId) {
-        Emoji emoji = emojiQueryService.getEmojiById(emojiId);
-        User user = userQueryService.getUserById(userId);
-
-        emoji.checkWriter(user);
-
-        Comment comment = emoji.getComment();
-        emojiRepository.delete(emoji);
     }
 }

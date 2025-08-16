@@ -9,9 +9,9 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.dto.request.EmojiCreateRequest;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.dto.request.EchoCreateRequest;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -36,13 +36,13 @@ import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class EmojiServiceTest {
+class EchoServiceTest {
 
     @InjectMocks
-    private EmojiService emojiService;
+    private EchoService echoService;
 
     @Mock
-    private EmojiRepository emojiRepository;
+    private EchoRepository echoRepository;
 
     @Mock
     private CommentQueryService commentQueryService;
@@ -51,7 +51,7 @@ class EmojiServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private EmojiQueryService emojiQueryService;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private SseNotificationService SseNotificationService;
@@ -63,37 +63,37 @@ class EmojiServiceTest {
     private RewardService rewardService;
 
     @Test
-    void 코멘트에_이모지를_추가_할_수_있다() {
+    void 코멘트에_에코를_추가_할_수_있다() {
         // given
         Authentication authentication = new Authentication(1L);
-        EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
+        EchoCreateRequest request = new EchoCreateRequest("HEART", 1L);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
+        Echo echo = new Echo("HEART", momenter, comment);
 
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
-        given(emojiRepository.save(any(Emoji.class)))
-                .willReturn(emoji);
+        given(echoRepository.save(any(Echo.class)))
+                .willReturn(echo);
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
-        emojiService.addEmoji(request, authentication);
+        echoService.addEcho(request, authentication);
 
         // then
-        then(emojiRepository).should(times(1)).save(any(Emoji.class));
+        then(echoRepository).should(times(1)).save(any(Echo.class));
     }
 
     @Test
-    void 모멘트와_작성자_아닌_사용자가_이모지를_등록하면_예외가_발생한다() {
+    void 모멘트와_작성자_아닌_사용자가_에코를_등록하면_예외가_발생한다() {
         // given
         Authentication authentication = new Authentication(1L);
-        EmojiCreateRequest request = new EmojiCreateRequest("HEART", 1L);
+        EchoCreateRequest request = new EchoCreateRequest("HEART", 1L);
 
         User unAuthorized = new User("noUser@gmail.com", "1234", "noUser", ProviderType.EMAIL);
         Comment comment = mock(Comment.class);
@@ -105,13 +105,13 @@ class EmojiServiceTest {
         given(moment.checkMomenter(any(User.class))).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> emojiService.addEmoji(request, authentication))
+        assertThatThrownBy(() -> echoService.addEcho(request, authentication))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
     }
 
     @Test
-    void 코멘트의_모든_이모지를_조회한다() {
+    void 코멘트의_모든_에코를_조회한다() {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -122,47 +122,9 @@ class EmojiServiceTest {
                 .willReturn(comment);
 
         // when
-        emojiService.getEmojisByCommentId(1L);
+        echoService.getEchosByCommentId(1L);
 
         // then
-        then(emojiQueryService).should(times(1)).getEmojisByComment(any(Comment.class));
-    }
-
-    @Test
-    void 이모지를_제거한다() {
-        // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
-        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
-
-        given(emojiQueryService.getEmojiById(any(Long.class)))
-                .willReturn(emoji);
-        given(userQueryService.getUserById(any(Long.class)))
-                .willReturn(momenter);
-
-        // when
-        emojiService.removeEmojiById(1L, 1L);
-
-        // then
-        then(emojiRepository).should(times(1)).delete(any(Emoji.class));
-    }
-
-    @Test
-    void 이모지_작성자가_아닌_회원이_삭제요청_할_경우_예외가_발생한다() {
-        // given
-        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
-        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
-
-        given(emojiQueryService.getEmojiById(any(Long.class)))
-                .willReturn(emoji);
-
-        // when & then
-        assertThatThrownBy(() -> emojiService.removeEmojiById(1L, comment.getId()))
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
+        then(echoQueryService).should(times(1)).getEmojisByComment(any(Comment.class));
     }
 }

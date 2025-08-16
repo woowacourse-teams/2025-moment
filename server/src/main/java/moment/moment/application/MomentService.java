@@ -15,8 +15,8 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -43,7 +43,7 @@ public class MomentService {
 
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
-    private final EmojiRepository emojiRepository;
+    private final EchoRepository echoRepository;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
 
@@ -107,14 +107,14 @@ public class MomentService {
         Map<Moment, Comment> commentByMoment = comments.stream()
                 .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
 
-        Map<Comment, List<Emoji>> emojisByComment = emojiRepository.findAllByCommentIn(comments).stream()
-                .collect(Collectors.groupingBy(Emoji::getComment));
+        Map<Comment, List<Echo>> emojisByComment = echoRepository.findAllByCommentIn(comments).stream()
+                .collect(Collectors.groupingBy(Echo::getComment));
 
         List<MyMomentResponse> responses = moments.stream()
                 .map(moment -> {
                     Comment comment = commentByMoment.get(moment);
-                    List<Emoji> relatedEmojis = emojisByComment.getOrDefault(comment, Collections.emptyList());
-                    return MyMomentResponse.of(moment, comment, relatedEmojis);
+                    List<Echo> relatedEchos = emojisByComment.getOrDefault(comment, Collections.emptyList());
+                    return MyMomentResponse.of(moment, comment, relatedEchos);
                 })
                 .toList();
 

@@ -13,10 +13,10 @@ import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.dto.request.EmojiCreateRequest;
-import moment.reply.dto.response.EmojiReadResponse;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.dto.request.EchoCreateRequest;
+import moment.reply.dto.response.EchoReadResponse;
+import moment.reply.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -33,7 +33,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-public class EmojiControllerTest {
+public class EchoControllerTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -48,7 +48,7 @@ public class EmojiControllerTest {
     private CommentRepository commentRepository;
 
     @Autowired
-    private EmojiRepository emojiRepository;
+    private EchoRepository echoRepository;
 
     @Autowired
     private DatabaseCleaner databaseCleaner;
@@ -72,65 +72,50 @@ public class EmojiControllerTest {
     }
 
     @Test
-    void 이모지를_등록한다() {
+    void 에코를_등록한다() {
         // given
         String emojiType = "HEART";
-        EmojiCreateRequest request = new EmojiCreateRequest(emojiType, comment.getId());
+        EchoCreateRequest request = new EchoCreateRequest(emojiType, comment.getId());
 
         // when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", momenterToken)
                 .body(request)
-                .when().post("/api/v1/emojis")
+                .when().post("/api/v1/echos")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         // then
-        List<Emoji> emojis = emojiRepository.findAllByComment(comment);
+        List<Echo> echoes = echoRepository.findAllByComment(comment);
         assertAll(
-                () -> assertThat(emojis).hasSize(1),
-                () -> assertThat(emojis.get(0).getEmojiType()).isEqualTo(emojiType),
-                () -> assertThat(emojis.get(0).getUser().getId()).isEqualTo(momenter.getId()),
-                () -> assertThat(emojis.get(0).getComment().getId()).isEqualTo(momenter.getId())
+                () -> assertThat(echoes).hasSize(1),
+                () -> assertThat(echoes.get(0).getEchoType()).isEqualTo(emojiType),
+                () -> assertThat(echoes.get(0).getUser().getId()).isEqualTo(momenter.getId()),
+                () -> assertThat(echoes.get(0).getComment().getId()).isEqualTo(momenter.getId())
         );
     }
 
     @Test
-    void 이모지를_조회한다() {
+    void 에코를_조회한다() {
         // given
-        Emoji savedEmoji = emojiRepository.save(new Emoji("HEART", momenter, comment));
+        Echo savedEcho = echoRepository.save(new Echo("HEART", momenter, comment));
 
         // when
-        List<EmojiReadResponse> response = RestAssured.given().log().all()
+        List<EchoReadResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", commenterToken)
-                .when().get("/api/v1/emojis/" + comment.getId())
+                .when().get("/api/v1/echos/" + comment.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath()
-                .getList("data", EmojiReadResponse.class);
+                .getList("data", EchoReadResponse.class);
 
         // then
         assertAll(
                 () -> assertThat(response).hasSize(1),
-                () -> assertThat(response.get(0).emojiType()).isEqualTo(savedEmoji.getEmojiType()),
-                () -> assertThat(response.get(0).userName()).isEqualTo(savedEmoji.getUser().getNickname())
+                () -> assertThat(response.get(0).emojiType()).isEqualTo(savedEcho.getEchoType()),
+                () -> assertThat(response.get(0).userName()).isEqualTo(savedEcho.getUser().getNickname())
         );
-    }
-
-    @Test
-    void 이모지를_삭제한다() {
-        // given
-        Emoji savedEmoji = emojiRepository.save(new Emoji("HEART", commenter, comment));
-        String emojiOwnerToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
-
-        // when & then
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", emojiOwnerToken)
-                .delete("/api/v1/emojis/" + savedEmoji.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

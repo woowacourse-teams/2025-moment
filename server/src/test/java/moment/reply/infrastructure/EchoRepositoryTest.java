@@ -9,7 +9,7 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
+import moment.reply.domain.Echo;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -23,10 +23,10 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class EmojiRepositoryTest {
+class EchoRepositoryTest {
 
     @Autowired
-    EmojiRepository emojiRepository;
+    EchoRepository echoRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -38,23 +38,23 @@ class EmojiRepositoryTest {
     CommentRepository commentRepository;
 
     @Test
-    void 코멘트에_달린_모든_이모지를_조회한다() {
+    void 코멘트에_달린_모든_에코를_조회한다() {
         // given
         User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
         User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment));
 
-        emojiRepository.save(new Emoji("HEART", momenter, comment));
+        echoRepository.save(new Echo("HEART", momenter, comment));
 
         // when
-        List<Emoji> result = emojiRepository.findAllByComment(comment);
+        List<Echo> result = echoRepository.findAllByComment(comment);
 
         // then
-        Emoji emoji = result.getFirst();
+        Echo echo = result.getFirst();
         assertAll(
-                () -> assertThat(emoji.getEmojiType()).isEqualTo("HEART"),
-                () -> assertThat(emoji.getUser()).isEqualTo(momenter)
+                () -> assertThat(echo.getEchoType()).isEqualTo("HEART"),
+                () -> assertThat(echo.getUser()).isEqualTo(momenter)
         );
     }
 }

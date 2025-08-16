@@ -1,10 +1,10 @@
 package moment.reply.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import moment.reply.domain.Emoji;
+import moment.reply.domain.Echo;
 
 @Schema(description = "Emoji 조회 응답")
-public record EmojiReadResponse(
+public record EchoReadResponse(
         @Schema(description = "조회된 Emoji id")
         Long id,
 
@@ -15,11 +15,11 @@ public record EmojiReadResponse(
         String userName
 ) {
 
-    public static EmojiReadResponse from(Emoji emoji) {
-        return new EmojiReadResponse(
-                emoji.getId(),
-                emoji.getEmojiType(),
-                emoji.getUser().getNickname()
+    public static EchoReadResponse from(Echo echo) {
+        return new EchoReadResponse(
+                echo.getId(),
+                echo.getEchoType(),
+                echo.getUser().getNickname()
         );
     }
 }

@@ -22,8 +22,8 @@ import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -46,7 +46,7 @@ public class CommentService {
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
-    private final EmojiRepository emojiRepository;
+    private final EchoRepository echoRepository;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
     private final NotificationRepository notificationRepository;
@@ -114,17 +114,17 @@ public class CommentService {
         String nextCursor = extractCursor(commentsWithinCursor, hasNextPage);
         List<Comment> comments = extractComments(commentsWithinCursor, pageSize);
 
-        List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
+        List<Echo> echoes = echoRepository.findAllByCommentIn(comments);
 
-        if (emojis.isEmpty()) {
+        if (echoes.isEmpty()) {
             List<MyCommentResponse> responses = comments.stream()
                     .map(MyCommentResponse::from)
                     .toList();
             return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Comment, List<Emoji>> commentAndEmojis = emojis.stream()
-                .collect(Collectors.groupingBy(Emoji::getComment));
+        Map<Comment, List<Echo>> commentAndEmojis = echoes.stream()
+                .collect(Collectors.groupingBy(Echo::getComment));
 
         List<MyCommentResponse> responses = commentAndEmojis.entrySet().stream()
                 .map(MyCommentResponse::from)

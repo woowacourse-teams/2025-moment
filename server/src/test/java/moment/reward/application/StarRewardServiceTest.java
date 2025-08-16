@@ -5,7 +5,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
-import moment.reply.domain.Emoji;
+import moment.reply.domain.Echo;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
@@ -140,8 +140,8 @@ class StarRewardServiceTest {
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
-        Emoji emoji = new Emoji("HEART", momenter, comment);
-        ReflectionTestUtils.setField(emoji, "id", 1L);
+        Echo echo = new Echo("HEART", momenter, comment);
+        ReflectionTestUtils.setField(echo, "id", 1L);
 
         given(rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, comment.getId()))
                 .willReturn(true);

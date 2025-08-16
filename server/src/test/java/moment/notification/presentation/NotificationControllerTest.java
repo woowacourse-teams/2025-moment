@@ -28,8 +28,8 @@ import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.application.EmojiService;
-import moment.reply.dto.request.EmojiCreateRequest;
+import moment.reply.application.EchoService;
+import moment.reply.dto.request.EchoCreateRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -81,7 +81,7 @@ public class NotificationControllerTest {
     private User commenter;
     private String commenterToken;
     @Autowired
-    private EmojiService emojiService;
+    private EchoService echoService;
 
     @BeforeEach
     void setUp() {
@@ -135,12 +135,12 @@ public class NotificationControllerTest {
         EventSource eventSource = subscribeToNotifications(commenterToken, receivedNotifications);
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
 
-        EmojiCreateRequest request = new EmojiCreateRequest("HEART", comment.getId());
+        EchoCreateRequest request = new EchoCreateRequest("HEART", comment.getId());
         RestAssured.given().log().all()
-                .cookie("token", momenterToken) // 모멘트 작성자가 이모지를 달음
+                .cookie("token", momenterToken) // 모멘트 작성자가 에코를 달음
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/emojis")
+                .when().post("/api/v1/echos")
                 .then().log().all()
                 .statusCode(201);
 
@@ -212,17 +212,17 @@ public class NotificationControllerTest {
     void 사용자가_읽지_않은_코멘트_알림을_받는다() {
         // given
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment2));
-        EmojiCreateRequest request1 = new EmojiCreateRequest("HEART", comment.getId());
-        EmojiCreateRequest request2 = new EmojiCreateRequest("DDABONG", comment.getId());
-        EmojiCreateRequest request3 = new EmojiCreateRequest("STAR", comment.getId());
-        EmojiCreateRequest request4 = new EmojiCreateRequest("KING", comment.getId());
+        EchoCreateRequest request1 = new EchoCreateRequest("HEART", comment.getId());
+        EchoCreateRequest request2 = new EchoCreateRequest("DDABONG", comment.getId());
+        EchoCreateRequest request3 = new EchoCreateRequest("STAR", comment.getId());
+        EchoCreateRequest request4 = new EchoCreateRequest("KING", comment.getId());
 
         Authentication authentication = new Authentication(momenter.getId());
 
-        emojiService.addEmoji(request1, authentication);
-        emojiService.addEmoji(request2, authentication);
-        emojiService.addEmoji(request3, authentication);
-        emojiService.addEmoji(request4, authentication);
+        echoService.addEcho(request1, authentication);
+        echoService.addEcho(request2, authentication);
+        echoService.addEcho(request3, authentication);
+        echoService.addEcho(request4, authentication);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
                 .cookie("token", commenterToken)

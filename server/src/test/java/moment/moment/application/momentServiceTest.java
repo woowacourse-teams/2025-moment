@@ -12,8 +12,8 @@ import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -54,7 +54,7 @@ class momentServiceTest {
     private CommentRepository commentRepository;
 
     @Mock
-    private EmojiRepository emojiRepository;
+    private EchoRepository echoRepository;
 
     @Mock
     private UserQueryService userQueryService;
@@ -112,7 +112,7 @@ class momentServiceTest {
 
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
-        Emoji emoji = new Emoji("HEART", commenter, comment);
+        Echo echo = new Echo("HEART", commenter, comment);
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
@@ -123,8 +123,8 @@ class momentServiceTest {
         given(commentRepository.findAllByMomentIn(any(List.class)))
                 .willReturn(List.of(comment));
 
-        given(emojiRepository.findAllByCommentIn(any(List.class)))
-                .willReturn(List.of(emoji));
+        given(echoRepository.findAllByCommentIn(any(List.class)))
+                .willReturn(List.of(echo));
 
         //when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
@@ -132,7 +132,7 @@ class momentServiceTest {
         //then
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
-                () -> then(emojiRepository).should(times(1)).findAllByCommentIn(any(List.class)),
+                () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
                 () -> then(momentRepository).should(times(1)).findMyMomentFirstPage(any(User.class), any(Pageable.class)),
                 () -> assertThat(response.nextCursor()).isNull(),
                 () -> assertThat(response.hasNextPage()).isFalse(),
