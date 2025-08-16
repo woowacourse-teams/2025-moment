@@ -9,6 +9,7 @@ public enum Reason {
 
     CANCEL_POSITIVE_EMOJI_RECEIVED(-15),
     MOMENT_ADDITIONAL_USE(-10),
+    MOMENT_CREATION(5),
     ;
 
     private final int pointTo;

@@ -13,6 +13,7 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -38,7 +39,7 @@ class DefaultMomentQueryServiceTest {
         // given
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
         given(commentRepository.findById(any(Long.class))).willReturn(Optional.of(comment));
@@ -65,7 +66,7 @@ class DefaultMomentQueryServiceTest {
     void Momment에_등록된_Comment가_존재하면_true를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
 
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
 
@@ -77,7 +78,7 @@ class DefaultMomentQueryServiceTest {
     void Momment에_등록된_Comment가_존재하면_false를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
 
         given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
 

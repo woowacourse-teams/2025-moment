@@ -20,7 +20,11 @@ public class OnceADayPolicy implements BasicMomentCreatePolicy {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
-        int todayMomentCount = momentRepository.countByMomenterAndCreatedAtBetween(user, startOfDay, endOfDay);
+        int todayMomentCount = momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(
+                user,
+                WriteType.BASIC,
+                startOfDay,
+                endOfDay);
 
         return todayMomentCount < 1;
     }

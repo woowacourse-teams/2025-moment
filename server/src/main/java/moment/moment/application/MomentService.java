@@ -5,12 +5,11 @@ import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.matching.application.MatchingService;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
 import moment.moment.domain.BasicMomentCreatePolicy;
+import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
@@ -18,6 +17,8 @@ import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,24 +46,23 @@ public class MomentService {
     private final EmojiRepository emojiRepository;
 
     private final UserQueryService userQueryService;
-    private final MatchingService matchingService;
-    private final MomentQueryService momentQueryService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
 
+    private final RewardService rewardService;
+
     @Transactional
-    public MomentCreateResponse addMomentAndMatch(MomentCreateRequest request, Long momenterId) {
+    public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
         if (!basicMomentCreatePolicy.canCreate(momenter)) {
             throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
         }
 
-        Moment momentWithoutId = new Moment(request.content(), momenter);
+        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
-
-        matchingService.match(savedMoment.getId());
+        rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }
@@ -141,15 +140,6 @@ public class MomentService {
         }
 
         return nextCursor;
-    }
-
-
-    public MatchedMomentResponse getMatchedMoment(Long commenterId) {
-        User commenter = userQueryService.getUserById(commenterId);
-
-        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
-
-        return matchedMoment.map(MatchedMomentResponse::from).orElseGet(MatchedMomentResponse::createEmpty);
     }
 
     public MomentCreationStatusResponse canCreateMoment(Long id) {
