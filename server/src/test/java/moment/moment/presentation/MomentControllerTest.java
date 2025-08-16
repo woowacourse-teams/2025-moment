@@ -1,6 +1,5 @@
 package moment.moment.presentation;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.moment.domain.Moment;
@@ -27,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Comparator;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -45,7 +45,7 @@ class MomentControllerTest {
     private TokenManager tokenManager;
 
     @Test
-    void 모멘트를_등록한다() {
+    void 기본_모멘트를_등록한다() {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
@@ -55,11 +55,41 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreateResponse response = RestAssured.given().log().all()
+        MomentCreateResponse response = given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", token)
                 .body(request)
                 .when().post("/api/v1/moments")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+    @Test
+    void 추가_모멘트를_등록한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
+
+        MomentCreateRequest request = new MomentCreateRequest(content);
+        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreateResponse response = given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("token", token)
+                .body(request)
+                .when().post("/api/v1/moments/extra")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -96,7 +126,7 @@ class MomentControllerTest {
         momentRepository.save(moment4);
 
         // when
-        MyMomentPageResponse response = RestAssured.given().log().all()
+        MyMomentPageResponse response = given().log().all()
                 .param("limit", 3)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
@@ -145,7 +175,7 @@ class MomentControllerTest {
         momentRepository.save(moment4);
 
         // when
-        MyMomentPageResponse response = RestAssured.given().log().all()
+        MyMomentPageResponse response = given().log().all()
                 .param("limit", 10)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
@@ -178,7 +208,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreationStatusResponse response = RestAssured.given().log().all()
+        MomentCreationStatusResponse response = given().log().all()
                 .cookie("token", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
@@ -203,7 +233,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreationStatusResponse response = RestAssured.given().log().all()
+        MomentCreationStatusResponse response = given().log().all()
                 .cookie("token", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()

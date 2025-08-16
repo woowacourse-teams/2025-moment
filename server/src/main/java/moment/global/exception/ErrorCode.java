@@ -43,6 +43,7 @@ public enum ErrorCode {
     MOMENT_ALREADY_EXIST("M-003", "오늘 작성한 모멘트가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     MOMENT_LENGTH_INVALID("M-004", "모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.", HttpStatus.BAD_REQUEST),
     MOMENTS_LIMIT_INVALID("M-005", "유효하지 않은 페이지 사이즈입니다.", HttpStatus.BAD_REQUEST),
+    MOMENT_CREATE_POINT_NOT_ENOUGH("M-006", "포인트가 부족해 추가 모멘트를 작성할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
     ;
