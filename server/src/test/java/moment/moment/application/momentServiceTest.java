@@ -6,8 +6,8 @@ import moment.global.exception.ErrorCode;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -27,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -57,9 +56,6 @@ class momentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private MomentQueryService momentQueryService;
-
-    @Mock
     private MomentCreatePolicy momentCreatePolicy;
 
     @Test
@@ -68,7 +64,7 @@ class momentServiceTest {
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
-        Moment expect = new Moment(momentContent, momenter);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
@@ -103,7 +99,7 @@ class momentServiceTest {
         User momenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
         User commenter = new User("curry@gmail.com", "12345", "커리", ProviderType.EMAIL);
 
-        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter);
+        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Emoji emoji = new Emoji("HEART", commenter, comment);
 

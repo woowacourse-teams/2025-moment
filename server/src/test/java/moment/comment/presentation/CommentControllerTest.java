@@ -9,17 +9,15 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
-import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.matching.domain.Matching;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Emoji;
 import moment.reply.infrastructure.EmojiRepository;
@@ -70,7 +68,7 @@ class CommentControllerTest {
         User user2 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.saveAndFlush(user2);
 
-        Moment moment = new Moment("개발의 세계는 신비해요!", true, user2);
+        Moment moment = new Moment("개발의 세계는 신비해요!", true, user2, WriteType.BASIC);
         momentRepository.saveAndFlush(moment);
 
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
@@ -105,7 +103,7 @@ class CommentControllerTest {
 
         String token = jwtTokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
         Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
@@ -114,7 +112,7 @@ class CommentControllerTest {
         Emoji emoji = new Emoji("HEART", savedMomenter, savedComment);
         Emoji savedEmoji = emojiRepository.save(emoji);
 
-        Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter);
+        Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
         Comment comment2 = new Comment("즐거운 댓글", savedCommenter, savedMoment2);

@@ -20,6 +20,7 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -86,9 +87,9 @@ public class NotificationControllerTest {
     void setUp() {
         databaseCleaner.clean();
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
-        moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
-        moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
-        moment3 = momentRepository.save(new Moment("반가워요", momenter));
+        moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
+        moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
+        moment3 = momentRepository.save(new Moment("반가워요", momenter, WriteType.BASIC));
         momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
         commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());

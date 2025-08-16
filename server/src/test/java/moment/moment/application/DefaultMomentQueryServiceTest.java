@@ -1,15 +1,10 @@
 package moment.moment.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
@@ -38,7 +33,7 @@ class DefaultMomentQueryServiceTest {
     void 모멘트를_ID로_조회한다() {
         // given
         User user = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
-        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", user);
+        Moment moment = new Moment("야근 힘들어용 ㅠㅠ", user, WriteType.BASIC);
         given(momentRepository.findById(any(Long.class))).willReturn(Optional.of(moment));
 
         // when

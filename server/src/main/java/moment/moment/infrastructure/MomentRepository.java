@@ -1,6 +1,7 @@
 package moment.moment.infrastructure;
 
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MomentRepository extends JpaRepository<Moment, Long> {
@@ -32,5 +32,10 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                        @Param("cursorId") Long cursorId,
                                        Pageable pageable);
 
-    int countByMomenterAndCreatedAtBetween(User user, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    int countByMomenterAndWriteTypeAndCreatedAtBetween(
+            User user,
+            WriteType writeType,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay
+    );
 }

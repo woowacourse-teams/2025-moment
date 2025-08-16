@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
@@ -81,10 +82,10 @@ class MomentControllerTest {
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
-        Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
-        Moment moment3 = new Moment("아 짜증나", false, savedMomenter);
-        Moment moment4 = new Moment("아 신기해", false, savedMomenter);
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
+        Moment moment3 = new Moment("아 짜증나", false, savedMomenter, WriteType.BASIC);
+        Moment moment4 = new Moment("아 신기해", false, savedMomenter, WriteType.BASIC);
 
         momentRepository.save(moment1);
         Thread.sleep(200);
@@ -130,10 +131,10 @@ class MomentControllerTest {
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
-        Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
-        Moment moment3 = new Moment("아 짜증나", false, savedMomenter);
-        Moment moment4 = new Moment("아 신기해", false, savedMomenter);
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
+        Moment moment3 = new Moment("아 짜증나", false, savedMomenter, WriteType.BASIC);
+        Moment moment4 = new Moment("아 신기해", false, savedMomenter, WriteType.BASIC);
 
         momentRepository.save(moment1);
         Thread.sleep(200);
@@ -196,7 +197,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", true, savedMomenter);
+        Moment moment = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());

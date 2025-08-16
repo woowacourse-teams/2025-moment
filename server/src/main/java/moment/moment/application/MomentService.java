@@ -7,8 +7,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreatePolicy;
+import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.MatchedMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
@@ -44,7 +44,6 @@ public class MomentService {
     private final EmojiRepository emojiRepository;
 
     private final UserQueryService userQueryService;
-    private final MomentQueryService momentQueryService;
 
     private final MomentCreatePolicy momentCreatePolicy;
 
@@ -56,7 +55,7 @@ public class MomentService {
             throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
         }
 
-        Moment momentWithoutId = new Moment(request.content(), momenter);
+        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
         return MomentCreateResponse.of(savedMoment);
