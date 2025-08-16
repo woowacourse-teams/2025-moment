@@ -1,5 +1,6 @@
 package moment.moment.presentation;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.moment.domain.Moment;
@@ -26,7 +27,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Comparator;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -55,7 +55,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreateResponse response = given().log().all()
+        MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", token)
                 .body(request)
@@ -85,7 +85,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreateResponse response = given().log().all()
+        MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("token", token)
                 .body(request)
@@ -126,7 +126,7 @@ class MomentControllerTest {
         momentRepository.save(moment4);
 
         // when
-        MyMomentPageResponse response = given().log().all()
+        MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 3)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
@@ -175,7 +175,7 @@ class MomentControllerTest {
         momentRepository.save(moment4);
 
         // when
-        MyMomentPageResponse response = given().log().all()
+        MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 10)
                 .cookie("token", token)
                 .when().get("/api/v1/moments/me")
@@ -208,7 +208,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreationStatusResponse response = given().log().all()
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
@@ -233,7 +233,7 @@ class MomentControllerTest {
         String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
-        MomentCreationStatusResponse response = given().log().all()
+        MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
