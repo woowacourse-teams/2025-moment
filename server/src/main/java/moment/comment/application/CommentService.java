@@ -123,10 +123,10 @@ public class CommentService {
             return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Comment, List<Echo>> commentAndEmojis = echoes.stream()
+        Map<Comment, List<Echo>> commentAndEchos = echoes.stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
 
-        List<MyCommentResponse> responses = commentAndEmojis.entrySet().stream()
+        List<MyCommentResponse> responses = commentAndEchos.entrySet().stream()
                 .map(MyCommentResponse::from)
                 .toList();
 
