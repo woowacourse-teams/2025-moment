@@ -4,6 +4,7 @@ import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.reply.domain.Emoji;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
@@ -44,7 +45,7 @@ class StarRewardServiceTest {
         Reason reason = Reason.MOMENT_CREATION;
         int momentPointTo = reason.getPointTo();
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Moment moment = new Moment("테스트가 통과했으면 좋겠다!", momenter);
+        Moment moment = new Moment("테스트가 통과했으면 좋겠다!", momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(moment, "id", 1L);
 
         // when
@@ -62,7 +63,7 @@ class StarRewardServiceTest {
         int commentPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
@@ -80,7 +81,7 @@ class StarRewardServiceTest {
         int positiveEmojiReceivedPointTo = reason.getPointTo();
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
@@ -96,7 +97,7 @@ class StarRewardServiceTest {
         // given
         Reason reason = Reason.MOMENT_CREATION;
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
-        Moment moment = new Moment("테스트가 통과했으면 좋겠다!", momenter);
+        Moment moment = new Moment("테스트가 통과했으면 좋겠다!", momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(moment, "id", 1L);
 
         given(rewardRepository.existsByUserAndReasonAndToday(
@@ -118,7 +119,7 @@ class StarRewardServiceTest {
         Reason reason = Reason.COMMENT_CREATION;
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         given(rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, comment.getId()))
@@ -137,7 +138,7 @@ class StarRewardServiceTest {
         Reason reason = Reason.ECHO_RECEIVED;
         User momenter = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
         User commenter = new User("ekorea623@gmail.com", "1q2w3e4r!", "드라고", ProviderType.EMAIL);
-        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter));
+        Comment comment = new Comment("정말 대단합니다!", commenter, new Moment("오늘의 달리기 성공!", momenter, WriteType.BASIC));
         ReflectionTestUtils.setField(comment, "id", 1L);
         Emoji emoji = new Emoji("HEART", momenter, comment);
         ReflectionTestUtils.setField(emoji, "id", 1L);
