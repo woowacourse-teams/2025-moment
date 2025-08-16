@@ -5,6 +5,7 @@ import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
+import { EchoTypeKey } from '@/features/echo/type/echos';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -41,7 +42,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <span>받은 리액션</span>
           </S.TitleContainer>
           <S.Emoji>
-            {(myComment.emojis || []).map(emoji => echoMapping(emoji.emojiType)).join(' ')}
+            {(myComment.emojis || [])
+              .map(emoji => echoMapping(emoji.emojiType as EchoTypeKey))
+              .join(' ')}
           </S.Emoji>
           {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
