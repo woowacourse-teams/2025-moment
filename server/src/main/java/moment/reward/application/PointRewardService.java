@@ -46,7 +46,7 @@ public class PointRewardService implements RewardService {
 
     @Override
     @Transactional
-    public void rewardForEmoji(User user, Reason reason, Long contentId) {
+    public void rewardForEcho(User user, Reason reason, Long contentId) {
         if (rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId)) {
             return;
         }

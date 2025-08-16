@@ -9,5 +9,5 @@ public interface RewardService {
 
     void rewardForComment(User user, Reason reason, Long contentId);
 
-    void rewardForEmoji(User user, Reason reason, Long contentId);
+    void rewardForEcho(User user, Reason reason, Long contentId);
 }

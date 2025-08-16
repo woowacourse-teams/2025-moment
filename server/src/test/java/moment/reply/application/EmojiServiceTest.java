@@ -82,7 +82,7 @@ class EmojiServiceTest {
                 .willReturn(momenter);
         given(emojiRepository.save(any(Emoji.class)))
                 .willReturn(emoji);
-        doNothing().when(rewardService).rewardForEmoji(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
+        doNothing().when(rewardService).rewardForEcho(commenter, Reason.POSITIVE_EMOJI_RECEIVED, comment.getId());
 
         // when
         emojiService.addEmoji(request, authentication);
@@ -187,6 +187,6 @@ class EmojiServiceTest {
         emojiService.removeEmojiById(emoji.getId(), comment.getId());
 
         // then
-        verify(rewardService).rewardForEmoji(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
+        verify(rewardService).rewardForEcho(commenter, Reason.CANCEL_POSITIVE_EMOJI_RECEIVED, comment.getId());
     }
 }

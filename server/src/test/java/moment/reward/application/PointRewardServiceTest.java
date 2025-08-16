@@ -61,7 +61,7 @@ class PointRewardServiceTest {
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         // when
-        pointRewardService.rewardForEmoji(commenter, reason, comment.getId());
+        pointRewardService.rewardForEcho(commenter, reason, comment.getId());
 
         // then
         assertThat(commenter.getCurrentPoint()).isEqualTo(positiveEmojiReceivedPointTo);
