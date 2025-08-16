@@ -10,4 +10,6 @@ public interface RewardService {
     void rewardForComment(User user, Reason reason, Long contentId);
 
     void rewardForEcho(User user, Reason reason, Long contentId);
+
+    void useReward(User user, Reason reason, Long contentId);
 }

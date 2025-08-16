@@ -1,6 +1,8 @@
 package moment.reward.application;
 
 import lombok.RequiredArgsConstructor;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
@@ -29,7 +31,7 @@ public class StarRewardService implements RewardService {
             return;
         }
 
-        givenStar(user, reason, contentId);
+        updateStar(user, reason, contentId);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class StarRewardService implements RewardService {
             return;
         }
 
-        givenStar(user, reason, contentId);
+        updateStar(user, reason, contentId);
     }
 
     @Override
@@ -49,10 +51,18 @@ public class StarRewardService implements RewardService {
             return;
         }
 
-        givenStar(user, reason, contentId);
+        updateStar(user, reason, contentId);
     }
 
-    private void givenStar(User user, Reason reason, Long contentId) {
+    @Override
+    public void useReward(User user, Reason reason, Long contentId) {
+        if (user.canNotUseStars(reason.getPointTo())) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+        updateStar(user, reason, contentId);
+    }
+
+    private void updateStar(User user, Reason reason, Long contentId) {
         int star = reason.getPointTo();
         user.addStarAndUpdateLevel(star);
 

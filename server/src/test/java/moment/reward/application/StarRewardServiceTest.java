@@ -1,6 +1,8 @@
 package moment.reward.application;
 
 import moment.comment.domain.Comment;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.reply.domain.Emoji;
 import moment.reward.domain.Reason;
@@ -20,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -147,5 +150,18 @@ class StarRewardServiceTest {
 
         // then
         assertThat(commenter.getAvailableStar()).isEqualTo(0);
+    }
+
+    @Test
+    void 유저가_보유한_별조각보다_많은_별조각을_소비하는_경우_예외가_발생한다() {
+        // given
+        Reason reason = Reason.NICKNAME_CHANGE;
+        User user = new User("hipo@gmail.com", "1q2w3e4r!", "히포", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        // when & then
+        assertThatThrownBy(() -> starRewardService.useReward(user, reason, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_ENOUGH_STAR);
     }
 }

@@ -95,7 +95,14 @@ public class User extends BaseEntity {
 
     public void addStarAndUpdateLevel(int pointToAdd) {
         this.availableStar += pointToAdd;
-        this.expStar += pointToAdd;
+        if (pointToAdd >= 0) {
+            this.expStar += pointToAdd;
+        }
         this.level = Level.getLevel(this.expStar);
     }
+
+    public boolean canNotUseStars(Integer requiredStars) {
+        return (availableStar + requiredStars) < 0;
+    }
+
 }
