@@ -1,19 +1,27 @@
-import { CustomTheme } from '@/app/styles/theme';
-import { Button } from '@/shared/ui';
+import styled from '@emotion/styled';
 
 export const EchoButton = ({
   title,
   onClick: handleClick,
+  isSelected,
 }: {
   title: string;
   onClick: () => void;
+  isSelected: boolean;
 }) => {
-  return <Button externalVariant={buttonVariant} title={title} onClick={handleClick} />;
+  return (
+    <EchoButtonStyle onClick={handleClick} $isSelected={isSelected}>
+      {title}
+    </EchoButtonStyle>
+  );
 };
 
-const buttonVariant = (theme: CustomTheme) => `
-  border: 1px solid ${theme.colors['yellow-500']};
-  color: ${theme.colors['yellow-500']};
+const EchoButtonStyle = styled.button<{ $isSelected: boolean }>`
+  border: 1px solid
+    ${({ $isSelected, theme }) =>
+      $isSelected ? theme.colors['yellow-500'] : theme.colors['gray-400']};
+  color: ${({ $isSelected, theme }) =>
+    $isSelected ? theme.colors['yellow-500'] : theme.colors['gray-400']};
   border-radius: 25px;
   padding: 4px 20px;
   font-size: 14px;
