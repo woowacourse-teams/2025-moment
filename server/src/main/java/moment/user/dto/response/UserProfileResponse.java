@@ -22,6 +22,6 @@ public record UserProfileResponse(
 
     public static UserProfileResponse from(User user) {
         Level level = user.getLevel();
-        return new UserProfileResponse(user.getNickname(), user.getAvailableStar(), level, level.getMaxPoints());
+        return new UserProfileResponse(user.getNickname(), user.getAvailableStar(), level, level.getNextLevelRequiredStars());
     }
 }

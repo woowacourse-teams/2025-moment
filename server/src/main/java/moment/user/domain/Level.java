@@ -40,4 +40,8 @@ public enum Level {
     public boolean isMatch(Integer point) {
         return point >= minPoints && point <= maxPoints;
     }
+
+    public int getNextLevelRequiredStars() {
+        return maxPoints + 1;
+    }
 }
