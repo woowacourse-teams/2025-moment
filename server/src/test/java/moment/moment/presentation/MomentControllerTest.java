@@ -210,7 +210,7 @@ class MomentControllerTest {
     }
 
     @Test
-    void 모멘트_생성가능_상태를_가져온다() {
+    void 기본_모멘트_작성_가능_상태를_가져온다() {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
@@ -220,7 +220,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("api/v1/moments/me/creation-status")
+                .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -232,7 +232,7 @@ class MomentControllerTest {
     }
 
     @Test
-    void 모멘트_생성불가_상태를_가져온다() {
+    void 기본_모멘트_작성_불가능_상태를_가져온다() {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
@@ -245,7 +245,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("api/v1/moments/me/creation-status")
+                .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -255,4 +255,6 @@ class MomentControllerTest {
         // then
         assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
     }
+
+    // TODO: 추가 모멘트 작성 가능 상태 확인 api에 대한 테스트를 user의 포인트를 조정하는 로직이 들어오면 작성할 예정
 }
