@@ -1,5 +1,7 @@
 package moment.moment.infrastructure;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
@@ -64,26 +66,51 @@ class MomentRepositoryTest {
         );
     }
 
-//    @Test
-//    void 유저가_오늘_생성한_모멘트_수를_카운트한다() {
-//        // given
-//        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-//        User savedMomenter = userRepository.save(momenter);
-//
-//        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
-//        Moment moment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
-//        Moment moment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
-//        Moment moment4 = new Moment("아 불행해", true, savedMomenter, WriteType.BASIC);
-//
-//        momentRepository.save(moment1);
-//        momentRepository.save(moment2);
-//        momentRepository.save(moment3);
-//        momentRepository.save(moment4);
-//
-//        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-//        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-//
-//        // when & then
-//        assertThat(momentRepository.countByMomenterAndCreatedAtBetween(momenter, startOfDay, endOfDay)).isEqualTo(4);
-//    }
+    @Test
+    void 유저가_오늘_기본적으로_생성한_모멘트_수를_카운트한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        WriteType basicWriteType = WriteType.BASIC;
+
+        Moment basicMoment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
+        Moment extraMoment1 = new Moment("아 불행해", true, savedMomenter, WriteType.EXTRA);
+
+        momentRepository.save(basicMoment1);
+        momentRepository.save(basicMoment2);
+        momentRepository.save(basicMoment3);
+        momentRepository.save(extraMoment1);
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+
+        // when & then
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, basicWriteType, startOfDay, endOfDay)).isEqualTo(3);
+    }
+
+    @Test
+    void 유저가_오늘_추가_리워드로_생성한_모멘트_수를_카운트한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        WriteType extraWriteType = WriteType.EXTRA;
+
+        Moment basicMoment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
+        Moment extraMoment1 = new Moment("아 불행해", true, savedMomenter, WriteType.EXTRA);
+
+        momentRepository.save(basicMoment1);
+        momentRepository.save(basicMoment2);
+        momentRepository.save(basicMoment3);
+        momentRepository.save(extraMoment1);
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+
+        // when & then
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, extraWriteType, startOfDay, endOfDay)).isEqualTo(1);
+    }
 }
