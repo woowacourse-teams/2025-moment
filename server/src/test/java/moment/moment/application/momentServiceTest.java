@@ -3,8 +3,9 @@ package moment.moment.application;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
+import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentCreatePolicy;
+import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,13 +60,16 @@ class momentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private MomentCreatePolicy momentCreatePolicy;
+    private BasicMomentCreatePolicy basicMomentCreatePolicy;
+
+    @Mock
+    private ExtraMomentCreatePolicy extraMomentCreatePolicy;
 
     @Mock
     private RewardService rewardService;
 
     @Test
-    void 모멘트_생성에_성공한다() {
+    void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
@@ -74,7 +79,8 @@ class momentServiceTest {
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
 
         // when
         momentService.addBasicMoment(request, 1L);
@@ -84,14 +90,14 @@ class momentServiceTest {
     }
 
     @Test
-    void 모멘트_생성에_실패한다() {
+    void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
         MomentCreateRequest request = new MomentCreateRequest(momentContent);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
 
         // when & then
         assertThatThrownBy(() -> momentService.addBasicMoment(request, 1L))
@@ -140,7 +146,7 @@ class momentServiceTest {
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
 
         MomentCreationStatusResponse response = new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
 
@@ -154,12 +160,46 @@ class momentServiceTest {
         User commenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
 
         MomentCreationStatusResponse response = new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
 
         // when & then
         assertThat(momentService.canCreateMoment(1L)).isEqualTo(response);
+    }
+
+    @Test
+    void 오늘_추가_모멘트를_작성할_수_있는_상태를_반환한다() {
+        // given
+        User momenter = new User("mimi@icloud.com", "mimi1234", "미미", ProviderType.EMAIL);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+
+        MomentCreationStatusResponse expect = new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
+
+        // when
+        MomentCreationStatusResponse response = momentService.canCreateExtraMoment(1L);
+
+        // then
+        assertThat(response).isEqualTo(expect);
+    }
+
+    @Test
+    void 오늘_추가_모멘트를_작성할_수_없는_상태를_반환한다() {
+        // given
+        User momenter = new User("mimi@icloud.com", "mimi1234", "미미", ProviderType.EMAIL);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+
+        MomentCreationStatusResponse expect = new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
+
+        // when
+        MomentCreationStatusResponse response = momentService.canCreateExtraMoment(1L);
+
+        // then
+        assertThat(response).isEqualTo(expect);
     }
 
     @Test
@@ -171,7 +211,7 @@ class momentServiceTest {
         ReflectionTestUtils.setField(savedMoment, "id", momentId);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(momentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
 
 
