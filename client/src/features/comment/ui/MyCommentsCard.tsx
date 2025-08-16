@@ -1,5 +1,5 @@
 import { theme } from '@/app/styles/theme';
-import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
+import { echoMapping } from '@/features/echo/utils/echoMapping';
 import { Button, Card, SimpleCard } from '@/shared/ui';
 import { Gift, MessageSquare, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
@@ -41,7 +41,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <span>받은 리액션</span>
           </S.TitleContainer>
           <S.Emoji>
-            {(myComment.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
+            {(myComment.emojis || []).map(emoji => echoMapping(emoji.emojiType)).join(' ')}
           </S.Emoji>
           {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}

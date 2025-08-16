@@ -5,11 +5,10 @@ export interface EmojiRequest {
 
 export interface EmojiResponse {
   status: number;
-  data: Emoji[];
+  data: Echos[];
 }
 
-export interface Emoji {
+export interface Echos {
   id: number;
-  emojiType: string;
-  userName: string;
+  echoType: string;
 }
