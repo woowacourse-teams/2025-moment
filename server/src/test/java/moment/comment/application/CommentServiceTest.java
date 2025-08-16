@@ -1,6 +1,7 @@
 package moment.comment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -174,10 +175,9 @@ class CommentServiceTest {
     }
 
     @Test
-    void 코멘트가_이미_등록된_모멘트에_코멘트를_등록하는_경우_예외가_발생한다() {
+    void 동일_유저가_이미_코멘트를_등록한_모멘트에_다시_등록하는_경우_예외가_발생한다() {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
-
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
@@ -185,11 +185,33 @@ class CommentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
-        given(commentQueryService.existsByMoment(any(Moment.class))).willReturn(true);
+        given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COMMENT_CONFLICT);
+    }
+
+    @Test
+    void 다른_유저가_이미_코멘트가_있는_모멘트에_새로_코멘트를_등록하는_경우_성공한다() {
+        // given
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(commenter, "id", 1L);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
+        Comment newComment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        ReflectionTestUtils.setField(newComment, "id", 1L);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
+        given(commentRepository.save(any(Comment.class))).willReturn(newComment);
+        doNothing().when(rewardService).rewardForComment(any(), any(), any());
+
+        // when & then
+        assertThatCode(() -> commentService.addComment(request, commenter.getId()))
+                .doesNotThrowAnyException();
     }
 }

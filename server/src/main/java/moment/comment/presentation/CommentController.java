@@ -12,7 +12,6 @@ import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.application.CommentService;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
