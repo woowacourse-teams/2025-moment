@@ -208,7 +208,7 @@ class CommentServiceTest {
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
         given(commentRepository.save(any(Comment.class))).willReturn(newComment);
-        doNothing().when(rewardService).reward(any(), any(), any());
+        doNothing().when(rewardService).rewardForComment(any(), any(), any());
 
         // when & then
         assertThatCode(() -> commentService.addComment(request, commenter.getId()))

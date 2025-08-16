@@ -16,7 +16,6 @@ import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
