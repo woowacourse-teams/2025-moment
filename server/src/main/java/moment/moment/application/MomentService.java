@@ -44,13 +44,12 @@ public class MomentService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
     private final EmojiRepository emojiRepository;
-
     private final UserQueryService userQueryService;
+    private final RewardService rewardService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
 
-    private final RewardService rewardService;
 
     @Transactional
     public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {

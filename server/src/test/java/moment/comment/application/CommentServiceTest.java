@@ -178,6 +178,7 @@ class CommentServiceTest {
     void 동일_유저가_이미_코멘트를_등록한_모멘트에_다시_등록하는_경우_예외가_발생한다() {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
