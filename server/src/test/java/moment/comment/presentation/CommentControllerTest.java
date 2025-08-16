@@ -66,7 +66,7 @@ class CommentControllerTest {
     @Test
     void Comment_생성에_성공한다() {
         // given
-        String token = jwtTokenManager.createToken(1L, "hippo@gmail.com");
+        String token = jwtTokenManager.createAccessToken(1L, "hippo@gmail.com");
 
         User user1 = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(user1);
@@ -107,7 +107,7 @@ class CommentControllerTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        String token = jwtTokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
+        String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
 
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
@@ -169,7 +169,7 @@ class CommentControllerTest {
         Moment moment = new Moment("오늘은 화요일", momenter);
         momentRepository.saveAndFlush(moment);
 
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
+        String token = jwtTokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
 
         // when
         CommentCreationStatusResponse response = RestAssured.given().log().all()
@@ -204,7 +204,7 @@ class CommentControllerTest {
         Comment comment = new Comment("맞아요 화요일이에요", commenter, moment);
         commentRepository.saveAndFlush(comment);
 
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
+        String token = jwtTokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
 
         // when
         CommentCreationStatusResponse response = RestAssured.given().log().all()
@@ -236,7 +236,7 @@ class CommentControllerTest {
         Matching matching = new Matching(moment, commenter);
         matchingRepository.saveAndFlush(matching);
 
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
+        String token = jwtTokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
 
         // when
         CommentCreationStatusResponse response = RestAssured.given().log().all()

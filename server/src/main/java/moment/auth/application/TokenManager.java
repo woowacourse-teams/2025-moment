@@ -4,7 +4,9 @@ import moment.user.dto.request.Authentication;
 
 public interface TokenManager {
 
-    String createToken(Long id, String email);
+    String createAccessToken(Long id, String email);
+
+    String createRefreshToken(Long id, String email);
 
     Authentication extractAuthentication(String token);
 }

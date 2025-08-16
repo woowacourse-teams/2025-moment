@@ -1,7 +1,11 @@
 package moment.moment.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.util.Comparator;
 import moment.auth.application.TokenManager;
 import moment.matching.domain.Matching;
 import moment.matching.infrastructure.MatchingRepository;
@@ -26,11 +30,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Comparator;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -57,7 +56,7 @@ class MomentControllerTest {
         String content = "재미있는 내용이네요~~?";
 
         MomentCreateRequest request = new MomentCreateRequest(content);
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreateResponse response = RestAssured.given().log().all()
@@ -85,7 +84,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter);
         Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
@@ -134,7 +133,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter);
         Moment moment2 = new Moment("아 힘들어", true, savedMomenter);
@@ -183,7 +182,7 @@ class MomentControllerTest {
         User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        String token = tokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
+        String token = tokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
 
         Moment moment = new Moment("아 행복해", true, savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
@@ -215,7 +214,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
@@ -240,7 +239,7 @@ class MomentControllerTest {
         Moment moment = new Moment("아 행복해", true, savedMomenter);
         momentRepository.save(moment);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()

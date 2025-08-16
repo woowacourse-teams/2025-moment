@@ -16,7 +16,6 @@ import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -73,7 +72,7 @@ class AuthControllerTest {
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
         userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
 
-        String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
+        String token = jwtTokenManager.createAccessToken(1L, "ekorea623@gmail.com");
 
         // when
         String emptyToken = given().log().all()
@@ -115,7 +114,7 @@ class AuthControllerTest {
     @Test
     void 쿠키로_토큰을_가지고_있으면_로그인_상태로_참을_반환한다() {
         // given
-        String token = jwtTokenManager.createToken(1L, "ekorea623@gmail.com");
+        String token = jwtTokenManager.createAccessToken(1L, "ekorea623@gmail.com");
 
         // when
         LoginCheckResponse response = given().log().all()

@@ -1,5 +1,6 @@
 package moment.auth.application;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
@@ -11,8 +12,6 @@ import moment.user.infrastructure.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,16 +36,17 @@ public class GoogleAuthService {
 
         if (findUser.isPresent()) {
             User user = findUser.get();
-            return tokenManager.createToken(user.getId(), user.getEmail());
+            return tokenManager.createAccessToken(user.getId(), user.getEmail());
         }
 
         User savedUser = addUser(email, googleUserInfo.getSub());
-        return tokenManager.createToken(savedUser.getId(), savedUser.getEmail());
+        return tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
     }
 
     private User addUser(String email, String sub) {
         String encodedPassword = passwordEncoder.encode(sub);
-        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(), ProviderType.GOOGLE);
+        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(),
+                ProviderType.GOOGLE);
 
         return userRepository.save(user);
     }

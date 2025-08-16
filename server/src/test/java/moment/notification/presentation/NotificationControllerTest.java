@@ -89,9 +89,9 @@ public class NotificationControllerTest {
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
         moment3 = momentRepository.save(new Moment("반가워요", momenter));
-        momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
+        momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
-        commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
+        commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
     }
 
     @Test

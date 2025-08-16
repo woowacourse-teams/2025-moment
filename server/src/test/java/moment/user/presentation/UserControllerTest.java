@@ -1,5 +1,8 @@
 package moment.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -22,9 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -54,7 +54,8 @@ class UserControllerTest {
         // then
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
+                () -> assertThat(
+                        userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
         );
     }
 
@@ -63,7 +64,7 @@ class UserControllerTest {
         // given
         String nickname = "mimi";
         User user = userRepository.save(new User("mimi@icloud.com", "password", nickname, ProviderType.EMAIL));
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
         UserProfileResponse expect = new UserProfileResponse(nickname, user.getCurrentPoint(), user.getLevel());
 
         // when

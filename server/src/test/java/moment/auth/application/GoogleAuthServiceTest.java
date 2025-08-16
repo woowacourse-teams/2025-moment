@@ -47,14 +47,16 @@ class GoogleAuthServiceTest {
         // given
         String email = "mimi@icloud.com";
         String expectedToken = "testToken";
-        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType", "idToken");
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
         GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
         User existingUser = new User(email, "password", "mimi", ProviderType.GOOGLE);
 
         given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
         given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
-        given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(Optional.of(existingUser));
-        given(tokenManager.createToken(existingUser.getId(), existingUser.getEmail())).willReturn(expectedToken);
+        given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(
+                Optional.of(existingUser));
+        given(tokenManager.createAccessToken(existingUser.getId(), existingUser.getEmail())).willReturn(expectedToken);
 
         // when
         String actualToken = googleAuthService.loginOrSignUp("authorizationCode");
@@ -69,7 +71,8 @@ class GoogleAuthServiceTest {
         // given
         String expectedToken = "testToken";
         String email = "mimi@icloud.com";
-        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType", "idToken");
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
         GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
 
         given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
@@ -77,8 +80,9 @@ class GoogleAuthServiceTest {
         given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(Optional.empty());
         given(passwordEncoder.encode(any(String.class))).willReturn("encodedPassword");
         given(nicknameGenerateService.createRandomNickname()).willReturn("반짝이는 우주의 퀘이사");
-        given(userRepository.save(any(User.class))).willReturn(new User(email, "encodedPassword", "mimi", ProviderType.GOOGLE));
-        given(tokenManager.createToken(any(), any(String.class))).willReturn(expectedToken);
+        given(userRepository.save(any(User.class))).willReturn(
+                new User(email, "encodedPassword", "mimi", ProviderType.GOOGLE));
+        given(tokenManager.createAccessToken(any(), any(String.class))).willReturn(expectedToken);
 
         // when
         String actualToken = googleAuthService.loginOrSignUp("authorizationCode");

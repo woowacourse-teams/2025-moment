@@ -64,8 +64,8 @@ public class EmojiControllerTest {
         databaseCleaner.clean();
         momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL));
         commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
-        momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
-        commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
+        momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
+        commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter));
         comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment));
     }
@@ -122,7 +122,7 @@ public class EmojiControllerTest {
     void 이모지를_삭제한다() {
         // given
         Emoji savedEmoji = emojiRepository.save(new Emoji("HEART", commenter, comment));
-        String emojiOwnerToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
+        String emojiOwnerToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
 
         // when & then
         RestAssured.given().log().all()

@@ -23,21 +23,38 @@ import org.springframework.stereotype.Component;
 public class JwtTokenManager implements TokenManager {
 
     private final int expirationTime;
+    private final int refreshTokenExpirationTime;
     private final String secretKey;
 
     public JwtTokenManager(
             @Value("${expiration.time}") int EXPIRATION_TIME,
-            @Value("${jwt.secret.key}") String SECRET_KEY) {
+            @Value("${jwt.secret.key}") String SECRET_KEY,
+            @Value("${expiration.refresh-token-time}") int REFRESH_TOKEN_EXPIRATION_TIME
+    ) {
         this.expirationTime = EXPIRATION_TIME;
+        this.refreshTokenExpirationTime = REFRESH_TOKEN_EXPIRATION_TIME;
         this.secretKey = SECRET_KEY;
     }
 
     @Override
-    public String createToken(Long id, String email) {
+    public String createAccessToken(Long id, String email) {
         SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
 
         return Jwts.builder()
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .subject(id.toString())
+                .claim("email", email)
+                .issuedAt(new Date())
+                .signWith(key, HS256)
+                .compact();
+    }
+
+    @Override
+    public String createRefreshToken(Long id, String email) {
+        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+
+        return Jwts.builder()
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
                 .subject(id.toString())
                 .claim("email", email)
                 .issuedAt(new Date())
