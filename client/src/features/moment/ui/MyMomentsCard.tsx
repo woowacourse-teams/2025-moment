@@ -10,8 +10,10 @@ import { Heart } from 'lucide-react';
 import { Level } from '@/app/layout/ui/Navbar';
 import { levelMap } from '@/app/layout/data/navItems';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
-import { EchoButtonGroup } from '@/features/echo/ui/EchoButtonGroup';
 import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
+import { EchoButton } from '@/features/echo/ui/EchoButton';
+import { EchoTypeKey } from '@/features/echo/type/echos';
+import { ECHO_TYPE } from '@/features/echo/const/echoType';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -84,7 +86,14 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                   <span>에코 보내기</span>
                 </S.TitleContainer>
                 <S.EchoButtonContainer>
-                  <EchoButtonGroup onToggle={toggleEcho} isSelected={isSelected} />
+                  {Object.entries(ECHO_TYPE).map(([key, title]) => (
+                    <EchoButton
+                      key={key}
+                      onClick={() => toggleEcho(key as EchoTypeKey)}
+                      title={title}
+                      isSelected={isSelected(key as EchoTypeKey)}
+                    />
+                  ))}
                 </S.EchoButtonContainer>
                 <SendEchoButton
                   commentId={myMoment.comments[0].id}
