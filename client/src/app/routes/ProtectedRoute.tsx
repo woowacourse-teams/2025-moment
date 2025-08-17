@@ -7,9 +7,13 @@ import { ROUTES } from './routes';
 export const ProtectedRoute: React.FC = () => {
   const location = useLocation();
   const { showError } = useToast();
-  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const { data: isLoggedIn, isLoading, isError } = useCheckIfLoggedInQuery();
 
-  if (!isLoggedIn) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (isError || isLoggedIn === false) {
     showError('로그인 후 이용해주세요.', 3000);
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
