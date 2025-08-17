@@ -78,7 +78,7 @@ public class MomentService {
             throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
         }
 
-        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
+        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
         rewardService.rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
