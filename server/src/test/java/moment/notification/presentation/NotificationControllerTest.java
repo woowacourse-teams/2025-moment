@@ -43,15 +43,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class NotificationControllerTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
@@ -86,6 +90,7 @@ public class NotificationControllerTest {
 
     @BeforeEach
     void setUp() {
+        RestAssured.port = port;
         databaseCleaner.clean();
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
@@ -302,7 +307,7 @@ public class NotificationControllerTest {
 
         Headers headers = Headers.of("Cookie", "accessToken=" + token);
         EventSource eventSource = new EventSource.Builder(eventHandler,
-                URI.create("http://localhost:" + 8080 + "/api/v1/notifications/subscribe"))
+                URI.create("http://localhost:" + port + "/api/v1/notifications/subscribe"))
                 .headers(headers)
                 .build();
 

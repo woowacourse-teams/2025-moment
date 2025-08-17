@@ -26,15 +26,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EchoControllerTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
@@ -63,6 +67,7 @@ public class EchoControllerTest {
 
     @BeforeEach
     void setUp() {
+        RestAssured.port = port;
         databaseCleaner.clean();
         momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL));
         commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
