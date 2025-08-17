@@ -26,6 +26,18 @@ spring:
     init:
       mode: never
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GOOGLE_EMAIL_ACCOUNT}
+    password: ${GOOGLE_EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
@@ -38,3 +50,6 @@ auth:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: ${GOOGLE_REDIRECT_URL}
+
+logging:
+  config: classpath:logback-dev.xml

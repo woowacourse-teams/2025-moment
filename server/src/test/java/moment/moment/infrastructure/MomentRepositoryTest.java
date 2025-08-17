@@ -1,8 +1,11 @@
 package moment.moment.infrastructure;
 
-import moment.matching.domain.Matching;
-import moment.matching.infrastructure.MatchingRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import moment.comment.domain.Comment;
+import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -15,11 +18,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,7 +36,7 @@ class MomentRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private MatchingRepository matchingRepository;
+    private CommentRepository commentRepository;
 
     @Test
     @Disabled
@@ -45,10 +45,10 @@ class MomentRepositoryTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
-        Moment moment2 = new Moment("아 즐거워", true, savedMomenter);
-        Moment moment3 = new Moment("아 짜릿해", true, savedMomenter);
-        Moment moment4 = new Moment("킥킥", true, savedMomenter);
+        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment moment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
+        Moment moment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
+        Moment moment4 = new Moment("킥킥", true, savedMomenter, WriteType.BASIC);
 
         Moment savedMoment1 = momentRepository.save(moment1);
         Thread.sleep(10);
@@ -69,59 +69,76 @@ class MomentRepositoryTest {
                 () -> assertThat(moments.get(1)).isEqualTo(savedMoment2),
                 () -> assertThat(moments.getLast()).isEqualTo(savedMoment1)
         );
-
-
     }
 
     @Test
-    void 나에게_매칭된_모멘트를_조회한다() {
+    void 유저가_오늘_기본적으로_생성한_모멘트_수를_카운트한다() {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
+        WriteType basicWriteType = WriteType.BASIC;
 
-        User commenter = new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL);
-        User savedCommenter = userRepository.save(commenter);
+        Moment basicMoment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
+        Moment extraMoment1 = new Moment("아 불행해", true, savedMomenter, WriteType.EXTRA);
 
-        Moment moment = new Moment("아 행복해", true, savedMomenter);
-        Moment savedMoment = momentRepository.save(moment);
-
-        Matching matching = new Matching(moment, commenter);
-        Matching savedMatching = matchingRepository.save(matching);
-
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-
-        // when
-        Optional<Moment> matchedMomentByCommenter = momentRepository.findMatchedMomentByCommenter(savedCommenter,
-                startOfDay, endOfDay);
-
-        // then
-        assertAll(
-                () -> assertThat(matchedMomentByCommenter).isPresent(),
-                () -> assertThat(matchedMomentByCommenter.get().getId()).isEqualTo(savedMoment.getId())
-        );
-    }
-
-    @Test
-    void 유저가_오늘_생성한_모멘트_수를_카운트한다() {
-        // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User savedMomenter = userRepository.save(momenter);
-
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter);
-        Moment moment2 = new Moment("아 즐거워", true, savedMomenter);
-        Moment moment3 = new Moment("아 짜릿해", true, savedMomenter);
-        Moment moment4 = new Moment("아 불행해", true, savedMomenter);
-
-        momentRepository.save(moment1);
-        momentRepository.save(moment2);
-        momentRepository.save(moment3);
-        momentRepository.save(moment4);
+        momentRepository.save(basicMoment1);
+        momentRepository.save(basicMoment2);
+        momentRepository.save(basicMoment3);
+        momentRepository.save(extraMoment1);
 
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
         // when & then
-        assertThat(momentRepository.countByMomenterAndCreatedAtBetween(momenter, startOfDay, endOfDay)).isEqualTo(4);
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, basicWriteType, startOfDay, endOfDay)).isEqualTo(3);
+    }
+
+    @Test
+    void 유저가_오늘_추가_리워드로_생성한_모멘트_수를_카운트한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        WriteType extraWriteType = WriteType.EXTRA;
+
+        Moment basicMoment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment2 = new Moment("아 즐거워", true, savedMomenter, WriteType.BASIC);
+        Moment basicMoment3 = new Moment("아 짜릿해", true, savedMomenter, WriteType.BASIC);
+        Moment extraMoment1 = new Moment("아 불행해", true, savedMomenter, WriteType.EXTRA);
+
+        momentRepository.save(basicMoment1);
+        momentRepository.save(basicMoment2);
+        momentRepository.save(basicMoment3);
+        momentRepository.save(extraMoment1);
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
+
+        // when & then
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, extraWriteType, startOfDay, endOfDay)).isEqualTo(1);
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트를_조회한다() {
+        // given
+        User user = userRepository.save(new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL));
+        User other = userRepository.save(new User("hippo@gmail.com", "hippo1234!","hippo", ProviderType.EMAIL));
+
+        Moment myMoment = momentRepository.save(new Moment("내가 쓴 모멘트", user, WriteType.BASIC));
+
+        Moment recentMoment = momentRepository.save(new Moment("다른 사람 모멘트", other, WriteType.BASIC));
+
+        // TODO : 시간을 DB에서 처리하고 있어서 컨트롤 불가능
+
+        Moment commentedMoment = momentRepository.save(new Moment("이미 코멘트를 단 모멘트", other, WriteType.BASIC));
+        commentRepository.save(new Comment("희희", user, commentedMoment));
+
+        // when
+        List<Moment> results = momentRepository.findCommentableMoments(user, LocalDateTime.now().minusDays(3));
+
+        // then
+        assertThat(results).containsExactly(recentMoment);
+        assertThat(results).doesNotContain(myMoment, commentedMoment);
     }
 }
