@@ -21,7 +21,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
 
-  console.log('myMoment', myMoment);
   const handleModalClose = () => {
     clearSelection();
     handleClose();
