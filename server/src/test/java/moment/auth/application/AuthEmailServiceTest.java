@@ -247,4 +247,3 @@ class AuthEmailServiceTest {
         return (Map<String, EmailVerification>) ReflectionTestUtils.getField(authEmailService, "passwordUpdateInfos");
     }
 }
-

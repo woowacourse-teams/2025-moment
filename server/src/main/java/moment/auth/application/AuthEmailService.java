@@ -138,4 +138,3 @@ public class AuthEmailService implements EmailService{
         passwordUpdateInfos.remove(request.email());
     }
 }
-

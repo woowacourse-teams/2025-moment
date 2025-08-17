@@ -113,5 +113,12 @@ public class User extends BaseEntity {
     public void updatePassword(String newPassword) {
         validatePassword(newPassword);
         this.password = newPassword;
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public boolean checkProviderType(ProviderType providerType) {
+        return this.providerType == providerType;
     }
 }
