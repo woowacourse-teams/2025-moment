@@ -3,12 +3,12 @@ import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentabl
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, User } from 'lucide-react';
+import { AlertCircle, Clock, RotateCcw, User } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 
 export function TodayCommentForm() {
-  const { data, isLoading, error } = useCommentableMomentsQuery();
+  const { data, isLoading, error, refetch } = useCommentableMomentsQuery();
 
   if (isLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -38,12 +38,19 @@ export function TodayCommentForm() {
         Icon={User}
         title={
           <S.TitleWrapper>
-            <S.LevelImage src={getLevelImage(momentData.level)} alt={momentData.level} />
-            <span>{momentData.nickname}</span>
-            <S.TimeWrapper>
-              <Clock size={14} />
-              {formatRelativeTime(momentData.createdAt)}
-            </S.TimeWrapper>
+            <S.UserInfoWrapper>
+              <S.LevelImage src={getLevelImage(momentData.level)} alt={momentData.level} />
+              <span>{momentData.nickname}</span>
+            </S.UserInfoWrapper>
+            <S.ActionWrapper>
+              <S.TimeWrapper>
+                <Clock size={16} />
+                {formatRelativeTime(momentData.createdAt)}
+              </S.TimeWrapper>
+              <S.RefreshButton onClick={() => refetch()}>
+                <RotateCcw size={25} />
+              </S.RefreshButton>
+            </S.ActionWrapper>
           </S.TitleWrapper>
         }
         subtitle=""
