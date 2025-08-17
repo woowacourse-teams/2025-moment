@@ -73,28 +73,25 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
 
-        if (refreshTokenRepository.ExistByUser(user)) {
+        if (refreshTokenRepository.existsByUser(user)) {
             refreshTokenRepository.deleteByUser(user);
         }
     }
 
     @Transactional
-    public Map<String, String> refresh(Long userId, RefreshTokenRequest request) {
-        // 유저가 존재하는지 확인
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
-
-        // 해당 유저의 리프레시 토큰이 존재하는지 확인
-        RefreshToken refreshToken = refreshTokenRepository.findByUserAndTokenValue(user, request.refreshToken())
+    public Map<String, String> refresh(RefreshTokenRequest request) {
+        // 동일한 리프레시 토큰이 존재하는지 확인
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(request.refreshToken())
                 .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        // 토큰이 만료됐는지 확인
+        // 리프레시 토큰이 만료됐는지 확인
         if (refreshToken.isExpired(LocalDateTime.now())) {
             throw new MomentException(ErrorCode.TOKEN_EXPIRED);
         }
 
         // 위 경우를 모두 통과했다면 엑세스 토큰과 리프레시 토큰 재발급
         Map<String, String> tokens = new HashMap<>();
+        User user = refreshToken.getUser();
 
         String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
         String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
