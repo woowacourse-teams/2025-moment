@@ -1,10 +1,14 @@
 package moment.auth.application;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import moment.auth.domain.RefreshToken;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
+import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.user.application.NicknameGenerateService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -23,24 +27,54 @@ public class GoogleAuthService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthClient googleAuthClient;
     private final NicknameGenerateService nicknameGenerateService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public String loginOrSignUp(String authorizationCode) {
-        GoogleAccessToken accessToken = googleAuthClient.getAccessToken(authorizationCode);
+    public Map<String, String> loginOrSignUp(String authorizationCode) {
+        GoogleAccessToken googleAccessToken = googleAuthClient.getAccessToken(authorizationCode);
 
-        GoogleUserInfo googleUserInfo = googleAuthClient.getUserInfo(accessToken.getAccessToken());
+        GoogleUserInfo googleUserInfo = googleAuthClient.getUserInfo(googleAccessToken.getAccessToken());
 
         String email = googleUserInfo.getEmail();
 
         Optional<User> findUser = userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE);
 
+        Map<String, String> tokens = new HashMap<>();
+
         if (findUser.isPresent()) {
             User user = findUser.get();
-            return tokenManager.createAccessToken(user.getId(), user.getEmail());
+            String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
+            String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
+
+            RefreshToken refreshTokenWithoutId = new RefreshToken(
+                    refreshTokenValue,
+                    user,
+                    tokenManager.getIssuedAtFromToken(refreshTokenValue),
+                    tokenManager.getExpirationTimeFromToken(refreshTokenValue));
+
+            refreshTokenRepository.save(refreshTokenWithoutId);
+
+            tokens.put("accessToken", accessToken);
+            tokens.put("refreshToken", refreshTokenValue);
+
+            return tokens;
         }
 
         User savedUser = addUser(email, googleUserInfo.getSub());
-        return tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+        String refreshTokenValue = tokenManager.createRefreshToken(savedUser.getId(), savedUser.getEmail());
+
+        RefreshToken refreshTokenWithoutId = new RefreshToken(
+                refreshTokenValue,
+                savedUser,
+                tokenManager.getIssuedAtFromToken(refreshTokenValue),
+                tokenManager.getExpirationTimeFromToken(refreshTokenValue));
+
+        refreshTokenRepository.save(refreshTokenWithoutId);
+
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshTokenValue);
+        return tokens;
     }
 
     private User addUser(String email, String sub) {
