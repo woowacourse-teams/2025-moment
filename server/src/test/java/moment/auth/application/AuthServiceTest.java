@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Map;
 import java.util.Optional;
 import moment.auth.dto.request.LoginRequest;
 import moment.global.exception.ErrorCode;
@@ -48,15 +49,19 @@ class AuthServiceTest {
         given(userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL))
                 .willReturn(Optional.of(new User(email, "1q2w3e4r", "drago", ProviderType.EMAIL)));
 
-        given(tokenManager.createToken(any(), any())).willReturn("asdfsvssefsdf");
         given(passwordEncoder.matches(any(), any())).willReturn(true);
+        given(tokenManager.createAccessToken(any(), any())).willReturn("asdfsvssefsdf");
+        given(tokenManager.createRefreshToken(any(), any())).willReturn("asdfekrkrkrkrk");
 
         // when
-        String token = authService.login(request);
+        Map<String, String> tokens = authService.login(request);
 
         // then
-        String expected = "asdfsvssefsdf";
-        assertThat(token).isEqualTo(expected);
+        String accessTokenExpected = "asdfsvssefsdf";
+        String refreshTokenExpected = "asdfekrkrkrkrk";
+
+        assertThat(tokens.get("accessToken")).isEqualTo(accessTokenExpected);
+        assertThat(tokens.get("refreshToken")).isEqualTo(refreshTokenExpected);
     }
 
     @Test
