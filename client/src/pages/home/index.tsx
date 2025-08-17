@@ -1,15 +1,22 @@
 import { ROUTES } from '@/app/routes/routes';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
 import { Button } from '@/shared/ui/button/Button';
 import { Hero } from '@/widgets/hero';
-import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
+import { NavigatorsBar } from '@/widgets/navigatorsBar';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
-import { useState } from 'react';
-import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+  const { data: notifications } = useNotificationsQuery();
+
+  if (!notifications) {
+    return null;
+  }
+  const isNotificationExisting = notifications?.data.length > 0;
 
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
@@ -46,9 +53,9 @@ export default function HomePage() {
           <S.BlackHoleImage src="/blackHole.png" alt="네비게이션 메뉴 열기" />
         </button>
       </S.BlackHoleContainer>
-      <S.WidgetContainer isWidgetOpen={isWidgetOpen}>
+      <S.ClickMeContainer isWidgetOpen={isWidgetOpen} $shadow={isNotificationExisting}>
         <NavigatorsBar $isNavBar={false} />
-      </S.WidgetContainer>
+      </S.ClickMeContainer>
     </S.HomePageWrapper>
   );
 }
