@@ -17,11 +17,15 @@ public record UserProfileResponse(
 
         @Schema(description = "다음 레벨 요구 경험치", example = "200")
         Integer nextStepExp
-
 ) {
 
     public static UserProfileResponse from(User user) {
         Level level = user.getLevel();
-        return new UserProfileResponse(user.getNickname(), user.getAvailableStar(), level, level.getNextLevelRequiredStars());
+        return new UserProfileResponse(
+                user.getNickname(),
+                user.getAvailableStar(),
+                level,
+                level.getNextLevelRequiredStars()
+        );
     }
 }

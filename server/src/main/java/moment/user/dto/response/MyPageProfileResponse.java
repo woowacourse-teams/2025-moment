@@ -2,6 +2,7 @@ package moment.user.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.user.domain.Level;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 
 @Schema(description = "마이페이지 프로필 정보 응답")
@@ -22,7 +23,10 @@ public record MyPageProfileResponse(
         Integer expStar,
 
         @Schema(description = "다음 레벨 요구 경험치", example = "200")
-        Integer nextStepExp
+        Integer nextStepExp,
+
+        @Schema(description = "사용자 가입 유형", example = "EMAIL")
+        ProviderType loginType
 ) {
     public static MyPageProfileResponse from(User user) {
         return new MyPageProfileResponse(
@@ -31,7 +35,8 @@ public record MyPageProfileResponse(
                 user.getLevel(),
                 user.getAvailableStar(),
                 user.getExpStar(),
-                user.getLevel().getNextLevelRequiredStars()
+                user.getLevel().getNextLevelRequiredStars(),
+                user.getProviderType()
         );
     }
 }
