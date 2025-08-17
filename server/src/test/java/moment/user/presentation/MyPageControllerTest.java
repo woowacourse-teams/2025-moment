@@ -86,7 +86,7 @@ class MyPageControllerTest {
                 .cookie("token", token)
                 .param("pageNum", 1)
                 .param("pageSize", 10)
-                .when().get("/api/v1/my/reward/history")
+                .when().get("/api/v1/me/reward/history")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
