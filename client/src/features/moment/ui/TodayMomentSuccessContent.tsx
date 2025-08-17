@@ -27,8 +27,7 @@ export const TodayMomentSuccessContent = () => {
   };
 
   const handleNavigateToTodayMoment = () => {
-    // TODO: 추후 별조각 차감 로직 추가해야 함
-    navigate('/today-moment');
+    navigate('/today-moment-extra');
   };
 
   return (
@@ -59,7 +58,7 @@ export const TodayMomentSuccessContent = () => {
             <S.ModalContent>
               {canExtraWritable ? (
                 <p>
-                  추가 모멘트를 작성하시겠습니까? <br /> 별조각 10개가 차감됩니다.
+                  추가 모멘트를 작성하시겠습니까? <br /> 작성 시 별조각 10개가 차감됩니다.
                 </p>
               ) : (
                 <p>
