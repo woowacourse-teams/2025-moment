@@ -12,14 +12,13 @@ import * as S from './index.styles';
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const { data: notifications } = useNotificationsQuery();
+  const navigate = useNavigate();
+  const { isVisible } = useDelayedVisible({ delay: 100 });
 
   if (!notifications) {
     return null;
   }
   const isNotificationExisting = notifications?.data.length > 0;
-
-  const navigate = useNavigate();
-  const { isVisible } = useDelayedVisible({ delay: 100 });
 
   const handleClick = () => {
     sendEvent({
