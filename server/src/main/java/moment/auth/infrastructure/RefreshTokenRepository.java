@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
-    boolean ExistByUser(User user);
+    boolean existsByUser(User user);
 
     void deleteByUser(User user);
 
