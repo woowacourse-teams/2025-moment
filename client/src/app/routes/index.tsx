@@ -11,6 +11,7 @@ import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
 import TodayMomentPage from '@/pages/todayMoment';
+import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
 export const router = createBrowserRouter(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
         <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
         <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+        <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
         <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
         <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
       </Route>
