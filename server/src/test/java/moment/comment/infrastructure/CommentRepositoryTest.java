@@ -1,7 +1,12 @@
 package moment.comment.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -14,11 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -47,10 +47,10 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
         Comment comment1 = new Comment("moment1 comment", commenter, moment1);
@@ -85,16 +85,16 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
-        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1);
+        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1, WriteType.BASIC);
         Moment savedMoment3 = momentRepository.save(moment3);
 
-        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2);
+        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
         Moment savedMoment4 = momentRepository.save(moment4);
 
         Comment comment1 = new Comment("moment1 comment", commenter, savedMoment1);
@@ -125,7 +125,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    void Momment의_Comment가_존재하면_true를_반환한다() {
+    void User가_Moment에_작성한_Comment가_존재하면_true를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
@@ -133,26 +133,29 @@ class CommentRepositoryTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.save(commenter);
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         Comment comment = new Comment("첫 번째 댓글", commenter, moment);
         commentRepository.save(comment);
 
         // when & then
-        assertThat(commentRepository.existsByMoment(moment)).isTrue();
+        assertThat(commentRepository.existsByMomentAndCommenter(moment, commenter)).isTrue();
     }
 
     @Test
-    void Momment의_Comment가_존재하면_false를_반환한다() {
+    void User가_Moment에_작성한_Comment가_존재하지_않으면_false를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter);
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        userRepository.save(commenter);
+
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         momentRepository.save(moment);
 
         // when & then
-        assertThat(commentRepository.existsByMoment(moment)).isFalse();
+        assertThat(commentRepository.existsByMomentAndCommenter(moment, commenter)).isFalse();
     }
 }

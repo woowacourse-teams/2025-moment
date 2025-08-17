@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @EntityGraph(attributePaths = {"moment"})
+    @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
             SELECT c FROM comments c
             WHERE c.commenter = :commenter
@@ -22,7 +22,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             """)
     List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"moment"})
+    @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
             SELECT c FROM comments c
             WHERE c.commenter = :commenter AND (c.createdAt < :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
@@ -36,5 +36,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"moment"})
     List<Comment> findAllByMomentIn(List<Moment> moments);
 
-    boolean existsByMoment(Moment moment);
+    boolean existsByMomentAndCommenter(Moment moment, User commenter);
 }

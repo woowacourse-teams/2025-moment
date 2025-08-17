@@ -27,29 +27,25 @@ public class User extends BaseEntity {
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
     private static final int DEFAULT_POINT = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private String nickname;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
-
-    private Integer currentPoint = DEFAULT_POINT;
-
+    @Column(nullable = false)
+    private Integer availableStar = DEFAULT_POINT;
+    @Column(nullable = false)
+    private Integer expStar = DEFAULT_POINT;
     @Enumerated(EnumType.STRING)
-    private Level level = Level.METEOR;
+    private Level level = Level.ASTEROID_WHITE;
 
     public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
@@ -97,8 +93,16 @@ public class User extends BaseEntity {
         return password.equals(loginPassword);
     }
 
-    public void addPointAndUpdateLevel(int pointToAdd) {
-        this.currentPoint += pointToAdd;
-        this.level = Level.getLevel(this.currentPoint);
+    public void addStarAndUpdateLevel(int pointToAdd) {
+        this.availableStar += pointToAdd;
+        if (pointToAdd >= 0) {
+            this.expStar += pointToAdd;
+        }
+        this.level = Level.getLevel(this.expStar);
     }
+
+    public boolean canNotUseStars(Integer requiredStars) {
+        return (availableStar + requiredStars) < 0;
+    }
+
 }

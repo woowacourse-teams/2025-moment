@@ -98,20 +98,57 @@ class UserTest {
 
     @ParameterizedTest
     @CsvSource({
-            "0, 50, 50, METEOR",
-            "50, 10, 60, ASTEROID",
-            "50, 150, 200, COMET",
-            "190, 10, 200, COMET"
+            "0, 4, 4, ASTEROID_WHITE",
+            "4, 1, 5, ASTEROID_YELLOW",
+
+            "5, 4, 9, ASTEROID_YELLOW",
+            "9, 1, 10, ASTEROID_SKY",
+
+            "10, 9, 19, ASTEROID_SKY",
+            "19, 1, 20, METEOR_WHITE",
+
+            "20, 29, 49, METEOR_WHITE",
+            "49, 1, 50, METEOR_YELLOW",
+
+            "50, 49, 99, METEOR_YELLOW",
+            "99, 1, 100, METEOR_SKY",
+
+            "100, 99, 199, METEOR_SKY",
+            "199, 1, 200, COMET_WHITE",
+
+            "200, 149, 349, COMET_WHITE",
+            "349, 1, 350, COMET_YELLOW",
+
+            "350, 349, 699, COMET_YELLOW",
+            "699, 1, 700, COMET_SKY",
+
+            "700, 499, 1199, COMET_SKY",
+            "1199, 1, 1200, ROCKY_PLANET_WHITE",
+
+            "1200, 799, 1999, ROCKY_PLANET_WHITE",
+            "1999, 1, 2000, ROCKY_PLANET_YELLOW",
+
+            "2000, 1999, 3999, ROCKY_PLANET_YELLOW",
+            "3999, 1, 4000, ROCKY_PLANET_SKY",
+
+            "4000, 3999, 7999, ROCKY_PLANET_SKY",
+            "7999, 1, 8000, GAS_GIANT_WHITE",
+
+            "8000, 7999, 15999, GAS_GIANT_WHITE",
+            "15999, 1, 16000, GAS_GIANT_YELLOW",
+
+            "16000, 15999, 31999, GAS_GIANT_YELLOW",
+            "31999, 1, 32000, GAS_GIANT_SKY",
     })
     void 포인트를_추가하고_레벨을_업데이트한다(int initialPoint, int pointToAdd, int expectedPoint, Level expectedLevel) {
         // given
-        user.addPointAndUpdateLevel(initialPoint);
+        user.addStarAndUpdateLevel(initialPoint);
 
         // when
-        user.addPointAndUpdateLevel(pointToAdd);
+        user.addStarAndUpdateLevel(pointToAdd);
 
         // then
-        assertThat(user.getCurrentPoint()).isEqualTo(expectedPoint);
+        assertThat(user.getAvailableStar()).isEqualTo(expectedPoint);
         assertThat(user.getLevel()).isEqualTo(expectedLevel);
     }
 }

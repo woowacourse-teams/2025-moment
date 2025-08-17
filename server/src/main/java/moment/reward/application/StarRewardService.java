@@ -1,0 +1,81 @@
+package moment.reward.application;
+
+import lombok.RequiredArgsConstructor;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
+import moment.reward.domain.Reason;
+import moment.reward.domain.RewardHistory;
+import moment.reward.infrastructure.RewardRepository;
+import moment.user.domain.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class StarRewardService implements RewardService {
+
+    private final RewardRepository rewardRepository;
+
+    @Override
+    @Transactional
+    public void rewardForMoment(User momenter, Reason reason, Long momentId) {
+        LocalDate today = LocalDate.now();
+
+        LocalDateTime startOfToday = today.atStartOfDay();
+        LocalDateTime endOfToday = today.plusDays(1).atStartOfDay();
+
+        if (stopIfDuplicateMomentRewardFound(momenter, reason, startOfToday, endOfToday)) {
+            return;
+        }
+
+        updateStar(momenter, reason, momentId);
+    }
+
+    private boolean stopIfDuplicateMomentRewardFound(User momenter, Reason reason, LocalDateTime startOfToday, LocalDateTime endOfToday) {
+        return rewardRepository.existsByUserAndReasonAndToday(momenter, reason, startOfToday, endOfToday);
+    }
+
+    @Override
+    @Transactional
+    public void rewardForComment(User commenter, Reason reason, Long commentId) {
+        if (stopIfDuplicateCommentRewardFound(commenter, reason, commentId)) return;
+
+        updateStar(commenter, reason, commentId);
+    }
+
+    private boolean stopIfDuplicateCommentRewardFound(User commenter, Reason reason, Long commentId) {
+        return rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, commentId);
+    }
+
+    @Override
+    @Transactional
+    public void rewardForEcho(User commenter, Reason reason, Long echoId) {
+        if (stopIfDuplicateEchoRewardFound(commenter, reason, echoId)) return;
+
+        updateStar(commenter, reason, echoId);
+    }
+
+    private boolean stopIfDuplicateEchoRewardFound(User commenter, Reason reason, Long echoId) {
+        return rewardRepository.existsByUserAndReasonAndContentId(commenter, reason, echoId);
+    }
+
+    @Override
+    public void useReward(User user, Reason reason, Long contentId) {
+        if (user.canNotUseStars(reason.getPointTo())) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+        updateStar(user, reason, contentId);
+    }
+
+    private void updateStar(User user, Reason reason, Long contentId) {
+        int star = reason.getPointTo();
+        user.addStarAndUpdateLevel(star);
+
+        RewardHistory rewardHistory = new RewardHistory(user, star, reason, contentId);
+        rewardRepository.save(rewardHistory);
+    }
+}
