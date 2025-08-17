@@ -113,6 +113,7 @@ public class User extends BaseEntity {
     public void updatePassword(String newPassword) {
         validatePassword(newPassword);
         this.password = newPassword;
+    }
 
     public void changeNickname(String newNickname, int requiredStar) {
         this.availableStar += requiredStar;
