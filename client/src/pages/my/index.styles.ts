@@ -19,7 +19,7 @@ export const UserInfoSection = styled.div`
   max-width: 800px;
 `;
 
-export const StatusSection = styled.div`
+export const RewardHistorySection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -46,6 +46,13 @@ export const SectionTitle = styled.h2`
 `;
 
 export const UserInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+`;
+
+export const RewardHistoryContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;

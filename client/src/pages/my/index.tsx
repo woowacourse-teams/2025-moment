@@ -1,14 +1,33 @@
 import { mockProfile } from '@/features/my/api/mockData';
 import * as S from './index.styles';
-import { Button, Card } from '@/shared/ui';
+import { Button, Card, NotFound } from '@/shared/ui';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { levelMap } from '@/app/layout/data/navItems';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { useState } from 'react';
+import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
+import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
+import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
+import { AlertCircle } from 'lucide-react';
 
 export default function MyPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
+  const {
+    data: rewardHistory,
+    isLoading,
+    error,
+  } = useRewardHistoryQuery({
+    pageNum: currentPage,
+    pageSize,
+  });
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const EXPBarProgress =
     (mockProfile.data.expStar / (mockProfile.data.nextStepExp + mockProfile.data.expStar)) * 100;
 
@@ -53,14 +72,34 @@ export default function MyPage() {
 
       <S.Divider />
 
-      <S.StatusSection>
-        <S.SectionTitle>내 상태</S.SectionTitle>
+      <S.RewardHistorySection>
+        <S.SectionTitle>별조각 이력</S.SectionTitle>
         <Card width="large">
-          <S.UserInfoContainer>
-            <p>내 상태</p>
-          </S.UserInfoContainer>
+          <S.RewardHistoryContainer>
+            {isLoading ? (
+              <p>로딩 중 입니다</p>
+            ) : error ? (
+              <NotFound
+                title="데이터를 불러올 수 없습니다"
+                subtitle="잠시 후 다시 시도해주세요"
+                icon={AlertCircle}
+                size="large"
+              />
+            ) : rewardHistory ? (
+              <>
+                <RewardHistoryTable items={rewardHistory.items} />
+                <RewardHistoryPagination
+                  currentPage={rewardHistory.currentPageNum}
+                  totalPages={rewardHistory.totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            ) : (
+              <p>데이터가 없습니다.</p>
+            )}
+          </S.RewardHistoryContainer>
         </Card>
-      </S.StatusSection>
+      </S.RewardHistorySection>
 
       <S.Divider />
 

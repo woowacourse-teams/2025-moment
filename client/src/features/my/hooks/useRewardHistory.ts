@@ -1,9 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { getRewardHistory } from '../api/getRewardHistory';
 
-export const useRewardHistory = () => {
+interface UseRewardHistoryQueryOptions {
+  pageNum?: number;
+  pageSize?: number;
+  enabled?: boolean;
+}
+
+export const useRewardHistoryQuery = ({
+  pageNum = 1,
+  pageSize = 10,
+  enabled = true,
+}: UseRewardHistoryQueryOptions = {}) => {
   return useQuery({
-    queryKey: ['my', 'reward', 'history'],
-    queryFn: getRewardHistory,
+    queryKey: ['rewardHistory', pageNum, pageSize],
+    queryFn: () => getRewardHistory({ pageNum, pageSize }),
+    enabled,
   });
 };
