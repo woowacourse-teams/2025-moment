@@ -1,13 +1,20 @@
-import { Card } from '@/shared/ui';
+import { Button, Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
-import { CheckCircle, MessageSquare } from 'lucide-react';
+import { CheckCircle, MessageSquare, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import * as S from './TodayContent.styles';
+import * as S from './TodayMomentSuccessContent.styles';
 import { sendEvent } from '@/shared/lib/ga';
+import { useMomentExtraWritableQuery } from '../hook/useMomentExtraWritableQuery';
+import { useModal } from '@/shared/hooks/useModal';
+import { Modal } from '@/shared/ui/modal/Modal';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
+  const { data: momentExtraWritableData } = useMomentExtraWritableQuery();
+  const canExtraWritable = momentExtraWritableData?.data?.status === 'ALLOWED';
+
+  const { handleOpen, handleClose, isOpen } = useModal();
 
   const handleNavigate = () => {
     sendEvent({
@@ -18,6 +25,12 @@ export const TodayMomentSuccessContent = () => {
 
     navigate('/today-comment');
   };
+
+  const handleNavigateToTodayMoment = () => {
+    // TODO: 추후 별조각 차감 로직 추가해야 함
+    navigate('/today-moment');
+  };
+
   return (
     <S.TodayContentWrapper>
       <Card.Content>
@@ -30,12 +43,43 @@ export const TodayMomentSuccessContent = () => {
         />
       </Card.Content>
       <Card.Action position="center">
-        <YellowSquareButton
-          Icon={MessageSquare}
-          title="코멘트 남기러가기"
-          onClick={handleNavigate}
-        />
+        <S.ActionContainer>
+          <YellowSquareButton
+            Icon={MessageSquare}
+            title="코멘트 남기러가기"
+            onClick={handleNavigate}
+          />
+          <YellowSquareButton Icon={Plus} title="추가 작성하기" onClick={handleOpen} />
+        </S.ActionContainer>
       </Card.Action>
+      <Modal isOpen={isOpen} onClose={handleClose} size="small">
+        <Modal.Header showCloseButton={false} />
+        <Modal.Content>
+          <S.ModalContent>
+            {canExtraWritable ? (
+              <p>
+                추가 모멘트를 작성하시겠습니까? <br /> 별조각 10개가 차감됩니다.
+              </p>
+            ) : (
+              <p>
+                추가 작성하려면 별조각 10개가 필요합니다. <br /> 별조각을 모아오세요.
+              </p>
+            )}
+          </S.ModalContent>
+        </Modal.Content>
+        <Modal.Footer>
+          <S.ModalActionContainer>
+            {canExtraWritable && (
+              <Button
+                title="추가 작성하기"
+                variant="secondary"
+                onClick={handleNavigateToTodayMoment}
+              />
+            )}
+            <Button title="닫기" variant="primary" onClick={handleClose} />
+          </S.ModalActionContainer>
+        </Modal.Footer>
+      </Modal>
     </S.TodayContentWrapper>
   );
 };
