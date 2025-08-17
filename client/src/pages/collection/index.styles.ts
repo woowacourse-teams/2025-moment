@@ -29,7 +29,9 @@ export const CollectionHeaderContainer = styled.div`
   }
 `;
 
-export const CollectionHeaderLinkContainer = styled(Link)<{ $shadow?: boolean }>`
+export const CollectionHeaderLinkContainer = styled(Link, {
+  shouldForwardProp: prop => prop !== '$shadow',
+})<{ $shadow?: boolean }>`
   ${({ theme, $shadow }) =>
     $shadow &&
     css`
