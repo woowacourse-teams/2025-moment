@@ -85,9 +85,9 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "모멘트 작성여부 확인", description = "유저가 오늘 모멘트를 더 보낼 수 있는지 확인입니다.")
+    @Operation(summary = "기본 모멘트 작성 여부 확인", description = "유저가 오늘 기본 모멘트를 더 보낼 수 있는지 확인입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모멘트 작성 여부 조회 성공"),
+            @ApiResponse(responseCode = "200", description = "기본 모멘트 작성 여부 조회 성공"),
             @ApiResponse(responseCode = "401", description = """
                     - [T-005] 토큰을 찾을 수 없습니다.
                     """,
@@ -99,7 +99,7 @@ public class MomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/writable/basic")
-    public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getMomentCreationStatus(
+    public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getBasicMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
         MomentCreationStatusResponse response = momentService.canCreateMoment(authentication.id());
