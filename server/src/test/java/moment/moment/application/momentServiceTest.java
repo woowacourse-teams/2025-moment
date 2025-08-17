@@ -88,12 +88,12 @@ class momentServiceTest {
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
-        verify(momentRepository).save(captor.capture());
 
         // when
         momentService.addBasicMoment(request, 1L);
 
         // then
+        verify(momentRepository).save(captor.capture());
         Moment savedMoment = captor.getValue();
         assertAll(
                 () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
@@ -132,12 +132,12 @@ class momentServiceTest {
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
-        verify(momentRepository).save(captor.capture());
 
         // when
         momentService.addExtraMoment(request, 1L);
 
         // then
+        verify(momentRepository).save(captor.capture());
         Moment savedMoment = captor.getValue();
         assertAll(
                 () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
