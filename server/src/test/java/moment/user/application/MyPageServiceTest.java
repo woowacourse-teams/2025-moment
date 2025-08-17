@@ -8,6 +8,7 @@ import moment.reward.domain.RewardHistory;
 import moment.user.domain.Level;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.MyRewardHistoryResponse;
@@ -112,5 +113,77 @@ class MyPageServiceTest {
             list.add(rewardHistory);
         }
         return list.stream().map(MyRewardHistoryResponse::from).toList();
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_닉네임이_변경된다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ReflectionTestUtils.setField(user, "availableStar", 150);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+        given(userQueryService.existsByNickname(any(String.class))).willReturn(false);
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 닉네임");
+
+        // when
+        myPageService.changeNickname(request, user.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(user.getNickname()).isEqualTo(request.newNickname()),
+                () -> assertThat(user.getAvailableStar()).isEqualTo(50)
+        );
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_해당_유저_Id의_유저_정보가_존재하지_않으면_예외가_발생한다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ReflectionTestUtils.setField(user, "availableStar", 150);
+
+        given(userQueryService.getUserById(any(Long.class))).willThrow(new MomentException(ErrorCode.USER_NOT_FOUND));
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 닉네임");
+        // when & then
+        assertThatThrownBy(() -> myPageService.changeNickname(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_별조각이_부족하면_예외가_발생한다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ReflectionTestUtils.setField(user, "availableStar", 90);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 닉네임");
+        // when & then
+        assertThatThrownBy(() -> myPageService.changeNickname(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_ENOUGH_STAR);
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_중복되는_닉네임이_존재하면_예외가_발생한다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ReflectionTestUtils.setField(user, "availableStar", 150);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+        given(userQueryService.existsByNickname(any(String.class))).willReturn(true);
+
+        NicknameChangeRequest request = new NicknameChangeRequest("신비로운 행성의 지구");
+
+        // when & then
+        assertThatThrownBy(() -> myPageService.changeNickname(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_CONFLICT);
     }
 }

@@ -1,5 +1,6 @@
 package moment.moment.application;
 
+import java.util.Collections;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -9,6 +10,8 @@ import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
+import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +43,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -82,11 +87,19 @@ class momentServiceTest {
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
 
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
         // when
         momentService.addBasicMoment(request, 1L);
 
         // then
-        then(momentRepository).should(times(1)).save(any(Moment.class));
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class))
+        );
+
     }
 
     @Test
@@ -102,6 +115,53 @@ class momentServiceTest {
         // when & then
         assertThatThrownBy(() -> momentService.addBasicMoment(request, 1L))
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_ALREADY_EXIST);
+    }
+
+    @Test
+    void 추가_모멘트_생성에_성공한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
+        // when
+        momentService.addExtraMoment(request, 1L);
+
+        // then
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(rewardService).should(times(1)).rewardForMoment(
+                        momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId())
+        );
+    }
+
+    @Test
+    void 추가_모멘트_생성에_실패한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> momentService.addExtraMoment(request, 1L))
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_ENOUGH_STAR);
     }
 
     @Test
@@ -126,10 +186,10 @@ class momentServiceTest {
         given(echoRepository.findAllByCommentIn(any(List.class)))
                 .willReturn(List.of(echo));
 
-        //when
+        // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
 
-        //then
+        // then
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
@@ -223,5 +283,38 @@ class momentServiceTest {
         // then
         then(rewardService).should(times(1))
                 .rewardForMoment(momenter, Reason.MOMENT_CREATION, momentId);
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트를_반환한다() {
+        // given
+        Long userId = 1L;
+        User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment = new Moment("안녕", user, WriteType.BASIC);
+
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(momentRepository.findCommentableMoments(any(), any())).willReturn(List.of(moment));
+
+        // when
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+
+        // then
+        assertThat(response.id()).isEqualTo(moment.getId());
+        assertThat(response.content()).isEqualTo(moment.getContent());
+    }
+
+    @Test
+    void 코멘트를_달_수_있는_모멘트가_없는_경우_빈_값을_반환한다() {
+        // given
+        Long userId = 1L;
+        User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(momentRepository.findCommentableMoments(any(), any())).willReturn(Collections.emptyList());
+
+        // when
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+
+        // then
+        assertThat(response).isEqualTo(CommentableMomentResponse.empty());
     }
 }

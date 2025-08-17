@@ -38,4 +38,17 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             LocalDateTime startOfDay,
             LocalDateTime endOfDay
     );
+
+    @Query("""
+    SELECT m FROM moments m
+    WHERE m.momenter <> :user
+      AND NOT EXISTS (
+          SELECT 1 FROM comments c
+          WHERE c.moment = m
+            AND c.commenter = :user
+      )
+      AND m.createdAt >= :someDaysAgo
+    """)
+    List<Moment> findCommentableMoments(@Param("user") User user,
+                                        @Param("someDaysAgo") LocalDateTime someDaysAgo);
 }

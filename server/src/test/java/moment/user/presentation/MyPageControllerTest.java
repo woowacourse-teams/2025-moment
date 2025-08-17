@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
@@ -14,8 +15,10 @@ import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.Level;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
+import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +28,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -63,7 +67,7 @@ class MyPageControllerTest {
         // when
         SuccessResponse<MyPageProfileResponse> response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/my/profile")
+                .when().get("/api/v1/me/profile")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -97,7 +101,7 @@ class MyPageControllerTest {
                 .cookie("accessToken", token)
                 .param("pageNum", 1)
                 .param("pageSize", 10)
-                .when().get("/api/v1/my/reward/history")
+                .when().get("/api/v1/me/reward/history")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -120,5 +124,37 @@ class MyPageControllerTest {
             rewardRepository.save(
                     new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
         }
+    }
+
+    @Test
+    void 마이페이지에서_유저_닉네임을_변경한다() {
+        // given
+        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "availableStar", 150);
+        User savedUser = userRepository.save(user);
+
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경될 유저의 닉네임");
+
+        // when
+        SuccessResponse<NicknameChangeResponse> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .cookie("token", token)
+                .when().post("/api/v1/me/nickname")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        // then
+        User nicknameChangedUser = userRepository.findById(savedUser.getId()).get();
+
+        assertAll(
+                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(nicknameChangedUser.getNickname()).isEqualTo(request.newNickname()),
+                () -> assertThat(nicknameChangedUser.getAvailableStar()).isEqualTo(50)
+        );
     }
 }

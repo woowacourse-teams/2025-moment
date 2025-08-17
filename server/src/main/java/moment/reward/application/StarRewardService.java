@@ -27,6 +27,12 @@ public class StarRewardService implements RewardService {
 
     @Override
     @Transactional
+    public RewardHistory save(RewardHistory rewardHistory) {
+        return rewardRepository.save(rewardHistory);
+    }
+
+    @Override
+    @Transactional
     public void rewardForMoment(User momenter, Reason reason, Long momentId) {
         LocalDate today = LocalDate.now();
 

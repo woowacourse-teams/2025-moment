@@ -1,5 +1,7 @@
 package moment.moment.application;
 
+import java.util.Random;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -14,6 +16,7 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
@@ -61,7 +64,24 @@ public class MomentService {
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
+
+        return MomentCreateResponse.of(savedMoment);
+    }
+
+    @Transactional
+    public MomentCreateResponse addExtraMoment(MomentCreateRequest request, Long momenterId) {
+        User momenter = userQueryService.getUserById(momenterId);
+
+        if(!extraMomentCreatePolicy.canCreate(momenter)) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+
+        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
+        Moment savedMoment = momentRepository.save(momentWithoutId);
+
+        rewardService.rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }
@@ -98,23 +118,27 @@ public class MomentService {
 
         if (comments.isEmpty()) {
             List<MyMomentResponse> responses = moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
+                    .map(moment -> MyMomentResponse.of(moment, Collections.emptyList(), Collections.emptyMap()))
                     .toList();
 
             return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Moment, Comment> commentByMoment = comments.stream()
-                .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
+        Map<Moment, List<Comment>> commentsByMoment = comments.stream()
+                .collect(Collectors.groupingBy(Comment::getMoment));
 
-        Map<Comment, List<Echo>> emojisByComment = echoRepository.findAllByCommentIn(comments).stream()
+        Map<Comment, List<Echo>> echosByComment = echoRepository.findAllByCommentIn(comments).stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         List<MyMomentResponse> responses = moments.stream()
                 .map(moment -> {
-                    Comment comment = commentByMoment.get(moment);
-                    List<Echo> relatedEchos = emojisByComment.getOrDefault(comment, Collections.emptyList());
-                    return MyMomentResponse.of(moment, comment, relatedEchos);
+                    List<Comment> momentComments = commentsByMoment.getOrDefault(moment, List.of());
+
+                    Map<Long, List<Echo>> commentEchos = momentComments.stream()
+                            .collect(Collectors.toMap(Comment::getId,
+                                    comment -> echosByComment.getOrDefault(comment, List.of())));
+
+                    return MyMomentResponse.of(moment, momentComments, commentEchos);
                 })
                 .toList();
 
@@ -159,5 +183,20 @@ public class MomentService {
         }
 
         return MomentCreationStatusResponse.createDeniedStatus();
+    }
+
+    public CommentableMomentResponse getCommentableMoment(Long id) {
+        User user = userQueryService.getUserById(id);
+
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+
+        if(commentableMoments.isEmpty()) {
+            return CommentableMomentResponse.empty();
+        }
+
+        Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
+
+        return CommentableMomentResponse.from(moment);
     }
 }

@@ -18,6 +18,8 @@ import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.RefreshTokenRequest;
+import moment.auth.dto.request.PasswordResetRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
@@ -241,8 +243,8 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
-                    - [V-002] 이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.
-                    """)
+            - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
+            """)
     })
     @PostMapping("/email")
     public ResponseEntity<SuccessResponse<Void>> checkEmail(@Valid @RequestBody EmailRequest request) {
@@ -261,6 +263,38 @@ public class AuthController {
     @PostMapping("/email/verify")
     public ResponseEntity<SuccessResponse<Void>> verifyEmail(@Valid @RequestBody EmailVerifyRequest request) {
         emailService.verifyCode(request);
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
+    }
+
+    @Operation(summary = "비밀번호 변경 요청", description = "비밀번호 변경을 위한 페이지를 이메일로 요청합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 링크 전송 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
+                    - [V-003] 이메일 전송에 실패했습니다.
+                    """)
+    })
+    @PostMapping("/email/password")
+    public ResponseEntity<SuccessResponse<Void>> requestPasswordUpdatePage(
+            @RequestBody PasswordUpdateRequest request
+    ) {
+        emailService.sendPasswordUpdateEmail(request);
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
+    }
+
+    @Operation(summary = "이메일을 통한 비밀번호 재설정", description = "토큰을 검증하고 비밀번호를 재설정합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공"),
+        @ApiResponse(responseCode = "400", description = """
+                - [V-004] 유효하지 않은 비밀번호 재설정 요청입니다.
+                - [U-007] 비밀번호가 일치하지 않습니다.
+                """)
+    })
+    @PostMapping("/email/password/reset")
+    public ResponseEntity<SuccessResponse<Void>> resetPassword(
+        @Valid @RequestBody PasswordResetRequest request
+    ) {
+        authService.resetPassword(request);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
     }
 }
