@@ -16,8 +16,8 @@ import moment.user.application.MyPageService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
-import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
+import moment.user.dto.response.NicknameChangeResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,12 +87,12 @@ public class MyPageController {
             @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [U-006] 유효하지 않은 닉네임 형식입니다.
+                    - [U-011] 사용 가능한 별조각을 확인해주세요.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(responseCode = "404", description = """
                     - [U-002] 존재하지 않는 사용자입니다.
-                    - [U-011] 사용 가능한 별조각을 확인해주세요.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = """
