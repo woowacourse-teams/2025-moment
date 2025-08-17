@@ -1,14 +1,14 @@
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentWriteContent } from '@/features/moment/ui/TodayMomentWriteContent';
 import { Card } from '@/shared/ui';
-import { useCheckMomentsQuery } from '../hook/useCheckMomentsQuery';
+import { useMomentWritingStatusQuery } from '../hook/useMomentWritingStatusQuery';
 import { TodayMomentSuccessContent } from './TodayMomentSuccessContent';
 
 export function TodayMomentForm() {
   const { handleContentChange, handleSendContent, content } = useSendMoments();
-  const { data: checkMomentsData } = useCheckMomentsQuery();
+  const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
 
-  const MomentResult = checkMomentsData?.data?.status;
+  const MomentResult = momentWritingStatusData?.data?.status;
 
   const MomentResultRender = () => {
     switch (MomentResult) {
