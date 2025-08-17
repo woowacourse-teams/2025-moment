@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import moment.auth.application.TokenManager;
+import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
@@ -34,6 +35,9 @@ class MyPageControllerTest {
     private int port;
 
     @Autowired
+    private DatabaseCleaner databaseCleaner;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -45,6 +49,7 @@ class MyPageControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleaner.clean();
     }
 
     @Test

@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.jsonwebtoken.Jwts;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -25,6 +26,7 @@ import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.auth.infrastructure.RefreshTokenRepository;
+import moment.common.DatabaseCleaner;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -44,7 +46,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import io.restassured.RestAssured;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -54,6 +55,8 @@ class AuthControllerTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
     @Autowired
     private JwtTokenManager jwtTokenManager;
     @Autowired
@@ -70,6 +73,7 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleaner.clean();
     }
 
     @Test

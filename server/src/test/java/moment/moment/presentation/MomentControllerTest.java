@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Comparator;
 import moment.auth.application.TokenManager;
+import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
@@ -40,6 +41,9 @@ class MomentControllerTest {
     private int port;
 
     @Autowired
+    private DatabaseCleaner databaseCleaner;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -51,6 +55,7 @@ class MomentControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleaner.clean();
     }
 
     @Test
