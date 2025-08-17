@@ -27,16 +27,21 @@ public class User extends BaseEntity {
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
     private static final int DEFAULT_POINT = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
     private String nickname;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
@@ -105,4 +110,8 @@ public class User extends BaseEntity {
         return (availableStar + requiredStars) < 0;
     }
 
+
+    public boolean checkEmail(String email) {
+        return this.email.equals(email);
+    }
 }

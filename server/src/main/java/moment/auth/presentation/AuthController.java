@@ -16,9 +16,11 @@ import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
+import moment.user.dto.request.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -159,7 +161,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
-            - [V-002] 이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.
+            - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
             """)
     })
     @PostMapping("/email")
@@ -179,6 +181,24 @@ public class AuthController {
     @PostMapping("/email/verify")
     public ResponseEntity<SuccessResponse<Void>> verifyEmail(@Valid @RequestBody EmailVerifyRequest request) {
         emailService.verifyCode(request);
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
+    }
+
+    @Operation(summary = "비밀번호 변경 요청", description = "비밀번호 변경을 위한 페이지를 이메일로 요청합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 링크 전송 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [U-009] 존재하지 않는 사용자입니다.
+                    - [U-008] 권한 없는 사용자입니다.
+                    - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
+                    """)
+    })
+    @PostMapping("/email/password")
+    public ResponseEntity<SuccessResponse<Void>> requestPasswordUpdatePage(
+            @RequestBody PasswordUpdateRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        emailService.sendPasswordUpdateEmail(request, authentication.id());
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
     }
 }

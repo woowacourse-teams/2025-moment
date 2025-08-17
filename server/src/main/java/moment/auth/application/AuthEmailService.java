@@ -1,17 +1,24 @@
 package moment.auth.application;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moment.auth.domain.VerificationInfo;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.application.UserQueryService;
+import moment.user.domain.User;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +30,17 @@ public class AuthEmailService implements EmailService{
     private static final long COOL_DOWN_SECONDS = 60;
     private static final long EXPIRY_SECONDS = 300;
 
+    private final UserQueryService userQueryService;
     private final JavaMailSender mailSender;
     private final Map<String, VerificationInfo> verificationInfos = new ConcurrentHashMap<>();
+    private final Map<String, VerificationInfo> passwordUpdateInfos = new ConcurrentHashMap<>();
 
     @Override
     public void sendVerificationEmail(EmailRequest request) {
         String email = request.email();
         VerificationInfo existingInfo = verificationInfos.get(email);
 
-        if (existingInfo != null && existingInfo.isCoolTime(COOL_DOWN_SECONDS)) {
-            throw new MomentException(ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
-        }
+        validateCoolTimePassed(existingInfo);
 
         String code = createVerificationCode();
         SimpleMailMessage message = new SimpleMailMessage();
@@ -66,6 +73,56 @@ public class AuthEmailService implements EmailService{
     @Scheduled(fixedRate = 3600_000) // 1시간마다 실행
     public void cleanExpiredVerificationInfos() {
         verificationInfos.entrySet().removeIf(entry -> entry.getValue().isExpired());
+        passwordUpdateInfos.entrySet().removeIf(entry -> entry.getValue().isExpired());
         log.info("만료된 이메일 인증 정보 정리 완료. 남은 정보 수: {}", verificationInfos.size());
+        log.info("만료된 비밀번호 변경 정보 정리 완료. 남은 정보 수: {}", passwordUpdateInfos.size());
+    }
+
+    @Override
+    public void sendPasswordUpdateEmail(PasswordUpdateRequest request, Long id) {
+        User user = userQueryService.getUserById(id);
+
+        String email = validateEmail(request, user);
+
+        VerificationInfo existingInfo = passwordUpdateInfos.get(email);
+        validateCoolTimePassed(existingInfo);
+
+        String token = UUID.randomUUID().toString();
+
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+            sendUpdateMail(helper, email, token);
+        } catch (MessagingException e) {
+            log.error("이메일 전송 실패 [{}]", e.getMessage());
+        }
+
+        passwordUpdateInfos.put(email, new VerificationInfo(token, LocalDateTime.now().plusSeconds(EXPIRY_SECONDS)));
+    }
+
+    private void sendUpdateMail(MimeMessageHelper helper, String email, String token)
+            throws MessagingException {
+        helper.setTo(email);
+        helper.setSubject("[Moment] 비밀번호 재설정 안내");
+        String htmlContent = "<p>비밀번호를 재설정하려면 다음 링크를 클릭하세요:</p>"
+                + "<a href=\"https://connectingmoment.com/passwordUpdate?token=" + token + "\">비밀번호 재설정하기</a>";
+        helper.setText(htmlContent, true);
+
+        mailSender.send(helper.getMimeMessage());
+    }
+
+    private static void validateCoolTimePassed(VerificationInfo existingInfo) {
+        if (existingInfo != null && existingInfo.isCoolTime(COOL_DOWN_SECONDS)) {
+            throw new MomentException(ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
+        }
+    }
+
+    private static String validateEmail(PasswordUpdateRequest request, User user) {
+        String email = request.email();
+        if (!user.checkEmail(email)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+        return email;
     }
 }

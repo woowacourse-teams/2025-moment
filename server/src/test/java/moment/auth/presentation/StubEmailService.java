@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import moment.auth.application.EmailService;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import org.springframework.context.annotation.Primary;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StubEmailService implements EmailService {
 
     private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+    private final Map<String, String> passwordUpdateCodes = new ConcurrentHashMap<>();
 
     @Override
     @Transactional
@@ -36,5 +38,11 @@ public class StubEmailService implements EmailService {
         }
 
         verificationCodes.remove(request.email());
+    }
+
+    @Override
+    public void sendPasswordUpdateEmail(PasswordUpdateRequest request, Long id) {
+        String code = "123456";
+        passwordUpdateCodes.put(request.email(), code);
     }
 }

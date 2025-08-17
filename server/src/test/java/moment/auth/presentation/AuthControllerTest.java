@@ -10,6 +10,7 @@ import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.user.domain.ProviderType;
@@ -197,5 +198,24 @@ class AuthControllerTest {
 
         // then
         assertThat(response.isLogged()).isFalse();
+    }
+
+    @Test
+    void 비밀번호_변경_요청에_성공한다() {
+        // given
+        String email = "ekorea623@gmail.com";
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
+        User user = userRepository.save(new User(email, encodedPassword, "drago", ProviderType.EMAIL));
+        String token = jwtTokenManager.createToken(user.getId(), user.getEmail());
+        PasswordUpdateRequest request = new PasswordUpdateRequest(email);
+
+        // when & then
+        given().log().all()
+            .cookie("token", token)
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post("/api/v1/auth/email/password")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
     }
 }
