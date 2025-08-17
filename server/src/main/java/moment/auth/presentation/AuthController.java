@@ -200,25 +200,15 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "엑세스 토큰 재발급"),
             @ApiResponse(responseCode = "401", description = """
-                    - [T-001] 유효하지 않은 토큰입니다.
                     - [T-002] 만료된 토큰입니다.
-                    - [T-003] 빈 토큰입니다.
-                    - [T-004] 서명되지 않은 토큰입니다.
-                    - [T-005] 토큰을 찾을 수 없습니다.
                     - [T-006] 리프레시 토큰을 찾을 수 없습니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/refresh")
-    public ResponseEntity<SuccessResponse<LoginCheckResponse>> refresh(
-            @RequestBody RefreshTokenRequest request,
-            @AuthenticationPrincipal Authentication authentication) {
-        Map<String, String> tokens = authService.refresh(authentication.id(), request);
+    @PostMapping("/refresh")
+    public ResponseEntity<SuccessResponse<Void>> refresh(@RequestBody RefreshTokenRequest request) {
+        Map<String, String> tokens = authService.refresh(request);
 
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");

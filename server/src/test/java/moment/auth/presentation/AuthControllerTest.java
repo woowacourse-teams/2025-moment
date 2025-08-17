@@ -1,17 +1,30 @@
 package moment.auth.presentation;
 
+import static io.jsonwebtoken.Jwts.SIG.HS256;
 import static io.restassured.RestAssured.given;
+import static java.lang.Thread.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import io.jsonwebtoken.Jwts;
 import io.restassured.http.ContentType;
+import io.restassured.http.Headers;
+import io.restassured.response.Response;
+import java.util.Date;
+import java.util.List;
+import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.GoogleAuthService;
+import moment.auth.application.TokenManager;
+import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
+import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -32,20 +45,21 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class AuthControllerTest {
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     @MockitoBean
     private GoogleAuthService googleAuthService;
+    @Autowired
+    private TokenManager tokenManager;
 
     @Test
     void 이메일_인증_요청에_성공한다() {
@@ -54,11 +68,11 @@ class AuthControllerTest {
 
         // when & then
         given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post("/api/v1/auth/email")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/auth/email")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -75,11 +89,11 @@ class AuthControllerTest {
 
         // when & then
         given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post("/api/v1/auth/email/verify")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/auth/email/verify")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -90,17 +104,22 @@ class AuthControllerTest {
         LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r!");
 
         // when
-        String token = given().log().all()
+        Response response = given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/login")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().cookie("token");
+                .when().post("/api/v1/auth/login");
+        response.then().log().all().statusCode(HttpStatus.OK.value());
 
         // then
-        Authentication authentication = jwtTokenManager.extractAuthentication(token);
-        assertThat(authentication.id()).isEqualTo(user.getId());
+        String accessToken = response.getCookie("accessToken");
+        String refreshToken = response.getCookie("refreshToken");
+
+        Authentication authentication = jwtTokenManager.extractAuthentication(accessToken);
+
+        assertAll(
+                () -> assertThat(accessToken).isNotNull().isNotBlank(),
+                () -> assertThat(refreshToken).isNotNull().isNotBlank(),
+                () -> assertThat(authentication.id()).isEqualTo(user.getId()));
     }
 
     @Test
@@ -109,19 +128,21 @@ class AuthControllerTest {
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
         userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
 
-        String token = jwtTokenManager.createAccessToken(1L, "ekorea623@gmail.com");
+        String accessToken = jwtTokenManager.createAccessToken(1L, "ekorea623@gmail.com");
+        String refreshToken = jwtTokenManager.createRefreshToken(1L, "ekorea623@gmail.com"); // Refresh Token 생성 로직이 필요
 
         // when
-        String emptyToken = given().log().all()
-                .cookie("token", token)
+        Response response = given().log().all()
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
                 .contentType(ContentType.JSON)
-                .when().post("/api/v1/auth/logout")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().cookie("token");
+                .when().post("/api/v1/auth/logout");
 
         // then
-        assertThat(emptyToken).isEmpty();
+        response.then().log().all().statusCode(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.getCookie("accessToken")).isEmpty(),
+                () -> assertThat(response.getCookie("refreshToken")).isEmpty());
     }
 
     @Test
@@ -137,16 +158,28 @@ class AuthControllerTest {
 
     @Test
     void 구글로부터_인증_코드를_받으면_토큰을_발급하고_메인페이지로_리디렉션한다() {
-        given()
+        //given & when
+        Response response = given()
                 .when()
                 .redirects().follow(false)
                 .queryParam("code", "testAuthorizationCode")
-                .get("/api/v1/auth/callback/google")
-                .then()
+                .get("/api/v1/auth/callback/google");
+
+        // then
+        response.then()
                 .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
-                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com/auth/callback?success=true"))
-                .header(HttpHeaders.SET_COOKIE, containsString("token="));
+                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com/auth/callback?success=true"));
+
+        Headers headers = response.getHeaders();
+
+        List<String> setCookieHeaders = headers.getValues(HttpHeaders.SET_COOKIE);
+
+        // 3. AssertJ를 사용해 리스트를 검증합니다.
+        assertThat(setCookieHeaders).hasSize(2);
+        assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("accessToken="));
+        assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("refreshToken="));
     }
+
 
     @Test
     void 쿠키로_토큰을_가지고_있으면_로그인_상태로_참을_반환한다() {
@@ -197,5 +230,66 @@ class AuthControllerTest {
 
         // then
         assertThat(response.isLogged()).isFalse();
+    }
+
+    @Test
+    void 엑세스_토큰을_재발급한다() throws InterruptedException {
+        // given
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
+        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
+
+        String accessToken = createExpiredToken(user.getId(), user.getEmail());
+        String refreshTokenValue = jwtTokenManager.createRefreshToken(user.getId(), user.getEmail());
+
+        RefreshToken refreshToken = new RefreshToken(
+                refreshTokenValue,
+                user,
+                tokenManager.getIssuedAtFromToken(refreshTokenValue),
+                tokenManager.getExpirationTimeFromToken(refreshTokenValue));
+
+        refreshTokenRepository.save(refreshToken);
+
+        RefreshTokenRequest request = new RefreshTokenRequest(refreshTokenValue);
+        sleep(1000);
+
+        // when
+        Response response = given().log().all()
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshTokenValue)
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/auth/refresh");
+
+        // then
+        response.then().log().all().statusCode(HttpStatus.OK.value());
+        Headers headers = response.getHeaders();
+        List<String> setCookieHeaders = headers.getValues(HttpHeaders.SET_COOKIE);
+
+        String newAccessToken = response.getCookie("accessToken");
+        String newRefreshTokenValue = response.getCookie("refreshToken");
+
+        boolean newTokenExists = refreshTokenRepository.findByTokenValue(newRefreshTokenValue).isPresent();
+        boolean oldTokenExists = refreshTokenRepository.findByTokenValue(refreshTokenValue).isPresent();
+
+        assertAll(
+                () -> assertThat(setCookieHeaders).hasSize(2),
+                () -> assertThat(newAccessToken).isNotNull().isNotEqualTo(accessToken),
+                () -> assertThat(newRefreshTokenValue).isNotNull().isNotEqualTo(refreshTokenValue),
+                () -> assertThat(oldTokenExists).isFalse(),
+                () -> assertThat(newTokenExists).isTrue()
+        );
+    }
+
+    private String createExpiredToken(Long id, String email) {
+        SecretKeySpec key = new SecretKeySpec("test-secret-key-for-jwt-token-generation".getBytes(), "HmacSHA256");
+        Date expiryDate = new Date(System.currentTimeMillis() - 3600 * 1000);
+
+        return Jwts.builder()
+                .expiration(expiryDate)
+                .subject(id.toString())
+                .claim("email", email)
+                .issuedAt(new Date())
+                .signWith(key, HS256)
+                .compact();
     }
 }
