@@ -118,23 +118,27 @@ public class MomentService {
 
         if (comments.isEmpty()) {
             List<MyMomentResponse> responses = moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, null, Collections.emptyList()))
+                    .map(moment -> MyMomentResponse.of(moment, Collections.emptyList(), Collections.emptyMap()))
                     .toList();
 
             return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Moment, Comment> commentByMoment = comments.stream()
-                .collect(Collectors.toMap(Comment::getMoment, comment -> comment));
+        Map<Moment, List<Comment>> commentsByMoment = comments.stream()
+                .collect(Collectors.groupingBy(Comment::getMoment));
 
-        Map<Comment, List<Echo>> emojisByComment = echoRepository.findAllByCommentIn(comments).stream()
+        Map<Comment, List<Echo>> echosByComment = echoRepository.findAllByCommentIn(comments).stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         List<MyMomentResponse> responses = moments.stream()
                 .map(moment -> {
-                    Comment comment = commentByMoment.get(moment);
-                    List<Echo> relatedEchos = emojisByComment.getOrDefault(comment, Collections.emptyList());
-                    return MyMomentResponse.of(moment, comment, relatedEchos);
+                    List<Comment> momentComments = commentsByMoment.getOrDefault(moment, List.of());
+
+                    Map<Long, List<Echo>> commentEchos = momentComments.stream()
+                            .collect(Collectors.toMap(Comment::getId,
+                                    comment -> echosByComment.getOrDefault(comment, List.of())));
+
+                    return MyMomentResponse.of(moment, momentComments, commentEchos);
                 })
                 .toList();
 

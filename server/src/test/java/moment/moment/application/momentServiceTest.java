@@ -167,10 +167,10 @@ class momentServiceTest {
         given(echoRepository.findAllByCommentIn(any(List.class)))
                 .willReturn(List.of(echo));
 
-        //when
+        // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
 
-        //then
+        // then
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
