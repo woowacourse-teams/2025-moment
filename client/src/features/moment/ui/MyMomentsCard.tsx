@@ -43,6 +43,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const echoType = currentComment?.echos.map(echo => echo.echoType);
   const hasAnyEcho = echoType && echoType.length > 0;
 
+  console.log(currentComment);
   return (
     <>
       <S.MyMomentsCard
@@ -68,11 +69,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                 <S.MyMomentsModalContent key={currentComment.id}>
                   <S.MyMomentsModalHeader>
                     <S.CommenterInfoContainer>
-                      <S.LevelIcon
-                        src={levelMap[currentComment.commenterLevel as Level]}
-                        alt="level"
-                      />
-                      <span>{currentComment.commenterName}</span>
+                      <S.LevelIcon src={levelMap[currentComment.level as Level]} alt="level" />
+                      <span>{currentComment.nickname}</span>
                     </S.CommenterInfoContainer>
                     <S.CommentIndicator>
                       {navigation.currentIndex + 1} / {comments?.length || 0}

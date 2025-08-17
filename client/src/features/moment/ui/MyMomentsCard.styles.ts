@@ -194,7 +194,7 @@ export const NavigationButton = styled.button`
 
 export const CommentIndicator = styled.div`
   color: ${({ theme }) => theme.colors['gray-400']};
-  width: 100%;
+  width: 40%;
   text-align: center;
   font-size: 0.9rem;
 `;

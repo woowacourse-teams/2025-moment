@@ -21,8 +21,8 @@ export interface MyMomentsItem {
 interface Comment {
   id: number;
   content: string;
-  commenterName: string;
-  commenterLevel: string;
+  nickname: string;
+  level: string;
   createdAt: string;
   echos: Echos[];
 }
