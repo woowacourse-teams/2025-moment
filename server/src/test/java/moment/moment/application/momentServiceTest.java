@@ -140,7 +140,7 @@ class momentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> momentService.addExtraMoment(request, 1L))
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.MOMENT_CREATE_POINT_NOT_ENOUGH);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_ENOUGH_STAR);
     }
 
     @Test

@@ -73,7 +73,7 @@ public class MomentService {
         User momenter = userQueryService.getUserById(momenterId);
 
         if(!extraMomentCreatePolicy.canCreate(momenter)) {
-            throw new MomentException(ErrorCode.MOMENT_CREATE_POINT_NOT_ENOUGH);
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
         }
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
