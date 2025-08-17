@@ -44,12 +44,3 @@ export interface SendCommentsError {
   message: string;
   status: number;
 }
-
-export type CommentCreationStatus = 'NOT_MATCHED' | 'ALREADY_COMMENTED' | 'WRITABLE';
-
-export interface CommentCreationStatusResponse {
-  status: number;
-  data: {
-    commentCreationStatus: CommentCreationStatus;
-  };
-}
