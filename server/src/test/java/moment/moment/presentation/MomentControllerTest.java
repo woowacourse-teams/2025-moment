@@ -267,6 +267,7 @@ class MomentControllerTest {
         CommentableMomentResponse response = RestAssured.given().log().all()
                 .cookie("token", token)
                 .when().get("api/v1/moments/commentable")
+                .jsonPath()
                 .getObject("data", CommentableMomentResponse.class);
 
         // then
