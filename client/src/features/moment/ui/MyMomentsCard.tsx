@@ -13,7 +13,7 @@ import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 import { EchoButton } from '@/features/echo/ui/EchoButton';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { ECHO_TYPE } from '@/features/echo/const/echoType';
-import { useState } from 'react';
+import { useCommentNavigation } from '../hook/useCommentNavigation';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -21,34 +21,25 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
   const comments = myMoment.comments;
-
-  const [currentCommentIndex, setCurrentCommentIndex] = useState(0);
+  const navigation = useCommentNavigation(comments?.length || 0);
 
   const handleModalClose = () => {
     clearSelection();
-    setCurrentCommentIndex(0);
+    navigation.reset();
     handleClose();
   };
 
   const handleMomentClick = () => {
     handleOpen();
-    setCurrentCommentIndex(0);
+    navigation.reset();
     if (myMoment.read || isReadingNotification) return;
     if (myMoment.notificationId) {
       handleReadNotifications(myMoment.notificationId);
     }
   };
 
-  const handlePrevComment = () => {
-    setCurrentCommentIndex(prev => Math.max(0, prev - 1));
-  };
-
-  const handleNextComment = () => {
-    setCurrentCommentIndex(prev => Math.min((comments?.length || 1) - 1, prev + 1));
-  };
-
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
-  const currentComment = comments?.[currentCommentIndex];
+  const currentComment = comments?.[navigation.currentIndex];
   const echoType = currentComment?.echos.map(echo => echo.echoType);
   const hasAnyEcho = echoType && echoType.length > 0;
 
@@ -84,7 +75,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       <span>{currentComment.commenterName}</span>
                     </S.CommenterInfoContainer>
                     <S.CommentIndicator>
-                      {currentCommentIndex + 1} / {comments?.length || 0}
+                      {navigation.currentIndex + 1} / {comments?.length || 0}
                     </S.CommentIndicator>
                     <S.TitleWrapper>
                       <Timer size={16} color={theme.colors['gray-400']} />
@@ -95,8 +86,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                   </S.MyMomentsModalHeader>
 
                   <S.CommentContainer>
-                    {currentCommentIndex > 0 && (
-                      <S.CommentNavigationButton onClick={handlePrevComment} position="left">
+                    {navigation.hasPrevious && (
+                      <S.CommentNavigationButton onClick={navigation.goToPrevious} position="left">
                         <ChevronLeft size={16} />
                       </S.CommentNavigationButton>
                     )}
@@ -105,8 +96,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       <div>{currentComment.content}</div>
                     </S.CommentContent>
 
-                    {currentCommentIndex < (comments?.length || 0) - 1 && (
-                      <S.CommentNavigationButton onClick={handleNextComment} position="right">
+                    {navigation.hasNext && (
+                      <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
                         <ChevronRight size={16} />
                       </S.CommentNavigationButton>
                     )}
