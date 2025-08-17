@@ -2,7 +2,7 @@ export const mockProfile = {
   status: 200,
   data: {
     nickname: 'mimi',
-    level: 'METEOR',
+    level: 'METEOR_WHITE',
     expStar: 100,
     nextStepExp: 200,
     availableStar: 90,
