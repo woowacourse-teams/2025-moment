@@ -2,9 +2,9 @@ import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Clock } from 'lucide-react';
 import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 
 export const MyMomentsList = () => {
   const {
@@ -47,7 +47,7 @@ export const MyMomentsList = () => {
     <S.MomentsContainer>
       {hasMoments ? (
         <>
-          {momentWithNotifications?.map((myMoment: MomentWithNotifications) => (
+          {momentWithNotifications.map((myMoment: MomentWithNotifications) => (
             <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
           ))}
 

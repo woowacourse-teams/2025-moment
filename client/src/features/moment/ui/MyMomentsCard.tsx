@@ -34,7 +34,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     }
   };
 
-  const hasComments = myMoment.comments.length > 0;
+  const hasComments = myMoment.comment ? myMoment.comment.length > 0 : false;
 
   return (
     <>
@@ -65,19 +65,21 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
               <S.MyMomentsModalHeader>
                 <S.CommenterInfoContainer>
                   <S.LevelIcon
-                    src={levelMap[myMoment.comments[0].commenterLevel as Level]}
+                    src={levelMap[myMoment.comment?.[0].commenterLevel as Level]}
                     alt="level"
                   />
-                  <span>{myMoment.comments[0].commenterName}</span>
+                  <span>{myMoment.comment?.[0].commenterName}</span>
                 </S.CommenterInfoContainer>
                 <S.TitleWrapper>
                   <Timer size={16} color={theme.colors['gray-400']} />
-                  <S.TimeStamp>{formatRelativeTime(myMoment.comments[0].createdAt)}</S.TimeStamp>
+                  <S.TimeStamp>
+                    {formatRelativeTime(myMoment.comment?.[0].createdAt || '')}
+                  </S.TimeStamp>
                 </S.TitleWrapper>
               </S.MyMomentsModalHeader>
 
               <S.CommentContainer>
-                <div>{myMoment.comments[0].content}</div>
+                <div>{myMoment.comment?.[0].content}</div>
               </S.CommentContainer>
 
               <S.EchoContainer>
@@ -96,7 +98,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                   ))}
                 </S.EchoButtonContainer>
                 <SendEchoButton
-                  commentId={myMoment.comments[0].id}
+                  commentId={myMoment.comment?.[0].id || 0}
                   selectedEchos={selectedEchos}
                   hasSelection={hasSelection}
                 />

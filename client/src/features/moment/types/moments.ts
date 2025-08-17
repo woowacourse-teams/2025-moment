@@ -15,7 +15,7 @@ export interface MyMomentsItem {
   momenterId: number;
   content: string;
   createdAt: string;
-  comments: Comment[];
+  comment: Comment[] | null;
 }
 
 interface Comment {

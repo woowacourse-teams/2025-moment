@@ -38,6 +38,7 @@ export const MyMomentsContent = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 `;
 
 export const MyMomentsModalContent = styled.div`
