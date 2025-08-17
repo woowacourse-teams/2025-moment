@@ -14,29 +14,23 @@ export const navItems = [
 ];
 
 export const levelMap = {
-  ASTEROID: {
-    FIRST: '/images/firstAsteroid.png',
-    SECOND: '/images/secondAsteroid.png',
-    THIRD: '/images/thirdAsteroid.png',
-  },
-  METEOR: {
-    FIRST: '/images/firstMeteor.png',
-    SECOND: '/images/secondMeteor.png',
-    THIRD: '/images/thirdMeteor.png',
-  },
-  COMET: {
-    FIRST: '/images/firstComet.png',
-    SECOND: '/images/secondComet.png',
-    THIRD: '/images/thirdComet.png',
-  },
-  PLANET: {
-    FIRST: '/images/firstPlanet.png',
-    SECOND: '/images/secondPlanet.png',
-    THIRD: '/images/thirdPlanet.png',
-  },
-  BIG_PLANET: {
-    FIRST: '/images/firstBigPlanet.png',
-    SECOND: '/images/secondBigPlanet.png',
-    THIRD: '/images/thirdBigPlanet.png',
-  },
+  ASTEROID_WHITE: '/images/firstAsteroid.png',
+  ASTEROID_YELLOW: '/images/secondAsteroid.png',
+  ASTEROID_SKY: '/images/thirdAsteroid.png',
+
+  METEOR_WHITE: '/images/firstMeteor.png',
+  METEOR_YELLOW: '/images/secondMeteor.png',
+  METEOR_SKY: '/images/thirdMeteor.png',
+
+  COMET_WHITE: '/images/firstComet.png',
+  COMET_YELLOW: '/images/secondComet.png',
+  COMET_SKY: '/images/thirdComet.png',
+
+  ROCKY_PLANET_WHITE: '/images/firstPlanet.png',
+  ROCKY_PLANET_YELLOW: '/images/secondPlanet.png',
+  ROCKY_PLANET_SKY: '/images/thirdPlanet.png',
+
+  GAS_GIANT_WHITE: '/images/firstBigPlanet.png',
+  GAS_GIANT_YELLOW: '/images/secondBigPlanet.png',
+  GAS_GIANT_SKY: '/images/thirdBigPlanet.png',
 };
