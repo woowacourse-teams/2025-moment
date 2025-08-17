@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
+import moment.user.domain.User;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -86,23 +88,25 @@ public class AuthEmailService implements EmailService{
     @Override
     public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
         String email = request.email();
-        userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL);
+        Optional<User> findUser = userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL);
 
-        EmailVerification existingInfo = passwordUpdateInfos.get(email);
-        validateCoolTimePassed(existingInfo);
+        if (findUser.isPresent()) {
+            EmailVerification existingInfo = passwordUpdateInfos.get(email);
+            validateCoolTimePassed(existingInfo);
 
-        String token = UUID.randomUUID().toString();
+            String token = UUID.randomUUID().toString();
 
-        try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            sendUpdateMail(helper, email, token);
-        } catch (MessagingException | MailException e) {
-            log.error("비밀번호 재설정 이메일 전송 실패: ", e);
-            throw new MomentException(ErrorCode.EMAIL_SEND_FAILURE);
+            try {
+                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+                sendUpdateMail(helper, email, token);
+            } catch (MessagingException | MailException e) {
+                log.error("비밀번호 재설정 이메일 전송 실패: ", e);
+                throw new MomentException(ErrorCode.EMAIL_SEND_FAILURE);
+            }
+
+            passwordUpdateInfos.put(email, new EmailVerification(token, LocalDateTime.now(), EXPIRY_SECONDS));
         }
-
-        passwordUpdateInfos.put(email, new EmailVerification(token, LocalDateTime.now(), EXPIRY_SECONDS));
     }
 
     private void sendUpdateMail(MimeMessageHelper helper, String email, String token)

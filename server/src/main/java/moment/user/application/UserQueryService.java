@@ -1,9 +1,9 @@
 package moment.user.application;
 
+import java.util.List;
+import java.util.Optional;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-
-import java.util.List;
 
 public interface UserQueryService {
 
@@ -13,5 +13,5 @@ public interface UserQueryService {
 
     List<User> findNotMatchedUsersTodayByMomenter(User momenter);
 
-    User getUserByEmailAndProviderType(String email, ProviderType providerType);
+    Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType);
 }

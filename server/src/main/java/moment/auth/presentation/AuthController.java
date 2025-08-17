@@ -187,7 +187,6 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 링크 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
-                    - [U-011] 이메일 가입자가 아니거나, 존재하지 않는 사용자입니다.
                     - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
                     - [V-003] 이메일 전송에 실패했습니다.
                     """)

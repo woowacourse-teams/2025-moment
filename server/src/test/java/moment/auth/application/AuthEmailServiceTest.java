@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import moment.auth.domain.EmailVerification;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
@@ -127,7 +128,7 @@ class AuthEmailServiceTest {
         User user = new User(email, "1q2w3e4r!", "drago", ProviderType.EMAIL);
         MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(Optional.of(user));
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
         doNothing().when(mailSender).send(any(MimeMessage.class));
 
@@ -146,7 +147,7 @@ class AuthEmailServiceTest {
         Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
         passwordUpdateInfos.put(email, new EmailVerification("some-token", LocalDateTime.now().minusSeconds(1), expirySeconds));
 
-        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(Optional.of(user));
 
         // when & then
         assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request))
@@ -161,7 +162,7 @@ class AuthEmailServiceTest {
         User user = new User(email, "password", "nickname", ProviderType.EMAIL);
         MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(Optional.of(user));
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new MailSendException("Failed to send email")).when(mailSender).send(any(MimeMessage.class));
 

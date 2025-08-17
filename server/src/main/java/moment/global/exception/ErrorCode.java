@@ -19,7 +19,6 @@ public enum ErrorCode {
     USER_UNAUTHORIZED("U-008", "권한 없는 사용자입니다.", HttpStatus.UNAUTHORIZED),
     USER_NOT_FOUND("U-009", "존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
     USER_NICKNAME_GENERATION_FAILED("U-010", "사용 가능한 닉네임을 생성할 수 없습니다.", HttpStatus.CONFLICT),
-    USER_NOT_EMAIL_PROVIDER("U-011", "이메일 가입자가 아니거나, 존재하지 않는 사용자입니다.", HttpStatus.BAD_REQUEST),
 
     TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
