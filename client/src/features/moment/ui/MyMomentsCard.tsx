@@ -21,6 +21,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
 
+  console.log('myMoment', myMoment);
   const handleModalClose = () => {
     clearSelection();
     handleClose();
@@ -35,6 +36,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
+  const echoType = myMoment.comments?.[0].echos.map(echo => echo.echoType);
+  const hasAnyEcho = echoType && echoType.length > 0;
 
   return (
     <>
@@ -84,23 +87,29 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
 
               <S.EchoContainer>
                 <S.TitleContainer>
-                  <Heart size={20} color={theme.colors['yellow-500']} />
+                  <Heart size={16} color={theme.colors['yellow-500']} />
                   <span>에코 보내기</span>
                 </S.TitleContainer>
                 <S.EchoButtonContainer>
-                  {Object.entries(ECHO_TYPE).map(([key, title]) => (
-                    <EchoButton
-                      key={key}
-                      onClick={() => toggleEcho(key as EchoTypeKey)}
-                      title={title}
-                      isSelected={isSelected(key as EchoTypeKey)}
-                    />
-                  ))}
+                  {Object.entries(ECHO_TYPE).map(([key, title]) => {
+                    const isAlreadySent = echoType?.includes(key as EchoTypeKey);
+                    return (
+                      <EchoButton
+                        key={key}
+                        onClick={() => toggleEcho(key as EchoTypeKey)}
+                        title={title}
+                        isSelected={isSelected(key as EchoTypeKey)}
+                        isAlreadySent={isAlreadySent}
+                        isDisabled={hasAnyEcho}
+                      />
+                    );
+                  })}
                 </S.EchoButtonContainer>
                 <SendEchoButton
                   commentId={myMoment.comments?.[0].id || 0}
                   selectedEchos={selectedEchos}
                   hasSelection={hasSelection}
+                  isDisabled={hasAnyEcho}
                 />
               </S.EchoContainer>
             </S.MyMomentsModalContent>
