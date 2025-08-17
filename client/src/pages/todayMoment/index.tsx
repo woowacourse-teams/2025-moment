@@ -2,9 +2,22 @@ import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './index.styles';
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
+import { useMomentWritingStatusQuery } from '@/features/moment/hook/useMomentWritingStatusQuery';
+import { useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { ROUTES } from '@/app/routes/routes';
 
 export default function TodayMomentPage() {
   const { handleContentChange, handleSendContent, content } = useSendMoments();
+  const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
+  const momentBasicWritable = momentWritingStatusData?.data?.status;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (momentBasicWritable === 'DENIED') {
+      navigate(ROUTES.TODAY_MOMENT_SUCCESS, { replace: true });
+    }
+  }, [momentBasicWritable]);
 
   return (
     <S.TodayPageWrapper>
