@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.http.ContentType;
 import moment.auth.application.GoogleAuthService;
+import moment.auth.dto.request.EmailRequest;
+import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
@@ -16,7 +18,6 @@ import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +46,41 @@ class AuthControllerTest {
 
     @MockitoBean
     private GoogleAuthService googleAuthService;
+
+    @Test
+    void 이메일_인증_요청에_성공한다() {
+        // given
+        EmailRequest request = new EmailRequest("ekorea6gamil.com");
+
+        // when & then
+        given().log().all()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post("/api/v1/auth/email")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void 이메일_인증_코드_검증에_성공한다() {
+        // given
+        EmailVerifyRequest request = new EmailVerifyRequest("ekorea623@gmail.com", "123456");
+
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new EmailRequest(request.email()))
+                .when().post("/api/v1/auth/email")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // when & then
+        given().log().all()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post("/api/v1/auth/email/verify")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+    }
 
     @Test
     void 로그인에_성공한다() {

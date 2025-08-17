@@ -2,6 +2,8 @@ package moment.moment.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,18 +40,24 @@ public class Moment extends BaseEntity {
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
 
-    public Moment(String content, User momenter) {
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private WriteType writeType;
+
+    public Moment(String content, User momenter, WriteType writeType) {
         validate(content, momenter);
         this.content = content;
         this.isMatched = false;
         this.momenter = momenter;
+        this.writeType = writeType;
     }
 
-    public Moment(String content, boolean isMatched, User momenter) {
+    public Moment(String content, boolean isMatched, User momenter, WriteType writeType) {
         validate(content, momenter);
         this.content = content;
         this.isMatched = isMatched;
         this.momenter = momenter;
+        this.writeType = writeType;
     }
 
     private void validate(String content, User momenter) {
@@ -78,14 +86,6 @@ public class Moment extends BaseEntity {
 
     public boolean checkMomenter(User user) {
         return momenter.equals(user);
-    }
-
-    public void matchComplete() {
-        isMatched = true;
-    }
-
-    public boolean alreadyMatched() {
-        return isMatched;
     }
 
     public Long getMomenterId() {

@@ -15,21 +15,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMomentException(MomentException exception) {
         ErrorCode errorCode = exception.getErrorCode();
 
-        if(errorCode == ErrorCode.INTERNAL_SERVER_ERROR) {
+        if (errorCode == ErrorCode.INTERNAL_SERVER_ERROR) {
             log.error(exception.getMessage(), exception);
         }
-        if(errorCode != ErrorCode.INTERNAL_SERVER_ERROR) {
-            log.warn(exception.getMessage(), exception);
+        if (errorCode != ErrorCode.INTERNAL_SERVER_ERROR) {
+            log.warn(exception.getMessage());
         }
 
         ErrorResponse errorResponse = ErrorResponse.from(errorCode);
         return ResponseEntity.status(exception.getStatus()).body(errorResponse);
     }
 
-    // TODO : 임시로 작성, 검증 예외 어떻게 반환할지 다같이 고민해보기
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
-        log.error(exception.getMessage(), exception);
+        log.warn(exception.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.REQUEST_INVALID);
         return ResponseEntity.badRequest().body(errorResponse);
