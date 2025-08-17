@@ -12,7 +12,10 @@ import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
+import moment.auth.application.EmailService;
 import moment.auth.application.GoogleAuthService;
+import moment.auth.dto.request.EmailRequest;
+import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
@@ -44,6 +47,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final GoogleAuthService googleAuthService;
+    private final EmailService emailService;
 
     @Value("${auth.google.client-id}")
     private String clientId;
@@ -216,5 +220,32 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .body(SuccessResponse.of(status, null));
+    }
+
+    @Operation(summary = "이메일 인증 요청", description = "사용자의 이메일 인증을 요청합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송 성공"),
+            @ApiResponse(responseCode = "400", description = """
+            - [V-002] 이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.
+            """)
+    })
+    @PostMapping("/email")
+    public ResponseEntity<SuccessResponse<Void>> checkEmail(@Valid @RequestBody EmailRequest request) {
+        emailService.sendVerificationEmail(request);
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
+    }
+
+    @Operation(summary = "이메일 인증 코드 확인", description = "사용자가 입력한 이메일 인증 코드를 확인합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "이메일 인증 성공"),
+        @ApiResponse(responseCode = "400", description = """
+                - [V-001] 이메일 인증에 실패했습니다.
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/email/verify")
+    public ResponseEntity<SuccessResponse<Void>> verifyEmail(@Valid @RequestBody EmailVerifyRequest request) {
+        emailService.verifyCode(request);
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
     }
 }

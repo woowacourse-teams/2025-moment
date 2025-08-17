@@ -65,7 +65,7 @@ class UserControllerTest {
         String nickname = "mimi";
         User user = userRepository.save(new User("mimi@icloud.com", "password", nickname, ProviderType.EMAIL));
         String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
-        UserProfileResponse expect = new UserProfileResponse(nickname, user.getCurrentPoint(), user.getLevel());
+        UserProfileResponse expect = new UserProfileResponse(nickname, user.getAvailableStar(), user.getLevel(), user.getLevel().getNextLevelRequiredStars());
 
         // when
         SuccessResponse<UserProfileResponse> response = RestAssured.given().log().all()
