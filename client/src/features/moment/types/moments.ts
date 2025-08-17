@@ -33,6 +33,12 @@ export interface MomentWritingStatusResponse {
   };
 }
 
+export interface MomentExtraWritableResponse {
+  data: {
+    status: 'DENIED' | 'ALLOWED';
+  };
+}
+
 export interface MatchMomentsResponse {
   status: number;
   data: {
