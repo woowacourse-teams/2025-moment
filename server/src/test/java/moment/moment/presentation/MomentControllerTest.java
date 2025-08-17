@@ -56,7 +56,7 @@ class MomentControllerTest {
         // when
         MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .body(request)
                 .when().post("/api/v1/moments")
                 .then().log().all()
@@ -97,7 +97,7 @@ class MomentControllerTest {
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 3)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -146,7 +146,7 @@ class MomentControllerTest {
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 10)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -178,7 +178,7 @@ class MomentControllerTest {
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -203,7 +203,7 @@ class MomentControllerTest {
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

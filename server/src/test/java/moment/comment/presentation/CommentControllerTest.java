@@ -75,7 +75,7 @@ class CommentControllerTest {
 
         CommentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .body(request)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -123,7 +123,7 @@ class CommentControllerTest {
 
         // when
         MyCommentPageResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .param("limit", 1)
                 .when().get("/api/v1/comments/me")
                 .then().log().all()

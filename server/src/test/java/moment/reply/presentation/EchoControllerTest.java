@@ -81,7 +81,7 @@ public class EchoControllerTest {
         // when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .body(request)
                 .when().post("/api/v1/echos")
                 .then().log().all()
@@ -105,7 +105,7 @@ public class EchoControllerTest {
         // when
         List<EchoReadResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .when().get("/api/v1/echos/" + comment.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

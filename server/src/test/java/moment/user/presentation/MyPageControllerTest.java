@@ -47,7 +47,7 @@ class MyPageControllerTest {
 
         // when
         SuccessResponse<MyPageProfileResponse> response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/my/profile")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -79,7 +79,7 @@ class MyPageControllerTest {
 
         // when
         SuccessResponse<MyRewardHistoryPageResponse> response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .param("pageNum", 1)
                 .param("pageSize", 10)
                 .when().get("/api/v1/my/reward/history")

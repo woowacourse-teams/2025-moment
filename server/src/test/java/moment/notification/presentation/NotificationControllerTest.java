@@ -105,7 +105,7 @@ public class NotificationControllerTest {
 
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
         RestAssured.given().log().all()
-                .cookie("token", commenterToken) // 코멘트 작성자로 인증
+                .cookie("accessToken", commenterToken) // 코멘트 작성자로 인증
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
@@ -138,7 +138,7 @@ public class NotificationControllerTest {
 
         EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
         RestAssured.given().log().all()
-                .cookie("token", momenterToken) // 모멘트 작성자가 에코를 달음
+                .cookie("accessToken", momenterToken) // 모멘트 작성자가 에코를 달음
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/echos")
@@ -170,7 +170,7 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request1)
                 .when().post("/api/v1/comments")
@@ -178,7 +178,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request2)
                 .when().post("/api/v1/comments")
@@ -186,7 +186,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request3)
                 .when().post("/api/v1/comments")
@@ -194,7 +194,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .when().get("/api/v1/notifications?read=false")
                 .then().log().all()
                 .statusCode(200)
@@ -226,7 +226,7 @@ public class NotificationControllerTest {
         echoService.addEchos(request4, authentication);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .when().get("/api/v1/notifications?read=false")
                 .then().log().all()
                 .statusCode(200)
@@ -248,7 +248,7 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
@@ -258,7 +258,7 @@ public class NotificationControllerTest {
         Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
 
         RestAssured.given().log().all()
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .contentType(ContentType.JSON)
                 .when().patch("/api/v1/notifications/" + notification.getId() + "/read")
                 .then().log().all()
@@ -300,7 +300,7 @@ public class NotificationControllerTest {
             }
         };
 
-        Headers headers = Headers.of("Cookie", "token=" + token);
+        Headers headers = Headers.of("Cookie", "accessToken=" + token);
         EventSource eventSource = new EventSource.Builder(eventHandler,
                 URI.create("http://localhost:" + 8080 + "/api/v1/notifications/subscribe"))
                 .headers(headers)
