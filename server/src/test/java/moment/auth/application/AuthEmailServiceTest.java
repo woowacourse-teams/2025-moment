@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.util.Map;
+import moment.auth.domain.EmailVerification;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
@@ -38,6 +40,7 @@ class AuthEmailServiceTest {
     private final String email = "ekorea623@gmail.com";
     private final String wrongCode = "111111";
     private final Long userId = 1L;
+    private final long expirySeconds = 300L;
 
     @InjectMocks
     private AuthEmailService authEmailService;
@@ -64,58 +67,61 @@ class AuthEmailServiceTest {
     @Test
     void 인증번호_검증에_성공한다() {
         // given
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
-        authEmailService.sendVerificationEmail(new EmailRequest(email));
-        String code = getVerificationCode(email);
-        EmailVerifyRequest request = new EmailVerifyRequest(email, code);
+        EmailRequest emailRequest = new EmailRequest(email);
+        String verificationCode = "123456";
+        Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
+        verificationInfos.put(email, new EmailVerification(verificationCode, LocalDateTime.now(), expirySeconds));
+
+        EmailVerifyRequest verifyRequest = new EmailVerifyRequest(email, verificationCode);
 
         // when & then
-        assertThatCode(() -> authEmailService.verifyCode(request))
-                .doesNotThrowAnyException();
+        assertThatCode(() -> authEmailService.verifyCode(verifyRequest))
+            .doesNotThrowAnyException();
     }
 
     @Test
     void 쿨다운이_지나지_않았으면_인증_메일_재전송시_예외가_발생한다() {
         // given
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
         EmailRequest request = new EmailRequest(email);
-        authEmailService.sendVerificationEmail(request);
+        Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
+        // 현재 시간보다 1초 전에 생성되었다고 가정 (쿨다운 60초 이내)
+        verificationInfos.put(email, new EmailVerification("123456", LocalDateTime.now().minusSeconds(1), expirySeconds));
 
         // when & then
         assertThatThrownBy(() -> authEmailService.sendVerificationEmail(request))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
+            .isInstanceOf(MomentException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
     }
 
     @Test
     void 인증번호의_유효시간이_만료되면_예외가_발생한다() {
         // given
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
-        authEmailService.sendVerificationEmail(new EmailRequest(email));
-        String code = getVerificationCode(email);
-        EmailVerifyRequest request = new EmailVerifyRequest(email, code);
+        String verificationCode = "123456";
+        Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
+        // 만료 시간(300초)보다 1초 더 전에 생성되었다고 가정
+        LocalDateTime expiredTime = LocalDateTime.now().minusSeconds(expirySeconds + 1);
+        verificationInfos.put(email, new EmailVerification(verificationCode, expiredTime, expirySeconds));
 
-        // 만료 시간 조작
-        Object verificationInfo = getVerificationInfo(email);
-        ReflectionTestUtils.setField(verificationInfo, "expiryTime", LocalDateTime.now().minusSeconds(1));
+        EmailVerifyRequest request = new EmailVerifyRequest(email, verificationCode);
 
         // when & then
         assertThatThrownBy(() -> authEmailService.verifyCode(request))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
+            .isInstanceOf(MomentException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
     }
 
     @Test
     void 인증번호가_일치하지_않으면_예외가_발생한다() {
         // given
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
-        authEmailService.sendVerificationEmail(new EmailRequest(email));
+        Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
+        verificationInfos.put(email, new EmailVerification("123456", LocalDateTime.now(), expirySeconds));
+
         EmailVerifyRequest request = new EmailVerifyRequest(email, wrongCode);
 
         // when & then
         assertThatThrownBy(() -> authEmailService.verifyCode(request))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
+            .isInstanceOf(MomentException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_VERIFY_FAILED);
     }
 
     @Test
@@ -155,13 +161,10 @@ class AuthEmailServiceTest {
         // given
         PasswordUpdateRequest request = new PasswordUpdateRequest(email);
         User user = new User(email, "password", "nickname", ProviderType.GOOGLE);
-        MimeMessage mimeMessage = mock(MimeMessage.class);
+        Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
+        passwordUpdateInfos.put(email, new EmailVerification("some-token", LocalDateTime.now().minusSeconds(1), expirySeconds));
 
         when(userQueryService.getUserById(userId)).thenReturn(user);
-        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        doNothing().when(mailSender).send(any(MimeMessage.class));
-
-        authEmailService.sendPasswordUpdateEmail(request, userId);
 
         // when & then
         assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request, userId))
@@ -182,24 +185,17 @@ class AuthEmailServiceTest {
 
         // when & then
         assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request, userId))
-            .isInstanceOf(MailSendException.class);
+            .isInstanceOf(MomentException.class);
     }
 
-    private String getVerificationCode(String email) {
-        Object verificationInfo = getVerificationInfo(email);
-        return (String) ReflectionTestUtils.getField(verificationInfo, "code");
+    @SuppressWarnings("unchecked")
+    private Map<String, EmailVerification> getVerificationInfosMap() {
+        return (Map<String, EmailVerification>) ReflectionTestUtils.getField(authEmailService, "verificationInfos");
     }
 
-    private Object getVerificationInfo(String email) {
-        try {
-            java.lang.reflect.Field field = AuthEmailService.class.getDeclaredField("verificationInfos");
-            field.setAccessible(true);
-            java.util.Map<String, Object> verificationInfos =
-                    (java.util.Map<String, Object>) field.get(authEmailService);
-            return verificationInfos.get(email);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @SuppressWarnings("unchecked")
+    private Map<String, EmailVerification> getPasswordUpdateInfosMap() {
+        return (Map<String, EmailVerification>) ReflectionTestUtils.getField(authEmailService, "passwordUpdateInfos");
     }
 }
 

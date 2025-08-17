@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import moment.auth.domain.VerificationInfo;
+import moment.auth.domain.EmailVerification;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
@@ -16,6 +16,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -32,13 +33,13 @@ public class AuthEmailService implements EmailService{
 
     private final UserQueryService userQueryService;
     private final JavaMailSender mailSender;
-    private final Map<String, VerificationInfo> verificationInfos = new ConcurrentHashMap<>();
-    private final Map<String, VerificationInfo> passwordUpdateInfos = new ConcurrentHashMap<>();
+    private final Map<String, EmailVerification> verificationInfos = new ConcurrentHashMap<>();
+    private final Map<String, EmailVerification> passwordUpdateInfos = new ConcurrentHashMap<>();
 
     @Override
     public void sendVerificationEmail(EmailRequest request) {
         String email = request.email();
-        VerificationInfo existingInfo = verificationInfos.get(email);
+        EmailVerification existingInfo = verificationInfos.get(email);
 
         validateCoolTimePassed(existingInfo);
 
@@ -47,9 +48,13 @@ public class AuthEmailService implements EmailService{
         message.setTo(email);
         message.setSubject("[Moment] 이메일 인증 코드 안내");
         message.setText("인증 코드는 " + code + " 입니다.");
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        } catch (MailException e) {
+            log.error("인증 이메일 전송 실패: ", e);
+        }
 
-        verificationInfos.put(email, new VerificationInfo(code, LocalDateTime.now().plusSeconds(EXPIRY_SECONDS)));
+        verificationInfos.put(email, new EmailVerification(code, LocalDateTime.now(), EXPIRY_SECONDS));
     }
 
     @Override
@@ -57,7 +62,7 @@ public class AuthEmailService implements EmailService{
         String email = request.email();
         String code = request.code();
 
-        VerificationInfo info = verificationInfos.get(email);
+        EmailVerification info = verificationInfos.get(email);
 
         if (info == null || info.isExpired() || !info.hasSameCode(code)) {
             throw new MomentException(ErrorCode.EMAIL_VERIFY_FAILED);
@@ -84,7 +89,7 @@ public class AuthEmailService implements EmailService{
 
         String email = validateEmail(request, user);
 
-        VerificationInfo existingInfo = passwordUpdateInfos.get(email);
+        EmailVerification existingInfo = passwordUpdateInfos.get(email);
         validateCoolTimePassed(existingInfo);
 
         String token = UUID.randomUUID().toString();
@@ -92,13 +97,13 @@ public class AuthEmailService implements EmailService{
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-
             sendUpdateMail(helper, email, token);
-        } catch (MessagingException e) {
-            log.error("이메일 전송 실패 [{}]", e.getMessage());
+        } catch (MessagingException | MailException e) {
+            log.error("비밀번호 재설정 이메일 전송 실패: ", e);
+            throw new MomentException(ErrorCode.EMAIL_SEND_FAILURE);
         }
 
-        passwordUpdateInfos.put(email, new VerificationInfo(token, LocalDateTime.now().plusSeconds(EXPIRY_SECONDS)));
+        passwordUpdateInfos.put(email, new EmailVerification(token, LocalDateTime.now(), EXPIRY_SECONDS));
     }
 
     private void sendUpdateMail(MimeMessageHelper helper, String email, String token)
@@ -112,7 +117,7 @@ public class AuthEmailService implements EmailService{
         mailSender.send(helper.getMimeMessage());
     }
 
-    private static void validateCoolTimePassed(VerificationInfo existingInfo) {
+    private static void validateCoolTimePassed(EmailVerification existingInfo) {
         if (existingInfo != null && existingInfo.isCoolTime(COOL_DOWN_SECONDS)) {
             throw new MomentException(ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
         }
@@ -126,3 +131,4 @@ public class AuthEmailService implements EmailService{
         return email;
     }
 }
+

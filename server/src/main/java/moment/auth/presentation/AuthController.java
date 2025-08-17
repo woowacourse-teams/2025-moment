@@ -191,6 +191,7 @@ public class AuthController {
                     - [U-009] 존재하지 않는 사용자입니다.
                     - [U-008] 권한 없는 사용자입니다.
                     - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
+                    - [V-003] 이메일 전송에 실패했습니다.
                     """)
     })
     @PostMapping("/email/password")
