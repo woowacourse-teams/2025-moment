@@ -1,6 +1,7 @@
 package moment.moment.application;
 
 import java.util.Random;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -63,7 +64,24 @@ public class MomentService {
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
+
+        return MomentCreateResponse.of(savedMoment);
+    }
+
+    @Transactional
+    public MomentCreateResponse addExtraMoment(MomentCreateRequest request, Long momenterId) {
+        User momenter = userQueryService.getUserById(momenterId);
+
+        if(!extraMomentCreatePolicy.canCreate(momenter)) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+
+        Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(momentWithoutId);
+
+        rewardService.rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }
