@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
@@ -178,5 +179,42 @@ public class AuthController {
         LoginCheckResponse response = authService.loginCheck(token);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.ok(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "로그인 상태 확인", description = "사용자가 로그인 상태인지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 상태 확인 성공"),
+    })
+    @GetMapping("/refresh")
+    public ResponseEntity<SuccessResponse<LoginCheckResponse>> refresh(
+            @RequestBody RefreshTokenRequest request,
+            @AuthenticationPrincipal Authentication authentication) {
+        Map<String, String> tokens = authService.refresh(authentication.id(), request);
+
+        String accessToken = tokens.get("accessToken");
+        String refreshToken = tokens.get("refreshToken");
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(ACCESS_TOKEN_TIME)
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(REFRESH_TOKEN_TIME)
+                .build();
+
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .body(SuccessResponse.of(status, null));
     }
 }

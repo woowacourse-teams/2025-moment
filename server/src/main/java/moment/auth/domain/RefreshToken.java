@@ -50,4 +50,14 @@ public class RefreshToken extends BaseEntity {
         this.issuedAt = issuedAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.expiredAt = expiredAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
+
+    public boolean isExpired(LocalDateTime now) {
+        return now.isAfter(expiredAt);
+    }
+
+    public void renew(String newRefreshToken, Date issuedAt, Date expiredAt) {
+        this.tokenValue = newRefreshToken;
+        this.issuedAt = issuedAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        this.expiredAt = expiredAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
 }
