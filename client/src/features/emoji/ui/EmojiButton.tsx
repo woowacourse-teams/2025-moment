@@ -1,4 +1,5 @@
 import { CustomTheme } from '@/app/styles/theme';
+import { useToast } from '@/shared/hooks';
 import { Button } from '@/shared/ui';
 import { useEmojiMutation } from '../hooks/useEmojiMutation';
 
@@ -10,11 +11,12 @@ interface EmojiButtonProps {
 // 현재는 emojiType을 옵셔널로 주지만 나중엔 필수로 바꿔야함
 export const EmojiButton = ({ commentId, emojiType = 'HEART' }: EmojiButtonProps) => {
   const { mutateAsync: sendEmoji } = useEmojiMutation();
+  const { showError } = useToast();
   const handleClick = async () => {
     try {
       await sendEmoji({ emojiType, commentId });
     } catch {
-      alert('스티커 보내기 실패');
+      showError('스티커 보내기 실패', 3000);
     }
   };
 
