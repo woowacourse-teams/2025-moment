@@ -106,7 +106,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                   <S.EchoContainer>
                     <S.TitleContainer>
                       <Heart size={16} color={theme.colors['yellow-500']} />
-                      <span>에코 보내기</span>
+                      <span>{hasAnyEcho ? '보낸 에코' : '에코 보내기'}</span>
                     </S.TitleContainer>
                     <S.EchoButtonContainer>
                       {Object.entries(ECHO_TYPE).map(([key, title]) => {
@@ -125,12 +125,14 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                         );
                       })}
                     </S.EchoButtonContainer>
-                    <SendEchoButton
-                      commentId={currentComment.id || 0}
-                      selectedEchos={selectedEchos}
-                      hasSelection={hasSelection}
-                      isDisabled={hasAnyEcho}
-                    />
+                    {!hasAnyEcho && (
+                      <SendEchoButton
+                        commentId={currentComment.id || 0}
+                        selectedEchos={selectedEchos}
+                        hasSelection={hasSelection}
+                        isDisabled={hasAnyEcho}
+                      />
+                    )}
                   </S.EchoContainer>
                 </S.MyMomentsModalContent>
               </>
