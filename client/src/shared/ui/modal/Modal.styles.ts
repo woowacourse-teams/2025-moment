@@ -16,17 +16,17 @@ const modalFrameStyles = {
     border: 1px solid ${theme.colors['gray-700']};
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    width: ${props.$position === 'center' ? theme.typography.cardWidth[props.$size] : '100%'};
+    width: ${props.$position === 'center' ? theme.typography.modalWidth[props.$size].desktop : '100%'};
     height: ${props.$height || 'auto'};
 
-    @media (max-width: 768px) {
+    ${theme.mediaQueries.tablet} {
       padding: 16px 24px;
-      width: ${props.$position === 'center' ? theme.typography.cardWidth[props.$size] : '100%'};
+      width: ${props.$position === 'center' ? theme.typography.modalWidth[props.$size].tablet : '100%'};
     }
     
-    @media (max-width: 480px) {
+    ${theme.mediaQueries.mobile} {
       padding: 12px 20px;
-      width: ${props.$position === 'center' ? theme.typography.cardWidth[props.$size] : '100%'};
+      width: ${props.$position === 'center' ? theme.typography.modalWidth[props.$size].mobile : '100%'};
     }
   `,
 
@@ -37,16 +37,16 @@ const modalFrameStyles = {
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     
-    width:500px;
+    width: 500px;
     height: 500px;
     
-    @media (max-width: 768px) {
+    ${theme.mediaQueries.tablet} {
       padding: 20px 28px;
       width: ${props.$position === 'center' ? '400px' : '100%'};
       height: 400px;
     }
     
-    @media (max-width: 480px) {
+    ${theme.mediaQueries.mobile} {
       padding: 16px 24px;
       width: ${props.$position === 'center' ? '95%' : '100%'};
     }
@@ -111,6 +111,7 @@ export const ModalContent = styled.div`
 
 export const ModalFooter = styled.div`
   display: flex;
+  /* width: 100%; */
   justify-content: flex-end;
   gap: 10px;
 `;
