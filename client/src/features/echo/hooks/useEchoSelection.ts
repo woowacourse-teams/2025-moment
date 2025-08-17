@@ -18,16 +18,8 @@ export const useEchoSelection = () => {
     });
   }, []);
 
-  const clearSelection = useCallback(() => {
-    setSelectedEchos(new Set());
-  }, []);
-
-  const isSelected = useCallback(
-    (echoType: EchoKey) => {
-      return selectedEchos.has(echoType);
-    },
-    [selectedEchos],
-  );
+  const clearSelection = () => setSelectedEchos(new Set());
+  const isSelected = (echoType: EchoKey) => selectedEchos.has(echoType);
 
   return {
     selectedEchos,
