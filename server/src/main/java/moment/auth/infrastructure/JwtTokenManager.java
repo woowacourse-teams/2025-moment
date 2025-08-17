@@ -62,6 +62,24 @@ public class JwtTokenManager implements TokenManager {
                 .compact();
     }
 
+    public Date getExpirationTimeFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return verifiedJwt.getPayload().getExpiration();
+    }
+
+    public Date getIssuedAtFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return verifiedJwt.getPayload().getIssuedAt();
+    }
+
     @Override
     public Authentication extractAuthentication(String token) {
         Long id = handleTokenException(token, this::extractIdFromToken);
