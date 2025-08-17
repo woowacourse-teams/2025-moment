@@ -1,5 +1,6 @@
 package moment.auth.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import moment.auth.domain.EmailVerification;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -40,6 +42,7 @@ class AuthEmailServiceTest {
 
     private final String email = "ekorea623@gmail.com";
     private final String wrongCode = "111111";
+    private final String token = "valid-token";
     private final long expirySeconds = 300L;
 
     @InjectMocks
@@ -170,6 +173,68 @@ class AuthEmailServiceTest {
         assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request))
             .isInstanceOf(MomentException.class)
             .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_SEND_FAILURE);
+    }
+
+    @Test
+    void 비밀번호_재설정_토큰_검증에_성공한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, token, null, null);
+        Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
+        passwordUpdateInfos.put(email, new EmailVerification(token, LocalDateTime.now(), expirySeconds));
+
+        // when & then
+        assertThatCode(() -> authEmailService.verifyPasswordResetToken(request))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 비밀번호_재설정_토큰이_일치하지_않으면_예외가_발생한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, "invalid-token", null, null);
+        Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
+        passwordUpdateInfos.put(email, new EmailVerification(token, LocalDateTime.now(), expirySeconds));
+
+        // when & then
+        assertThatThrownBy(() -> authEmailService.verifyPasswordResetToken(request))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_PASSWORD_RESET_TOKEN);
+    }
+
+    @Test
+    void 만료된_비밀번호_재설정_토큰으로_검증시_예외가_발생한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, token, null, null);
+        Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
+        LocalDateTime expiredTime = LocalDateTime.now().minusSeconds(expirySeconds + 1);
+        passwordUpdateInfos.put(email, new EmailVerification(token, expiredTime, expirySeconds));
+
+        // when & then
+        assertThatThrownBy(() -> authEmailService.verifyPasswordResetToken(request))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_PASSWORD_RESET_TOKEN);
+    }
+
+    @Test
+    void 스케줄러가_만료된_인증정보들을_정상적으로_삭제한다() {
+        // given
+        Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
+        Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
+
+        String notExpiredEmail = "test1@moment.com";
+        String expiredEmail = "test2@moment.com";
+        LocalDateTime expiredTime = LocalDateTime.now().minusSeconds(expirySeconds + 1);
+
+        verificationInfos.put(notExpiredEmail, new EmailVerification("123", LocalDateTime.now(), expirySeconds));
+        verificationInfos.put(expiredEmail, new EmailVerification("456", expiredTime, expirySeconds));
+        passwordUpdateInfos.put(notExpiredEmail, new EmailVerification("abc", LocalDateTime.now(), expirySeconds));
+        passwordUpdateInfos.put(expiredEmail, new EmailVerification("def", expiredTime, expirySeconds));
+
+        // when
+        authEmailService.cleanExpiredVerificationInfos();
+
+        // then
+        assertThat(verificationInfos).hasSize(1).containsKey(notExpiredEmail);
+        assertThat(passwordUpdateInfos).hasSize(1).containsKey(notExpiredEmail);
     }
 
     @SuppressWarnings("unchecked")

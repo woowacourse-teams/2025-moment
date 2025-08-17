@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import moment.auth.domain.EmailVerification;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -124,6 +125,17 @@ public class AuthEmailService implements EmailService{
         if (existingInfo != null && existingInfo.isCoolTime(COOL_DOWN_SECONDS)) {
             throw new MomentException(ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
         }
+    }
+
+    @Override
+    public void verifyPasswordResetToken(PasswordResetRequest request) {
+        EmailVerification info = passwordUpdateInfos.get(request.email());
+
+        if (info == null || info.isExpired() || !info.hasSameCode(request.token())) {
+            throw new MomentException(ErrorCode.INVALID_PASSWORD_RESET_TOKEN);
+        }
+
+        passwordUpdateInfos.remove(request.email());
     }
 }
 

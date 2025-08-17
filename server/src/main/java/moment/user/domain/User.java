@@ -110,8 +110,8 @@ public class User extends BaseEntity {
         return (availableStar + requiredStars) < 0;
     }
 
-
-    public boolean checkEmail(String email) {
-        return this.email.equals(email);
+    public void updatePassword(String newPassword) {
+        validatePassword(newPassword);
+        this.password = newPassword;
     }
 }
