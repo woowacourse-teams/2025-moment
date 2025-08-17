@@ -141,7 +141,7 @@ class MyPageControllerTest {
         SuccessResponse<NicknameChangeResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().post("/api/v1/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

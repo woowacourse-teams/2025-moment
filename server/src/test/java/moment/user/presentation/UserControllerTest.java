@@ -194,7 +194,7 @@ class UserControllerTest {
         SuccessResponse<Void> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().post("/api/v1/users/my/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
