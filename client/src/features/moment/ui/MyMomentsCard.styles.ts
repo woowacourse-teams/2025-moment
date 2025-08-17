@@ -1,4 +1,3 @@
-import { theme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
 export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean }>`
@@ -7,14 +6,14 @@ export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean
   width: 100%;
   height: 350px;
   padding: 20px 30px;
-  background-color: ${({ $hasComment }) =>
+  background-color: ${({ $hasComment, theme }) =>
     $hasComment ? theme.colors['slate-800_60'] : theme.colors['gray-600_20']};
   border-radius: 10px;
-  border: 1px solid ${theme.colors['gray-700']};
+  border: 1px solid ${({ theme }) => theme.colors['gray-700']};
   word-break: keep-all;
   cursor: ${({ $hasComment }) => ($hasComment ? 'pointer' : 'not-allowed')};
 
-  ${({ $shadow }) =>
+  ${({ $shadow, theme }) =>
     $shadow &&
     `
       box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
@@ -24,10 +23,10 @@ export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean
   @keyframes shadowPulse {
     0%,
     100% {
-      box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
+      box-shadow: 0px 0px 10px ${({ theme }) => theme.colors['yellow-300_80']};
     }
     50% {
-      box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
+      box-shadow: 0px 0px 25px ${({ theme }) => theme.colors['yellow-300_80']};
     }
   }
 `;
