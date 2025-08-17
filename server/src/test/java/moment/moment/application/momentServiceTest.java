@@ -105,6 +105,45 @@ class momentServiceTest {
     }
 
     @Test
+    void 추가_모멘트_생성에_성공한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+
+        // when
+        momentService.addExtraMoment(request, 1L);
+
+        // then
+        then(momentRepository).should(times(1)).save(any(Moment.class));
+        then(rewardService).should(times(1)).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+    }
+
+    @Test
+    void 추가_모멘트_생성에_실패한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> momentService.addExtraMoment(request, 1L))
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_ENOUGH_STAR);
+    }
+
+    @Test
     void 내가_작성한_모멘트를_생성_시간_순으로_정렬하여_페이지를_조회한다() {
         // given
         User momenter = new User("harden@gmail.com", "1234", "하든", ProviderType.EMAIL);

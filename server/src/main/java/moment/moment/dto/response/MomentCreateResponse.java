@@ -16,10 +16,7 @@ public record MomentCreateResponse(
         LocalDateTime createdAt,
 
         @Schema(description = "모멘트 내용", example = "야근 힘들어용")
-        String content,
-
-        @Schema(description = "모멘트 매칭 여부", example = "false")
-        boolean isMatched
+        String content
 ) {
 
     public static MomentCreateResponse of(Moment moment) {
@@ -27,8 +24,7 @@ public record MomentCreateResponse(
                 moment.getId(),
                 moment.getMomenter().getId(),
                 moment.getCreatedAt(),
-                moment.getContent(),
-                moment.isMatched()
+                moment.getContent()
         );
     }
 }

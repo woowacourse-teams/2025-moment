@@ -59,6 +59,31 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "추가 모멘트 등록", description = "사용자가 추가 모멘트를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "추가 모멘트 등록 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [M-006] 포인트가 부족해 추가 모멘트를 작성할 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/extra")
+    public ResponseEntity<SuccessResponse<MomentCreateResponse>> createExtraMoment(
+            @Valid @RequestBody MomentCreateRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreateResponse response = momentService.addExtraMoment(request, authentication.id());
+        HttpStatus status = HttpStatus.CREATED;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
     @Operation(summary = "내 모멘트 조회", description = "사용자가 자신의 모멘트를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "내 모멘트 조회 성공"),
