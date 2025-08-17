@@ -41,7 +41,7 @@ public class StubEmailService implements EmailService {
     }
 
     @Override
-    public void sendPasswordUpdateEmail(PasswordUpdateRequest request, Long id) {
+    public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
         String code = "123456";
         passwordUpdateCodes.put(request.email(), code);
     }

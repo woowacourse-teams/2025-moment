@@ -205,13 +205,11 @@ class AuthControllerTest {
         // given
         String email = "ekorea623@gmail.com";
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User(email, encodedPassword, "drago", ProviderType.EMAIL));
-        String token = jwtTokenManager.createToken(user.getId(), user.getEmail());
+        userRepository.save(new User(email, encodedPassword, "drago", ProviderType.EMAIL));
         PasswordUpdateRequest request = new PasswordUpdateRequest(email);
 
         // when & then
         given().log().all()
-            .cookie("token", token)
             .contentType(ContentType.JSON)
             .body(request)
             .when().post("/api/v1/auth/email/password")

@@ -10,5 +10,5 @@ public interface EmailService {
 
     void verifyCode(EmailVerifyRequest request);
 
-    void sendPasswordUpdateEmail(PasswordUpdateRequest request, Long id);
+    void sendPasswordUpdateEmail(PasswordUpdateRequest request);
 }

@@ -20,7 +20,6 @@ import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.user.dto.request.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -188,18 +187,16 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 링크 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
-                    - [U-009] 존재하지 않는 사용자입니다.
-                    - [U-008] 권한 없는 사용자입니다.
+                    - [U-011] 이메일 가입자가 아니거나, 존재하지 않는 사용자입니다.
                     - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
                     - [V-003] 이메일 전송에 실패했습니다.
                     """)
     })
     @PostMapping("/email/password")
     public ResponseEntity<SuccessResponse<Void>> requestPasswordUpdatePage(
-            @RequestBody PasswordUpdateRequest request,
-            @AuthenticationPrincipal Authentication authentication
+            @RequestBody PasswordUpdateRequest request
     ) {
-        emailService.sendPasswordUpdateEmail(request, authentication.id());
+        emailService.sendPasswordUpdateEmail(request);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
     }
 }

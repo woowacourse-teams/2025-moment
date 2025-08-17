@@ -3,6 +3,7 @@ package moment.user.application;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,11 @@ public class DefaultUserQueryService implements UserQueryService {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
         return userRepository.findNotMatchedUsersToday(startOfDay, endOfDay, momenter);
+    }
+
+    @Override
+    public User getUserByEmailAndProviderType(String email, ProviderType providerType) {
+        return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL)
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_EMAIL_PROVIDER));
     }
 }

@@ -19,7 +19,7 @@ public enum ErrorCode {
     USER_UNAUTHORIZED("U-008", "권한 없는 사용자입니다.", HttpStatus.UNAUTHORIZED),
     USER_NOT_FOUND("U-009", "존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
     USER_NICKNAME_GENERATION_FAILED("U-010", "사용 가능한 닉네임을 생성할 수 없습니다.", HttpStatus.CONFLICT),
-    USER_NOT_ENOUGH_STAR("U-011", "사용 가능한 별조각을 확인해주세요.", HttpStatus.BAD_REQUEST),
+    USER_NOT_EMAIL_PROVIDER("U-011", "이메일 가입자가 아니거나, 존재하지 않는 사용자입니다.", HttpStatus.BAD_REQUEST),
 
     TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
@@ -48,8 +48,7 @@ public enum ErrorCode {
 
     EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
-    EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST)
-    ;
+    EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

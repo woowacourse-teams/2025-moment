@@ -15,7 +15,7 @@ import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.application.UserQueryService;
-import moment.user.domain.User;
+import moment.user.domain.ProviderType;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -84,10 +84,9 @@ public class AuthEmailService implements EmailService{
     }
 
     @Override
-    public void sendPasswordUpdateEmail(PasswordUpdateRequest request, Long id) {
-        User user = userQueryService.getUserById(id);
-
-        String email = validateEmail(request, user);
+    public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
+        String email = request.email();
+        userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL);
 
         EmailVerification existingInfo = passwordUpdateInfos.get(email);
         validateCoolTimePassed(existingInfo);
@@ -117,18 +116,10 @@ public class AuthEmailService implements EmailService{
         mailSender.send(helper.getMimeMessage());
     }
 
-    private static void validateCoolTimePassed(EmailVerification existingInfo) {
+    private void validateCoolTimePassed(EmailVerification existingInfo) {
         if (existingInfo != null && existingInfo.isCoolTime(COOL_DOWN_SECONDS)) {
             throw new MomentException(ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
         }
-    }
-
-    private static String validateEmail(PasswordUpdateRequest request, User user) {
-        String email = request.email();
-        if (!user.checkEmail(email)) {
-            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
-        }
-        return email;
     }
 }
 

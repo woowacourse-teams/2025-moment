@@ -39,7 +39,6 @@ class AuthEmailServiceTest {
 
     private final String email = "ekorea623@gmail.com";
     private final String wrongCode = "111111";
-    private final Long userId = 1L;
     private final long expirySeconds = 300L;
 
     @InjectMocks
@@ -67,7 +66,6 @@ class AuthEmailServiceTest {
     @Test
     void 인증번호_검증에_성공한다() {
         // given
-        EmailRequest emailRequest = new EmailRequest(email);
         String verificationCode = "123456";
         Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
         verificationInfos.put(email, new EmailVerification(verificationCode, LocalDateTime.now(), expirySeconds));
@@ -84,7 +82,6 @@ class AuthEmailServiceTest {
         // given
         EmailRequest request = new EmailRequest(email);
         Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
-        // 현재 시간보다 1초 전에 생성되었다고 가정 (쿨다운 60초 이내)
         verificationInfos.put(email, new EmailVerification("123456", LocalDateTime.now().minusSeconds(1), expirySeconds));
 
         // when & then
@@ -98,7 +95,6 @@ class AuthEmailServiceTest {
         // given
         String verificationCode = "123456";
         Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
-        // 만료 시간(300초)보다 1초 더 전에 생성되었다고 가정
         LocalDateTime expiredTime = LocalDateTime.now().minusSeconds(expirySeconds + 1);
         verificationInfos.put(email, new EmailVerification(verificationCode, expiredTime, expirySeconds));
 
@@ -131,43 +127,29 @@ class AuthEmailServiceTest {
         User user = new User(email, "1q2w3e4r!", "drago", ProviderType.EMAIL);
         MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        when(userQueryService.getUserById(userId)).thenReturn(user);
+        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
         doNothing().when(mailSender).send(any(MimeMessage.class));
 
         // when
-        authEmailService.sendPasswordUpdateEmail(request, userId);
+        authEmailService.sendPasswordUpdateEmail(request);
 
         // then
         verify(mailSender).send(any(MimeMessage.class));
     }
 
     @Test
-    void 비밀번호_재설정_요청_시_사용자_이메일과_일치하지_않으면_예외가_발생한다() {
-        // given
-        PasswordUpdateRequest request = new PasswordUpdateRequest(email);
-        User user = new User("other-email@gmail.com", "password", "nickname", ProviderType.GOOGLE);
-
-        when(userQueryService.getUserById(userId)).thenReturn(user);
-
-        // when & then
-        assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request, userId))
-            .isInstanceOf(MomentException.class)
-            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_UNAUTHORIZED);
-    }
-
-    @Test
     void 비밀번호_재설정_요청_쿨다운이_지나지_않았으면_예외가_발생한다() {
         // given
         PasswordUpdateRequest request = new PasswordUpdateRequest(email);
-        User user = new User(email, "password", "nickname", ProviderType.GOOGLE);
+        User user = new User(email, "password", "nickname", ProviderType.EMAIL);
         Map<String, EmailVerification> passwordUpdateInfos = getPasswordUpdateInfosMap();
         passwordUpdateInfos.put(email, new EmailVerification("some-token", LocalDateTime.now().minusSeconds(1), expirySeconds));
 
-        when(userQueryService.getUserById(userId)).thenReturn(user);
+        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
 
         // when & then
-        assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request, userId))
+        assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request))
             .isInstanceOf(MomentException.class)
             .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
     }
@@ -176,16 +158,17 @@ class AuthEmailServiceTest {
     void 비밀번호_재설정_메일_전송에_실패하면_예외가_발생한다() {
         // given
         PasswordUpdateRequest request = new PasswordUpdateRequest(email);
-        User user = new User(email, "password", "nickname", ProviderType.GOOGLE);
+        User user = new User(email, "password", "nickname", ProviderType.EMAIL);
         MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        when(userQueryService.getUserById(userId)).thenReturn(user);
+        when(userQueryService.getUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(user);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new MailSendException("Failed to send email")).when(mailSender).send(any(MimeMessage.class));
 
         // when & then
-        assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request, userId))
-            .isInstanceOf(MomentException.class);
+        assertThatThrownBy(() -> authEmailService.sendPasswordUpdateEmail(request))
+            .isInstanceOf(MomentException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_SEND_FAILURE);
     }
 
     @SuppressWarnings("unchecked")
