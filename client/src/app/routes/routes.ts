@@ -9,5 +9,5 @@ export const ROUTES = {
   TODAY_COMMENT: '/today-comment',
   TODAY_MOMENT_SUCCESS: '/today-moment/success',
   TODAY_COMMENT_SUCCESS: '/today-comment/success',
-  GOOGLE_CALLBACK: '/auth/callback/google',
+  GOOGLE_CALLBACK: '/auth/callback',
 };

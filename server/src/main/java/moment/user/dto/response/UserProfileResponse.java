@@ -9,14 +9,23 @@ public record UserProfileResponse(
         @Schema(description = "사용자 닉네임", example = "mimi")
         String nickname,
 
-        @Schema(description = "사용자 포인트", example = "100")
-        Integer currentPoint,
+        @Schema(description = "사용자 경험치", example = "100")
+        Integer expStar,
 
         @Schema(description = "사용자 레벨", example = "METEOR")
-        Level level
+        Level level,
+
+        @Schema(description = "다음 레벨 요구 경험치", example = "200")
+        Integer nextStepExp
 ) {
 
     public static UserProfileResponse from(User user) {
-        return new UserProfileResponse(user.getNickname(), user.getCurrentPoint(), user.getLevel());
+        Level level = user.getLevel();
+        return new UserProfileResponse(
+                user.getNickname(),
+                user.getAvailableStar(),
+                level,
+                level.getNextLevelRequiredStars()
+        );
     }
 }

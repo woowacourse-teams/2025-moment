@@ -1,8 +1,8 @@
 import { useCommentCreationStatusQuery } from '@/features/comment/hooks/useCommentCreationStatusQuery';
 import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
-import { NotFound } from '@/shared/ui';
+import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import { CheckCircleIcon, Users } from 'lucide-react';
+import { AlertCircle, CheckCircleIcon, Users } from 'lucide-react';
 import * as S from '../todayMoment/index.styles';
 
 export default function TodayCommentPage() {
@@ -10,11 +10,18 @@ export default function TodayCommentPage() {
 
   const renderContent = () => {
     if (isLoading) {
-      return <div>로딩 중...</div>;
+      return <CommonSkeletonCard variant="comment" />;
     }
 
     if (error || !data) {
-      return <div>오류가 발생했습니다.</div>;
+      return (
+        <NotFound
+          title="데이터를 불러올 수 없습니다"
+          subtitle="잠시 후 다시 시도해주세요"
+          icon={AlertCircle}
+          size="large"
+        />
+      );
     }
 
     const status = data.data.commentCreationStatus;

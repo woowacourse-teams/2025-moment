@@ -19,6 +19,9 @@ public enum ErrorCode {
     USER_UNAUTHORIZED("U-008", "권한 없는 사용자입니다.", HttpStatus.UNAUTHORIZED),
     USER_NOT_FOUND("U-009", "존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
     USER_NICKNAME_GENERATION_FAILED("U-010", "사용 가능한 닉네임을 생성할 수 없습니다.", HttpStatus.CONFLICT),
+    USER_NOT_ENOUGH_STAR("U-011", "사용 가능한 별조각을 확인해주세요.", HttpStatus.BAD_REQUEST),
+    PASSWORD_SAME_AS_OLD("U-012", "새 비밀번호가 기존의 비밀번호와 동일합니다.", HttpStatus.BAD_REQUEST),
+    PASSWORD_CHANGE_UNSUPPORTED_PROVIDER("U-013", "일반 회원가입 사용자가 아닌 경우 비밀번호를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
@@ -26,7 +29,8 @@ public enum ErrorCode {
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
 
-    EMOJI_NOT_FOUND("E-001", "존재하지 않는 이모지입니다.", HttpStatus.BAD_REQUEST),
+    ECHO_NOT_FOUND("E-001", "존재하지 않는 에코입니다.", HttpStatus.BAD_REQUEST),
+    ECHO_CONFLICT("E-002", "해당 에코가 이미 존재합니다.", HttpStatus.CONFLICT),
 
     COMMENT_INVALID("C-001", "유효하지 않은 코멘트입니다.", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_FOUND("C-002", "존재하지 않는 코멘트입니다.", HttpStatus.NOT_FOUND),
@@ -42,7 +46,12 @@ public enum ErrorCode {
     MOMENT_LENGTH_INVALID("M-004", "모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.", HttpStatus.BAD_REQUEST),
     MOMENTS_LIMIT_INVALID("M-005", "유효하지 않은 페이지 사이즈입니다.", HttpStatus.BAD_REQUEST),
 
-    NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND);
+    NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
+
+    EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST)
+    ;
+
 
     private final String code;
     private final String message;

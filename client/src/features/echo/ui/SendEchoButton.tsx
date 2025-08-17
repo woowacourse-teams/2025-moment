@@ -7,9 +7,15 @@ interface SendEchoButtonProps {
   commentId: number;
   selectedEchos: Set<EchoTypeKey>;
   hasSelection: boolean;
+  isDisabled?: boolean;
 }
 
-export const SendEchoButton = ({ commentId, selectedEchos, hasSelection }: SendEchoButtonProps) => {
+export const SendEchoButton = ({
+  commentId,
+  selectedEchos,
+  hasSelection,
+  isDisabled,
+}: SendEchoButtonProps) => {
   const { mutateAsync: sendEchos } = useEchoMutation();
 
   const handleSendEchos = () => {
@@ -20,7 +26,7 @@ export const SendEchoButton = ({ commentId, selectedEchos, hasSelection }: SendE
     <Button
       title="전송"
       variant="primary"
-      disabled={!hasSelection}
+      disabled={!hasSelection || isDisabled}
       externalVariant={() => buttonVariant(theme, hasSelection)}
       onClick={handleSendEchos}
     />

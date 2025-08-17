@@ -4,26 +4,45 @@ export const EchoButton = ({
   title,
   onClick: handleClick,
   isSelected,
+  isAlreadySent,
+  isDisabled = false,
 }: {
   title: string;
   onClick: () => void;
   isSelected: boolean;
+  isAlreadySent?: boolean | undefined;
+  isDisabled?: boolean;
 }) => {
   return (
-    <EchoButtonStyle onClick={handleClick} $isSelected={isSelected}>
+    <EchoButtonStyle
+      onClick={handleClick}
+      $isSelected={isSelected}
+      $isDisabled={isDisabled}
+      $isAlreadySent={isAlreadySent}
+      disabled={isDisabled}
+    >
       {title}
     </EchoButtonStyle>
   );
 };
 
-const EchoButtonStyle = styled.button<{ $isSelected: boolean }>`
+const EchoButtonStyle = styled.button<{
+  $isSelected: boolean;
+  $isDisabled: boolean;
+  $isAlreadySent: boolean | undefined;
+}>`
   border: 1px solid
-    ${({ $isSelected, theme }) =>
-      $isSelected ? theme.colors['yellow-500'] : theme.colors['gray-400']};
-  color: ${({ $isSelected, theme }) =>
-    $isSelected ? theme.colors['yellow-500'] : theme.colors['gray-400']};
+    ${({ $isSelected, $isAlreadySent, theme }) => {
+      if ($isSelected || $isAlreadySent) return theme.colors['yellow-500'];
+      return theme.colors['gray-400'];
+    }};
+  color: ${({ $isSelected, $isAlreadySent, theme }) => {
+    if ($isSelected || $isAlreadySent) return theme.colors['yellow-500'];
+    return theme.colors['gray-400'];
+  }};
   border-radius: 25px;
   padding: 4px 20px;
   font-size: 14px;
   font-weight: bold;
+  cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 `;
