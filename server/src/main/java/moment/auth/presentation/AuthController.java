@@ -210,7 +210,7 @@ public class AuthController {
     })
     @PostMapping("/email/password/reset")
     public ResponseEntity<SuccessResponse<Void>> resetPassword(
-        @RequestBody PasswordResetRequest request
+        @Valid @RequestBody PasswordResetRequest request
     ) {
         authService.resetPassword(request);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
