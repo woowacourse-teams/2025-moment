@@ -1,4 +1,3 @@
-import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { Card, TextArea } from '@/shared/ui';
 import * as S from './TodayContent.styles';
 import { Send, Star } from 'lucide-react';
@@ -6,9 +5,16 @@ import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { useNavigate } from 'react-router';
 import { ROUTES } from '@/app/routes/routes';
 
-export function TodayMomentForm() {
+export function TodayMomentForm({
+  handleContentChange,
+  handleSendContent,
+  content,
+}: {
+  handleContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleSendContent: () => void;
+  content: string;
+}) {
   const navigate = useNavigate();
-  const { handleContentChange, handleSendContent, content } = useSendMoments();
 
   const handleNavigateToTodayMomentSuccess = () => {
     handleSendContent();

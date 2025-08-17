@@ -57,7 +57,7 @@ export const TodayMomentSuccessContent = () => {
           <Modal.Header showCloseButton={false} />
           <Modal.Content>
             <S.ModalContent>
-              {!canExtraWritable ? (
+              {canExtraWritable ? (
                 <p>
                   추가 모멘트를 작성하시겠습니까? <br /> 별조각 10개가 차감됩니다.
                 </p>
@@ -70,7 +70,7 @@ export const TodayMomentSuccessContent = () => {
           </Modal.Content>
           <Modal.Footer>
             <S.ModalActionContainer>
-              {!canExtraWritable && (
+              {canExtraWritable && (
                 <Button
                   title="추가 작성하기"
                   variant="secondary"
