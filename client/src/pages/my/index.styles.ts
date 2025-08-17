@@ -169,3 +169,15 @@ export const Divider = styled.hr`
   margin: 32px 0;
   width: 100%;
 `;
+
+export const SettingLink = styled.p`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors['white']};
+
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors['yellow-300']};
+  }
+`;

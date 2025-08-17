@@ -10,6 +10,8 @@ import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { AlertCircle } from 'lucide-react';
+import { Link } from 'react-router';
+import { ROUTES } from '@/app/routes/routes';
 
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,6 +107,9 @@ export default function MyPage() {
 
       <S.SettingSection>
         <S.SectionTitle>설정</S.SectionTitle>
+        <p>
+          <Link to={ROUTES.PASSWORD}>비밀번호 변경</Link>
+        </p>
       </S.SettingSection>
 
       <Modal isOpen={isOpen} position="center" size="large" onClose={() => setIsOpen(false)}>

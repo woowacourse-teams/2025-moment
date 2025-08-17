@@ -1,5 +1,6 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
+import { PasswordChangeErrors, PasswordChangeRequest } from '../types/passwordChange';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const NICKNAME_REGEX = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gim;
@@ -27,6 +28,23 @@ export const validateRePassword = (password: string, rePassword: string): string
   if (!rePassword) {
     return '비밀번호를 입력해주세요.';
   } else if (rePassword !== password) {
+    return '비밀번호가 일치하지 않습니다.';
+  }
+  return '';
+};
+
+export const validateCurrentPassword = (currentPassword: string): string => {
+  if (!currentPassword) {
+    return '비밀번호를 입력해주세요.';
+  }
+  return '';
+};
+
+export const validateConfirmNewPassword = (newPassword: string, checkPassword: string): string => {
+  if (!checkPassword) {
+    return '비밀번호를 입력해주세요.';
+  }
+  if (checkPassword !== newPassword) {
     return '비밀번호가 일치하지 않습니다.';
   }
   return '';
@@ -64,6 +82,21 @@ export const validateSignupField = (
   }
 };
 
+export const validatePasswordChangeField = (
+  field: keyof PasswordChangeRequest,
+  value: string,
+  formData: PasswordChangeRequest,
+): string => {
+  switch (field) {
+    case 'newPassword':
+      return validatePassword(value);
+    case 'checkPassword':
+      return validateConfirmNewPassword(formData.newPassword, value);
+    default:
+      return '';
+  }
+};
+
 export const validateLoginForm = (data: LoginFormData): LoginError => {
   return {
     email: validateEmail(data.email),
@@ -80,6 +113,13 @@ export const validateSignupForm = (data: SignupFormData): SignupErrors => {
   };
 };
 
+export const validatePasswordChangeForm = (data: PasswordChangeRequest): PasswordChangeErrors => {
+  return {
+    newPassword: validatePassword(data.newPassword),
+    checkPassword: validateConfirmNewPassword(data.newPassword, data.checkPassword),
+  };
+};
+
 export const isLoginFormValid = (errors: LoginError): boolean => {
   return Object.values(errors).every(error => error === '');
 };
@@ -90,4 +130,8 @@ export const isSignupFormValid = (errors: SignupErrors): boolean => {
 
 export const isLoginFormEmpty = (data: LoginFormData): boolean => {
   return Object.values(data).every(value => value === '');
+};
+
+export const isPasswordChangeFormValid = (errors: PasswordChangeErrors): boolean => {
+  return Object.values(errors).every(error => error === '');
 };
