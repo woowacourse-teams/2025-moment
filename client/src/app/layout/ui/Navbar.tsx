@@ -14,8 +14,6 @@ import * as S from './Navbar.styles';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { mockData } from '@/widgets/EXPBar/mockData';
 
-type Level = 'METEOR' | 'ASTEROID' | 'COMET';
-
 export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -54,8 +52,10 @@ export const Navbar = () => {
     });
   };
 
+  // const expStar = profile?.expStar ?? 0;
+  // const nextStepExp = profile?.nextStepExp ?? 0;
+  // const EXPBarProgress = nextStepExp + expStar > 0 ? (expStar / (nextStepExp + expStar)) * 100 : 0;
   const EXPBarProgress =
-    //(profile?.expStar / (profile?.nextStepExp + profile?.expStar)) * 100;
     (mockData.data.expStar / (mockData.data.nextStepExp + mockData.data.expStar)) * 100;
 
   return (
@@ -67,8 +67,10 @@ export const Navbar = () => {
       <S.DesktopAuthButton>
         {profile?.level ? (
           <S.LevelIconWrapper>
-            <S.LevelIcon src={levelMap[profile?.level as Level].FIRST} alt="레벨 등급표" />
-            {/* DB와 표기법 맞추고 수정 */}
+            <S.LevelIcon
+              src={levelMap[profile?.level as keyof typeof levelMap]}
+              alt="레벨 등급표"
+            />
             <S.EXPBarTooltip>
               <EXPBar progress={EXPBarProgress} />
             </S.EXPBarTooltip>

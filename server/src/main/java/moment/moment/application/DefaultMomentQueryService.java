@@ -24,12 +24,4 @@ public class DefaultMomentQueryService implements MomentQueryService {
         return momentRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
     }
-
-    @Override
-    public Optional<Moment> findTodayMatchedMomentByCommenter(User commenter) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-
-        return momentRepository.findMatchedMomentByCommenter(commenter, startOfDay, endOfDay);
-    }
 }
