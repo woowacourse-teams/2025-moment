@@ -52,34 +52,36 @@ export const TodayMomentSuccessContent = () => {
           <YellowSquareButton Icon={Plus} title="추가 작성하기" onClick={handleOpen} />
         </S.ActionContainer>
       </Card.Action>
-      <Modal isOpen={isOpen} onClose={handleClose} size="small">
-        <Modal.Header showCloseButton={false} />
-        <Modal.Content>
-          <S.ModalContent>
-            {canExtraWritable ? (
-              <p>
-                추가 모멘트를 작성하시겠습니까? <br /> 별조각 10개가 차감됩니다.
-              </p>
-            ) : (
-              <p>
-                추가 작성하려면 별조각 10개가 필요합니다. <br /> 별조각을 모아오세요.
-              </p>
-            )}
-          </S.ModalContent>
-        </Modal.Content>
-        <Modal.Footer>
-          <S.ModalActionContainer>
-            {canExtraWritable && (
-              <Button
-                title="추가 작성하기"
-                variant="secondary"
-                onClick={handleNavigateToTodayMoment}
-              />
-            )}
-            <Button title="닫기" variant="primary" onClick={handleClose} />
-          </S.ModalActionContainer>
-        </Modal.Footer>
-      </Modal>
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={handleClose} size="small">
+          <Modal.Header showCloseButton={false} />
+          <Modal.Content>
+            <S.ModalContent>
+              {!canExtraWritable ? (
+                <p>
+                  추가 모멘트를 작성하시겠습니까? <br /> 별조각 10개가 차감됩니다.
+                </p>
+              ) : (
+                <p>
+                  추가 작성하려면 별조각 10개가 필요합니다. <br /> 별조각을 모아오세요.
+                </p>
+              )}
+            </S.ModalContent>
+          </Modal.Content>
+          <Modal.Footer>
+            <S.ModalActionContainer>
+              {!canExtraWritable && (
+                <Button
+                  title="추가 작성하기"
+                  variant="secondary"
+                  onClick={handleNavigateToTodayMoment}
+                />
+              )}
+              <Button title="닫기" variant="primary" onClick={handleClose} />
+            </S.ModalActionContainer>
+          </Modal.Footer>
+        </Modal>
+      )}
     </S.TodayContentWrapper>
   );
 };
