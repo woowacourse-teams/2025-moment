@@ -101,8 +101,12 @@ public class User extends BaseEntity {
         this.level = Level.getLevel(this.expStar);
     }
 
-    public boolean canNotUseStars(Integer requiredStars) {
+    public boolean canNotUseStars(int requiredStars) {
         return (availableStar + requiredStars) < 0;
     }
 
+    public void changeNickname(String newNickname, int requiredStar) {
+        this.availableStar += requiredStar;
+        this.nickname = newNickname;
+    }
 }
