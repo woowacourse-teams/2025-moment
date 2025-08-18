@@ -32,30 +32,21 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
     <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar}>
-          <S.IconImage
-            src="/images/bluePlanet.png"
-            alt="오늘의 모멘트 페이지로 이동 버튼"
-          ></S.IconImage>
+          <S.IconImage src="/images/bluePlanet.png" alt="오늘의 모멘트 페이지로 이동 버튼" />
           <S.IconText>오늘의 모멘트</S.IconText>
         </S.LinkContainer>
       </Link>
 
       <Link to={ROUTES.TODAY_COMMENT} onClick={handleTodayCommentClick}>
         <S.LinkContainer $isNavBar={$isNavBar}>
-          <S.IconImage
-            src="/images/orangePlanet.png"
-            alt="오늘의 코멘트 페이지로 이동 버튼"
-          ></S.IconImage>
+          <S.IconImage src="/images/orangePlanet.png" alt="오늘의 코멘트 페이지로 이동 버튼" />
           <S.IconText>오늘의 코멘트</S.IconText>
         </S.LinkContainer>
       </Link>
 
       <Link to={ROUTES.COLLECTION_MYMOMENT} onClick={handleCollectionClick}>
         <S.LinkContainer $isNavBar={$isNavBar}>
-          <S.IconImage
-            src="/images/starPlanet.png"
-            alt="나만의 모음집 페이지로 이동 버튼"
-          ></S.IconImage>
+          <S.IconImage src="/images/starPlanet.png" alt="나만의 모음집 페이지로 이동 버튼" />
           <S.IconText>나만의 모음집</S.IconText>
         </S.LinkContainer>
       </Link>
