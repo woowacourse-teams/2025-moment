@@ -3,7 +3,7 @@ import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentabl
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, RotateCcw, User } from 'lucide-react';
+import { AlertCircle, Clock, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 
@@ -35,7 +35,6 @@ export function TodayCommentForm() {
   return (
     <Card width="medium">
       <Card.TitleContainer
-        Icon={User}
         title={
           <S.TitleWrapper>
             <S.UserInfoWrapper>
@@ -48,7 +47,7 @@ export function TodayCommentForm() {
                 {formatRelativeTime(momentData.createdAt)}
               </S.TimeWrapper>
               <S.RefreshButton onClick={() => refetch()}>
-                <RotateCcw size={25} />
+                <RotateCcw size={28} />
               </S.RefreshButton>
             </S.ActionWrapper>
           </S.TitleWrapper>

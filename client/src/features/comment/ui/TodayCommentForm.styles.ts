@@ -46,16 +46,15 @@ export const RefreshButton = styled.button`
   border-radius: 6px;
   background-color: transparent;
   ${({ theme }) => css`
-    color: ${theme.colors['gray-600']};
+    color: ${theme.colors['yellow-500']};
     &:hover {
-      background-color: ${theme.colors['gray-200']};
-      color: ${theme.colors['gray-700']};
+      background-color: ${theme.colors['yellow-300_10']};
     }
   `}
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(1.05);
   }
 `;
