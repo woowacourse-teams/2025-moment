@@ -33,6 +33,7 @@ export const theme = {
     'gray-800_90': 'color-mix(in srgb, #1E293B 90%, transparent)',
     'blue-600': '#497CBC',
     'green-500': '#059669',
+    'green-700_20': 'color-mix(in srgb, #99CC00 20%, transparent)',
   },
   typography: {
     title: {
@@ -67,7 +68,33 @@ export const theme = {
       small: '30%',
       medium: '60%',
       large: '90%',
+      full: '100%',
     },
+
+    modalWidth: {
+      small: {
+        desktop: '30%',
+        tablet: '50%',
+        mobile: '60%',
+      },
+      medium: {
+        desktop: '60%',
+        tablet: '70%',
+        mobile: '90%',
+      },
+      large: {
+        desktop: '90%',
+        tablet: '95%',
+        mobile: '100%',
+      },
+    },
+  },
+
+  mediaQueries: {
+    mobile: '@media (max-width: 767px)',
+    tablet: '@media (min-width: 768px) and (max-width: 1023px)',
+    desktop: '@media (min-width: 1024px)',
+    largeDesktop: '@media (min-width: 1440px)',
   },
 } as const;
 

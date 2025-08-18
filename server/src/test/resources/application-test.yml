@@ -43,10 +43,12 @@ spring:
 
 jwt:
   secret:
-    key: test-secret-key-for-jwt-token-generation
+    access_key: test-access-key-for-jwt-token-generation
+    refresh_key: test-refresh-key-for-jwt-token-generation
 
 expiration:
-  time: 3600000
+  access-token-time: 1800000
+  refresh-token-time: 604800000
 
 auth:
   google:

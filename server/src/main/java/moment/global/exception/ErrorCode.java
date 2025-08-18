@@ -28,6 +28,8 @@ public enum ErrorCode {
     TOKEN_EMPTY("T-003", "빈 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+    REFRESH_TOKEN_NOT_FOUND("T-006", "리프레시 토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+    REFRESH_TOKEN_EMPTY("T-007", "리프레시 토큰이 비어있습니다.", HttpStatus.UNAUTHORIZED),
 
     ECHO_NOT_FOUND("E-001", "존재하지 않는 에코입니다.", HttpStatus.BAD_REQUEST),
     ECHO_CONFLICT("E-002", "해당 에코가 이미 존재합니다.", HttpStatus.CONFLICT),
@@ -49,9 +51,9 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
 
     EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
-    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST)
-    ;
-
+    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

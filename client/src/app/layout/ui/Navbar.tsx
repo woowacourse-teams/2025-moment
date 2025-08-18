@@ -8,11 +8,14 @@ import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 
-type Level = 'METEOR' | 'ASTEROID' | 'COMET';
+export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -23,6 +26,10 @@ export const Navbar = () => {
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+  const { data: notifications } = useNotificationsQuery();
+
+  const isNotificationExisting =
+    notifications?.data.length && notifications?.data.length > 0 ? true : false;
 
   if (isError) {
     console.error('checkIfLoggedInQuery error', error);
@@ -36,21 +43,17 @@ export const Navbar = () => {
   });
 
   const handleDesktopAuthButtonClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click Desktop Auth Button',
-      label: 'Desktop Auth Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickDesktopAuthButton);
   };
 
   const handleMobileAuthButtonClick = () => {
     toggleMobileMenu();
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click Mobile Auth Button',
-      label: 'Mobile Auth Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickMobileAuthButton);
   };
+
+  const expStar = profile?.expStar ?? 0;
+  const nextStepExp = profile?.nextStepExp ?? 0;
+  const EXPBarProgress = (expStar / (nextStepExp + expStar)) * 100;
 
   return (
     <S.Navbar>
@@ -59,7 +62,17 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
+        {profile?.level ? (
+          <S.LevelIconWrapper>
+            <S.LevelIcon
+              src={levelMap[profile?.level as keyof typeof levelMap]}
+              alt="레벨 등급표"
+            />
+            <S.EXPBarTooltip>
+              <EXPBar progress={EXPBarProgress} />
+            </S.EXPBarTooltip>
+          </S.LevelIconWrapper>
+        ) : null}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 
@@ -75,7 +88,11 @@ export const Navbar = () => {
         <S.MobileMenuContent>
           <S.MobileNavItems>
             {navItems.map(item => (
-              <S.MobileNavItem key={item.href} $isActive={currentPath === item.href}>
+              <S.MobileNavItem
+                key={item.href}
+                $isActive={currentPath === item.href}
+                $shadow={item.label === '나만의 모음집' && isNotificationExisting}
+              >
                 <Link to={item.href} onClick={toggleMobileMenu}>
                   {item.label}
                 </Link>

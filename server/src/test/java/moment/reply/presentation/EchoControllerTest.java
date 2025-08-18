@@ -26,15 +26,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EchoControllerTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
@@ -63,11 +67,12 @@ public class EchoControllerTest {
 
     @BeforeEach
     void setUp() {
+        RestAssured.port = port;
         databaseCleaner.clean();
         momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL));
         commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
-        momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
-        commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
+        momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
+        commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter, WriteType.BASIC));
         comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment));
     }
@@ -81,7 +86,7 @@ public class EchoControllerTest {
         // when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .body(request)
                 .when().post("/api/v1/echos")
                 .then().log().all()
@@ -105,7 +110,7 @@ public class EchoControllerTest {
         // when
         List<EchoReadResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .when().get("/api/v1/echos/" + comment.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

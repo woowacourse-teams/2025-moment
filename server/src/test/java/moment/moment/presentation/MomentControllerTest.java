@@ -1,8 +1,13 @@
 package moment.moment.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.util.Comparator;
 import moment.auth.application.TokenManager;
+import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
@@ -16,27 +21,28 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Comparator;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class MomentControllerTest {
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private UserRepository userRepository;
@@ -47,6 +53,12 @@ class MomentControllerTest {
     @Autowired
     private TokenManager tokenManager;
 
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+        databaseCleaner.clean();
+    }
+
     @Test
     void 기본_모멘트를_등록한다() {
         // given
@@ -55,12 +67,12 @@ class MomentControllerTest {
         String content = "재미있는 내용이네요~~?";
 
         MomentCreateRequest request = new MomentCreateRequest(content);
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .body(request)
                 .when().post("/api/v1/moments")
                 .then().log().all()
@@ -85,12 +97,12 @@ class MomentControllerTest {
         String content = "재미있는 내용이네요~~?";
 
         MomentCreateRequest request = new MomentCreateRequest(content);
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .body(request)
                 .when().post("/api/v1/moments/extra")
                 .then().log().all()
@@ -113,7 +125,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
         Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
@@ -131,7 +143,7 @@ class MomentControllerTest {
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 3)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -162,7 +174,7 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
         Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
@@ -180,7 +192,7 @@ class MomentControllerTest {
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()
                 .param("limit", 10)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/moments/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -208,11 +220,11 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -233,11 +245,11 @@ class MomentControllerTest {
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         momentRepository.save(moment);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -261,11 +273,11 @@ class MomentControllerTest {
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
-        String token = tokenManager.createToken(savedUser.getId(), savedUser.getEmail());
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
 
         // when
         CommentableMomentResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/commentable")
                 .jsonPath()
                 .getObject("data", CommentableMomentResponse.class);
@@ -286,11 +298,11 @@ class MomentControllerTest {
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/extra")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -309,11 +321,11 @@ class MomentControllerTest {
         momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
-        String token = tokenManager.createToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("api/v1/moments/writable/extra")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
