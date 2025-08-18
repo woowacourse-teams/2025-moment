@@ -43,7 +43,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const echoType = currentComment?.echos.map(echo => echo.echoType);
   const hasAnyEcho = echoType && echoType.length > 0;
 
-  console.log(currentComment);
   return (
     <>
       <S.MyMomentsCard

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useState } from 'react';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
+import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
@@ -15,20 +16,12 @@ export default function HomePage() {
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
   const handleClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click TodayMomentButton',
-      label: 'TodayMomentButton',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickTodayMomentButton);
     navigate(ROUTES.TODAY_MOMENT);
   };
 
   const handleWidgetClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click BlackHole Button',
-      label: 'BlackHole Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickBlackHoleButton);
     setIsWidgetOpen(!isWidgetOpen);
   };
 
