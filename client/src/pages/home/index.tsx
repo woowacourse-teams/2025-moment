@@ -1,5 +1,4 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
@@ -12,14 +11,8 @@ import * as S from './index.styles';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
-  const { data: notifications } = useNotificationsQuery();
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
-
-  if (!notifications) {
-    return null;
-  }
-  const isNotificationExisting = notifications?.data.length > 0;
 
   const handleClick = () => {
     sendEvent(HomePageAnalyticsEvent.ClickTodayMomentButton);
