@@ -4,6 +4,6 @@ import { PasswordChangeRequest, PasswordChangeResponse } from '../types/password
 export const passwordChange = async (
   data: PasswordChangeRequest,
 ): Promise<PasswordChangeResponse> => {
-  const response = await api.post('api/v1/users/me/password', data);
+  const response = await api.post('/users/me/password', data);
   return response.data;
 };

@@ -33,23 +33,6 @@ export const validateRePassword = (password: string, rePassword: string): string
   return '';
 };
 
-export const validateCurrentPassword = (currentPassword: string): string => {
-  if (!currentPassword) {
-    return '비밀번호를 입력해주세요.';
-  }
-  return '';
-};
-
-export const validateConfirmNewPassword = (newPassword: string, checkPassword: string): string => {
-  if (!checkPassword) {
-    return '비밀번호를 입력해주세요.';
-  }
-  if (checkPassword !== newPassword) {
-    return '비밀번호가 일치하지 않습니다.';
-  }
-  return '';
-};
-
 export const validateNickname = (nickname: string): string => {
   if (!nickname) {
     return '닉네임을 입력해주세요.';
@@ -91,7 +74,7 @@ export const validatePasswordChangeField = (
     case 'newPassword':
       return validatePassword(value);
     case 'checkPassword':
-      return validateConfirmNewPassword(formData.newPassword, value);
+      return validateRePassword(formData.newPassword, value);
     default:
       return '';
   }
@@ -116,7 +99,7 @@ export const validateSignupForm = (data: SignupFormData): SignupErrors => {
 export const validatePasswordChangeForm = (data: PasswordChangeRequest): PasswordChangeErrors => {
   return {
     newPassword: validatePassword(data.newPassword),
-    checkPassword: validateConfirmNewPassword(data.newPassword, data.checkPassword),
+    checkPassword: validateRePassword(data.newPassword, data.checkPassword),
   };
 };
 
