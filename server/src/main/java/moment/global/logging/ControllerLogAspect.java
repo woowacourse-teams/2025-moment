@@ -25,15 +25,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class ControllerLogAspect {
 
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-    public void allController() {
-    }
+    public void allController() {}
 
-    @Before("allController()")
+    @Pointcut("allController() && !target(org.springdoc.webmvc.api.OpenApiWebMvcResource)")
+    public void allControllerWithoutSwagger() { }
+
+    @Before("allControllerWithoutSwagger()")
     public void logControllerRequest(JoinPoint joinPoint) {
         getRequest(joinPoint);
     }
 
-    @AfterReturning(pointcut = "allController()", returning = "responseBody")
+    @AfterReturning(pointcut = "allControllerWithoutSwagger()", returning = "responseBody")
     public void logControllerResponse(Object responseBody) {
         getResponse(responseBody);
     }
