@@ -29,6 +29,7 @@ public enum ErrorCode {
     TOKEN_NOT_SIGNED("T-004", "서명되지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_FOUND("T-005", "토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_NOT_FOUND("T-006", "리프레시 토큰을 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+    REFRESH_TOKEN_EMPTY("T-007", "리프레시 토큰이 비어있습니다.", HttpStatus.UNAUTHORIZED),
 
     ECHO_NOT_FOUND("E-001", "존재하지 않는 에코입니다.", HttpStatus.BAD_REQUEST),
     ECHO_CONFLICT("E-002", "해당 에코가 이미 존재합니다.", HttpStatus.CONFLICT),
