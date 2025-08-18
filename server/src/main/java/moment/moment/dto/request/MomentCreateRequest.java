@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public record MomentCreateRequest(
         @Schema(description = "모멘트 내용", example = "오늘 운동 완료!")
         @NotBlank(message = "MOMENT_CONTENT_EMPTY")
-        @Size(message = "MOMENT_INVALID_LENGTH", min = 1, max = 200)
+        @Size(min = 1, max = 200, message = "MOMENT_INVALID_LENGTH")
         String content
 ) {
 }

@@ -45,11 +45,15 @@ export interface SendCommentsError {
   status: number;
 }
 
-export type CommentCreationStatus = 'NOT_MATCHED' | 'ALREADY_COMMENTED' | 'WRITABLE';
-
-export interface CommentCreationStatusResponse {
+export interface GetCommentableMomentsResponse {
   status: number;
-  data: {
-    commentCreationStatus: CommentCreationStatus;
-  };
+  data: GetCommentableMoments;
+}
+
+export interface GetCommentableMoments {
+  id: number;
+  nickname: string;
+  level: string;
+  content: string;
+  createdAt: string;
 }
