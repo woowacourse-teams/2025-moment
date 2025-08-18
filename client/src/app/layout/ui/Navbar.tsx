@@ -12,7 +12,6 @@ import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
-import { mockData } from '@/widgets/EXPBar/mockData';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -52,11 +51,9 @@ export const Navbar = () => {
     });
   };
 
-  // const expStar = profile?.expStar ?? 0;
-  // const nextStepExp = profile?.nextStepExp ?? 0;
-  // const EXPBarProgress = nextStepExp + expStar > 0 ? (expStar / (nextStepExp + expStar)) * 100 : 0;
-  const EXPBarProgress =
-    (mockData.data.expStar / (mockData.data.nextStepExp + mockData.data.expStar)) * 100;
+  const expStar = profile?.expStar ?? 0;
+  const nextStepExp = profile?.nextStepExp ?? 0;
+  const EXPBarProgress = (expStar / (nextStepExp + expStar)) * 100;
 
   return (
     <S.Navbar>
