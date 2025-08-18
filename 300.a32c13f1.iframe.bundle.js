@@ -151,7 +151,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: ${theme.w.typography.cardWidth.medium};
+  width: ${({variant})=>"moment"===variant?"100%":theme.w.typography.cardWidth.medium};
+  height: ${({variant})=>"moment"===variant?"350px":"auto"};
   padding: 20px 30px;
   background-color: ${theme.w.colors["slate-800_60"]};
   border-radius: 10px;
@@ -159,7 +160,7 @@
   word-break: keep-all;
 
   @media (max-width: 768px) {
-    width: 90%;
+    width: ${({variant})=>"moment"===variant?"100%":"90%"};
   }
 `,SkeletonCardTitle=emotion_styled_browser_esm.A.div`
   display: flex;
@@ -170,12 +171,12 @@
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
-`,CommonSkeletonCard_styles_SkeletonCardContent=emotion_styled_browser_esm.A.div`
+`,SkeletonSection=(emotion_styled_browser_esm.A.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
-`,SkeletonSection=emotion_styled_browser_esm.A.div`
+`,emotion_styled_browser_esm.A.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -184,15 +185,15 @@
   &:last-child {
     margin-bottom: 0;
   }
-`,SkeletonSectionHeader=emotion_styled_browser_esm.A.div`
+`),SkeletonSectionHeader=emotion_styled_browser_esm.A.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`,SkeletonContentHeader=emotion_styled_browser_esm.A.div`
+`,SkeletonSimpleCard=(emotion_styled_browser_esm.A.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`,SkeletonSimpleCard=emotion_styled_browser_esm.A.div`
+`,emotion_styled_browser_esm.A.div`
   display: flex;
   width: 100%;
   padding: 10px 16px;
@@ -201,7 +202,7 @@
   height: ${theme.w.typography.textAreaHeight.small};
   border: 1px solid ${theme.w.colors["gray-700"]};
   align-items: center;
-`,SkeletonYellowCard=emotion_styled_browser_esm.A.div`
+`),SkeletonYellowCard=emotion_styled_browser_esm.A.div`
   display: flex;
   width: 100%;
   padding: 10px 16px;
@@ -220,7 +221,14 @@
 `,SkeletonEmojiContainer=emotion_styled_browser_esm.A.div`
   display: flex;
   gap: 8px;
-`,CommonSkeletonCard=({variant="moment"})=>(0,jsx_runtime.jsxs)(SkeletonCard,{children:[(0,jsx_runtime.jsxs)(SkeletonCardTitle,{children:[(0,jsx_runtime.jsxs)(SkeletonTitleRow,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"16px",height:"16px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"120px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonText,{lines:2,lineHeight:"18px"})]}),"moment"===variant&&(0,jsx_runtime.jsxs)(CommonSkeletonCard_styles_SkeletonCardContent,{children:[(0,jsx_runtime.jsxs)(SkeletonContentHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"100px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonSimpleCard,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:1,lineHeight:"16px"})})]}),"comment"===variant&&(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"100px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonSimpleCard,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:2,lineHeight:"16px"})})]}),(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"120px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonYellowCard,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:1,lineHeight:"16px"})})]}),(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"100px",height:"16px"})]}),(0,jsx_runtime.jsxs)(SkeletonEmojiContainer,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"})]})]})]}),"moment"===variant&&(0,jsx_runtime.jsx)(SkeletonCardAction,{children:(0,jsx_runtime.jsxs)(SkeletonActionButtons,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"}),(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"}),(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"})]})})]});CommonSkeletonCard.__docgenInfo={description:"",methods:[],displayName:"CommonSkeletonCard",props:{variant:{required:!1,tsType:{name:"union",raw:"'moment' | 'comment'",elements:[{name:"literal",value:"'moment'"},{name:"literal",value:"'comment'"}]},description:"",defaultValue:{value:"'moment'",computed:!1}}}}},"./src/shared/ui/textArea/TextArea.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{f:()=>TextArea_TextArea});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const TextAreaStyles_textarea=(theme,$height)=>`\n    width: 100%;\n    padding: 20px;\n    background-color: ${theme.colors["gray-600_20"]};\n    border-radius: 5px;\n    height: ${theme.typography.textAreaHeight[$height]};\n    color: ${theme.colors.white};\n    border: 1px solid ${theme.colors["gray-700"]};\n    resize: none; \n    \n    &::placeholder {\n        color: ${theme.colors.white};\n    }\n    `,TextArea=emotion_styled_browser_esm.A.textarea`
+`,SkeletonMomentContent=emotion_styled_browser_esm.A.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`,CommonSkeletonCard=({variant="moment"})=>(0,jsx_runtime.jsxs)(SkeletonCard,{variant,children:[(0,jsx_runtime.jsxs)(SkeletonCardTitle,{children:[(0,jsx_runtime.jsxs)(SkeletonTitleRow,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"16px",height:"16px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"120px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonText,{lines:2,lineHeight:"18px"})]}),"moment"===variant&&(0,jsx_runtime.jsx)(SkeletonMomentContent,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:3,lineHeight:"18px"})}),"comment"===variant&&(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"100px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonSimpleCard,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:2,lineHeight:"16px"})})]}),(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"120px",height:"16px"})]}),(0,jsx_runtime.jsx)(SkeletonYellowCard,{children:(0,jsx_runtime.jsx)(SkeletonText,{lines:1,lineHeight:"16px"})})]}),(0,jsx_runtime.jsxs)(SkeletonSection,{children:[(0,jsx_runtime.jsxs)(SkeletonSectionHeader,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"20px",height:"20px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"100px",height:"16px"})]}),(0,jsx_runtime.jsxs)(SkeletonEmojiContainer,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"}),(0,jsx_runtime.jsx)(Skeleton,{width:"32px",height:"32px",borderRadius:"50%"})]})]}),(0,jsx_runtime.jsx)(SkeletonCardAction,{children:(0,jsx_runtime.jsxs)(SkeletonActionButtons,{children:[(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"}),(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"}),(0,jsx_runtime.jsx)(Skeleton,{width:"40px",height:"32px",borderRadius:"20px"})]})})]})]});CommonSkeletonCard.__docgenInfo={description:"",methods:[],displayName:"CommonSkeletonCard",props:{variant:{required:!1,tsType:{name:"union",raw:"'moment' | 'comment'",elements:[{name:"literal",value:"'moment'"},{name:"literal",value:"'comment'"}]},description:"",defaultValue:{value:"'moment'",computed:!1}}}}},"./src/shared/ui/textArea/TextArea.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{f:()=>TextArea_TextArea});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const TextAreaStyles_textarea=(theme,$height)=>`\n    width: 100%;\n    padding: 20px;\n    background-color: ${theme.colors["gray-600_20"]};\n    border-radius: 5px;\n    height: ${theme.typography.textAreaHeight[$height]};\n    color: ${theme.colors.white};\n    border: 1px solid ${theme.colors["gray-700"]};\n    resize: none; \n    \n    &::placeholder {\n        color: ${theme.colors.white};\n    }\n    `,TextArea=emotion_styled_browser_esm.A.textarea`
   ${({theme,$height})=>TextAreaStyles_textarea(theme,$height)}
 `,TextArea_TextArea=({placeholder,height,...props})=>(0,jsx_runtime.jsx)(TextArea,{placeholder,$height:height,...props});TextArea_TextArea.__docgenInfo={description:"",methods:[],displayName:"TextArea",props:{placeholder:{required:!0,tsType:{name:"string"},description:""},height:{required:!0,tsType:{name:"union",raw:"'small' | 'medium' | 'large'",elements:[{name:"literal",value:"'small'"},{name:"literal",value:"'medium'"},{name:"literal",value:"'large'"}]},description:""}}}},"./src/shared/ui/toast/Toast.styles.ts":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{FH:()=>ToastMessage,Jn:()=>CloseButton,N9:()=>ToastContainer,We:()=>ToastIconWrapper,z2:()=>ToastItem});var _emotion_react__WEBPACK_IMPORTED_MODULE_1__=__webpack_require__("./node_modules/.pnpm/@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0/node_modules/@emotion/react/dist/emotion-react.browser.esm.js"),_emotion_styled__WEBPACK_IMPORTED_MODULE_0__=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const slideIn=_emotion_react__WEBPACK_IMPORTED_MODULE_1__.i7`
   from {
@@ -306,4 +314,4 @@
     outline-offset: 2px;
   }
 `}}]);
-//# sourceMappingURL=300.a600de55.iframe.bundle.js.map
+//# sourceMappingURL=300.a32c13f1.iframe.bundle.js.map
