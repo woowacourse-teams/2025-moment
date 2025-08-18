@@ -1,3 +1,4 @@
+import { useToast } from '@/shared/hooks';
 import { useState } from 'react';
 import { checkEmailExist } from '../api/checkEmailExist';
 
@@ -6,6 +7,7 @@ export const useCheckEmail = () => {
   const [isEmailChecked, setIsEmailChecked] = useState(false);
 
   const handleCheckEmail = async (value: string) => {
+    const { showError } = useToast();
     try {
       const result = await checkEmailExist(value);
       const isExists = result.data.isExists;
@@ -13,7 +15,7 @@ export const useCheckEmail = () => {
       setIsEmailChecked(true);
     } catch (error) {
       console.error(error);
-      alert('중복 확인 실패');
+      showError('중복 확인 실패', 3000);
       setIsEmailChecked(false);
     }
   };

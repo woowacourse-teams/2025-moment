@@ -1,10 +1,16 @@
 import { ROUTES } from '@/app/routes/routes';
-import { Link } from 'react-router';
-import * as S from './index.styles';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { sendEvent } from '@/shared/lib/ga';
 import { NavigatorsBarAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { Link } from 'react-router';
+import * as S from './index.styles';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
+  const { data: notifications } = useNotificationsQuery();
+
+  const isNotificationExisting =
+    notifications?.data.length && notifications?.data.length > 0 ? true : false;
+
   const handleTodayMomentClick = () => {
     sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayMomentButton);
   };

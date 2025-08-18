@@ -1,15 +1,17 @@
+import { ROUTES } from '@/app/routes/routes';
+
 export const navItems = [
   {
     label: '오늘의 모멘트',
-    href: '/today-moment',
+    href: ROUTES.TODAY_MOMENT,
   },
   {
     label: '오늘의 코멘트',
-    href: '/today-comment',
+    href: ROUTES.TODAY_COMMENT,
   },
   {
     label: '나만의 모음집',
-    href: '/collection',
+    href: ROUTES.COLLECTION_MYMOMENT,
   },
 ];
 

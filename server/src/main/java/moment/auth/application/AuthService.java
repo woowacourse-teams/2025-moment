@@ -1,9 +1,14 @@
 package moment.auth.application;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
+import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
+import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.application.UserQueryService;
@@ -25,8 +30,11 @@ public class AuthService {
     private final EmailService emailService;
     private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokensIssuer tokensIssuer;
 
-    public String login(LoginRequest request) {
+    @Transactional
+    public Map<String, String> login(LoginRequest request) {
         User user = userRepository.findByEmailAndProviderType(request.email(), ProviderType.EMAIL)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
@@ -34,7 +42,7 @@ public class AuthService {
             throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
-        return tokenManager.createToken(user.getId(), user.getEmail());
+        return tokensIssuer.issueTokens(user);
     }
 
     public Authentication getAuthenticationByToken(String token) {
@@ -46,6 +54,28 @@ public class AuthService {
             return LoginCheckResponse.createNotLogged();
         }
         return LoginCheckResponse.createLogged();
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+
+        if (refreshTokenRepository.existsByUser(user)) {
+            refreshTokenRepository.deleteByUser(user);
+        }
+    }
+
+    @Transactional
+    public Map<String, String> refresh(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(request.refreshToken())
+                .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (refreshToken.isExpired(LocalDateTime.now())) {
+            throw new MomentException(ErrorCode.TOKEN_EXPIRED);
+        }
+
+        return tokensIssuer.renewTokens(refreshToken);
     }
 
     public void resetPassword(PasswordResetRequest request) {
