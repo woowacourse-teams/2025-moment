@@ -1,21 +1,10 @@
 package moment.auth.presentation;
 
-import static io.jsonwebtoken.Jwts.SIG.HS256;
-import static io.restassured.RestAssured.given;
-import static java.lang.Thread.sleep;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.jsonwebtoken.Jwts;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
-import java.util.Date;
-import java.util.List;
-import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.application.TokenManager;
 import moment.auth.domain.RefreshToken;
@@ -47,6 +36,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Date;
+import java.util.List;
+
+import static io.jsonwebtoken.Jwts.SIG.HS256;
+import static io.restassured.RestAssured.given;
+import static java.lang.Thread.sleep;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -203,7 +204,7 @@ class AuthControllerTest {
 
         // when
         LoginCheckResponse response = given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
