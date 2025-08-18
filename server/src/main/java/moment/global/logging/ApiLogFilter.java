@@ -26,6 +26,12 @@ public class ApiLogFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        String uri = request.getRequestURI();
+
+        if (uri.startsWith("/swagger-ui/") || uri.startsWith("/v3/api-docs")) {
+            chain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
         String traceId = UUID.randomUUID().toString().substring(0, 8);
         MDC.put(TRACE_ID_KEY, traceId);
