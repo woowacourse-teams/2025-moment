@@ -68,7 +68,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                 <S.MyMomentsModalContent key={currentComment.id}>
                   <S.MyMomentsModalHeader>
                     <S.CommenterInfoContainer>
-                      <S.LevelIcon src={levelMap[currentComment.level as Level]} alt="level" />
+                      <S.LevelIcon
+                        src={levelMap[currentComment.level as keyof typeof levelMap]}
+                        alt="level"
+                      />
                       <span>{currentComment.nickname}</span>
                     </S.CommenterInfoContainer>
                     <S.CommentIndicator>
