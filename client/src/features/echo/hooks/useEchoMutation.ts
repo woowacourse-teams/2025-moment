@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { sendEmoji } from '../api/sendEmoji';
+import { sendEcho } from '../api/sendEcho';
 import { useToast } from '@/shared/hooks/useToast';
 
-export const useEmojiMutation = () => {
+export const useEchoMutation = () => {
   const queryClient = useQueryClient();
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: sendEmoji,
+    mutationFn: sendEcho,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
-      showSuccess('이모지를 추가했습니다!');
+      showSuccess('에코가 성공적으로 전송되었습니다! 별조각 3개를 얻으셨습니다.');
     },
     onError: () => {
-      const errorMessage = '이모지 추가에 실패했습니다. 다시 시도해주세요.';
-      showError(errorMessage);
+      showError('에코 전송에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

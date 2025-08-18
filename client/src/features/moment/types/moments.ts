@@ -1,4 +1,4 @@
-import type { Emoji } from '@/features/emoji/type/emoji';
+import type { Echos } from '@/features/echo/type/echos';
 
 export interface MomentsResponse {
   status: number;
@@ -15,14 +15,16 @@ export interface MyMomentsItem {
   momenterId: number;
   content: string;
   createdAt: string;
-  comment?: Comment;
+  comments: Comment[] | null;
 }
 
 interface Comment {
   id: number;
   content: string;
+  commenterName: string;
+  commenterLevel: string;
   createdAt: string;
-  emojis: Emoji[];
+  echos: Echos[];
 }
 
 export interface CheckMomentsResponse {

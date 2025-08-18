@@ -13,7 +13,7 @@ import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 
-type Level = 'METEOR' | 'ASTEROID' | 'COMET';
+export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
 export const Navbar = () => {
   const location = useLocation();
