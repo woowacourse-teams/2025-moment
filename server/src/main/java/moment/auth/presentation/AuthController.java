@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
@@ -37,6 +35,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Tag(name = "Auth API", description = "인증/인가 관련 API 명세")
 @RestController
@@ -192,7 +193,7 @@ public class AuthController {
     })
     @GetMapping("/login/check")
     public ResponseEntity<SuccessResponse<LoginCheckResponse>> checkLogin(
-            @CookieValue(value = "token", required = false) String token) {
+            @CookieValue(value = "accessToken", required = false) String token) {
         LoginCheckResponse response = authService.loginCheck(token);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.ok(SuccessResponse.of(status, response));
