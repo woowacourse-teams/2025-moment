@@ -1,9 +1,14 @@
+import { ModalVariant, ExternalModalVariant } from '@/shared/ui/modal/Modal.styles';
+
 export interface ModalProps {
   children: React.ReactNode;
   position?: 'center' | 'bottom';
   size?: 'small' | 'medium' | 'large';
+  height?: string;
   isOpen: boolean;
   onClose: () => void;
+  variant?: ModalVariant;
+  externalVariant?: ExternalModalVariant;
 }
 
 export interface ModalHeader {
