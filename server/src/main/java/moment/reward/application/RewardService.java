@@ -1,10 +1,13 @@
 package moment.reward.application;
 
 import moment.reward.domain.Reason;
+import moment.reward.domain.RewardHistory;
 import moment.user.domain.User;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 
 public interface RewardService {
+
+    RewardHistory save(RewardHistory rewardHistory);
 
     void rewardForMoment(User user, Reason reason, Long contentId);
 

@@ -11,6 +11,7 @@ import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
+import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,6 +43,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -84,11 +87,19 @@ class momentServiceTest {
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
 
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
         // when
         momentService.addBasicMoment(request, 1L);
 
         // then
-        then(momentRepository).should(times(1)).save(any(Moment.class));
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class))
+        );
+
     }
 
     @Test
@@ -120,12 +131,20 @@ class momentServiceTest {
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
 
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
         // when
         momentService.addExtraMoment(request, 1L);
 
         // then
-        then(momentRepository).should(times(1)).save(any(Moment.class));
-        then(rewardService).should(times(1)).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(rewardService).should(times(1)).rewardForMoment(
+                        momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId())
+        );
     }
 
     @Test
