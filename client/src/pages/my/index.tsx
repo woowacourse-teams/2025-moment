@@ -113,9 +113,11 @@ export default function MyPage() {
 
       <S.SettingSection>
         <S.SectionTitle>설정</S.SectionTitle>
-        <p>
-          <Link to={ROUTES.PASSWORD}>비밀번호 변경</Link>
-        </p>
+        {myProfile.loginType === 'EMAIL' && (
+          <p>
+            <Link to={ROUTES.PASSWORD}>비밀번호 변경</Link>
+          </p>
+        )}
       </S.SettingSection>
 
       <Modal isOpen={isOpen} position="center" size="large" onClose={() => setIsOpen(false)}>
