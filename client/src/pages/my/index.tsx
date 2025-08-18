@@ -1,17 +1,17 @@
-import * as S from './index.styles';
-import { Button, Card, NotFound } from '@/shared/ui';
-import { EXPBar } from '@/widgets/EXPBar/EXPBar';
-import { levelMap } from '@/app/layout/data/navItems';
-import { Modal } from '@/shared/ui/modal/Modal';
-import { LevelTable } from '@/widgets/levelTable/LevelTable';
-import { useState } from 'react';
-import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
-import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
-import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
-import { AlertCircle } from 'lucide-react';
-import { Link } from 'react-router';
+import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { ROUTES } from '@/app/routes/routes';
 import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
+import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
+import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
+import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
+import { Button, Card, NotFound } from '@/shared/ui';
+import { Modal } from '@/shared/ui/modal/Modal';
+import { EXPBar } from '@/widgets/EXPBar/EXPBar';
+import { LevelTable } from '@/widgets/levelTable/LevelTable';
+import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router';
+import * as S from './index.styles';
 
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +55,7 @@ export default function MyPage() {
                   <span>•</span>
                   <S.LevelBadge>{myProfile.level}</S.LevelBadge>
                   <S.LevelIcon
-                    src={levelMap[myProfile.level as keyof typeof levelMap]}
+                    src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
                     alt="레벨 등급표"
                   />
                 </S.UserInfo>
