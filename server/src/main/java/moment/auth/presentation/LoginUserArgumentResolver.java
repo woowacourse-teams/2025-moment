@@ -29,11 +29,11 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = getToken(request);
-        return authService.getAuthenticationByToken(token);
+        String accessToken = getAccessToken(request);
+        return authService.getAuthenticationByToken(accessToken);
     }
 
-    private String getToken(HttpServletRequest request) throws MomentException {
+    private String getAccessToken(HttpServletRequest request) throws MomentException {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             throw new MomentException(ErrorCode.TOKEN_NOT_FOUND);
@@ -41,7 +41,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
         return Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName()
-                        .equals("token"))
+                        .equals("accessToken"))
                 .findFirst()
                 .orElseThrow(() -> new MomentException(ErrorCode.TOKEN_NOT_FOUND))
                 .getValue();

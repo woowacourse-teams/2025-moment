@@ -1,9 +1,13 @@
 package moment.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
+import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -16,22 +20,21 @@ import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class UserControllerTest {
@@ -39,11 +42,23 @@ class UserControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TokenManager tokenManager;
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+        databaseCleaner.clean();
+    }
 
     @Test
     void 일반_회원가입시_유저_생성에_성공한다() {
@@ -62,7 +77,8 @@ class UserControllerTest {
         // then
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
+                () -> assertThat(
+                        userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
         );
     }
 
@@ -71,12 +87,13 @@ class UserControllerTest {
         // given
         String nickname = "mimi";
         User user = userRepository.save(new User("mimi@icloud.com", "password", nickname, ProviderType.EMAIL));
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
-        UserProfileResponse expect = new UserProfileResponse(nickname, user.getAvailableStar(), user.getLevel(), user.getLevel().getNextLevelRequiredStars());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
+        UserProfileResponse expect = new UserProfileResponse(nickname, user.getAvailableStar(), user.getLevel(),
+                user.getLevel().getNextLevelRequiredStars());
 
         // when
         SuccessResponse<UserProfileResponse> response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/users/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -169,7 +186,7 @@ class UserControllerTest {
         String nickname = "mimi";
         String encodePassword = passwordEncoder.encode("test123!@#");
         User user = userRepository.save(new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL));
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
 
         ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
 
@@ -177,7 +194,7 @@ class UserControllerTest {
         SuccessResponse<Void> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().post("/api/v1/users/my/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -189,8 +206,10 @@ class UserControllerTest {
         // then
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
-                () -> assertThat(passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
+                () -> assertThat(
+                        passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
+                () -> assertThat(
+                        passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
         );
     }
 }
