@@ -51,7 +51,7 @@ class AuthControllerTest {
     @Test
     void 이메일_인증_요청에_성공한다() {
         // given
-        EmailRequest request = new EmailRequest("ekorea6gamil.com");
+        EmailRequest request = new EmailRequest("ekorea@gamil.com");
 
         // when & then
         given().log().all()
