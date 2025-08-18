@@ -1,4 +1,3 @@
-import { mockProfile } from '@/features/my/api/mockData';
 import * as S from './index.styles';
 import { Button, Card, NotFound } from '@/shared/ui';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
@@ -12,11 +11,19 @@ import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPaginatio
 import { AlertCircle } from 'lucide-react';
 import { Link } from 'react-router';
 import { ROUTES } from '@/app/routes/routes';
+import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
 
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
+
+  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
+  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
+  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
+
   const {
     data: rewardHistory,
     isLoading,
@@ -30,10 +37,9 @@ export default function MyPage() {
     setCurrentPage(page);
   };
 
-  const EXPBarProgress =
-    (mockProfile.data.expStar / (mockProfile.data.nextStepExp + mockProfile.data.expStar)) * 100;
+  const EXPBarProgress = (myProfile.expStar / (myProfile.nextStepExp + myProfile.expStar)) * 100;
 
-  const totalExp = mockProfile.data.nextStepExp + mockProfile.data.expStar;
+  const totalExp = myProfile.nextStepExp + myProfile.expStar;
 
   return (
     <S.MyPageWrapper>
@@ -43,13 +49,13 @@ export default function MyPage() {
           <S.UserInfoContainer>
             <S.UserProfileSection>
               <S.UserBasicInfo>
-                <S.Email>{mockProfile.data.email}</S.Email>
+                <S.Email>{myProfile.email}</S.Email>
                 <S.UserInfo>
-                  <p>{mockProfile.data.nickname}</p>
+                  <p>{myProfile.nickname}</p>
                   <span>•</span>
-                  <S.LevelBadge>{mockProfile.data.level}</S.LevelBadge>
+                  <S.LevelBadge>{myProfile.level}</S.LevelBadge>
                   <S.LevelIcon
-                    src={levelMap[mockProfile.data.level as keyof typeof levelMap]}
+                    src={levelMap[myProfile.level as keyof typeof levelMap]}
                     alt="레벨 등급표"
                   />
                 </S.UserInfo>
@@ -61,7 +67,7 @@ export default function MyPage() {
               <S.EXPBarContainer>
                 <EXPBar progress={EXPBarProgress} />
                 <S.EXPStats>
-                  <span className="current">{mockProfile.data.expStar}</span>
+                  <span className="current">{myProfile.expStar}</span>
                   <span className="separator">/</span>
                   <span className="total">{totalExp}</span>
                 </S.EXPStats>
