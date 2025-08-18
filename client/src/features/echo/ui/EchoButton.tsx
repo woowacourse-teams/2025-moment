@@ -15,11 +15,13 @@ export const EchoButton = ({
 }) => {
   return (
     <EchoButtonStyle
+      type="button"
       onClick={handleClick}
       $isSelected={isSelected}
       $isDisabled={isDisabled}
       $isAlreadySent={isAlreadySent}
       disabled={isDisabled}
+      aria-pressed={isSelected || !!isAlreadySent}
     >
       {title}
     </EchoButtonStyle>
