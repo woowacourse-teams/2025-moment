@@ -1,19 +1,9 @@
 package moment.user.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
@@ -28,7 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -180,51 +178,5 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.createRandomNickname())
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_GENERATION_FAILED);
-    }
-
-    @Test
-    void 일반_회원가입_유저가_아닌_경우_비밀번호_변경_시_예외가_발생합니다() {
-        // given
-        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.GOOGLE);
-        ReflectionTestUtils.setField(user, "id", 1L);
-        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
-
-        // when & then
-        assertThatThrownBy(() -> userService.changePassword(request, user.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
-    }
-
-    @Test
-    void 새_비밀번호와_확인_비밀번호가_일치하지_않는_경우_예외가_발생합니다() {
-        // given
-        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.EMAIL);
-        ReflectionTestUtils.setField(user, "id", 1L);
-        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123");
-
-        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
-
-        // when & then
-        assertThatThrownBy(() -> userService.changePassword(request, user.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_MISMATCHED);
-    }
-
-    @Test
-    void 새_비밀번호가_기존_비밀번호와_동일한_경우_예외가_발생합니다() {
-        // given
-        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.EMAIL);
-        ReflectionTestUtils.setField(user, "id", 1L);
-        ChangePasswordRequest request = new ChangePasswordRequest("test123!@#", "test123!@#");
-
-        given(passwordEncoder.encode(request.newPassword())).willReturn("test123!@#");
-        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
-
-        // when & then
-        assertThatThrownBy(() -> userService.changePassword(request, user.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_SAME_AS_OLD);
     }
 }

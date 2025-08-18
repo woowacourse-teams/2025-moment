@@ -6,11 +6,14 @@ import moment.global.exception.MomentException;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
+import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,8 @@ public class MyPageService {
     private final UserQueryService userQueryService;
 
     private final RewardService rewardService;
+
+    private final PasswordEncoder passwordEncoder;
 
     public MyPageProfileResponse getProfile(Long userId) {
         User user = userQueryService.getUserById(userId);
@@ -63,6 +68,37 @@ public class MyPageService {
     private void validateNicknameConflict(NicknameChangeRequest request) {
         if (userQueryService.existsByNickname(request.newNickname())) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
+        }
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request, Long userId) {
+        User user = userQueryService.getUserById(userId);
+
+        validateChangeablePasswordUser(user);
+        comparePasswordWithRepassword(request.newPassword(), request.checkedPassword());
+
+        String encodedChangePassword = passwordEncoder.encode(request.newPassword());
+        validateNotSameAsOldPassword(user, encodedChangePassword);
+
+        user.updatePassword(encodedChangePassword);
+    }
+
+    private void comparePasswordWithRepassword(String password, String rePassword) {
+        if (!password.equals(rePassword)) {
+            throw new MomentException(ErrorCode.PASSWORD_MISMATCHED);
+        }
+    }
+
+    private void validateNotSameAsOldPassword(User user, String encodedChangePassword) {
+        if (user.checkPassword(encodedChangePassword)) {
+            throw new MomentException(ErrorCode.PASSWORD_SAME_AS_OLD);
+        }
+    }
+
+    private void validateChangeablePasswordUser(User user) {
+        if (!user.checkProviderType(ProviderType.EMAIL)) {
+            throw new MomentException(ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
         }
     }
 }
