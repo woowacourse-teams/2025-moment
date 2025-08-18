@@ -29,7 +29,7 @@ export function TodayCommentForm() {
 
   const getLevelImage = (level: string) => {
     const levelKey = level.split('_')[0] as keyof typeof levelMap;
-    return levelMap[levelKey] || levelMap.METEOR;
+    return levelMap[levelKey] || levelMap.ASTEROID_WHITE;
   };
 
   return (
