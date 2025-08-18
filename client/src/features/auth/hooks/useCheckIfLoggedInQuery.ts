@@ -6,5 +6,8 @@ export const useCheckIfLoggedInQuery = () => {
     queryKey: ['checkIfLoggedIn'],
     queryFn: checkIfLoggined,
     staleTime: 1000 * 60 * 10,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
