@@ -2,6 +2,7 @@ import { ROUTES } from '@/app/routes/routes';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
+import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { Button } from '@/shared/ui/button/Button';
 import { Hero } from '@/widgets/hero';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
@@ -22,20 +23,12 @@ export default function HomePage() {
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
   const handleClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click TodayMomentButton',
-      label: 'TodayMomentButton',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickTodayMomentButton);
     navigate(ROUTES.TODAY_MOMENT);
   };
 
   const handleWidgetClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click BlackHole Button',
-      label: 'BlackHole Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickBlackHoleButton);
     setIsWidgetOpen(!isWidgetOpen);
   };
 

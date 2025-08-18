@@ -1,6 +1,7 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { sendEvent } from '@/shared/lib/ga';
+import { NavigatorsBarAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { Link } from 'react-router';
 import * as S from './index.styles';
 
@@ -13,27 +14,15 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   const isNotificationExisting = notifications?.data.length > 0;
 
   const handleTodayMomentClick = () => {
-    sendEvent({
-      category: 'NavigatorsBar',
-      action: 'Click TodayMoment Button',
-      label: 'TodayMoment Button',
-    });
+    sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayMomentButton);
   };
 
   const handleTodayCommentClick = () => {
-    sendEvent({
-      category: 'NavigatorsBar',
-      action: 'Click TodayComment Button',
-      label: 'TodayComment Button',
-    });
+    sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayCommentButton);
   };
 
   const handleCollectionClick = () => {
-    sendEvent({
-      category: 'NavigatorsBar',
-      action: 'Click Collection Button',
-      label: 'Collection Button',
-    });
+    sendEvent(NavigatorsBarAnalyticsEvent.ClickCollectionButton);
   };
 
   return (
