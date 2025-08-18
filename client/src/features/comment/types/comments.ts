@@ -44,3 +44,16 @@ export interface SendCommentsError {
   message: string;
   status: number;
 }
+
+export interface GetCommentableMomentsResponse {
+  status: number;
+  data: GetCommentableMoments;
+}
+
+export interface GetCommentableMoments {
+  id: number;
+  nickname: string;
+  level: string;
+  content: string;
+  createdAt: string;
+}
