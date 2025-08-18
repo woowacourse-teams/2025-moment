@@ -10,13 +10,17 @@ import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './index.styles';
-import { useChangePassword } from '@/features/auth/hooks/useChangePassword';
+import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
+import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+  const [isNicknameOpen, setIsNicknameOpen] = useState(false);
+  const [localNickname, setLocalNickname] = useState('');
+  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
 
   const {
     data: rewardHistory,
@@ -26,8 +30,6 @@ export default function MyPage() {
     pageNum: currentPage,
     pageSize,
   });
-
-  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
   if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
@@ -53,7 +55,15 @@ export default function MyPage() {
                 <S.UserInfo>
                   <p>{myProfile.nickname}</p>
 
-                  <Button variant="primary" title="닉네임 변경" onClick={() => setIsOpen(true)} />
+                  <Button
+                    variant="primary"
+                    title="닉네임 변경"
+                    onClick={() => {
+                      setLocalNickname(myProfile.nickname);
+                      setIsNicknameOpen(true);
+                    }}
+                    disabled={myProfile.expStar < 100}
+                  />
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -134,42 +144,21 @@ export default function MyPage() {
       >
         <Modal.Header title="비밀번호 변경" />
         <Modal.Content>
-          <PasswordChangeForm />
+          <ChangePasswordForm />
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={isNicknameOpen}
+        position="center"
+        size="small"
+        onClose={() => setIsNicknameOpen(false)}
+      >
+        <Modal.Header title="닉네임 변경" />
+        <Modal.Content>
+          <ChangeNicknameForm nickname={localNickname} updateNickname={setLocalNickname} />
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>
   );
 }
-
-const PasswordChangeForm = () => {
-  const { changePasswordData, errors, handleChange, handleSubmit, isSubmitDisabled } =
-    useChangePassword();
-  return (
-    <S.PassWordChangeFormWrapper>
-      <Card width="medium" variant="secondary">
-        <S.PasswordChangeFormContent>
-          <S.PasswordChangeFormInput
-            type="password"
-            placeholder="새 비밀번호"
-            value={changePasswordData.newPassword}
-            onChange={handleChange('newPassword')}
-          />
-          <S.ErrorMessage>{errors.newPassword || ''}</S.ErrorMessage>
-          <S.PasswordChangeFormInput
-            type="password"
-            placeholder="새 비밀번호 확인"
-            value={changePasswordData.checkPassword}
-            onChange={handleChange('checkPassword')}
-          />
-          <S.ErrorMessage>{errors.checkPassword || ''}</S.ErrorMessage>
-        </S.PasswordChangeFormContent>
-        <Button
-          title="변경하기"
-          variant="primary"
-          onClick={handleSubmit}
-          disabled={isSubmitDisabled}
-        />
-      </Card>
-    </S.PassWordChangeFormWrapper>
-  );
-};
