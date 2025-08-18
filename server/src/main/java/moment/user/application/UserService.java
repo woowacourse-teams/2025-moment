@@ -6,7 +6,6 @@ import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
@@ -77,30 +76,5 @@ public class UserService {
     public EmailConflictCheckResponse checkEmailConflictInBasicSignUp(EmailConflictCheckRequest request) {
         boolean existsByEmail = userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL);
         return new EmailConflictCheckResponse(existsByEmail);
-    }
-
-    @Transactional
-    public void changePassword(ChangePasswordRequest request, Long userId) {
-        User user = userQueryService.getUserById(userId);
-
-        validateChangeablePasswordUser(user);
-        comparePasswordWithRepassword(request.newPassword(), request.checkedPassword());
-
-        String encodedChangePassword = passwordEncoder.encode(request.newPassword());
-        validateNotSameAsOldPassword(user, encodedChangePassword);
-
-        user.updatePassword(encodedChangePassword);
-    }
-
-    private void validateNotSameAsOldPassword(User user, String encodedChangePassword) {
-        if (user.checkPassword(encodedChangePassword)) {
-            throw new MomentException(ErrorCode.PASSWORD_SAME_AS_OLD);
-        }
-    }
-
-    private void validateChangeablePasswordUser(User user) {
-        if (!user.checkProviderType(ProviderType.EMAIL)) {
-            throw new MomentException(ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
-        }
     }
 }
