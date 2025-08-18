@@ -89,7 +89,7 @@ public class UserService {
         String encodedChangePassword = passwordEncoder.encode(request.newPassword());
         validateNotSameAsOldPassword(user, encodedChangePassword);
 
-        user.changePassword(encodedChangePassword);
+        user.updatePassword(encodedChangePassword);
     }
 
     private void validateNotSameAsOldPassword(User user, String encodedChangePassword) {

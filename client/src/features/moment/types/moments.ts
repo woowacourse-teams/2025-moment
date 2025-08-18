@@ -27,7 +27,13 @@ interface Comment {
   echos: Echos[];
 }
 
-export interface CheckMomentsResponse {
+export interface MomentWritingStatusResponse {
+  data: {
+    status: 'DENIED' | 'ALLOWED';
+  };
+}
+
+export interface MomentExtraWritableResponse {
   data: {
     status: 'DENIED' | 'ALLOWED';
   };
