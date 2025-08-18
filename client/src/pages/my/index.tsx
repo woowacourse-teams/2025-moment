@@ -115,7 +115,7 @@ export default function MyPage() {
               <>
                 <RewardHistoryTable items={rewardHistory.items} />
                 <RewardHistoryPagination
-                  currentPage={rewardHistory.currentPageNum}
+                  currentPage={rewardHistory.currentPageNum + 1}
                   totalPages={rewardHistory.totalPages}
                   onPageChange={handlePageChange}
                 />
