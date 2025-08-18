@@ -40,10 +40,12 @@ spring:
 
 jwt:
   secret:
-    key: ${JWT_SECRET_KEY}
+    access_key: ${JWT_ACCESS_SECRET_KEY}
+    refresh_key: ${JWT_REFRESH_SECRET_KEY}
 
 expiration:
-  time: ${EXPIRATION_TIME}
+  access-token-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
+  refresh-token-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
 
 auth:
   google:

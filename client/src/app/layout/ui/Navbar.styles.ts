@@ -20,6 +20,35 @@ export const Navbar = styled.nav`
 export const LevelIcon = styled.img`
   width: 40px;
   height: 40px;
+  cursor: pointer;
+`;
+
+export const LevelIconWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+export const EXPBarTooltip = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+  z-index: 1000;
+  background: transparent;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  ${LevelIconWrapper}:hover & {
+    opacity: 1;
+    visibility: visible;
+  }
 `;
 
 export const NavItem = styled.div<{ $isActive?: boolean }>`

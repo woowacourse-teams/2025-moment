@@ -24,6 +24,7 @@ import moment.reply.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -31,16 +32,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentControllerTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
@@ -57,10 +62,15 @@ class CommentControllerTest {
     @Autowired
     private JwtTokenManager jwtTokenManager;
 
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+    }
+
     @Test
     void Comment_생성에_성공한다() {
         // given
-        String token = jwtTokenManager.createToken(1L, "hippo@gmail.com");
+        String token = jwtTokenManager.createAccessToken(1L, "hippo@gmail.com");
 
         User user1 = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         userRepository.saveAndFlush(user1);
@@ -75,7 +85,7 @@ class CommentControllerTest {
 
         CommentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .body(request)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -101,7 +111,7 @@ class CommentControllerTest {
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedCommenter = userRepository.save(commenter);
 
-        String token = jwtTokenManager.createToken(savedCommenter.getId(), savedCommenter.getEmail());
+        String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
 
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
@@ -123,7 +133,7 @@ class CommentControllerTest {
 
         // when
         MyCommentPageResponse response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .param("limit", 1)
                 .when().get("/api/v1/comments/me")
                 .then().log().all()

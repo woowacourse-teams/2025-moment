@@ -43,15 +43,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class NotificationControllerTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
@@ -86,14 +90,15 @@ public class NotificationControllerTest {
 
     @BeforeEach
     void setUp() {
+        RestAssured.port = port;
         databaseCleaner.clean();
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
         moment3 = momentRepository.save(new Moment("반가워요", momenter, WriteType.BASIC));
-        momenterToken = tokenManager.createToken(momenter.getId(), momenter.getEmail());
+        momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
-        commenterToken = tokenManager.createToken(commenter.getId(), commenter.getEmail());
+        commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
     }
 
     @Test
@@ -105,7 +110,7 @@ public class NotificationControllerTest {
 
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
         RestAssured.given().log().all()
-                .cookie("token", commenterToken) // 코멘트 작성자로 인증
+                .cookie("accessToken", commenterToken) // 코멘트 작성자로 인증
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
@@ -138,7 +143,7 @@ public class NotificationControllerTest {
 
         EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
         RestAssured.given().log().all()
-                .cookie("token", momenterToken) // 모멘트 작성자가 에코를 달음
+                .cookie("accessToken", momenterToken) // 모멘트 작성자가 에코를 달음
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/echos")
@@ -170,7 +175,7 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request1)
                 .when().post("/api/v1/comments")
@@ -178,7 +183,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request2)
                 .when().post("/api/v1/comments")
@@ -186,7 +191,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request3)
                 .when().post("/api/v1/comments")
@@ -194,7 +199,7 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .when().get("/api/v1/notifications?read=false")
                 .then().log().all()
                 .statusCode(200)
@@ -226,7 +231,7 @@ public class NotificationControllerTest {
         echoService.addEchos(request4, authentication);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .when().get("/api/v1/notifications?read=false")
                 .then().log().all()
                 .statusCode(200)
@@ -248,7 +253,7 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-                .cookie("token", commenterToken)
+                .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
@@ -258,7 +263,7 @@ public class NotificationControllerTest {
         Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
 
         RestAssured.given().log().all()
-                .cookie("token", momenterToken)
+                .cookie("accessToken", momenterToken)
                 .contentType(ContentType.JSON)
                 .when().patch("/api/v1/notifications/" + notification.getId() + "/read")
                 .then().log().all()
@@ -300,9 +305,9 @@ public class NotificationControllerTest {
             }
         };
 
-        Headers headers = Headers.of("Cookie", "token=" + token);
+        Headers headers = Headers.of("Cookie", "accessToken=" + token);
         EventSource eventSource = new EventSource.Builder(eventHandler,
-                URI.create("http://localhost:" + 8080 + "/api/v1/notifications/subscribe"))
+                URI.create("http://localhost:" + port + "/api/v1/notifications/subscribe"))
                 .headers(headers)
                 .build();
 
