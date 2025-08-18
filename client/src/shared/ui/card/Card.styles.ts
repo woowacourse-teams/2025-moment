@@ -1,7 +1,7 @@
 import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
-export type cardWidth = 'small' | 'medium' | 'large';
+export type cardWidth = 'small' | 'medium' | 'large' | 'full';
 
 const CardStyles = {
   card: (theme: CustomTheme, $width: cardWidth, $shadow: boolean) => `

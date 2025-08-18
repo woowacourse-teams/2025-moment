@@ -7,9 +7,6 @@ export const CollectionHeader = () => {
   const currentpath = useLocation().pathname;
   const { data: notifications } = useNotificationsQuery();
 
-  if (!notifications) {
-    return null;
-  }
   const isMomentNotificationExisting = notifications?.data.some(
     notification => notification.targetType === 'MOMENT',
   );

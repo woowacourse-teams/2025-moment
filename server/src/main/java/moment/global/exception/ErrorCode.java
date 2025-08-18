@@ -49,9 +49,9 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
 
     EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
-    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 인증 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST)
-    ;
-
+    EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
