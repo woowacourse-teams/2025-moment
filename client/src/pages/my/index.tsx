@@ -1,5 +1,4 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
-import { ROUTES } from '@/app/routes/routes';
 import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
 import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
@@ -10,13 +9,14 @@ import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
 import * as S from './index.styles';
+import { useChangePassword } from '@/features/auth/hooks/useChangePassword';
 
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
+  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
 
   const {
     data: rewardHistory,
@@ -52,13 +52,15 @@ export default function MyPage() {
                 <S.Email>{myProfile.email}</S.Email>
                 <S.UserInfo>
                   <p>{myProfile.nickname}</p>
-                  <span>•</span>
-                  <S.LevelBadge>{myProfile.level}</S.LevelBadge>
-                  <S.LevelIcon
-                    src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
-                    alt="레벨 등급표"
-                  />
+
                   <Button variant="primary" title="닉네임 변경" onClick={() => setIsOpen(true)} />
+                  {myProfile.loginType === 'EMAIL' && (
+                    <Button
+                      variant="primary"
+                      title="비밀번호 변경"
+                      onClick={() => setIsPasswordOpen(true)}
+                    />
+                  )}
                 </S.UserInfo>
               </S.UserBasicInfo>
             </S.UserProfileSection>
@@ -72,6 +74,11 @@ export default function MyPage() {
                   <span className="separator">/</span>
                   <span className="total">{totalExp}</span>
                 </S.EXPStats>
+                <S.LevelBadge>{myProfile.level}</S.LevelBadge>
+                <S.LevelIcon
+                  src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
+                  alt="레벨 등급표"
+                />
                 <Button variant="primary" title="레벨 등급표" onClick={() => setIsOpen(true)} />
               </S.EXPBarContainer>
             </S.EXPSection>
@@ -112,21 +119,57 @@ export default function MyPage() {
 
       <S.Divider />
 
-      <S.SettingSection>
-        <S.SectionTitle>설정</S.SectionTitle>
-        {myProfile.loginType === 'EMAIL' && (
-          <p>
-            <Link to={ROUTES.PASSWORD}>비밀번호 변경</Link>
-          </p>
-        )}
-      </S.SettingSection>
-
       <Modal isOpen={isOpen} position="center" size="large" onClose={() => setIsOpen(false)}>
         <Modal.Header title="레벨 등급표" />
         <Modal.Content>
           <LevelTable />
         </Modal.Content>
       </Modal>
+
+      <Modal
+        isOpen={isPasswordOpen}
+        position="center"
+        size="medium"
+        onClose={() => setIsPasswordOpen(false)}
+      >
+        <Modal.Header title="비밀번호 변경" />
+        <Modal.Content>
+          <PasswordChangeForm />
+        </Modal.Content>
+      </Modal>
     </S.MyPageWrapper>
   );
 }
+
+const PasswordChangeForm = () => {
+  const { changePasswordData, errors, handleChange, handleSubmit, isSubmitDisabled } =
+    useChangePassword();
+  return (
+    <S.PassWordChangeFormWrapper>
+      <Card width="medium" variant="secondary">
+        <S.PasswordChangeFormContent>
+          <S.PasswordChangeFormInput
+            type="password"
+            placeholder="새 비밀번호"
+            value={changePasswordData.newPassword}
+            onChange={handleChange('newPassword')}
+          />
+          <S.ErrorMessage>{errors.newPassword || ''}</S.ErrorMessage>
+          <S.PasswordChangeFormInput
+            type="password"
+            placeholder="새 비밀번호 확인"
+            value={changePasswordData.checkPassword}
+            onChange={handleChange('checkPassword')}
+          />
+          <S.ErrorMessage>{errors.checkPassword || ''}</S.ErrorMessage>
+        </S.PasswordChangeFormContent>
+        <Button
+          title="변경하기"
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={isSubmitDisabled}
+        />
+      </Card>
+    </S.PassWordChangeFormWrapper>
+  );
+};

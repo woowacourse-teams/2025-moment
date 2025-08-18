@@ -124,6 +124,7 @@ export const EXPSection = styled.div`
 export const EXPBarContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   width: 100%;
 `;
@@ -180,4 +181,37 @@ export const SettingLink = styled.p`
   &:hover {
     color: ${({ theme }) => theme.colors['yellow-300']};
   }
+`;
+
+export const PassWordChangeFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const PasswordChangeFormContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+export const PasswordChangeFormInput = styled.input`
+  width: 100%;
+  height: 40px;
+  border: 1px solid ${({ theme }) => theme.colors['gray-200']};
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors['gray-400']};
+  &::placeholder {
+    color: ${({ theme }) => theme.colors['gray-400']};
+  }
+`;
+
+export const ErrorMessage = styled.p`
+  color: ${({ theme }) => theme.colors['red-500']};
 `;
