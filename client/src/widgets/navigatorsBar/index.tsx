@@ -1,16 +1,17 @@
 import { ROUTES } from '@/app/routes/routes';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { sendEvent } from '@/shared/lib/ga';
 import { Link } from 'react-router';
 import * as S from './index.styles';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
-  const { data: notifications } = useNotificationsQuery();
+  const { data: isLoggedIn, isError: authError } = useCheckIfLoggedInQuery();
+  const { data: notifications } = useNotificationsQuery({
+    enabled: !!isLoggedIn && !authError,
+  });
 
-  if (!notifications) {
-    return null;
-  }
-  const isNotificationExisting = notifications?.data.length > 0;
+  const isNotificationExisting = (notifications?.data?.length ?? 0) > 0;
 
   const handleTodayMomentClick = () => {
     sendEvent({

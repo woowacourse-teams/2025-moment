@@ -1,4 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
@@ -11,14 +12,14 @@ import * as S from './index.styles';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
-  const { data: notifications } = useNotificationsQuery();
+  const { data: isLoggedIn, isError: authError } = useCheckIfLoggedInQuery();
+  const { data: notifications } = useNotificationsQuery({
+    enabled: !!isLoggedIn && !authError,
+  });
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
-  if (!notifications) {
-    return null;
-  }
-  const isNotificationExisting = notifications?.data.length > 0;
+  const isNotificationExisting = (notifications?.data?.length ?? 0) > 0;
 
   const handleClick = () => {
     sendEvent({
