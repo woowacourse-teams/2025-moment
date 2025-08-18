@@ -55,6 +55,7 @@ auth:
     client-id: test-client-id
     client-secret: test-client-secret
     redirect-uri: test-redirect-uri
+    client-uri: test-client-uri
 
 logging:
   config: classpath:logback-test.xml

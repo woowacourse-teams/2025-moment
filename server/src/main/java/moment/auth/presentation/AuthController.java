@@ -57,6 +57,9 @@ public class AuthController {
     @Value("${auth.google.redirect-uri}")
     private String redirectUri;
 
+    @Value("${auth.google.client-uri}")
+    private String clientUri;
+
     @Operation(summary = "로그인", description = "사용자 로그인을 합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
@@ -173,7 +176,7 @@ public class AuthController {
                 .maxAge(REFRESH_TOKEN_TIME)
                 .build();
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://www.connectingmoment.com")
+        String redirectUrl = UriComponentsBuilder.fromUriString(clientUri)
                 .path("/auth/callback")
                 .queryParam("success", "true")
                 .build()

@@ -184,7 +184,7 @@ class AuthControllerTest {
         // then
         response.then()
                 .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
-                .header(HttpHeaders.LOCATION, equalTo("http://www.connectingmoment.com/auth/callback?success=true"));
+                .header(HttpHeaders.LOCATION, equalTo("test-client-uri/auth/callback?success=true"));
 
         Headers headers = response.getHeaders();
 
