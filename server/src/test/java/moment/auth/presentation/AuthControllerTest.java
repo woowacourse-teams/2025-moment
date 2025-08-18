@@ -265,7 +265,7 @@ class AuthControllerTest {
         refreshTokenRepository.save(refreshToken);
 
         RefreshTokenRequest request = new RefreshTokenRequest(refreshTokenValue);
-        sleep(1000);
+        sleep(1001);
 
         // when
         Response response = given().log().all()
@@ -318,10 +318,10 @@ class AuthControllerTest {
 
         // when & then
         given().log().all()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post("/api/v1/auth/email/password")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v1/auth/email/password")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
     }
 }

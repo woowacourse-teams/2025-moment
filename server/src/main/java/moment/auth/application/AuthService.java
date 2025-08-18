@@ -1,7 +1,6 @@
 package moment.auth.application;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
@@ -32,6 +31,7 @@ public class AuthService {
     private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TokensIssuer tokensIssuer;
 
     @Transactional
     public Map<String, String> login(LoginRequest request) {
@@ -42,23 +42,7 @@ public class AuthService {
             throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
-        Map<String, String> tokens = new HashMap<>();
-
-        String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
-        String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
-
-        RefreshToken refreshTokenWithoutId = new RefreshToken(
-                refreshTokenValue,
-                user,
-                tokenManager.getIssuedAtFromToken(refreshTokenValue),
-                tokenManager.getExpirationTimeFromToken(refreshTokenValue));
-
-        refreshTokenRepository.save(refreshTokenWithoutId);
-
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshTokenValue);
-
-        return tokens;
+        return tokensIssuer.issueTokens(user);
     }
 
     public Authentication getAuthenticationByToken(String token) {
@@ -91,21 +75,7 @@ public class AuthService {
             throw new MomentException(ErrorCode.TOKEN_EXPIRED);
         }
 
-        Map<String, String> tokens = new HashMap<>();
-        User user = refreshToken.getUser();
-
-        String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
-        String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
-
-        refreshToken.renew(
-                refreshTokenValue,
-                tokenManager.getIssuedAtFromToken(refreshTokenValue),
-                tokenManager.getExpirationTimeFromToken(refreshTokenValue));
-
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshTokenValue);
-
-        return tokens;
+        return tokensIssuer.renewTokens(refreshToken);
     }
 
     public void resetPassword(PasswordResetRequest request) {

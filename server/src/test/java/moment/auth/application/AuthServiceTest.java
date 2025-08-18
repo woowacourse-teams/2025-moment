@@ -3,12 +3,10 @@ package moment.auth.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.Date;
 import java.util.Map;
@@ -63,6 +61,9 @@ class AuthServiceTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Mock
+    private TokensIssuer tokensIssuer;
+
     private User user;
 
     @BeforeEach
@@ -82,10 +83,8 @@ class AuthServiceTest {
         String refreshToken = "refreshToken";
 
         given(passwordEncoder.matches(any(), any())).willReturn(true);
-        given(tokenManager.createAccessToken(any(), any())).willReturn(accessToken);
-        given(tokenManager.createRefreshToken(any(), any())).willReturn(refreshToken);
-        given(tokenManager.getIssuedAtFromToken(any())).willReturn(new Date());
-        given(tokenManager.getExpirationTimeFromToken((any()))).willReturn(new Date());
+        given(tokensIssuer.issueTokens(any()))
+                .willReturn(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
 
         // when
         Map<String, String> tokens = authService.login(request);
@@ -150,8 +149,8 @@ class AuthServiceTest {
         authService.resetPassword(request);
 
         // then
-        verify(emailService).verifyPasswordResetToken(request);
-        verify(userQueryService).findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL);
+        then(emailService).should(times(1)).verifyPasswordResetToken(request);
+        then(userQueryService).should(times(1)).findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL);
         assertThat(user.getPassword()).isEqualTo(encryptedNewPassword);
     }
 
@@ -215,23 +214,24 @@ class AuthServiceTest {
                 "existingRefreshToken",
                 user,
                 new Date(System.currentTimeMillis()),
-                new Date(System.currentTimeMillis() + 1000)
+                new Date(System.currentTimeMillis() + 60000) // 만료되지 않은 토큰
         );
 
         given(refreshTokenRepository.findByTokenValue(request.refreshToken())).willReturn(Optional.of(refreshToken));
-        given(tokenManager.createAccessToken(user.getId(), user.getEmail())).willReturn("newAccessToken");
-        given(tokenManager.createRefreshToken(user.getId(), user.getEmail())).willReturn("newRefreshToken");
-        given(tokenManager.getIssuedAtFromToken(anyString())).willReturn(new Date(System.currentTimeMillis()));
-        given(tokenManager.getExpirationTimeFromToken(anyString())).willReturn(
-                new Date(System.currentTimeMillis() + 10000));
+
+        String newAccessToken = "newAccessToken";
+        String newRefreshToken = "newRefreshToken";
+        given(tokensIssuer.renewTokens(refreshToken))
+                .willReturn(Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken));
 
         // when
         Map<String, String> tokens = authService.refresh(request);
 
         // then
-        assertThat(tokens.get("accessToken")).isEqualTo("newAccessToken");
-        assertThat(tokens.get("refreshToken")).isEqualTo("newRefreshToken");
-        verify(refreshTokenRepository).findByTokenValue("existingRefreshToken");
+        assertThat(tokens.get("accessToken")).isEqualTo(newAccessToken);
+        assertThat(tokens.get("refreshToken")).isEqualTo(newRefreshToken);
+        then(refreshTokenRepository).should(times(1)).findByTokenValue("existingRefreshToken");
+        then(tokensIssuer).should(times(1)).renewTokens(refreshToken);
     }
 
     @Test
