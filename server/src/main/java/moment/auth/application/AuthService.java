@@ -6,8 +6,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.LoginRequest;
-import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.request.PasswordResetRequest;
+import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
@@ -84,23 +84,19 @@ public class AuthService {
 
     @Transactional
     public Map<String, String> refresh(RefreshTokenRequest request) {
-        // 동일한 리프레시 토큰이 존재하는지 확인
         RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(request.refreshToken())
                 .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        // 리프레시 토큰이 만료됐는지 확인
         if (refreshToken.isExpired(LocalDateTime.now())) {
             throw new MomentException(ErrorCode.TOKEN_EXPIRED);
         }
 
-        // 위 경우를 모두 통과했다면 엑세스 토큰과 리프레시 토큰 재발급
         Map<String, String> tokens = new HashMap<>();
         User user = refreshToken.getUser();
 
         String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
         String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
 
-        // 기존 리프레시 토큰 갱신
         refreshToken.renew(
                 refreshTokenValue,
                 tokenManager.getIssuedAtFromToken(refreshTokenValue),
