@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import moment.global.logging.NoLogging;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -42,6 +43,7 @@ public class SseNotificationService {
     }
 
     @Scheduled(fixedRate = 45_000) // 45초마다 실행
+    @NoLogging
     public void sendHeartbeat() {
         emitters.forEach((userId, emitter) -> {
             try {
