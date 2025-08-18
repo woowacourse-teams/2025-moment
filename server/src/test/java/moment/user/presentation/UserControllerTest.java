@@ -1,8 +1,5 @@
 package moment.user.presentation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -11,7 +8,6 @@ import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
@@ -29,18 +25,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class UserControllerTest {
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @LocalServerPort
     private int port;
@@ -176,40 +171,6 @@ class UserControllerTest {
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.data()).isEqualTo(expect)
-        );
-    }
-
-
-    @Test
-    void 마이페이지_내에서_유저_비밀번호를_변경한다() {
-        // given
-        String nickname = "mimi";
-        String encodePassword = passwordEncoder.encode("test123!@#");
-        User user = userRepository.save(new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL));
-        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
-
-        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
-
-        // when
-        SuccessResponse<Void> response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .cookie("accessToken", token)
-                .when().post("/api/v1/users/my/password")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(new TypeRef<>() {
-                });
-
-        User changePasswordUser = userRepository.findById(user.getId()).get();
-
-        // then
-        assertAll(
-                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(
-                        passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
-                () -> assertThat(
-                        passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
         );
     }
 }

@@ -1,19 +1,18 @@
+import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { theme } from '@/app/styles/theme';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { Timer, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
-import * as S from './MyMomentsCard.styles';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
-import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
+import { ECHO_TYPE } from '@/features/echo/const/echoType';
+import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
+import { EchoTypeKey } from '@/features/echo/type/echos';
+import { EchoButton } from '@/features/echo/ui/EchoButton';
+import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { Level } from '@/app/layout/ui/Navbar';
-import { levelMap } from '@/app/layout/data/navItems';
-import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
-import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
-import { EchoButton } from '@/features/echo/ui/EchoButton';
-import { EchoTypeKey } from '@/features/echo/type/echos';
-import { ECHO_TYPE } from '@/features/echo/const/echoType';
+import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
+import { ChevronLeft, ChevronRight, Heart, Timer } from 'lucide-react';
+import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
+import * as S from './MyMomentsCard.styles';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -69,7 +68,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                   <S.MyMomentsModalHeader>
                     <S.CommenterInfoContainer>
                       <S.LevelIcon
-                        src={levelMap[currentComment.level as keyof typeof levelMap]}
+                        src={LEVEL_MAP[currentComment.level as keyof typeof LEVEL_MAP]}
                         alt="level"
                       />
                       <span>{currentComment.nickname}</span>

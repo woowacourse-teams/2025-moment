@@ -1,11 +1,9 @@
 package moment.user.presentation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
@@ -15,6 +13,7 @@ import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.Level;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
@@ -26,27 +25,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MyPageControllerTest {
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @LocalServerPort
     private int port;
-
     @Autowired
     private DatabaseCleaner databaseCleaner;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RewardRepository rewardRepository;
-
     @Autowired
     private TokenManager tokenManager;
 
@@ -155,6 +156,46 @@ class MyPageControllerTest {
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(nicknameChangedUser.getNickname()).isEqualTo(request.newNickname()),
                 () -> assertThat(nicknameChangedUser.getAvailableStar()).isEqualTo(50)
+        );
+    }
+
+    @Test
+    void 마이페이지_내에서_유저_비밀번호를_변경한다() {
+        // given
+        String nickname = "mimi";
+        String encodePassword = passwordEncoder.encode("test123!@#");
+        User user = userRepository.save(new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL));
+        String accessToken = tokenManager.createAccessToken(user.getId(), "test123!@#");
+        String refreshToken = tokenManager.createRefreshToken(user.getId(), "test123!@#");
+
+
+        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
+
+        Response response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
+                .when().post("/api/v1/me/password")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+
+        SuccessResponse<Void> body = response.as(new TypeRef<>() {
+        });
+
+        User changePasswordUser = userRepository.findById(user.getId()).get();
+
+        // then
+        assertAll(
+                () -> assertThat(response.getCookie("accessToken")).isEmpty(),
+                () -> assertThat(response.getCookie("refreshToken")).isEmpty(),
+                () -> assertThat(body).isNotNull(),
+                () -> assertThat(body.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(
+                        passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
+                () -> assertThat(
+                        passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
         );
     }
 }
