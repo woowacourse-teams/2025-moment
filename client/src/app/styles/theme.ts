@@ -33,6 +33,7 @@ export const theme = {
     'gray-800_90': 'color-mix(in srgb, #1E293B 90%, transparent)',
     'blue-600': '#497CBC',
     'green-500': '#059669',
+    'green-700_20': 'color-mix(in srgb, #99CC00 20%, transparent)',
   },
   typography: {
     title: {

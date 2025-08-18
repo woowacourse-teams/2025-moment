@@ -13,6 +13,7 @@ import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 
 export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -50,6 +51,10 @@ export const Navbar = () => {
     sendEvent(HomePageAnalyticsEvent.ClickMobileAuthButton);
   };
 
+  const expStar = profile?.expStar ?? 0;
+  const nextStepExp = profile?.nextStepExp ?? 0;
+  const EXPBarProgress = (expStar / (nextStepExp + expStar)) * 100;
+
   return (
     <S.Navbar>
       <Logo />
@@ -57,7 +62,17 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        {profile?.level && <S.LevelIcon src={levelMap[profile?.level as Level]} alt="level" />}
+        {profile?.level ? (
+          <S.LevelIconWrapper>
+            <S.LevelIcon
+              src={levelMap[profile?.level as keyof typeof levelMap]}
+              alt="레벨 등급표"
+            />
+            <S.EXPBarTooltip>
+              <EXPBar progress={EXPBarProgress} />
+            </S.EXPBarTooltip>
+          </S.LevelIconWrapper>
+        ) : null}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 
