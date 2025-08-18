@@ -27,7 +27,7 @@ public class ControllerLogAspect {
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
     public void allController() {}
 
-    @Pointcut("allController() && !target(org.springdoc.webmvc.api.OpenApiWebMvcResource)")
+    @Pointcut("allController() && !within(org.springdoc..*)")
     public void allControllerWithoutSwagger() { }
 
     @Before("allControllerWithoutSwagger()")
