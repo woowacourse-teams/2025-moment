@@ -8,6 +8,7 @@ import { sendEvent } from '@/shared/lib/ga';
 import { useMomentExtraWritableQuery } from '../hook/useMomentExtraWritableQuery';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
+import { TodayMomentAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
@@ -17,12 +18,7 @@ export const TodayMomentSuccessContent = () => {
   const { handleOpen, handleClose, isOpen } = useModal();
 
   const handleNavigate = () => {
-    sendEvent({
-      category: 'TodayMoment',
-      action: 'Click MoveToTodayComment Button',
-      label: 'MoveToTodayComment Button',
-    });
-
+    sendEvent(TodayMomentAnalyticsEvent.ClickMoveToTodayCommentButton);
     navigate('/today-comment');
   };
 

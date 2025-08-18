@@ -11,6 +11,7 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedI
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 
 export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -36,20 +37,12 @@ export const Navbar = () => {
   });
 
   const handleDesktopAuthButtonClick = () => {
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click Desktop Auth Button',
-      label: 'Desktop Auth Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickDesktopAuthButton);
   };
 
   const handleMobileAuthButtonClick = () => {
     toggleMobileMenu();
-    sendEvent({
-      category: 'HomePage',
-      action: 'Click Mobile Auth Button',
-      label: 'Mobile Auth Button',
-    });
+    sendEvent(HomePageAnalyticsEvent.ClickMobileAuthButton);
   };
 
   return (
