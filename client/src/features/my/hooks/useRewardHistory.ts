@@ -10,11 +10,9 @@ interface UseRewardHistoryQueryOptions {
 export const useRewardHistoryQuery = ({
   pageNum = 1,
   pageSize = 10,
-  enabled = true,
 }: UseRewardHistoryQueryOptions = {}) => {
   return useQuery({
     queryKey: ['rewardHistory', pageNum, pageSize],
     queryFn: () => getRewardHistory({ pageNum, pageSize }),
-    enabled,
   });
 };
