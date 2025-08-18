@@ -63,8 +63,10 @@ export const ModalFrame = styled.div<{
   display: flex;
   flex-direction: column;
   gap: 15px;
-  position: ${({ $position }) => ($position === 'center' ? 'absolute' : 'fixed')};
+  position: ${({ $position }) => ($position === 'center' ? 'relative' : 'fixed')};
   bottom: ${({ $position }) => ($position === 'bottom' ? '0' : 'auto')};
+  left: ${({ $position }) => ($position === 'bottom' ? '50%' : 'auto')};
+  transform: ${({ $position }) => ($position === 'bottom' ? 'translateX(-50%)' : 'none')};
 
   ${({ theme, variant, $size, $position, $height }) =>
     modalFrameStyles[variant](theme, { $size, $position, $height })};
