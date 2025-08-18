@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -55,7 +56,7 @@ public class EchoController {
     })
     @PostMapping()
     public ResponseEntity<SuccessResponse<Void>> createEchos(
-            @RequestBody EchoCreateRequest request,
+            @Valid @RequestBody EchoCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
         echoService.addEchos(request, authentication);
