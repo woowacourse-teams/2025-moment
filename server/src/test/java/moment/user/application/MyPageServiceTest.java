@@ -8,6 +8,7 @@ import moment.reward.domain.RewardHistory;
 import moment.user.domain.Level;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ class MyPageServiceTest {
 
     @Mock
     private RewardService rewardService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void 유저_프로필_정보를_조회한다() {
@@ -185,5 +190,51 @@ class MyPageServiceTest {
         assertThatThrownBy(() -> myPageService.changeNickname(request, user.getId()))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_CONFLICT);
+    }
+
+    @Test
+    void 일반_회원가입_유저가_아닌_경우_비밀번호_변경_시_예외가_발생합니다() {
+        // given
+        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.GOOGLE);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+
+        // when & then
+        assertThatThrownBy(() -> myPageService.changePassword(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
+    }
+
+    @Test
+    void 새_비밀번호와_확인_비밀번호가_일치하지_않는_경우_예외가_발생합니다() {
+        // given
+        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+
+        // when & then
+        assertThatThrownBy(() -> myPageService.changePassword(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_MISMATCHED);
+    }
+
+    @Test
+    void 새_비밀번호가_기존_비밀번호와_동일한_경우_예외가_발생합니다() {
+        // given
+        User user = new User("mimi@icloud.com", "test123!@#", "미미", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "id", 1L);
+        ChangePasswordRequest request = new ChangePasswordRequest("test123!@#", "test123!@#");
+
+        given(passwordEncoder.encode(request.newPassword())).willReturn("test123!@#");
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+
+        // when & then
+        assertThatThrownBy(() -> myPageService.changePassword(request, user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_SAME_AS_OLD);
     }
 }
