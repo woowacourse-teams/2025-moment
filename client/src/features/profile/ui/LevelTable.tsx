@@ -1,4 +1,4 @@
-import { levelTableData } from '../../../widgets/levelTable/data/levelTableData';
+import { levelTableData } from '@/features/profile/data/levelTableData';
 import * as S from './LevelTable.styles';
 
 export const LevelTable = () => {

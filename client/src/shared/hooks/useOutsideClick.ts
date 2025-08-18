@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
 interface UseOutsideClickProps {
   ref: RefObject<HTMLElement | null>;
@@ -13,10 +13,8 @@ export const useOutsideClick = ({
   isActive,
   excludeRefs = [],
 }: UseOutsideClickProps) => {
-  useEffect(() => {
-    if (!isActive) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
       const target = e.target as Node;
 
       if (ref.current && ref.current.contains(target)) {
@@ -30,9 +28,14 @@ export const useOutsideClick = ({
       }
 
       callback();
-    };
+    },
+    [ref, callback, excludeRefs],
+  );
+
+  useEffect(() => {
+    if (!isActive) return;
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [ref, callback]);
+  }, [isActive, handleClickOutside]);
 };
