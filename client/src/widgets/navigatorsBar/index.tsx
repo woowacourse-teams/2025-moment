@@ -8,10 +8,8 @@ import * as S from './index.styles';
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   const { data: notifications } = useNotificationsQuery();
 
-  if (!notifications) {
-    return null;
-  }
-  const isNotificationExisting = notifications?.data.length > 0;
+  const isNotificationExisting =
+    notifications?.data.length && notifications?.data.length > 0 ? true : false;
 
   const handleTodayMomentClick = () => {
     sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayMomentButton);
@@ -26,7 +24,7 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   };
 
   return (
-    <S.NavigatorsBarContainer $isNavBar={$isNavBar} $shadow={isNotificationExisting}>
+    <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar}>
           <S.IconImage src="/bluePlanet.png" alt="오늘의 모멘트 페이지로 이동 버튼"></S.IconImage>
@@ -42,7 +40,7 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
       </Link>
 
       <Link to={ROUTES.COLLECTION_MYMOMENT} onClick={handleCollectionClick}>
-        <S.LinkContainer $isNavBar={$isNavBar}>
+        <S.LinkContainer $isNavBar={$isNavBar} $shadow={isNotificationExisting}>
           <S.IconImage src="/starPlanet.png" alt="나만의 모음집 페이지로 이동 버튼"></S.IconImage>
           <S.IconText>나만의 모음집</S.IconText>
         </S.LinkContainer>

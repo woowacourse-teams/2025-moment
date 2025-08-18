@@ -1,5 +1,4 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
@@ -12,13 +11,6 @@ import * as S from './index.styles';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
-  const { data: notifications } = useNotificationsQuery();
-
-  if (!notifications) {
-    return null;
-  }
-  const isNotificationExisting = notifications?.data.length > 0;
-
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
@@ -46,7 +38,7 @@ export default function HomePage() {
           <S.BlackHoleImage src="/blackHole.png" alt="네비게이션 메뉴 열기" />
         </button>
       </S.BlackHoleContainer>
-      <S.ClickMeContainer isWidgetOpen={isWidgetOpen} $shadow={isNotificationExisting}>
+      <S.ClickMeContainer isWidgetOpen={isWidgetOpen}>
         <NavigatorsBar $isNavBar={false} />
       </S.ClickMeContainer>
     </S.HomePageWrapper>

@@ -1,4 +1,4 @@
-import { css, keyframes } from '@emotion/react';
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const fadeInUp = keyframes`
@@ -83,24 +83,7 @@ export const BlackHoleText = styled.p`
   pointer-events: none;
 `;
 
-export const ClickMeContainer = styled.div<{ isWidgetOpen: boolean; $shadow: boolean }>`
-  ${({ theme, $shadow }) =>
-    $shadow &&
-    css`
-      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
-      animation: shadowPulse 2s ease-in-out infinite;
-
-      @keyframes shadowPulse {
-        0%,
-        100% {
-          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
-        }
-        50% {
-          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
-        }
-      }
-    `}
-
+export const ClickMeContainer = styled.div<{ isWidgetOpen: boolean }>`
   position: fixed;
   left: 90px;
   transform: translateY(-110%);
