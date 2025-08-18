@@ -15,7 +15,7 @@ export const navItems = [
   },
 ];
 
-export const levelMap = {
+export const LEVEL_MAP = {
   ASTEROID_WHITE: '/images/firstAsteroid.png',
   ASTEROID_YELLOW: '/images/secondAsteroid.png',
   ASTEROID_SKY: '/images/thirdAsteroid.png',

@@ -1,4 +1,4 @@
-import { levelMap, navItems } from '@/app/layout/data/navItems';
+import { LEVEL_MAP, navItems } from '@/app/layout/data/navItems';
 import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
@@ -65,7 +65,7 @@ export const Navbar = () => {
         {profile?.level ? (
           <S.LevelIconWrapper>
             <S.LevelIcon
-              src={levelMap[profile?.level as keyof typeof levelMap]}
+              src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
               alt="레벨 등급표"
             />
             <S.EXPBarTooltip>
