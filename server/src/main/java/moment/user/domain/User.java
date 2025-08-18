@@ -120,10 +120,6 @@ public class User extends BaseEntity {
         this.nickname = newNickname;
     }
 
-    public void changePassword(String password) {
-        this.password = password;
-    }
-
     public boolean checkProviderType(ProviderType providerType) {
         return this.providerType == providerType;
     }
