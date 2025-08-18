@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.PasswordResetRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -39,6 +43,12 @@ class AuthServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private UserQueryService userQueryService;
 
     @Test
     void 일반_로그인에_성공한다() {
@@ -95,5 +105,52 @@ class AuthServiceTest {
 
         // when & then
         assertThat(authService.getAuthenticationByToken(token)).isEqualTo(authentication);
+    }
+
+    @Test
+    void 비밀번호_재설정에_성공한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, "valid-token", "newPassword123!", "newPassword123!");
+        User user = new User(email, "encodedOldPassword", "drago", ProviderType.EMAIL);
+        String encryptedNewPassword = "encryptedNewPassword123!";
+
+        doNothing().when(emailService).verifyPasswordResetToken(request);
+        given(userQueryService.findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL))
+                .willReturn(Optional.of(user));
+        given(passwordEncoder.encode(request.newPassword())).willReturn(encryptedNewPassword);
+
+        // when
+        authService.resetPassword(request);
+
+        // then
+        verify(emailService).verifyPasswordResetToken(request);
+        verify(userQueryService).findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL);
+        assertThat(user.getPassword()).isEqualTo(encryptedNewPassword);
+    }
+
+    @Test
+    void 비밀번호_재설정시_새_비밀번호와_확인_비밀번호가_다르면_예외가_발생한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, "valid-token", "newPassword123!", "differentPassword");
+
+        // when & then
+        assertThatThrownBy(() -> authService.resetPassword(request))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_MISMATCHED);
+    }
+
+    @Test
+    void 비밀번호_재설정시_사용자를_찾을_수_없으면_예외가_발생한다() {
+        // given
+        PasswordResetRequest request = new PasswordResetRequest(email, "valid-token", "newPassword123!", "newPassword123!");
+
+        doNothing().when(emailService).verifyPasswordResetToken(request);
+        given(userQueryService.findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> authService.resetPassword(request))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
     }
 }

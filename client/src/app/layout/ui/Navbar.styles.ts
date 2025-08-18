@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Navbar = styled.nav`
@@ -125,12 +126,29 @@ export const MobileNavItems = styled.div`
   gap: 16px;
 `;
 
-export const MobileNavItem = styled.div<{ $isActive?: boolean }>`
+export const MobileNavItem = styled.div<{ $isActive?: boolean; $shadow?: boolean }>`
   padding: 16px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  ${({ theme, $shadow }) =>
+    $shadow &&
+    css`
+      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
+      animation: shadowPulse 2s ease-in-out infinite;
+
+      @keyframes shadowPulse {
+        0%,
+        100% {
+          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
+        }
+        50% {
+          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
+        }
+      }
+    `}
 
   a {
     color: ${({ theme, $isActive }) =>

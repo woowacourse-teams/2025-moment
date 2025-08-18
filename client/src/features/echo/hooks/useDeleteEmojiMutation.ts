@@ -1,13 +1,13 @@
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
-import { deleteEmoji } from '../api/deleteEmoji';
+import { deleteEcho } from '../api/deleteEcho';
 
 export const useDeleteEmojiMutation = () => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: deleteEmoji,
+    mutationFn: deleteEcho,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
       showSuccess('이모지를 제거했습니다!');

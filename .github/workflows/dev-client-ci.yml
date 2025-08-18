@@ -5,12 +5,12 @@ on:
     branches: [main, develop]
     paths:
       - 'client/**'
-      - '.github/workflows/prod-client-ci.yml'
+      - '.github/workflows/dev-client-ci.yml'
   pull_request:
     branches: [main, develop]
     paths:
       - 'client/**'
-      - '.github/workflows/prod-client-ci.yml'
+      - '.github/workflows/dev-client-ci.yml'
 
 defaults:
   run:

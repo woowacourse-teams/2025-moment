@@ -9,8 +9,8 @@ import moment.reward.domain.RewardHistory;
 import moment.user.domain.User;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
-import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
+import moment.user.dto.response.NicknameChangeResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +45,7 @@ public class MyPageService {
         validateEnoughStars(user, requiredStar);
         validateNicknameConflict(request);
 
-        user.changeNickname(request.newNickname(), requiredStar);
+        user.updateNickname(request.newNickname(), requiredStar);
 
         RewardHistory rewardHistory = new RewardHistory(user, requiredStar, rewardReason, userId);
 
