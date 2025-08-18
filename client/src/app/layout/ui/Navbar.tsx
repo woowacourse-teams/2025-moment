@@ -9,8 +9,8 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { EXPBar } from '@/features/profile/ui/EXPBar';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
-import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
