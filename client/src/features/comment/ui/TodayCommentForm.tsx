@@ -1,4 +1,4 @@
-import { levelMap } from '@/app/layout/data/navItems';
+import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
@@ -8,13 +8,13 @@ import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 
 export function TodayCommentForm() {
-  const { data, isLoading, error, refetch } = useCommentableMomentsQuery();
+  const { data: momentData, isLoading, error, refetch } = useCommentableMomentsQuery();
 
   if (isLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
 
-  if (error || !data) {
+  if (error || !momentData) {
     return (
       <NotFound
         title="데이터를 불러올 수 없습니다"
@@ -25,20 +25,16 @@ export function TodayCommentForm() {
     );
   }
 
-  const momentData = data;
-
-  const getLevelImage = (level: string) => {
-    const levelKey = level.split('_')[0] as keyof typeof levelMap;
-    return levelMap[levelKey] || levelMap.METEOR;
-  };
-
   return (
     <Card width="medium">
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
             <S.UserInfoWrapper>
-              <S.LevelImage src={getLevelImage(momentData.level)} alt={momentData.level} />
+              <S.LevelImage
+                src={LEVEL_MAP[momentData.level as keyof typeof LEVEL_MAP]}
+                alt={momentData.level}
+              />
               <span>{momentData.nickname}</span>
             </S.UserInfoWrapper>
             <S.ActionWrapper>
