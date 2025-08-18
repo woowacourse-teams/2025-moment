@@ -115,13 +115,10 @@ public class User extends BaseEntity {
         this.password = newPassword;
     }
 
-    public void changeNickname(String newNickname, int requiredStar) {
+    public void updateNickname(String newNickname, int requiredStar) {
+        validateNickname(newNickname);
         this.availableStar += requiredStar;
         this.nickname = newNickname;
-    }
-
-    public void changePassword(String password) {
-        this.password = password;
     }
 
     public boolean checkProviderType(ProviderType providerType) {

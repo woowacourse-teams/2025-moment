@@ -1,9 +1,13 @@
 package moment.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
+import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
@@ -16,21 +20,26 @@ import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MyPageControllerTest {
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private UserRepository userRepository;
@@ -41,17 +50,23 @@ class MyPageControllerTest {
     @Autowired
     private TokenManager tokenManager;
 
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+        databaseCleaner.clean();
+    }
+
     @Test
     void 유저_프로필_정보를_조회한다() {
         // given
         User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
         userRepository.save(user);
 
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
 
         // when
         SuccessResponse<MyPageProfileResponse> response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().get("/api/v1/me/profile")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -79,11 +94,11 @@ class MyPageControllerTest {
 
         createTestRewardHistory(user);
 
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
 
         // when
         SuccessResponse<MyRewardHistoryPageResponse> response = RestAssured.given().log().all()
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .param("pageNum", 1)
                 .param("pageSize", 10)
                 .when().get("/api/v1/me/reward/history")
@@ -106,7 +121,8 @@ class MyPageControllerTest {
 
     private void createTestRewardHistory(User user) {
         for (int i = 0; i < 20; i++) {
-            rewardRepository.save(new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
+            rewardRepository.save(
+                    new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
         }
     }
 
@@ -117,7 +133,7 @@ class MyPageControllerTest {
         ReflectionTestUtils.setField(user, "availableStar", 150);
         User savedUser = userRepository.save(user);
 
-        String token = tokenManager.createToken(user.getId(), user.getEmail());
+        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
 
         NicknameChangeRequest request = new NicknameChangeRequest("변경될 유저의 닉네임");
 
@@ -125,7 +141,7 @@ class MyPageControllerTest {
         SuccessResponse<NicknameChangeResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .cookie("token", token)
+                .cookie("accessToken", token)
                 .when().post("/api/v1/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

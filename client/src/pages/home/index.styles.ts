@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 
 const fadeInUp = keyframes`
   from {
@@ -92,7 +92,7 @@ export const BlackHoleText = styled.p`
   pointer-events: none;
 `;
 
-export const WidgetContainer = styled.div<{ isWidgetOpen: boolean }>`
+export const ClickMeContainer = styled.div<{ isWidgetOpen: boolean }>`
   position: fixed;
   left: max(100px, 10vw);
   transform: translateY(-110%);

@@ -1,5 +1,7 @@
 package moment.auth.application;
 
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
@@ -12,24 +14,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class GoogleAuthService {
 
     private final UserRepository userRepository;
-    private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthClient googleAuthClient;
     private final NicknameGenerateService nicknameGenerateService;
+    private final TokensIssuer tokensIssuer;
 
     @Transactional
-    public String loginOrSignUp(String authorizationCode) {
-        GoogleAccessToken accessToken = googleAuthClient.getAccessToken(authorizationCode);
+    public Map<String, String> loginOrSignUp(String authorizationCode) {
+        GoogleAccessToken googleAccessToken = googleAuthClient.getAccessToken(authorizationCode);
 
-        GoogleUserInfo googleUserInfo = googleAuthClient.getUserInfo(accessToken.getAccessToken());
+        GoogleUserInfo googleUserInfo = googleAuthClient.getUserInfo(googleAccessToken.getAccessToken());
 
         String email = googleUserInfo.getEmail();
 
@@ -37,16 +37,19 @@ public class GoogleAuthService {
 
         if (findUser.isPresent()) {
             User user = findUser.get();
-            return tokenManager.createToken(user.getId(), user.getEmail());
+
+            return tokensIssuer.issueTokens(user);
         }
 
         User savedUser = addUser(email, googleUserInfo.getSub());
-        return tokenManager.createToken(savedUser.getId(), savedUser.getEmail());
+
+        return tokensIssuer.issueTokens(savedUser);
     }
 
     private User addUser(String email, String sub) {
         String encodedPassword = passwordEncoder.encode(sub);
-        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(), ProviderType.GOOGLE);
+        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(),
+                ProviderType.GOOGLE);
 
         return userRepository.save(user);
     }

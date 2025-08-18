@@ -22,27 +22,65 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenManager implements TokenManager {
 
-    private final int expirationTime;
-    private final String secretKey;
+    private final int accessTokenExpirationTime;
+    private final int refreshTokenExpirationTime;
+    private final String accessSecretKey;
+    private final String refreshSecretKey;
 
     public JwtTokenManager(
-            @Value("${expiration.time}") int EXPIRATION_TIME,
-            @Value("${jwt.secret.key}") String SECRET_KEY) {
-        this.expirationTime = EXPIRATION_TIME;
-        this.secretKey = SECRET_KEY;
+            @Value("${expiration.access-token-time}") int ACCESS_TOKEN_EXPIRATION_TIME,
+            @Value("${expiration.refresh-token-time}") int REFRESH_TOKEN_EXPIRATION_TIME,
+            @Value("${jwt.secret.access_key}") String ACCESS_SECRET_KEY,
+            @Value("${jwt.secret.refresh_key}") String REFRESH_SECRET_KEY
+    ) {
+        this.accessTokenExpirationTime = ACCESS_TOKEN_EXPIRATION_TIME;
+        this.refreshTokenExpirationTime = REFRESH_TOKEN_EXPIRATION_TIME;
+        this.accessSecretKey = ACCESS_SECRET_KEY;
+        this.refreshSecretKey = REFRESH_SECRET_KEY;
     }
 
     @Override
-    public String createToken(Long id, String email) {
-        SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+    public String createAccessToken(Long id, String email) {
+        SecretKeySpec key = new SecretKeySpec(accessSecretKey.getBytes(), "HmacSHA256");
 
         return Jwts.builder()
-                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .expiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
                 .subject(id.toString())
                 .claim("email", email)
                 .issuedAt(new Date())
                 .signWith(key, HS256)
                 .compact();
+    }
+
+    @Override
+    public String createRefreshToken(Long id, String email) {
+        SecretKeySpec key = new SecretKeySpec(refreshSecretKey.getBytes(), "HmacSHA256");
+
+        return Jwts.builder()
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
+                .subject(id.toString())
+                .claim("email", email)
+                .issuedAt(new Date())
+                .signWith(key, HS256)
+                .compact();
+    }
+
+    public Date getExpirationTimeFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(refreshSecretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return verifiedJwt.getPayload().getExpiration();
+    }
+
+    public Date getIssuedAtFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(refreshSecretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return verifiedJwt.getPayload().getIssuedAt();
     }
 
     @Override
@@ -70,7 +108,7 @@ public class JwtTokenManager implements TokenManager {
 
     private Long extractIdFromToken(String token) {
         Jws<Claims> verifiedJwt = Jwts.parser()
-                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .verifyWith(new SecretKeySpec(accessSecretKey.getBytes(), "HmacSHA256"))
                 .build()
                 .parseSignedClaims(token);
 
