@@ -29,8 +29,6 @@ export const HeaderCell = styled.th`
   letter-spacing: 0.05em;
 `;
 
-export const TableBody = styled.tbody``;
-
 export const BodyRow = styled.tr`
   border-bottom: 1px solid ${({ theme }) => theme.colors['gray-700']};
 

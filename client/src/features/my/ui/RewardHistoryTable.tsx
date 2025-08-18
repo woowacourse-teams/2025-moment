@@ -37,7 +37,7 @@ export const RewardHistoryTable = ({ items }: RewardHistoryTableProps) => {
             <S.HeaderCell>변경량</S.HeaderCell>
           </S.HeaderRow>
         </S.TableHeader>
-        <S.TableBody>
+        <tbody>
           {items.map(item => (
             <S.BodyRow key={item.id}>
               <S.BodyCell>{formatDate(item.createdAt)}</S.BodyCell>
@@ -48,7 +48,7 @@ export const RewardHistoryTable = ({ items }: RewardHistoryTableProps) => {
               </S.BodyCell>
             </S.BodyRow>
           ))}
-        </S.TableBody>
+        </tbody>
       </S.Table>
     </S.TableContainer>
   );
