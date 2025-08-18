@@ -69,6 +69,24 @@ export const theme = {
       large: '90%',
       full: '100%',
     },
+
+    modalWidth: {
+      small: {
+        desktop: '30%',
+        tablet: '50%',
+        mobile: '60%',
+      },
+      medium: {
+        desktop: '60%',
+        tablet: '70%',
+        mobile: '90%',
+      },
+      large: {
+        desktop: '90%',
+        tablet: '95%',
+        mobile: '100%',
+      },
+    },
   },
 
   mediaQueries: {
