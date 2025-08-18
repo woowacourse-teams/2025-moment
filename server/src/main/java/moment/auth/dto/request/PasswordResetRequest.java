@@ -3,12 +3,13 @@ package moment.auth.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Schema(description = "비밀번호 재설정 요청")
 public record PasswordResetRequest (
-
     @Schema(description = "사용자 이메일", example = "user@example.com")
-    @NotBlank(message = "이메일은 필수입니다.")
+    @NotBlank(message = "이메일은 필수 입력 값입니다.")
+    @Size(max = 255, message = "이메일은 최대 {max}자를 초과할 수 없습니다.")
     String email,
 
     @Schema(description = "이메일로 발송된 비밀번호 재설정 토큰")
