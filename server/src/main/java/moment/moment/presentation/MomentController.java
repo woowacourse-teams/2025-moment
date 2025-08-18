@@ -156,7 +156,7 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "코멘트를 달 수 있는 조회", description = "사용자가 코멘트를 달 수 있는 모멘트를 조회합니다.")
+    @Operation(summary = "코멘트를 달 수 있는 모멘트 조회", description = "사용자가 코멘트를 달 수 있는 모멘트를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "코멘트를 달 수 있는 모멘트 조회 성공"),
             @ApiResponse(responseCode = "401", description = """
