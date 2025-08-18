@@ -12,14 +12,16 @@ import org.junit.jupiter.api.Test;
 
 class JwtTokenManagerTest {
 
-    private final String testSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-project";
+    private final String testAccessSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-project";
+    private final String testRefreshSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-prolong";
     private final int testExpirationTime = 3600000;
     private final int testRefreshExpirationTime = 604800000;
     private JwtTokenManager jwtTokenManager;
 
     @BeforeEach
     void setUp() {
-        jwtTokenManager = new JwtTokenManager(testExpirationTime, testSecretKey, testRefreshExpirationTime);
+        jwtTokenManager = new JwtTokenManager(testExpirationTime, testRefreshExpirationTime, testAccessSecretKey,
+                testRefreshSecretKey);
     }
 
     @Test
@@ -34,7 +36,7 @@ class JwtTokenManagerTest {
         // then
         assertThat(token).isNotNull().isNotEmpty();
 
-        SecretKeySpec key = new SecretKeySpec(testSecretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        SecretKeySpec key = new SecretKeySpec(testAccessSecretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()

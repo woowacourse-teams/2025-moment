@@ -89,7 +89,6 @@ class TokensIssuerTest {
         Map<String, String> tokens = tokensIssuer.renewTokens(oldRefreshToken);
 
         // then
-        
         verify(refreshTokenRepository, never()).save(any(RefreshToken.class));
     }
 }

@@ -296,7 +296,7 @@ class AuthControllerTest {
     }
 
     private String createExpiredToken(Long id, String email) {
-        SecretKeySpec key = new SecretKeySpec("test-secret-key-for-jwt-token-generation".getBytes(), "HmacSHA256");
+        SecretKeySpec key = new SecretKeySpec("test-access-key-for-jwt-token-generation".getBytes(), "HmacSHA256");
         Date expiryDate = new Date(System.currentTimeMillis() - 3600 * 1000);
 
         return Jwts.builder()
