@@ -14,15 +14,9 @@ import { Link } from 'react-router';
 import * as S from './index.styles';
 
 export default function MyPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
-
-  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
-
-  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
-  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
-  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
   const {
     data: rewardHistory,
@@ -32,6 +26,12 @@ export default function MyPage() {
     pageNum: currentPage,
     pageSize,
   });
+
+  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
+
+  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
+  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
+  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -58,6 +58,7 @@ export default function MyPage() {
                     src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
                     alt="레벨 등급표"
                   />
+                  <Button variant="primary" title="닉네임 변경" onClick={() => setIsOpen(true)} />
                 </S.UserInfo>
               </S.UserBasicInfo>
             </S.UserProfileSection>

@@ -22,7 +22,7 @@ export const RewardHistoryTable = ({ items }: RewardHistoryTableProps) => {
             <S.BodyRow key={item.id}>
               <S.BodyCell>{formatDate(item.createdAt)}</S.BodyCell>
               <S.BodyCell>{getReasonText(item.reason)}</S.BodyCell>
-              <S.BodyCell $isPositive={item.changeStar > 0}>
+              <S.BodyCell $isPositive={item.changeStar > 0} $isChangeAmount={true}>
                 {item.changeStar > 0 ? '+' : ''}
                 {item.changeStar}
               </S.BodyCell>
