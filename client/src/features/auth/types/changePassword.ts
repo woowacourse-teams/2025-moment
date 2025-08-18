@@ -1,14 +1,14 @@
-export interface PasswordChangeRequest {
+export interface ChangePasswordRequest {
   newPassword: string;
   checkPassword: string;
 }
 
-export interface PasswordChangeResponse {
+export interface ChangePasswordResponse {
   status: number;
   data: string;
 }
 
-export interface PasswordChangeErrors {
+export interface ChangePasswordErrors {
   newPassword: string;
   checkPassword: string;
 }

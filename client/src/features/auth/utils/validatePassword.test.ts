@@ -3,11 +3,11 @@ import { SignupFormData } from '@/features/auth/types/signup';
 import {
   validateLoginForm,
   validatePassword,
-  validatePasswordChangeForm,
+  validateChangePasswordForm,
   validateRePassword,
   validateSignupForm,
 } from './validateAuth';
-import { PasswordChangeRequest } from '../types/passwordChange';
+import { ChangePasswordRequest } from '../types/changePassword';
 
 describe('비밀번호 유효성 검사', () => {
   it('비밀번호가 비어있는 경우 에러를 반환해야 한다', () => {
@@ -196,54 +196,54 @@ describe('회원가입 폼에서 비밀번호 유효성 검사', () => {
 
 describe('비밀번호 변경 폼에서 비밀번호 유효성 검사', () => {
   it('새 비밀번호가 비어있는 경우 에러를 반환해야 한다', () => {
-    const passwordChangeData: PasswordChangeRequest = {
+    const changePasswordData: ChangePasswordRequest = {
       newPassword: '',
       checkPassword: 'Valid123!',
     };
 
-    const result = validatePasswordChangeForm(passwordChangeData);
+    const result = validateChangePasswordForm(changePasswordData);
     expect(result.newPassword).toBe('비밀번호를 입력해주세요.');
   });
 
   it('새 비밀번호가 규칙에 맞지 않는 경우 에러를 반환해야 한다', () => {
-    const passwordChangeData: PasswordChangeRequest = {
+    const changePasswordData: ChangePasswordRequest = {
       newPassword: '123',
       checkPassword: '123',
     };
 
-    const result = validatePasswordChangeForm(passwordChangeData);
+    const result = validateChangePasswordForm(changePasswordData);
     expect(result.newPassword).toBe(
       '비밀번호는 8-16자의 영문 소문자, 숫자, 특수문자(!@#$%^&*())를 포함해야 합니다.',
     );
   });
 
   it('새 비밀번호 확인이 비어있는 경우 에러를 반환해야 한다', () => {
-    const passwordChangeData: PasswordChangeRequest = {
+    const changePasswordData: ChangePasswordRequest = {
       newPassword: 'Valid123!',
       checkPassword: '',
     };
 
-    const result = validatePasswordChangeForm(passwordChangeData);
+    const result = validateChangePasswordForm(changePasswordData);
     expect(result.checkPassword).toBe('비밀번호를 입력해주세요.');
   });
 
   it('새 비밀번호와 비밀번호 확인이 일치하지 않는 경우 에러를 반환해야 한다', () => {
-    const passwordChangeData: PasswordChangeRequest = {
+    const changePasswordData: ChangePasswordRequest = {
       newPassword: 'Valid123!',
       checkPassword: 'Different456@',
     };
 
-    const result = validatePasswordChangeForm(passwordChangeData);
+    const result = validateChangePasswordForm(changePasswordData);
     expect(result.checkPassword).toBe('비밀번호가 일치하지 않습니다.');
   });
 
   it('새 비밀번호와 비밀번호 확인이 모두 유효한 경우 빈 에러를 반환해야 한다', () => {
-    const passwordChangeData: PasswordChangeRequest = {
+    const changePasswordData: ChangePasswordRequest = {
       newPassword: 'Valid123!',
       checkPassword: 'Valid123!',
     };
 
-    const result = validatePasswordChangeForm(passwordChangeData);
+    const result = validateChangePasswordForm(changePasswordData);
     expect(result.newPassword).toBe('');
     expect(result.checkPassword).toBe('');
   });

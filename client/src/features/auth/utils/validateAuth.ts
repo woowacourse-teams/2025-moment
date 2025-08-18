@@ -1,6 +1,6 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
-import { PasswordChangeErrors, PasswordChangeRequest } from '../types/passwordChange';
+import { ChangePasswordErrors, ChangePasswordRequest } from '../types/changePassword';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const NICKNAME_REGEX = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gim;
@@ -65,10 +65,10 @@ export const validateSignupField = (
   }
 };
 
-export const validatePasswordChangeField = (
-  field: keyof PasswordChangeRequest,
+export const validateChangePasswordField = (
+  field: keyof ChangePasswordRequest,
   value: string,
-  formData: PasswordChangeRequest,
+  formData: ChangePasswordRequest,
 ): string => {
   switch (field) {
     case 'newPassword':
@@ -96,7 +96,7 @@ export const validateSignupForm = (data: SignupFormData): SignupErrors => {
   };
 };
 
-export const validatePasswordChangeForm = (data: PasswordChangeRequest): PasswordChangeErrors => {
+export const validateChangePasswordForm = (data: ChangePasswordRequest): ChangePasswordErrors => {
   return {
     newPassword: validatePassword(data.newPassword),
     checkPassword: validateRePassword(data.newPassword, data.checkPassword),
@@ -115,6 +115,6 @@ export const isLoginFormEmpty = (data: LoginFormData): boolean => {
   return Object.values(data).every(value => value === '');
 };
 
-export const isPasswordChangeFormValid = (errors: PasswordChangeErrors): boolean => {
+export const isChangePasswordFormValid = (errors: ChangePasswordErrors): boolean => {
   return Object.values(errors).every(error => error === '');
 };

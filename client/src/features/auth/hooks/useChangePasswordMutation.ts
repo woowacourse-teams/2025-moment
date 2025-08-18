@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import { passwordChange } from '../api/passwordChange';
 import { useNavigate } from 'react-router';
 import { useToast } from '@/shared/hooks';
+import { changePassword } from '../api/ChangePassword';
 
-export const usePasswordChangeMutation = () => {
+export const useChangePasswordMutation = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: passwordChange,
+    mutationFn: changePassword,
     onSuccess: () => {
       showSuccess('비밀번호가 변경되었습니다.');
       navigate('/login');
