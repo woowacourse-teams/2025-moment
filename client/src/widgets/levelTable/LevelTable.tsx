@@ -14,16 +14,14 @@ export const LevelTable = () => {
       </thead>
 
       <tbody>
-        {levelTableData.map(item => {
-          return (
-            <tr>
-              <td>{item.level}</td>
-              <td>{item.name}</td>
-              <td>{item.story}</td>
-              <td>{item.condition}</td>
-            </tr>
-          );
-        })}
+        {levelTableData.map(item => (
+          <tr key={item.level}>
+            <td>{item.level}</td>
+            <td>{item.name}</td>
+            <td>{item.story}</td>
+            <td>{item.condition}</td>
+          </tr>
+        ))}
       </tbody>
     </S.LevelTableWrapper>
   );

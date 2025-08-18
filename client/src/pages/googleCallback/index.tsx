@@ -1,4 +1,4 @@
-import { getProfile } from '@/features/auth/api/getProfile';
+import { getProfile } from '@/features/profile/api/useProfileQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';

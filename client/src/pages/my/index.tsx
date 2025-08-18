@@ -1,9 +1,10 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { ROUTES } from '@/app/routes/routes';
-import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
-import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
-import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
-import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useProfileQuery } from '@/features/profile/api/useProfileQuery';
+import { useRewardHistoryQuery } from '@/features/profile/hooks/useRewardHistory';
+import { RewardHistoryPagination } from '@/features/profile/ui/RewardHistoryPagination';
+import { RewardHistoryTable } from '@/features/profile/ui/RewardHistoryTable';
 import { Button, Card, NotFound } from '@/shared/ui';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
@@ -16,14 +17,6 @@ import * as S from './index.styles';
 export default function MyPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
-
-  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
-  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
-  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
-
   const {
     data: rewardHistory,
     isLoading,
@@ -32,6 +25,19 @@ export default function MyPage() {
     pageNum: currentPage,
     pageSize,
   });
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const {
+    data: myProfile,
+    isLoading: isProfileLoading,
+    error: profileError,
+  } = useProfileQuery({
+    enabled: isLoggedIn ?? false,
+  });
+
+  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
+  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
+  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
