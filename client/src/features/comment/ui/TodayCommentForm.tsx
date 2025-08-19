@@ -47,7 +47,7 @@ export function TodayCommentForm() {
             '오늘은 아침부터 굉장히 바쁜 하루였어요. 매일매일 이런 날로 채우면 언젠가는 취업할 수 있겠죠?'
           }
         />
-        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} />
+        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} />
       </Card>
     );
   }
@@ -93,7 +93,7 @@ export function TodayCommentForm() {
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
-      <TodayCommentWriteContent isLoggedIn={isLoggedIn} />
+      <TodayCommentWriteContent momentId={momentData.id} isLoggedIn={isLoggedIn} />
     </Card>
   );
 }

@@ -7,10 +7,17 @@ import { ROUTES } from '@/app/routes/routes';
 import { useNavigate } from 'react-router';
 import { useToast } from '@/shared/hooks/useToast';
 
-export const TodayCommentWriteContent = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+export const TodayCommentWriteContent = ({
+  isLoggedIn,
+  momentId,
+}: {
+  isLoggedIn: boolean;
+  momentId: number;
+}) => {
   const MAX_LENGTH = 200;
   const { showError } = useToast();
-  const { momentsData, comment, handleChange, handleSubmit } = useSendComments();
+  const { comment, handleChange, handleSubmit } = useSendComments(momentId);
+
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
 
@@ -28,7 +35,6 @@ export const TodayCommentWriteContent = ({ isLoggedIn }: { isLoggedIn: boolean }
 
   return (
     <S.TodayContentWrapper>
-      <Card.TitleContainer title={''} subtitle={momentsData || ''} />
       <Card.Content>
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."
