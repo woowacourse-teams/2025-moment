@@ -7,6 +7,12 @@ export const PostCommentsPageContainer = styled.section`
   margin: 20px;
 `;
 
+export const MyMomentContent = styled.p`
+  font-size: 1.1rem;
+  text-align: left;
+  color: ${({ theme }) => theme.colors['gray-400']};
+`;
+
 export const TitleContainer = styled.div`
   width: 100%;
   display: flex;
@@ -46,4 +52,10 @@ export const EchoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+export const NoEchoContent = styled.p`
+  text-align: center;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors['gray-400']};
 `;

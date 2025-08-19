@@ -28,9 +28,12 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <WriteTime date={myComment.createdAt} />
           </S.TitleWrapper>
         }
-        subtitle={myComment.moment.content}
+        subtitle={''}
       />
       <Card.Content>
+        <S.ContentContainer>
+          <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
+        </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
             <Send size={20} color={theme.colors['yellow-500']} />
@@ -44,9 +47,13 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <p>받은 에코</p>
           </S.TitleContainer>
           <S.EchoContainer>
-            {(myComment.echos || []).map(echo => (
-              <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
-            ))}
+            {myComment.echos && myComment.echos.length > 0 ? (
+              myComment.echos.map(echo => (
+                <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
+              ))
+            ) : (
+              <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
+            )}
           </S.EchoContainer>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
