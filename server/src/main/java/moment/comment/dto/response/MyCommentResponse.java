@@ -6,7 +6,6 @@ import moment.reply.domain.Echo;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map.Entry;
 
 @Schema(description = "나의 Comment 목록 조회 응답")
 public record MyCommentResponse(
@@ -25,16 +24,9 @@ public record MyCommentResponse(
         @Schema(description = "Comment에 등록된 에코 목록")
         List<EchoDetailResponse> echos
 ) {
-    public static MyCommentResponse from(Entry<Comment, List<Echo>> commentAndEchos) {
-        Comment comment = commentAndEchos.getKey();
-        List<Echo> echoes = commentAndEchos.getValue();
-
+    public static MyCommentResponse from(Comment comment) {
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
-
-        List<EchoDetailResponse> echosResponse = echoes.stream()
-                .map(EchoDetailResponse::from)
-                .toList();
-
+        List<EchoDetailResponse> echosResponse = null;
         return new MyCommentResponse(
                 comment.getId(),
                 comment.getContent(),
@@ -44,9 +36,12 @@ public record MyCommentResponse(
         );
     }
 
-    public static MyCommentResponse from(Comment comment) {
+    public static MyCommentResponse from(Comment comment, List<Echo> echoes) {
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
-        List<EchoDetailResponse> echosResponse = null;
+        List<EchoDetailResponse> echosResponse = echoes.stream()
+                .map(EchoDetailResponse::from)
+                .toList();
+
         return new MyCommentResponse(
                 comment.getId(),
                 comment.getContent(),
