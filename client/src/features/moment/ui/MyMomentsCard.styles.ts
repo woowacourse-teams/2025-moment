@@ -148,18 +148,6 @@ export const Title = styled.span`
   color: ${({ theme }) => theme.colors.white};
 `;
 
-export const EchoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-export const EchoButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
 export const NavigationContainer = styled.div`
   display: flex;
   justify-content: space-between;

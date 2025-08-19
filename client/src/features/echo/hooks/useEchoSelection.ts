@@ -20,12 +20,13 @@ export const useEchoSelection = () => {
 
   const clearSelection = () => setSelectedEchos(new Set());
   const isSelected = (echoType: EchoKey) => selectedEchos.has(echoType);
+  const hasSelection = selectedEchos.size > 0;
 
   return {
     selectedEchos,
     toggleEcho,
     clearSelection,
     isSelected,
-    hasSelection: selectedEchos.size > 0,
+    hasSelection,
   };
 };
