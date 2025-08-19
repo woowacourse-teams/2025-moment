@@ -1,6 +1,6 @@
 export interface ChangePasswordRequest {
   newPassword: string;
-  checkPassword: string;
+  checkedPassword: string;
 }
 
 export interface ChangePasswordResponse {
@@ -10,5 +10,5 @@ export interface ChangePasswordResponse {
 
 export interface ChangePasswordErrors {
   newPassword: string;
-  checkPassword: string;
+  checkedPassword: string;
 }
