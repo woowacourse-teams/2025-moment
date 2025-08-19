@@ -5,9 +5,9 @@ import { checkEmailExist } from '../api/checkEmailExist';
 export const useCheckEmail = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const { showError } = useToast();
 
   const handleCheckEmail = async (value: string) => {
-    const { showError } = useToast();
     try {
       const result = await checkEmailExist(value);
       const isExists = result.data.isExists;

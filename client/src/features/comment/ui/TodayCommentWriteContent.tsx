@@ -4,16 +4,15 @@ import { Send } from 'lucide-react';
 import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
 
-export const TodayCommentWriteContent = () => {
+export const TodayCommentWriteContent = ({ momentId }: { momentId: number }) => {
   const MAX_LENGTH = 200;
 
-  const { momentsData, comment, handleChange, handleSubmit } = useSendComments();
+  const { comment, handleChange, handleSubmit } = useSendComments(momentId);
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
 
   return (
     <S.TodayContentWrapper>
-      <Card.TitleContainer title={''} subtitle={momentsData || ''} />
       <Card.Content>
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."
