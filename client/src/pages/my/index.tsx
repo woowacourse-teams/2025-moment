@@ -57,9 +57,9 @@ export default function MyPage() {
     setLocalNickname(nickname);
   };
 
-  const EXPBarProgress = (myProfile.expStar / (myProfile.nextStepExp + myProfile.expStar)) * 100;
+  const EXPBarProgress = (myProfile.expStar / myProfile.nextStepExp) * 100;
 
-  const totalExp = myProfile.nextStepExp + myProfile.expStar;
+  const totalExp = myProfile.nextStepExp;
 
   return (
     <S.MyPageWrapper>
@@ -106,8 +106,6 @@ export default function MyPage() {
         </Card>
       </S.UserInfoSection>
 
-      <S.Divider />
-
       <S.RewardHistorySection>
         <S.SectionTitle>별조각 이력</S.SectionTitle>
         <Card width="large">
@@ -125,7 +123,7 @@ export default function MyPage() {
               <>
                 <RewardHistoryTable items={rewardHistory.items} />
                 <RewardHistoryPagination
-                  currentPage={rewardHistory.currentPageNum + 1}
+                  currentPage={rewardHistory.currentPageNum}
                   totalPages={rewardHistory.totalPages}
                   onPageChange={handlePageChange}
                 />
