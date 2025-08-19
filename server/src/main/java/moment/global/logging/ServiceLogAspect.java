@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 @Profile({"test", "dev"})
 public class ServiceLogAspect {
 
-    @Pointcut("@within(org.springframework.stereotype.Service) && !within(*..*QueryService)")
-    public void serviceWithoutQuery() {
+    @Pointcut("@within(org.springframework.stereotype.Service) && !within(*..*QueryService) && !@annotation(moment.global.logging.NoLogging)")
+    public void serviceWithoutQueryAndNoLogging() {
     }
 
-    @Around("serviceWithoutQuery()")
+    @Around("serviceWithoutQueryAndNoLogging()")
     public Object logService(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("start service: [{}]", joinPoint.getSignature().getName());
 
