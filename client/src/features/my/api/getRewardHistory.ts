@@ -6,7 +6,7 @@ interface GetRewardHistoryParams {
   pageSize?: number;
 }
 export const getRewardHistory = async ({
-  pageNum = 1,
+  pageNum = 0,
   pageSize = 10,
 }: GetRewardHistoryParams = {}): Promise<RewardHistoryData> => {
   const response = await api.get<RewardHistoryResponse>(

@@ -1,5 +1,4 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
-import { ROUTES } from '@/app/routes/routes';
 import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
 import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
@@ -10,19 +9,32 @@ import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
 import * as S from './index.styles';
+import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
+import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
+import { useModal } from '@/shared/hooks/useModal';
+
+export const DEFAULT_PAGE_SIZE = 10;
 
 export default function MyPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [isOpen, setIsOpen] = useState(false);
-
+  const {
+    isOpen: isLevelOpen,
+    handleOpen: handleOpenLevelModal,
+    handleClose: handleCloseLevelModal,
+  } = useModal();
+  const {
+    isOpen: isPasswordOpen,
+    handleOpen: handleOpenPasswordModal,
+    handleClose: handleClosePasswordModal,
+  } = useModal();
+  const {
+    isOpen: isNicknameOpen,
+    handleOpen: handleOpenNicknameModal,
+    handleClose: handleCloseNicknameModal,
+  } = useModal();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
-
-  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
-  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
-  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
   const {
     data: rewardHistory,
@@ -30,11 +42,19 @@ export default function MyPage() {
     error,
   } = useRewardHistoryQuery({
     pageNum: currentPage,
-    pageSize,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
+
+  if (isProfileLoading) return <div>프로필 로딩 중...</div>;
+  if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
+  if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleNicknameChange = (nickname: string) => {
+    setLocalNickname(nickname);
   };
 
   const EXPBarProgress = (myProfile.expStar / (myProfile.nextStepExp + myProfile.expStar)) * 100;
@@ -52,12 +72,15 @@ export default function MyPage() {
                 <S.Email>{myProfile.email}</S.Email>
                 <S.UserInfo>
                   <p>{myProfile.nickname}</p>
-                  <span>•</span>
-                  <S.LevelBadge>{myProfile.level}</S.LevelBadge>
-                  <S.LevelIcon
-                    src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
-                    alt="레벨 등급표"
-                  />
+
+                  <Button variant="primary" title="닉네임 변경" onClick={handleOpenNicknameModal} />
+                  {myProfile.loginType === 'EMAIL' && (
+                    <Button
+                      variant="primary"
+                      title="비밀번호 변경"
+                      onClick={handleOpenPasswordModal}
+                    />
+                  )}
                 </S.UserInfo>
               </S.UserBasicInfo>
             </S.UserProfileSection>
@@ -71,7 +94,12 @@ export default function MyPage() {
                   <span className="separator">/</span>
                   <span className="total">{totalExp}</span>
                 </S.EXPStats>
-                <Button variant="primary" title="레벨 등급표" onClick={() => setIsOpen(true)} />
+                <S.LevelBadge>{myProfile.level}</S.LevelBadge>
+                <S.LevelIcon
+                  src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
+                  alt="레벨 등급표"
+                />
+                <Button variant="primary" title="레벨 등급표" onClick={handleOpenLevelModal} />
               </S.EXPBarContainer>
             </S.EXPSection>
           </S.UserInfoContainer>
@@ -97,7 +125,7 @@ export default function MyPage() {
               <>
                 <RewardHistoryTable items={rewardHistory.items} />
                 <RewardHistoryPagination
-                  currentPage={rewardHistory.currentPageNum}
+                  currentPage={rewardHistory.currentPageNum + 1}
                   totalPages={rewardHistory.totalPages}
                   onPageChange={handlePageChange}
                 />
@@ -111,19 +139,38 @@ export default function MyPage() {
 
       <S.Divider />
 
-      <S.SettingSection>
-        <S.SectionTitle>설정</S.SectionTitle>
-        {myProfile.loginType === 'EMAIL' && (
-          <p>
-            <Link to={ROUTES.PASSWORD}>비밀번호 변경</Link>
-          </p>
-        )}
-      </S.SettingSection>
-
-      <Modal isOpen={isOpen} position="center" size="large" onClose={() => setIsOpen(false)}>
+      <Modal isOpen={isLevelOpen} position="center" size="large" onClose={handleCloseLevelModal}>
         <Modal.Header title="레벨 등급표" />
         <Modal.Content>
           <LevelTable />
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={isPasswordOpen}
+        position="center"
+        size="medium"
+        onClose={handleClosePasswordModal}
+      >
+        <Modal.Header title="비밀번호 변경" />
+        <Modal.Content>
+          <ChangePasswordForm />
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={isNicknameOpen}
+        position="center"
+        size="small"
+        onClose={handleCloseNicknameModal}
+      >
+        <Modal.Header title={myProfile.expStar < 100 ? '<별조각 보유 부족>' : '<닉네임 변경>'} />
+        <Modal.Content>
+          {myProfile.expStar < 100 ? (
+            <p>별조각 100개 이상 보유 시 닉네임 변경이 가능합니다.</p>
+          ) : (
+            <ChangeNicknameForm nickname={localNickname} updateNickname={handleNicknameChange} />
+          )}
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>

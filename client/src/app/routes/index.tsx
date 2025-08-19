@@ -8,7 +8,6 @@ import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 import MyPage from '@/pages/my';
 import NotFoundPage from '@/pages/notFound';
-import PasswordPage from '@/pages/password';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
@@ -33,7 +32,6 @@ export const router = createBrowserRouter(
         <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
         <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
         <Route path={ROUTES.MY} element={<MyPage />} />
-        <Route path={ROUTES.PASSWORD} element={<PasswordPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>,
