@@ -6,7 +6,7 @@ import { EchoButton } from '@/features/echo/ui/EchoButton';
 import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Mail } from 'lucide-react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
@@ -59,8 +59,13 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.read}
       >
-        <WriteTime date={myMoment.createdAt} />
-        <span>{comments?.length}</span>
+        <S.MyMomentsTitleWrapper>
+          <S.CommentCountWrapper>
+            <Mail size={16} />
+            <span>{comments?.length}</span>
+          </S.CommentCountWrapper>
+          <WriteTime date={myMoment.createdAt} />
+        </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
       </S.MyMomentsCard>
       {isOpen && (
