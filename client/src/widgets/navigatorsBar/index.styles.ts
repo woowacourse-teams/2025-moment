@@ -37,7 +37,7 @@ export const LinkContainer = styled.div<{ $isNavBar?: boolean; $shadow?: boolean
   flex-direction: ${({ $isNavBar }) => ($isNavBar ? 'row' : 'column')};
   gap: 12px;
   border-radius: 10px;
-  padding: 8px;
+  padding: 10px 20px;
 
   &:hover {
     transform: scale(1.1);

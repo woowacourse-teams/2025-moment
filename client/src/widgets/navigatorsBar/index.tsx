@@ -40,7 +40,7 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
       </Link>
 
       <Link to={ROUTES.COLLECTION_MYMOMENT} onClick={handleCollectionClick}>
-        <S.LinkContainer $isNavBar={$isNavBar}>
+        <S.LinkContainer $isNavBar={$isNavBar} $shadow={isNotificationExisting}>
           <S.IconImage src="/images/starPlanet.png" alt="나만의 모음집 페이지로 이동 버튼" />
           <S.IconText>나만의 모음집</S.IconText>
         </S.LinkContainer>

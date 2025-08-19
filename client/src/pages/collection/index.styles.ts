@@ -48,7 +48,8 @@ export const CollectionHeaderLinkContainer = styled(Link, {
         }
       }
     `}
-
+  border-radius: 10px;
+  padding: 10px 20px;
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
