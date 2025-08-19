@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
@@ -38,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.util.Map;
+
 @Tag(name = "Auth API", description = "인증/인가 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
@@ -46,6 +47,9 @@ public class AuthController {
 
     private static final int ACCESS_TOKEN_TIME = 30 * 60;
     private static final int REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60;
+
+    private static final String ACCESS_TOKEN_HEADER = "accessToken";
+    private static final String REFRESH_TOKEN_HEADER = "refreshToken";
 
     private final AuthService authService;
     private final GoogleAuthService googleAuthService;
@@ -56,6 +60,9 @@ public class AuthController {
 
     @Value("${auth.google.redirect-uri}")
     private String redirectUri;
+
+    @Value("${auth.google.client-uri}")
+    private String clientUri;
 
     @Operation(summary = "로그인", description = "사용자 로그인을 합니다.")
     @ApiResponses({
@@ -76,10 +83,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<SuccessResponse<Void>> login(@Valid @RequestBody LoginRequest request) {
         Map<String, String> tokens = authService.login(request);
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
+        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
+        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
 
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
@@ -87,7 +94,7 @@ public class AuthController {
                 .maxAge(ACCESS_TOKEN_TIME)
                 .build();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
@@ -111,7 +118,7 @@ public class AuthController {
     public ResponseEntity<SuccessResponse<Void>> logout(@AuthenticationPrincipal Authentication authentication) {
         authService.logout(authentication.id());
 
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
+        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, null)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
@@ -119,7 +126,7 @@ public class AuthController {
                 .maxAge(0)
                 .build();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", null)
+        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, null)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
@@ -154,10 +161,10 @@ public class AuthController {
     @GetMapping("/callback/google")
     public ResponseEntity<Void> googleCallback(@RequestParam String code) {
         Map<String, String> tokens = googleAuthService.loginOrSignUp(code);
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
+        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
+        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
 
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("None")
                 .httpOnly(true)
                 .secure(true)
@@ -165,7 +172,7 @@ public class AuthController {
                 .maxAge(ACCESS_TOKEN_TIME)
                 .build();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
                 .sameSite("None")
                 .httpOnly(true)
                 .secure(true)
@@ -173,7 +180,7 @@ public class AuthController {
                 .maxAge(REFRESH_TOKEN_TIME)
                 .build();
 
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://www.connectingmoment.com")
+        String redirectUrl = UriComponentsBuilder.fromUriString(clientUri)
                 .path("/auth/callback")
                 .queryParam("success", "true")
                 .build()
@@ -192,7 +199,7 @@ public class AuthController {
     })
     @GetMapping("/login/check")
     public ResponseEntity<SuccessResponse<LoginCheckResponse>> checkLogin(
-            @CookieValue(value = "token", required = false) String token) {
+            @CookieValue(value = ACCESS_TOKEN_HEADER, required = false) String token) {
         LoginCheckResponse response = authService.loginCheck(token);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.ok(SuccessResponse.of(status, response));
@@ -212,10 +219,10 @@ public class AuthController {
     public ResponseEntity<SuccessResponse<Void>> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         Map<String, String> tokens = authService.refresh(request);
 
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
+        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
+        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
 
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
@@ -223,7 +230,7 @@ public class AuthController {
                 .maxAge(ACCESS_TOKEN_TIME)
                 .build();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
