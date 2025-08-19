@@ -14,7 +14,7 @@ export const MyPageWrapper = styled.main`
 export const UserInfoSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 4px;
   align-items: center;
   width: 100%;
   max-width: 800px;
@@ -23,7 +23,7 @@ export const UserInfoSection = styled.div`
 export const RewardHistorySection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 4px;
   align-items: center;
   width: 100%;
   max-width: 800px;
@@ -38,12 +38,25 @@ export const SettingSection = styled.div`
   max-width: 800px;
 `;
 
-export const SectionTitle = styled.h2`
-  font-size: 48px;
+export const SectionTitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  width: 90%;
+  max-width: 800px;
+`;
+
+export const SectionTitle = styled.p`
+  font-size: 36px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors['white']};
-  text-align: center;
   margin: 0;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 export const UserInfoContainer = styled.div`
@@ -64,14 +77,9 @@ export const UserProfileSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   padding: 8px 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors['gray-700']};
-`;
-
-export const UserBasicInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 `;
 
 export const Email = styled.h3`
@@ -84,6 +92,7 @@ export const Email = styled.h3`
 export const UserInfo = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
 
   p {
@@ -102,11 +111,9 @@ export const UserInfo = styled.div`
 export const LevelBadge = styled.div`
   background: transparent;
   color: ${({ theme }) => theme.colors['white']};
-  padding: 6px 16px;
-  border: 1px solid ${({ theme }) => theme.colors['gray-200']};
-  border-radius: 20px;
+  padding: 2px 8px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 18px;
   text-transform: uppercase;
 `;
 
@@ -118,16 +125,40 @@ export const LevelIcon = styled.img`
 export const EXPSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   padding: 16px 0;
 `;
 
-export const EXPBarContainer = styled.div`
+export const EXPContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
   width: 100%;
+`;
+
+export const EXPStatsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid ${({ theme }) => theme.colors['gray-200']};
+  border-radius: 10px;
+  padding: 4px 12px;
+`;
+
+export const LevelButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const LevelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors['gray-200']};
 `;
 
 export const EXPStats = styled.div`
@@ -137,7 +168,6 @@ export const EXPStats = styled.div`
   font-size: 16px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors['gray-200']};
-  min-width: 120px;
 
   .current {
     color: ${({ theme }) => theme.colors['yellow-300']};
@@ -156,7 +186,8 @@ export const EXPLabel = styled.p`
   font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors['gray-400']};
-  margin: 0 0 8px 0;
+  justify-content: center;
+  margin: 0;
 `;
 
 export const Divider = styled.hr`

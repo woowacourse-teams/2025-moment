@@ -13,6 +13,7 @@ import * as S from './index.styles';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 import { useModal } from '@/shared/hooks/useModal';
+import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -64,16 +65,18 @@ export default function MyPage() {
   return (
     <S.MyPageWrapper>
       <S.UserInfoSection>
-        <S.SectionTitle>내 정보</S.SectionTitle>
+        <S.SectionTitleContainer>
+          <S.SectionTitle>내 정보</S.SectionTitle>
+        </S.SectionTitleContainer>
         <Card width="large">
           <S.UserInfoContainer>
             <S.UserProfileSection>
-              <S.UserBasicInfo>
-                <S.Email>{myProfile.email}</S.Email>
-                <S.UserInfo>
-                  <p>{myProfile.nickname}</p>
-
+              <S.Email>{myProfile.email}</S.Email>
+              <S.UserInfo>
+                <p>{myProfile.nickname}</p>
+                <S.ButtonContainer>
                   <Button variant="primary" title="닉네임 변경" onClick={handleOpenNicknameModal} />
+
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -81,26 +84,32 @@ export default function MyPage() {
                       onClick={handleOpenPasswordModal}
                     />
                   )}
-                </S.UserInfo>
-              </S.UserBasicInfo>
+                </S.ButtonContainer>
+              </S.UserInfo>
             </S.UserProfileSection>
 
             <S.EXPSection>
               <S.EXPLabel>경험치</S.EXPLabel>
-              <S.EXPBarContainer>
-                <EXPBar progress={EXPBarProgress} />
-                <S.EXPStats>
-                  <span className="current">{myProfile.expStar}</span>
-                  <span className="separator">/</span>
-                  <span className="total">{totalExp}</span>
-                </S.EXPStats>
-                <S.LevelBadge>{myProfile.level}</S.LevelBadge>
-                <S.LevelIcon
-                  src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
-                  alt="레벨 등급표"
-                />
-                <Button variant="primary" title="레벨 등급표" onClick={handleOpenLevelModal} />
-              </S.EXPBarContainer>
+              <S.EXPContainer>
+                <S.EXPStatsContainer>
+                  <S.LevelWrapper>
+                    <S.LevelBadge>{getLevelText(myProfile.level)}</S.LevelBadge>
+                    <S.LevelIcon
+                      src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
+                      alt="레벨 등급표"
+                    />
+                  </S.LevelWrapper>
+                  <EXPBar progress={EXPBarProgress} />
+                  <S.EXPStats>
+                    <span className="current">{myProfile.expStar}</span>
+                    <span className="separator">/</span>
+                    <span className="total">{totalExp}</span>
+                  </S.EXPStats>
+                </S.EXPStatsContainer>
+                <S.LevelButtonContainer>
+                  <Button variant="primary" title="레벨 등급표" onClick={handleOpenLevelModal} />
+                </S.LevelButtonContainer>
+              </S.EXPContainer>
 
               <p>사용가능한 별조각: {myProfile.availableStar}</p>
             </S.EXPSection>
@@ -109,7 +118,9 @@ export default function MyPage() {
       </S.UserInfoSection>
 
       <S.RewardHistorySection>
-        <S.SectionTitle>별조각 이력</S.SectionTitle>
+        <S.SectionTitleContainer>
+          <S.SectionTitle>별조각 이력</S.SectionTitle>
+        </S.SectionTitleContainer>
         <Card width="large">
           <S.RewardHistoryContainer>
             {isLoading ? (
