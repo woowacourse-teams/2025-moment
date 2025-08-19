@@ -1,4 +1,3 @@
-import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { theme } from '@/app/styles/theme';
 import { ECHO_TYPE } from '@/features/echo/const/echoType';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
@@ -13,6 +12,7 @@ import { useReadNotifications } from '../../notification/hooks/useReadNotificati
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
+import { WriterInfo } from '@/widgets/writerInfo';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -66,13 +66,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
               <>
                 <S.MyMomentsModalContent key={currentComment.id}>
                   <S.MyMomentsModalHeader>
-                    <S.CommenterInfoContainer>
-                      <S.LevelIcon
-                        src={LEVEL_MAP[currentComment.level as keyof typeof LEVEL_MAP]}
-                        alt="level"
-                      />
-                      <span>{currentComment.nickname}</span>
-                    </S.CommenterInfoContainer>
+                    <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
                     <S.CommentIndicator>
                       {navigation.currentIndex + 1} / {comments?.length || 0}
                     </S.CommentIndicator>

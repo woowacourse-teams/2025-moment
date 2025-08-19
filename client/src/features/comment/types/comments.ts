@@ -15,6 +15,9 @@ export interface CommentItem {
   moment: {
     content: string;
     createdAt: string;
+    id: number;
+    level: string;
+    nickName: string;
   };
   echos: Echo[];
 }
