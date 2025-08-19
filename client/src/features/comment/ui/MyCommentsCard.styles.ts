@@ -47,14 +47,8 @@ export const ContentContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-export const Emoji = styled.div`
+export const EchoContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  background-color: ${({ theme }) => theme.colors['gray-600_20']};
-  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
 `;

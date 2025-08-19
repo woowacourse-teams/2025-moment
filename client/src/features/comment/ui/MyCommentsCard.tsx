@@ -1,5 +1,4 @@
 import { theme } from '@/app/styles/theme';
-import { echoMapping } from '@/features/echo/utils/echoMapping';
 import { Button, Card, SimpleCard } from '@/shared/ui';
 import { Heart, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
@@ -7,9 +6,10 @@ import type { CommentWithNotifications } from '../types/commentsWithNotification
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { useToast } from '@/shared/hooks';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { Echo } from '@/features/echo/ui/Echo';
 
 const ECHO_REWARD_POINT = 3;
-import { WriterInfo } from '@/widgets/writerInfo';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { showSuccess } = useToast();
@@ -48,13 +48,13 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
         <S.ContentContainer>
           <S.TitleContainer>
             <Heart size={20} color={theme.colors['yellow-500']} />
-            <p>받은 리액션</p>
+            <p>받은 에코</p>
           </S.TitleContainer>
-          <S.Emoji>
-            {(myComment.echos || [])
-              .map(echo => echoMapping(echo.emojiType as EchoTypeKey))
-              .join(' ')}
-          </S.Emoji>
+          <S.EchoContainer>
+            {(myComment.echos || []).map(echo => (
+              <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
+            ))}
+          </S.EchoContainer>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
       </Card.Content>

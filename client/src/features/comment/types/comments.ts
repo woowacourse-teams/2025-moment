@@ -24,7 +24,7 @@ export interface CommentItem {
 
 export interface Echo {
   id: number;
-  emojiType: string;
+  echoType: string;
   userId: number;
 }
 
