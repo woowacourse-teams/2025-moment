@@ -2,11 +2,11 @@ import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, RotateCcw } from 'lucide-react';
+import { AlertCircle, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -32,10 +32,7 @@ export function TodayCommentForm() {
                 <S.NotLoggedNickname>푸르른 물방울의 테리우스</S.NotLoggedNickname>
               </S.UserInfoWrapper>
               <S.ActionWrapper>
-                <S.TimeWrapper>
-                  <Clock size={16} />
-                  9시간 전
-                </S.TimeWrapper>
+                <WriteTime date="9시간 전" />
               </S.ActionWrapper>
             </S.TitleWrapper>
           }
@@ -80,10 +77,7 @@ export function TodayCommentForm() {
               <span>{momentData.nickname}</span>
             </S.UserInfoWrapper>
             <S.ActionWrapper>
-              <S.TimeWrapper>
-                <Clock size={16} />
-                {formatRelativeTime(momentData.createdAt)}
-              </S.TimeWrapper>
+              <WriteTime date={momentData.createdAt} />
               <S.RefreshButton onClick={() => refetch()}>
                 <RotateCcw size={28} />
               </S.RefreshButton>

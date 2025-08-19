@@ -8,6 +8,7 @@ import { EchoTypeKey } from '@/features/echo/type/echos';
 import { useToast } from '@/shared/hooks';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Echo } from '@/features/echo/ui/Echo';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 const ECHO_REWARD_POINT = 3;
 
@@ -32,7 +33,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
         title={
           <S.TitleWrapper>
             <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
-            <S.TimeStamp>{new Date(myComment.createdAt).toLocaleDateString()}</S.TimeStamp>
+            <WriteTime date={myComment.createdAt} />
           </S.TitleWrapper>
         }
         subtitle={myComment.moment.content}

@@ -22,11 +22,6 @@ export const TitleWrapper = styled.div`
   gap: 8px;
 `;
 
-export const TimeStamp = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors['gray-400']};
-`;
-
 export const Title = styled.span`
   font-size: ${({ theme }) => theme.typography.title.fontSize.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};

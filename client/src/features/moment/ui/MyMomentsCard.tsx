@@ -6,14 +6,14 @@ import { EchoButton } from '@/features/echo/ui/EchoButton';
 import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { ChevronLeft, ChevronRight, Heart, Timer } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -59,6 +59,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.read}
       >
+        <WriteTime date={myMoment.createdAt} />
+        <span>{comments?.length}</span>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
       </S.MyMomentsCard>
       {isOpen && (
@@ -83,10 +85,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       {navigation.currentIndex + 1} / {comments?.length || 0}
                     </S.CommentIndicator>
                     <S.TitleWrapper>
-                      <Timer size={16} color={theme.colors['gray-400']} />
-                      <S.TimeStamp>
-                        {formatRelativeTime(currentComment.createdAt || '')}
-                      </S.TimeStamp>
+                      <WriteTime date={currentComment.createdAt} />
                     </S.TitleWrapper>
                   </S.MyMomentsModalHeader>
 
