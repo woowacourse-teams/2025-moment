@@ -11,5 +11,6 @@ export const ROUTES = {
   TODAY_COMMENT_SUCCESS: '/today-comment/success',
   GOOGLE_CALLBACK: '/auth/callback',
   MY: '/my',
-  PASSWORD_UPDATE: 'passwordUpdate',
+  FIND_PASSWORD: 'find-password',
+  NEW_PASSWORD: 'passwordUpdate',
 };

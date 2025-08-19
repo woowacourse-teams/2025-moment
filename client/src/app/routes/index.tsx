@@ -3,6 +3,7 @@ import { ProtectedRoute } from '@/app/routes/ProtectedRoute';
 import { ROUTES } from '@/app/routes/routes';
 import MyCommentCollectionPage from '@/pages/collection/mycomment';
 import MyMomentCollectionPage from '@/pages/collection/mymoment';
+import FindPasswordPage from '@/pages/findPassword';
 import GoogleCallbackPage from '@/pages/googleCallback';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
@@ -26,8 +27,8 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
       <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
       <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
-      <Route path={ROUTES.PASSWORD_UPDATE} element={<NewPasswordPage />} />
-
+      <Route path={ROUTES.FIND_PASSWORD} element={<FindPasswordPage />} />
+      <Route path={ROUTES.NEW_PASSWORD} element={<NewPasswordPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
         <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
