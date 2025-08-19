@@ -13,7 +13,9 @@ export const getReasonText = (reason: string) => {
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('ko-KR', {
+  const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+
+  return koreaTime.toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
