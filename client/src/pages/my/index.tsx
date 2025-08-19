@@ -101,6 +101,8 @@ export default function MyPage() {
                 />
                 <Button variant="primary" title="레벨 등급표" onClick={handleOpenLevelModal} />
               </S.EXPBarContainer>
+
+              <p>사용가능한 별조각: {myProfile.availableStar}</p>
             </S.EXPSection>
           </S.UserInfoContainer>
         </Card>
