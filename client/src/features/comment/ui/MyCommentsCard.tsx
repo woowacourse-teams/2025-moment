@@ -6,14 +6,22 @@ import * as S from './MyCommentsCard.styles';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { EchoTypeKey } from '@/features/echo/type/echos';
+import { useToast } from '@/shared/hooks';
+
+const ECHO_REWARD_POINT = 3;
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
+  const { showSuccess } = useToast();
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
 
   const handleCommentOpen = () => {
     if (myComment.read || isReadingNotification) return;
     if (myComment.notificationId) {
       handleReadNotifications(myComment.notificationId);
+
+      if (myComment.echos && myComment.echos.length > 0) {
+        showSuccess(`${ECHO_REWARD_POINT} 포인트를 획득했습니다!`);
+      }
     }
   };
 
@@ -42,8 +50,8 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <p>받은 리액션</p>
           </S.TitleContainer>
           <S.Emoji>
-            {(myComment.emojis || [])
-              .map(emoji => echoMapping(emoji.emojiType as EchoTypeKey))
+            {(myComment.echos || [])
+              .map(echo => echoMapping(echo.emojiType as EchoTypeKey))
               .join(' ')}
           </S.Emoji>
           {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
