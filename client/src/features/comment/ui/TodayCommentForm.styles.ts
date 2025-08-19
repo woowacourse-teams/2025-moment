@@ -58,3 +58,15 @@ export const RefreshButton = styled.button`
     transform: scale(1.05);
   }
 `;
+
+export const NotLoggedIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+`;
+
+export const NotLoggedNickname = styled.p`
+  font-size: 16px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors['yellow-500']};
+`;

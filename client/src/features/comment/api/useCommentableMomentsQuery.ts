@@ -5,10 +5,11 @@ import {
 } from '@/features/comment/types/comments';
 import { useQuery } from '@tanstack/react-query';
 
-export const useCommentableMomentsQuery = () => {
+export const useCommentableMomentsQuery = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['commentableMoments'],
     queryFn: getCommentableMoments,
+    enabled: options?.enabled ?? true,
   });
 };
 
