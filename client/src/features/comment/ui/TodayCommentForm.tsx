@@ -51,7 +51,7 @@ export function TodayCommentForm() {
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
-      <TodayCommentWriteContent />
+      <TodayCommentWriteContent momentId={momentData.id} />
     </Card>
   );
 }
