@@ -115,7 +115,7 @@ public class AuthEmailService implements EmailService{
         helper.setTo(email);
         helper.setSubject("[Moment] 비밀번호 재설정 안내");
         String htmlContent = "<p>비밀번호를 재설정하려면 다음 링크를 클릭하세요:</p>"
-                + "<a href=\"https://connectingmoment.com/passwordUpdate?token=" + token + "\">비밀번호 재설정하기</a>";
+                + "<a href=\"https://connectingmoment.com/passwordUpdate?token=" + token + "&email=" + email +"\">비밀번호 재설정하기</a>";
         helper.setText(htmlContent, true);
 
         mailSender.send(helper.getMimeMessage());
