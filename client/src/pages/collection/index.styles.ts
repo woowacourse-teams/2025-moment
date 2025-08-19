@@ -20,7 +20,6 @@ export const CollectionHeaderContainer = styled.div`
   justify-content: center;
   gap: 60px;
   margin: 0 auto;
-  border: 1px solid #ccc;
   padding: 20px;
 
   @media (max-width: 768px) {
@@ -35,27 +34,48 @@ export const CollectionHeaderLinkContainer = styled(Link, {
   ${({ theme, $shadow }) =>
     $shadow &&
     css`
-      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
-      animation: shadowPulse 2s ease-in-out infinite;
+      position: relative;
+      padding: 4px;
+      &::after {
+        content: '';
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 10px;
+        height: 10px;
+        background: ${theme.colors['yellow-300']};
+        border-radius: 50%;
+        box-shadow:
+          0 0 4px ${theme.colors['yellow-300']},
+          0 0 8px ${theme.colors['yellow-300_80']};
+        animation: dotPulse 2s ease-in-out infinite;
+      }
 
-      @keyframes shadowPulse {
+      @keyframes dotPulse {
         0%,
         100% {
-          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
+          transform: scale(0.6);
+          box-shadow:
+            0 0 2px ${theme.colors['yellow-300']},
+            0 0 4px ${theme.colors['yellow-300_80']};
         }
         50% {
-          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
+          transform: scale(1);
+          box-shadow:
+            0 0 4px ${theme.colors['yellow-300']},
+            0 0 8px ${theme.colors['yellow-300_80']};
         }
       }
     `}
 
-  color: white;
-  font-size: 1.5rem;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 2rem;
   font-weight: bold;
 
   &.active {
-    font-size: 1.8rem;
-    color: yellow;
+    font-size: 2.4rem;
+    color: ${({ theme }) => theme.colors['yellow-300']};
+    border-bottom: 2.5px solid ${({ theme }) => theme.colors['yellow-300']};
   }
 
   &:hover {
@@ -70,4 +90,11 @@ export const CollectionHeaderLinkContainer = styled(Link, {
       font-size: 1.4rem;
     }
   }
+`;
+
+export const Description = styled.span`
+  font-size: 1.4rem;
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: bold;
+  margin: 0 auto;
 `;
