@@ -13,15 +13,16 @@ import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
 import { WriterInfo } from '@/widgets/writerInfo';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
+  const { data: notifications } = useNotificationsQuery();
   const comments = myMoment.comments;
   const navigation = useCommentNavigation(comments?.length || 0);
-
   const handleModalClose = () => {
     clearSelection();
     navigation.reset();
@@ -32,9 +33,17 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     handleOpen();
     navigation.reset();
     if (myMoment.read || isReadingNotification) return;
-    if (myMoment.notificationId) {
-      handleReadNotifications(myMoment.notificationId);
-    }
+
+    const unreadMomentNotifications =
+      notifications?.data.filter(
+        notification => notification.targetId === myMoment.id && !notification.isRead,
+      ) || [];
+
+    unreadMomentNotifications.forEach(notification => {
+      if (notification.id) {
+        handleReadNotifications(notification.id);
+      }
+    });
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
