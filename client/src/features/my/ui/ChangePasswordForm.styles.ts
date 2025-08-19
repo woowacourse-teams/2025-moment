@@ -13,6 +13,7 @@ export const ChangePasswordFormContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%;
 `;
 
 export const ChangePasswordFormInput = styled.input`
@@ -22,7 +23,7 @@ export const ChangePasswordFormInput = styled.input`
   padding: 8px 16px;
   font-size: 16px;
   font-weight: 600;
-  background-color: ${({ theme }) => theme.colors['slate-900']};
+  background-color: ${({ theme }) => theme.colors['gray-600_20']};
   color: ${({ theme }) => theme.colors['gray-400']};
   &::placeholder {
     color: ${({ theme }) => theme.colors['gray-400']};
