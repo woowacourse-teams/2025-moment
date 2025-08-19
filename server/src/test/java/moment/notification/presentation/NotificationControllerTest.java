@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -101,7 +101,7 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_내_모멘트에_코멘트를_달면_SSE_알림을_받는다() {
         // given
-        when(sseNotificationService.subscribe(anyLong())).thenReturn(new SseEmitter());
+        given(sseNotificationService.subscribe(anyLong())).willReturn(new SseEmitter());
 
         // when
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
@@ -115,8 +115,8 @@ public class NotificationControllerTest {
 
         // then
         ArgumentCaptor<NotificationSseResponse> responseCaptor = ArgumentCaptor.forClass(NotificationSseResponse.class);
-        verify(sseNotificationService).sendToClient(eq(momenter.getId()), eq("notification"), responseCaptor.capture());
-
+        then(sseNotificationService).should()
+                .sendToClient(eq(momenter.getId()), eq("notification"), responseCaptor.capture());
         NotificationSseResponse response = responseCaptor.getValue();
 
         assertAll(
@@ -131,7 +131,7 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_코멘트에_반응을_달면_SSE_알림을_받는다() {
         // given
-        when(sseNotificationService.subscribe(anyLong())).thenReturn(new SseEmitter());
+        given(sseNotificationService.subscribe(anyLong())).willReturn(new SseEmitter());
         Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
 
         // when
@@ -146,8 +146,9 @@ public class NotificationControllerTest {
 
         // then
         ArgumentCaptor<NotificationSseResponse> responseCaptor = ArgumentCaptor.forClass(NotificationSseResponse.class);
-        verify(sseNotificationService).sendToClient(eq(commenter.getId()), eq("notification"),
-                responseCaptor.capture());
+
+        then(sseNotificationService).should()
+                .sendToClient(eq(commenter.getId()), eq("notification"), responseCaptor.capture());
 
         NotificationSseResponse response = responseCaptor.getValue();
 
