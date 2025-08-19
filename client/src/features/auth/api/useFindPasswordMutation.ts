@@ -6,7 +6,7 @@ export const useFindPasswordMutation = () => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: (email: string) => varifyNewPassword(email),
+    mutationFn: (email: string) => verifyNewPassword(email),
     onSuccess: () => {
       showSuccess('이메일로 인증 링크가 전송되었습니다. 이메일을 확인해주세요.');
     },
@@ -16,7 +16,7 @@ export const useFindPasswordMutation = () => {
   });
 };
 
-const varifyNewPassword = async (email: string) => {
+const verifyNewPassword = async (email: string) => {
   const response = await api.post('/auth/email/password', {
     email,
   });
