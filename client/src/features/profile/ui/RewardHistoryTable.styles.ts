@@ -37,9 +37,13 @@ export const BodyRow = styled.tr`
   }
 `;
 
-export const BodyCell = styled.td<{ $isPositive?: boolean }>`
+export const BodyCell = styled.td<{ $isPositive?: boolean; $isChangeAmount?: boolean }>`
   padding: 14px 12px;
   font-size: 14px;
-  color: ${({ theme, $isPositive }) =>
-    $isPositive ? theme.colors['green-500'] : theme.colors['red-500']};
+  color: ${({ theme, $isPositive, $isChangeAmount }) => {
+    if ($isChangeAmount) {
+      return $isPositive ? theme.colors['green-500'] : theme.colors['red-500'];
+    }
+    return theme.colors.white;
+  }};
 `;

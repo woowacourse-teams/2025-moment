@@ -73,7 +73,7 @@ export const validateChangePasswordField = (
   switch (field) {
     case 'newPassword':
       return validatePassword(value);
-    case 'checkPassword':
+    case 'checkedPassword':
       return validateRePassword(formData.newPassword, value);
     default:
       return '';
@@ -99,7 +99,7 @@ export const validateSignupForm = (data: SignupFormData): SignupErrors => {
 export const validateChangePasswordForm = (data: ChangePasswordRequest): ChangePasswordErrors => {
   return {
     newPassword: validatePassword(data.newPassword),
-    checkPassword: validateRePassword(data.newPassword, data.checkPassword),
+    checkedPassword: validateRePassword(data.newPassword, data.checkedPassword),
   };
 };
 

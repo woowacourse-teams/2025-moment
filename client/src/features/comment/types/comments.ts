@@ -16,10 +16,10 @@ export interface CommentItem {
     content: string;
     createdAt: string;
   };
-  emojis: Emoji[];
+  echos: Echo[];
 }
 
-export interface Emoji {
+export interface Echo {
   id: number;
   emojiType: string;
   userId: number;

@@ -6,6 +6,7 @@ export const MyPageWrapper = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 10vh;
   align-items: center;
   gap: 40px;
 `;
@@ -124,6 +125,7 @@ export const EXPSection = styled.div`
 export const EXPBarContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   width: 100%;
 `;
