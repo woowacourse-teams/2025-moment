@@ -1,6 +1,5 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
-import { useProfileQuery } from '@/features/my/hooks/useProfileQuery';
-import { useRewardHistoryQuery } from '@/features/my/hooks/useRewardHistory';
+
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { Button, Card, NotFound } from '@/shared/ui';
@@ -14,6 +13,8 @@ import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 import { useModal } from '@/shared/hooks/useModal';
 import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
+import { useRewardHistoryQuery } from '@/features/my/api/useRewardHistory';
+import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
