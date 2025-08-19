@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { theme } from '@/app/styles/theme';
 import { ECHO_TYPE } from '@/features/echo/const/echoType';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
@@ -21,8 +22,14 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
     useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
-  const comments = myMoment.comments;
-  const navigation = useCommentNavigation(comments?.length || 0);
+  const sortedComments = useMemo(() => {
+    return myMoment.comments?.slice().reverse() || [];
+  }, [myMoment.comments]);
+  const navigation = useCommentNavigation(sortedComments.length);
+  const currentComment = sortedComments[navigation.currentIndex];
+  const echoType = currentComment?.echos.map(echo => echo.echoType);
+  const hasAnyEcho = echoType && echoType.length > 0;
+
   const handleModalClose = () => {
     clearSelection();
     navigation.reset();
@@ -47,9 +54,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
-  const currentComment = comments?.[navigation.currentIndex];
-  const echoType = currentComment?.echos.map(echo => echo.echoType);
-  const hasAnyEcho = echoType && echoType.length > 0;
 
   return (
     <>
@@ -62,7 +66,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         <S.MyMomentsTitleWrapper>
           <S.CommentCountWrapper>
             <Mail size={16} />
-            <span>{comments?.length}</span>
+            <span>{sortedComments?.length}</span>
           </S.CommentCountWrapper>
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
@@ -87,7 +91,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                     </S.WriterInfoWrapper>
 
                     <S.CommentIndicator>
-                      {navigation.currentIndex + 1} / {comments?.length || 0}
+                      {navigation.currentIndex + 1} / {sortedComments?.length || 0}
                     </S.CommentIndicator>
                     <S.TitleWrapper>
                       <WriteTime date={currentComment.createdAt} />
