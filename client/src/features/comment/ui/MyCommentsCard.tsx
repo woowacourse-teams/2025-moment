@@ -1,12 +1,13 @@
 import { theme } from '@/app/styles/theme';
-import { echoMapping } from '@/features/echo/utils/echoMapping';
 import { Button, Card, SimpleCard } from '@/shared/ui';
-import { Gift, MessageSquare, Send } from 'lucide-react';
+import { Heart, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { useToast } from '@/shared/hooks';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { Echo } from '@/features/echo/ui/Echo';
 
 const ECHO_REWARD_POINT = 3;
 
@@ -30,7 +31,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
-            <Gift size={16} color={theme.colors['gray-400']} />
+            <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
             <S.TimeStamp>{new Date(myComment.createdAt).toLocaleDateString()}</S.TimeStamp>
           </S.TitleWrapper>
         }
@@ -39,22 +40,21 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
       <Card.Content>
         <S.ContentContainer>
           <S.TitleContainer>
-            <MessageSquare size={20} color={theme.colors['yellow-500']} />
+            <Send size={20} color={theme.colors['yellow-500']} />
             <p>보낸 코멘트</p>
           </S.TitleContainer>
           <SimpleCard height="small" content={myComment.content} />
         </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
-            <Send size={20} color={theme.colors['yellow-500']} />
-            <p>받은 리액션</p>
+            <Heart size={20} color={theme.colors['yellow-500']} />
+            <p>받은 에코</p>
           </S.TitleContainer>
-          <S.Emoji>
-            {(myComment.echos || [])
-              .map(echo => echoMapping(echo.emojiType as EchoTypeKey))
-              .join(' ')}
-          </S.Emoji>
-          {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
+          <S.EchoContainer>
+            {(myComment.echos || []).map(echo => (
+              <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
+            ))}
+          </S.EchoContainer>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
       </Card.Content>

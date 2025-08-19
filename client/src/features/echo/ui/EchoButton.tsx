@@ -43,8 +43,7 @@ const EchoButtonStyle = styled.button<{
     return theme.colors['gray-400'];
   }};
   border-radius: 25px;
-  padding: 4px 20px;
-  font-size: 14px;
-  font-weight: bold;
+  padding: 4px 16px;
+  font-size: 1rem;
   cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 `;

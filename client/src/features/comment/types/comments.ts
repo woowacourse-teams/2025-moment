@@ -15,13 +15,16 @@ export interface CommentItem {
   moment: {
     content: string;
     createdAt: string;
+    id: number;
+    level: string;
+    nickName: string;
   };
   echos: Echo[];
 }
 
 export interface Echo {
   id: number;
-  emojiType: string;
+  echoType: string;
   userId: number;
 }
 
