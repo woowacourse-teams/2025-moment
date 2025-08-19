@@ -13,6 +13,7 @@ export const useSendCommentsMutation = () => {
     mutationFn: sendComments,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentableMoments'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
       showSuccess(`별조각 ${COMMENTS_REWARD_POINT} 개를 획득했습니다!`);
     },
     onError: () => {
