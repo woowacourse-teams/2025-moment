@@ -68,6 +68,7 @@ export const useSSENotifications = () => {
         } else if (sseData.targetType === 'COMMENT') {
           queryClient.invalidateQueries({ queryKey: ['comments'] });
         }
+        queryClient.invalidateQueries({ queryKey: ['notifications'] });
       } catch (error) {
         console.error(error);
         showError('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
