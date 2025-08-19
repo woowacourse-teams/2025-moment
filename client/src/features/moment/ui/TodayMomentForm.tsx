@@ -4,6 +4,8 @@ import { Send, Star } from 'lucide-react';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { useNavigate } from 'react-router';
 import { ROUTES } from '@/app/routes/routes';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useToast } from '@/shared/hooks/useToast';
 
 export function TodayMomentForm({
   handleContentChange,
@@ -15,10 +17,22 @@ export function TodayMomentForm({
   content: string;
 }) {
   const navigate = useNavigate();
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const { showError } = useToast();
 
   const handleNavigateToTodayMomentSuccess = () => {
     handleSendContent();
     navigate(ROUTES.TODAY_MOMENT_SUCCESS);
+  };
+
+  const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      e.target.blur();
+      showError('로그인 후 이용해주세요');
+      navigate(ROUTES.LOGIN);
+      return;
+    }
   };
 
   const MAX_LENGTH = 200;
@@ -38,6 +52,7 @@ export function TodayMomentForm({
             height="medium"
             value={content}
             onChange={handleContentChange}
+            onFocus={handleTextAreaFocus}
           />
         </Card.Content>
         <Card.Action position="space-between">

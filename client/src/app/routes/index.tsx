@@ -23,13 +23,13 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
+      <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+      <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
         <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
-        <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
         <Route path={ROUTES.TODAY_MOMENT_EXTRA} element={<TodayMomentExtraPage />} />
         <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
-        <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
         <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
         <Route path={ROUTES.MY} element={<MyPage />} />
       </Route>
