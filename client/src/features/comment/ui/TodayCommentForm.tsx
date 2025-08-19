@@ -3,7 +3,7 @@ import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentabl
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, RotateCcw } from 'lucide-react';
+import { AlertCircle, Clock, Loader, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
@@ -58,6 +58,16 @@ export function TodayCommentForm() {
 
   if (isLoading) {
     return <CommonSkeletonCard variant="comment" />;
+  }
+  if (!momentData) {
+    return (
+      <NotFound
+        title="누군가 모멘트를 보내길 기다리고 있어요"
+        subtitle=""
+        icon={Loader}
+        size="large"
+      />
+    );
   }
 
   if (error || !momentData) {
