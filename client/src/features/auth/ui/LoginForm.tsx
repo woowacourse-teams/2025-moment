@@ -13,7 +13,7 @@ export const LoginForm = () => {
   };
 
   const handleNewPassword = () => {
-    navigate('/passwordUpdate');
+    navigate('/find-password');
   };
 
   return (
