@@ -69,6 +69,7 @@ class NotificationServiceTest {
 
         String eventName = "notification";
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                1L,
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT,
                 1L
