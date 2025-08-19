@@ -23,8 +23,8 @@ export const CollectionHeaderContainer = styled.div`
   padding: 20px;
 
   @media (max-width: 768px) {
-    width: 90%;
-    gap: 30px;
+    width: 100%;
+    gap: 20px;
   }
 `;
 
@@ -83,11 +83,19 @@ export const CollectionHeaderLinkContainer = styled(Link, {
     transition: all 0.2s ease-in-out;
   }
 
+  @media (max-width: 1024px) {
+    font-size: 1.6rem;
+
+    &.active {
+      font-size: 2rem;
+    }
+  }
+
   @media (max-width: 768px) {
     font-size: 1.2rem;
 
     &.active {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
     }
   }
 `;
@@ -97,4 +105,8 @@ export const Description = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-weight: bold;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
