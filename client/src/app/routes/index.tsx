@@ -8,6 +8,7 @@ import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 import MyPage from '@/pages/my';
 import NotFoundPage from '@/pages/notFound';
+import PasswordUpdate from '@/pages/passwordUpdate';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
@@ -25,6 +26,8 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
       <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
       <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
+      <Route path={ROUTES.PASSWORD_UPDATE} element={<PasswordUpdate />} />
+
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
         <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
