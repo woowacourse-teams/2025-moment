@@ -157,7 +157,7 @@ class CommentControllerTest {
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment2.getContent()),
                 () -> assertThat(firstResponse.moment().content()).isEqualTo(savedMoment2.getContent()),
                 () -> assertThat(firstResponse.echos().getFirst().id()).isEqualTo(savedEcho2.getId()),
-                () -> assertThat(firstResponse.echos().getFirst().emojiType()).isEqualTo(savedEcho2.getEchoType())
+                () -> assertThat(firstResponse.echos().getFirst().echoType()).isEqualTo(savedEcho2.getEchoType())
         );
     }
 }

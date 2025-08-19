@@ -21,6 +21,8 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration/mysql
+    user: ${FLYWAY_DB_USER}
+    password: ${FLYWAY_DB_PASSWORD}
 
   sql:
     init:

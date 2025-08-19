@@ -8,8 +8,8 @@ public record EchoDetailResponse(
         @Schema(description = "Echo 아이디", example = "1")
         Long id,
 
-        @Schema(description = "Echo 타입", example = "HEART")
-        String emojiType,
+        @Schema(description = "Echo 타입", example = "THANKS")
+        String echoType,
 
         @Schema(description = "Echo를 등록한 유저 아이디", example = "2")
         Long userId
