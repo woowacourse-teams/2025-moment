@@ -8,9 +8,9 @@ export const useFindPasswordEmail = () => {
   const { mutate: findNewPassword, isPending } = useFindPasswordMutation();
 
   const updateEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const error = validateEmail(email);
-    setError(error);
     const { value } = e.target;
+    const error = validateEmail(value);
+    setError(error);
     setEmail(value);
   };
 
