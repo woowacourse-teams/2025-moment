@@ -5,6 +5,7 @@ import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { EchoButton } from '@/features/echo/ui/EchoButton';
 import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
+import { Echo } from '@/features/echo/ui/Echo'; // Echo 컴포넌트 import 추가
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { ChevronLeft, ChevronRight, Heart, Mail } from 'lucide-react';
@@ -25,8 +26,8 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const sortedComments = useMemo(() => {
     return myMoment.comments?.slice().reverse() || [];
   }, [myMoment.comments]);
-  const navigation = useCommentNavigation(sortedComments.length);
-  const currentComment = sortedComments[navigation.currentIndex];
+  const navigation = useCommentNavigation(sortedComments?.length || 0);
+  const currentComment = sortedComments?.[navigation.currentIndex];
   const echoType = currentComment?.echos.map(echo => echo.echoType);
   const hasAnyEcho = echoType && echoType.length > 0;
 
@@ -121,30 +122,34 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       <Heart size={16} color={theme.colors['yellow-500']} />
                       <span>{hasAnyEcho ? '보낸 에코' : '에코 보내기'}</span>
                     </S.TitleContainer>
-                    <S.EchoButtonContainer>
-                      {Object.entries(ECHO_TYPE).map(([key, title]) => {
-                        const isAlreadySent = currentComment.echos
-                          .map(echo => echo.echoType)
-                          .includes(key as EchoTypeKey);
-                        return (
-                          <EchoButton
-                            key={key}
-                            onClick={() => toggleEcho(key as EchoTypeKey)}
-                            title={title}
-                            isSelected={isSelected(key as EchoTypeKey)}
-                            isAlreadySent={isAlreadySent}
-                            isDisabled={hasAnyEcho}
-                          />
-                        );
-                      })}
-                    </S.EchoButtonContainer>
-                    {!hasAnyEcho && (
-                      <SendEchoButton
-                        commentId={currentComment.id || 0}
-                        selectedEchos={selectedEchos}
-                        hasSelection={hasSelection}
-                        isDisabled={hasAnyEcho}
-                      />
+
+                    {hasAnyEcho ? (
+                      <S.EchoButtonContainer>
+                        {currentComment.echos.map((echo, index) => (
+                          <Echo key={`${echo.id}-${index}`} echo={echo.echoType as EchoTypeKey} />
+                        ))}
+                      </S.EchoButtonContainer>
+                    ) : (
+                      <>
+                        <S.EchoButtonContainer>
+                          {Object.entries(ECHO_TYPE).map(([key, title]) => (
+                            <EchoButton
+                              key={key}
+                              onClick={() => toggleEcho(key as EchoTypeKey)}
+                              title={title}
+                              isSelected={isSelected(key as EchoTypeKey)}
+                              isAlreadySent={false}
+                              isDisabled={false}
+                            />
+                          ))}
+                        </S.EchoButtonContainer>
+                        <SendEchoButton
+                          commentId={currentComment.id || 0}
+                          selectedEchos={selectedEchos}
+                          hasSelection={hasSelection}
+                          isDisabled={false}
+                        />
+                      </>
                     )}
                   </S.EchoContainer>
                 </S.MyMomentsModalContent>
