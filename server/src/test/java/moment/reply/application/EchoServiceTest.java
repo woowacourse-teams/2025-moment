@@ -1,36 +1,6 @@
 package moment.reply.application;
 
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import moment.comment.application.CommentQueryService;
-import moment.comment.domain.Comment;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
-import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
-import moment.notification.application.SseNotificationService;
-import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.domain.Echo;
-import moment.reply.dto.request.EchoCreateRequest;
-import moment.reply.infrastructure.EchoRepository;
-import moment.reward.application.RewardService;
-import moment.reward.domain.Reason;
-import moment.user.application.UserQueryService;
-import moment.user.domain.ProviderType;
-import moment.user.domain.User;
-import moment.user.dto.request.Authentication;
-import org.hibernate.dialect.function.ListaggFunction;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +11,38 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import moment.comment.application.CommentQueryService;
+import moment.comment.domain.Comment;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
+import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
+import moment.notification.application.SseNotificationService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
+import moment.notification.infrastructure.NotificationRepository;
+import moment.reply.domain.Echo;
+import moment.reply.dto.request.EchoCreateRequest;
+import moment.reply.infrastructure.EchoRepository;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
+import moment.user.application.UserQueryService;
+import moment.user.domain.ProviderType;
+import moment.user.domain.User;
+import moment.user.dto.request.Authentication;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -81,12 +83,19 @@ class EchoServiceTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
+        Notification notification = new Notification(
+                commenter,
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT,
+                1L);
+
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
         given(echoRepository.findByCommentAndUserAndEchoTypeIn(comment, momenter, Set.of("THANKS")))
                 .willReturn(Collections.emptyList());
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
@@ -108,6 +117,12 @@ class EchoServiceTest {
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Echo alreadyExistEcho = new Echo("THANKS", momenter, comment);
 
+        Notification notification = new Notification(
+                commenter,
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT,
+                1L);
+
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
         given(userQueryService.getUserById(any(Long.class)))
@@ -115,6 +130,7 @@ class EchoServiceTest {
         given(echoRepository.findByCommentAndUserAndEchoTypeIn(any(), any(), anySet()))
                 .willReturn(List.of(alreadyExistEcho));
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
 
         ArgumentCaptor<List<Echo>> echoCaptor = ArgumentCaptor.forClass(List.class);
 

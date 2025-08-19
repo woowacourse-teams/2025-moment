@@ -23,6 +23,9 @@ import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.SseNotificationService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
+import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -80,10 +83,16 @@ class CommentServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        Notification notification = new Notification(
+                momenter,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                1L);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
 
         // when
@@ -205,10 +214,17 @@ class CommentServiceTest {
         Comment newComment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(newComment, "id", 1L);
 
+        Notification notification = new Notification(
+                momenter,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                1L);
+
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
         given(commentRepository.save(any(Comment.class))).willReturn(newComment);
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForComment(any(), any(), any());
 
         // when & then
