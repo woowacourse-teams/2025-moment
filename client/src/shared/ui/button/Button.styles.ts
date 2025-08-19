@@ -13,6 +13,7 @@ const buttonStyles = {
     padding: 10px 20px;
     font-size: 16px;
     font-weight: 600;
+    white-space: nowrap;
 
     &:hover {
         transform: scale(1.05);

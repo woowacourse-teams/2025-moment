@@ -146,10 +146,24 @@ export const LoginSignupContainer = styled.div`
   gap: 10px;
 `;
 
+export const NewPasswordLink = styled.span`
+  color: ${({ theme }) => theme.colors['gray-400']};
+  cursor: pointer;
+  &:hover {
+    color: ${({ theme }) => theme.colors['gray-600']};
+  }
+`;
+
 export const LoginSignupLink = styled.span`
   color: ${({ theme }) => theme.colors['yellow-500']};
   cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.colors['yellow-600']};
   }
+`;
+
+export const EmailCheckContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
