@@ -109,16 +109,8 @@ export const MyMomentsModalHeader = styled.div`
   justify-content: space-between;
 `;
 
-export const CommenterInfoContainer = styled.div`
+export const WriterInfoWrapper = styled.div`
   width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-export const LevelIcon = styled.img`
-  width: 20px;
-  height: 20px;
 `;
 
 export const TitleContainer = styled.div`
