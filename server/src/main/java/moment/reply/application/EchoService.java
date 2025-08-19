@@ -1,5 +1,6 @@
 package moment.reply.application;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
-import moment.reply.dto.response.EchoCreateResponse;
 import moment.reply.dto.response.EchoReadResponse;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -26,8 +26,6 @@ import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -66,20 +64,22 @@ public class EchoService {
         // TODO : 논의 필요
         rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
 
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                NotificationType.NEW_REPLY_ON_COMMENT,
-                TargetType.COMMENT,
-                comment.getId()
-        );
-
         Notification notificationWithoutId = new Notification(
                 comment.getCommenter(),
                 NotificationType.NEW_REPLY_ON_COMMENT,
                 TargetType.COMMENT,
                 comment.getId());
 
+        Notification savedNotification = notificationRepository.save(notificationWithoutId);
+
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                savedNotification.getId(),
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT,
+                comment.getId()
+        );
+
         sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
-        notificationRepository.save(notificationWithoutId);
     }
 
     private void validateMomenter(Comment comment, User user) {

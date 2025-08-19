@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
-@Slf4j // 임시로그
+@Slf4j
 public class SseNotificationService {
 
     private static final long VALID_TIME = 10 * 60 * 1000L;
@@ -21,8 +21,9 @@ public class SseNotificationService {
 
         emitters.put(userId, emitter);
 
-        emitter.onCompletion(() -> emitters.remove(userId));
+        emitter.onError(e -> emitters.remove(userId));
         emitter.onTimeout(() -> emitters.remove(userId));
+        emitter.onCompletion(() -> emitters.remove(userId));
 
         sendToClient(userId, "connect", "Connection success");
 
@@ -42,19 +43,18 @@ public class SseNotificationService {
         }
     }
 
-    @Scheduled(fixedRate = 45_000) // 45초마다 실행
+    @Scheduled(fixedRate = 30_000)
     @NoLogging
     public void sendHeartbeat() {
         emitters.forEach((userId, emitter) -> {
             try {
-                // comment 이벤트, 데이터는 현재 시간
                 emitter.send(SseEmitter.event()
                         .name("heartbeat")
-                        .comment("keeping connection alive"));
-                log.info("Sent heartbeat to user {}", userId); // 임시로그
+                        .comment("keeping connection alive")
+                        .data("heartbeat"));
+                log.info("Sent heartbeat to user {}", userId);
             } catch (IOException e) {
-                // 연결이 끊겼다고 판단하고 emitter 제거
-                log.info("User {} connection lost. Removing emitter.", userId); // 임시로그
+                log.info("User {} connection lost. Removing emitter.", userId);
                 emitters.remove(userId);
             }
         });

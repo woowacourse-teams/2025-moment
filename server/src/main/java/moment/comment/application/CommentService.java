@@ -64,21 +64,22 @@ public class CommentService {
         Comment commentWithoutId = request.toComment(commenter, moment);
         Comment savedComment = commentRepository.save(commentWithoutId);
 
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                moment.getId()
-        );
-
         Notification notificationWithoutId = new Notification(
                 moment.getMomenter(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT,
                 moment.getId());
 
-        sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
+        Notification savedNotification = notificationRepository.save(notificationWithoutId);
 
-        notificationRepository.save(notificationWithoutId);
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                savedNotification.getId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId()
+        );
+
+        sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
 
         rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
