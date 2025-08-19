@@ -20,7 +20,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
       handleReadNotifications(myComment.notificationId);
 
       if (myComment.echos && myComment.echos.length > 0) {
-        showSuccess(`${ECHO_REWARD_POINT} 포인트를 획득했습니다!`);
+        showSuccess(`별조각 ${ECHO_REWARD_POINT} 개를 획득했습니다!`);
       }
     }
   };

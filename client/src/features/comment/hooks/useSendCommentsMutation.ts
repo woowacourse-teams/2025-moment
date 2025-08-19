@@ -15,7 +15,7 @@ export const useSendCommentsMutation = () => {
     mutationFn: sendComments,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments'] });
-      showSuccess(`${COMMENTS_REWARD_POINT} 포인트를 획득했습니다!`);
+      showSuccess(`별조각 ${COMMENTS_REWARD_POINT} 개를 획득했습니다!`);
       navigate(ROUTES.TODAY_COMMENT_SUCCESS);
     },
     onError: () => {

@@ -13,7 +13,7 @@ export const useMomentsMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
       queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
-      showSuccess(`${MOMENTS_REWARD_POINT} 포인트를 획득했습니다!`);
+      showSuccess(`별조각 ${MOMENTS_REWARD_POINT} 개를 획득했습니다!`);
     },
     onError: () => {
       const errorMessage = '모멘트 등록에 실패했습니다. 다시 시도해주세요.';

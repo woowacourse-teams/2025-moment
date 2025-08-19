@@ -1,6 +1,5 @@
 import { useChangePassword } from '@/features/auth/hooks/useChangePassword';
 import { Button } from '@/shared/ui';
-import { Card } from '@/shared/ui/card/Card';
 import * as S from './ChangePasswordForm.styles';
 
 export const ChangePasswordForm = () => {
