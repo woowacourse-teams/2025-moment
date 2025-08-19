@@ -5,25 +5,17 @@ import * as S from './MyCommentsCard.styles';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { EchoTypeKey } from '@/features/echo/type/echos';
-import { useToast } from '@/shared/hooks';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Echo } from '@/features/echo/ui/Echo';
 import { WriteTime } from '@/shared/ui/writeTime';
 
-const ECHO_REWARD_POINT = 3;
-
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
-  const { showSuccess } = useToast();
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
 
   const handleCommentOpen = () => {
     if (myComment.read || isReadingNotification) return;
     if (myComment.notificationId) {
       handleReadNotifications(myComment.notificationId);
-
-      if (myComment.echos && myComment.echos.length > 0) {
-        showSuccess(`별조각 ${ECHO_REWARD_POINT} 개를 획득했습니다!`);
-      }
     }
   };
 
