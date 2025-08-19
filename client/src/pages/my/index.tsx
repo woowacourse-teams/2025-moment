@@ -62,7 +62,6 @@ export default function MyPage() {
                       setLocalNickname(myProfile.nickname);
                       setIsNicknameOpen(true);
                     }}
-                    disabled={myProfile.expStar < 100}
                   />
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
@@ -154,9 +153,13 @@ export default function MyPage() {
         size="small"
         onClose={() => setIsNicknameOpen(false)}
       >
-        <Modal.Header title="닉네임 변경" />
+        <Modal.Header title={myProfile.expStar < 100 ? '<별조각 보유 부족>' : '<닉네임 변경>'} />
         <Modal.Content>
-          <ChangeNicknameForm nickname={localNickname} updateNickname={setLocalNickname} />
+          {myProfile.expStar < 100 ? (
+            <p>별조각 100개 이상 보유 시 닉네임 변경이 가능합니다.</p>
+          ) : (
+            <ChangeNicknameForm nickname={localNickname} updateNickname={setLocalNickname} />
+          )}
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>
