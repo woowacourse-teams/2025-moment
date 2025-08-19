@@ -18,10 +18,10 @@ export const ChangePasswordForm = () => {
         <S.ChangePasswordFormInput
           type="password"
           placeholder="새 비밀번호 확인"
-          value={changePasswordData.checkPassword}
-          onChange={handleChange('checkPassword')}
+          value={changePasswordData.checkedPassword}
+          onChange={handleChange('checkedPassword')}
         />
-        <S.ErrorMessage>{errors.checkPassword || ''}</S.ErrorMessage>
+        <S.ErrorMessage>{errors.checkedPassword || ''}</S.ErrorMessage>
       </S.ChangePasswordFormContent>
       <Button
         title="변경하기"

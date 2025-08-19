@@ -6,12 +6,12 @@ import { useChangePasswordMutation } from './useChangePasswordMutation';
 export const useChangePassword = () => {
   const [changePasswordData, setChangePasswordData] = useState<ChangePasswordRequest>({
     newPassword: '',
-    checkPassword: '',
+    checkedPassword: '',
   });
 
   const [errors, setErrors] = useState<ChangePasswordErrors>({
     newPassword: '',
-    checkPassword: '',
+    checkedPassword: '',
   });
 
   const { mutateAsync: changePassword, isPending, isError } = useChangePasswordMutation();
@@ -31,10 +31,10 @@ export const useChangePassword = () => {
             [field]: fieldError,
           };
 
-          if (field === 'newPassword' && updatedData.checkPassword) {
-            newErrors.checkPassword = validateChangePasswordField(
-              'checkPassword',
-              updatedData.checkPassword,
+          if (field === 'newPassword' && updatedData.checkedPassword) {
+            newErrors.checkedPassword = validateChangePasswordField(
+              'checkedPassword',
+              updatedData.checkedPassword,
               updatedData,
             );
           }
@@ -57,7 +57,7 @@ export const useChangePassword = () => {
   }, [changePassword, changePasswordData]);
 
   const isFormValid = isChangePasswordFormValid(errors);
-  const isFormEmpty = !changePasswordData.newPassword || !changePasswordData.checkPassword;
+  const isFormEmpty = !changePasswordData.newPassword || !changePasswordData.checkedPassword;
 
   return {
     changePasswordData,
