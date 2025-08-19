@@ -1,7 +1,8 @@
+import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { signupUser } from '../api/signupUser';
+import { SignupRequest, SignupResponse } from '../types/signup';
 
 export const useSignupMutation = () => {
   const navigate = useNavigate();
@@ -18,4 +19,9 @@ export const useSignupMutation = () => {
       showError(errorMessage);
     },
   });
+};
+
+const signupUser = async (signupData: SignupRequest): Promise<SignupResponse> => {
+  const response = await api.post('/users/signup', signupData);
+  return response.data;
 };

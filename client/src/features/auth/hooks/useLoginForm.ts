@@ -1,4 +1,4 @@
-import { useLoginMutation } from '@/features/auth/hooks/useLoginMutation';
+import { useLoginMutation } from '@/features/auth/api/useLoginMutation';
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { isLoginFormValid, validateLoginForm } from '@/features/auth/utils/validateAuth';
 import { useMemo, useState } from 'react';
