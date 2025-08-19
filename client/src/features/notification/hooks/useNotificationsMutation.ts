@@ -9,7 +9,6 @@ export const useNotificationsMutation = () => {
   return useMutation({
     mutationFn: patchNotifications,
     onSuccess: () => {
-      console.log('알림 읽음 처리 성공');
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
     onError: error => {
