@@ -19,7 +19,7 @@ export const useChangeNicknameMutation = () => {
   });
 };
 
-export const changeNickname = async ({ newNickname }: ChangeNicknameRequest) => {
+const changeNickname = async ({ newNickname }: ChangeNicknameRequest) => {
   const response = await api.post('/me/nickname', { newNickname });
   return response.data;
 };
