@@ -1,4 +1,4 @@
-import { navItems } from '@/app/layout/data/navItems';
+import { LEVEL_MAP, navItems } from '@/app/layout/data/navItems';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useProfileQuery } from '@/features/profile/api/useProfileQuery';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
@@ -9,6 +9,7 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { EXPBar } from '@/features/profile/ui/EXPBar';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -21,7 +22,7 @@ export const Navbar = () => {
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
   const { data: isLoggedIn, isError, error } = useCheckIfLoggedInQuery();
-  const { data: profile } = useProfileQuery({ enabled: isLoggedIn ?? false });
+  const { data: profile } = useProfileQuery({ enabled: !!isLoggedIn });
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -61,17 +62,17 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        {/* {profile?.level ? (
-        //   <S.LevelIconWrapper>
-        //     <S.LevelIcon
-        //       src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
-        //       alt="레벨 등급표"
-        //     />
-        //     <S.EXPBarTooltip>
-        //       <EXPBar progress={EXPBarProgress} />
-        //     </S.EXPBarTooltip>
-        //   </S.LevelIconWrapper>
-        // ) : null} */}
+        {profile?.level ? (
+          <S.LevelIconWrapper>
+            <S.LevelIcon
+              src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
+              alt="레벨 등급표"
+            />
+            <S.EXPBarTooltip>
+              <EXPBar progress={EXPBarProgress} />
+            </S.EXPBarTooltip>
+          </S.LevelIconWrapper>
+        ) : null}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
       </S.DesktopAuthButton>
 

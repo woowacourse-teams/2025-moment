@@ -17,6 +17,5 @@ export const useProfileQuery = ({ enabled }: UseProfileQueryOptions) => {
 
 export const getProfile = async (): Promise<Profile> => {
   const response = await api.get<ProfileResponse>('/me/profile');
-  console.log('??EFelkjsfe', response.data.data);
   return response.data.data;
 };
