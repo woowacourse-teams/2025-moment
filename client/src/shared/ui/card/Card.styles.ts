@@ -3,27 +3,14 @@ import styled from '@emotion/styled';
 
 export type cardWidth = 'small' | 'medium' | 'large' | 'full';
 
-export type CardVariant = 'primary' | 'secondary';
-
-const getBackgroundColor = (theme: CustomTheme, variant: CardVariant) => {
-  switch (variant) {
-    case 'primary':
-      return theme.colors['slate-800_60'];
-    case 'secondary':
-      return theme.colors['slate-900_90'];
-    default:
-      return theme.colors['slate-800_60'];
-  }
-};
-
 const CardStyles = {
-  card: (theme: CustomTheme, $width: cardWidth, $shadow: boolean, $variant: CardVariant) => `
+  card: (theme: CustomTheme, $width: cardWidth, $shadow: boolean) => `
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: ${theme.typography.cardWidth[$width]};
     padding: 20px 30px;
-    background-color: ${getBackgroundColor(theme, $variant)};
+    background-color: ${theme.colors['slate-800_60']};
     border-radius: 10px;
     border: 1px solid ${theme.colors['gray-700']};
     word-break: keep-all;
@@ -50,6 +37,6 @@ const CardStyles = {
     `,
 };
 
-export const Card = styled.div<{ $width: cardWidth; $shadow: boolean; $variant: CardVariant }>`
-  ${({ theme, $width, $shadow, $variant }) => CardStyles.card(theme, $width, $shadow, $variant)}
+export const Card = styled.div<{ $width: cardWidth; $shadow: boolean }>`
+  ${({ theme, $width, $shadow }) => CardStyles.card(theme, $width, $shadow)}
 `;

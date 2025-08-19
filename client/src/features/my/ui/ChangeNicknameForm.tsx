@@ -15,7 +15,7 @@ export const ChangeNicknameForm = ({
   nickname: string;
   updateNickname: (nickname: string) => void;
 }) => {
-  const { data: randomNickname, isError, refetch } = useRandomNicknameQuery();
+  const { data: randomNickname, refetch } = useRandomNicknameQuery();
   const { mutate: changeNickname } = useChangeNicknameMutation();
   useEnterKeyHandler(refetch);
 
@@ -24,10 +24,6 @@ export const ChangeNicknameForm = ({
       updateNickname(randomNickname);
     }
   }, [randomNickname]);
-
-  if (isError) {
-    console.error('닉네임 변경 실패');
-  }
 
   const handleRotateNickname = () => {
     refetch();
@@ -51,9 +47,6 @@ export const ChangeNicknameForm = ({
             <RotateCw size={25} color="white" />
           </RotateNicknameButton>
         </S.ChangeNicknameContent>
-        {isError && (
-          <S.ErrorMessage>닉네임을 가져오는 데 실패했습니다. 다시 시도해주세요.</S.ErrorMessage>
-        )}
       </S.InputGroup>
       <Button title="변경하기" variant="primary" onClick={handleSubmit} />
     </S.ChangeNicknameFormWrapper>

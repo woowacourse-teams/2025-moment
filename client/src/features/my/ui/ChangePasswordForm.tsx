@@ -8,30 +8,28 @@ export const ChangePasswordForm = () => {
     useChangePassword();
   return (
     <S.ChangePassWordFormWrapper>
-      <Card width="medium" variant="secondary">
-        <S.ChangePasswordFormContent>
-          <S.ChangePasswordFormInput
-            type="password"
-            placeholder="새 비밀번호"
-            value={changePasswordData.newPassword}
-            onChange={handleChange('newPassword')}
-          />
-          <S.ErrorMessage>{errors.newPassword || ''}</S.ErrorMessage>
-          <S.ChangePasswordFormInput
-            type="password"
-            placeholder="새 비밀번호 확인"
-            value={changePasswordData.checkPassword}
-            onChange={handleChange('checkPassword')}
-          />
-          <S.ErrorMessage>{errors.checkPassword || ''}</S.ErrorMessage>
-        </S.ChangePasswordFormContent>
-        <Button
-          title="변경하기"
-          variant="primary"
-          onClick={handleSubmit}
-          disabled={isSubmitDisabled}
+      <S.ChangePasswordFormContent>
+        <S.ChangePasswordFormInput
+          type="password"
+          placeholder="새 비밀번호"
+          value={changePasswordData.newPassword}
+          onChange={handleChange('newPassword')}
         />
-      </Card>
+        <S.ErrorMessage>{errors.newPassword || ''}</S.ErrorMessage>
+        <S.ChangePasswordFormInput
+          type="password"
+          placeholder="새 비밀번호 확인"
+          value={changePasswordData.checkPassword}
+          onChange={handleChange('checkPassword')}
+        />
+        <S.ErrorMessage>{errors.checkPassword || ''}</S.ErrorMessage>
+      </S.ChangePasswordFormContent>
+      <Button
+        title="변경하기"
+        variant="primary"
+        onClick={handleSubmit}
+        disabled={isSubmitDisabled}
+      />
     </S.ChangePassWordFormWrapper>
   );
 };
