@@ -3,6 +3,7 @@ import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
 
 export const useSendComments = (momentId: number) => {
   const [comment, setComment] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
@@ -15,11 +16,13 @@ export const useSendComments = (momentId: number) => {
       content: comment,
       momentId: momentId,
     });
+    setIsSuccess(true);
   };
 
   return {
     error,
     comment,
+    isSuccess,
     isPending,
     isError,
     handleChange,

@@ -10,7 +10,6 @@ import MyPage from '@/pages/my';
 import NotFoundPage from '@/pages/notFound';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
-import TodayCommentSuccessPage from '@/pages/todayComment/TodayCommentSuccessPage';
 import TodayMomentPage from '@/pages/todayMoment';
 import TodayMomentExtraPage from '@/pages/todayMoment/TodayMomentExtraPage';
 import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
@@ -30,7 +29,6 @@ export const router = createBrowserRouter(
         <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
         <Route path={ROUTES.TODAY_MOMENT_EXTRA} element={<TodayMomentExtraPage />} />
         <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
-        <Route path={ROUTES.TODAY_COMMENT_SUCCESS} element={<TodayCommentSuccessPage />} />
         <Route path={ROUTES.MY} element={<MyPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

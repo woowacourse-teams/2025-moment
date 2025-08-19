@@ -16,7 +16,7 @@ export const TodayCommentWriteContent = ({
 }) => {
   const MAX_LENGTH = 200;
   const { showError } = useToast();
-  const { comment, handleChange, handleSubmit } = useSendComments(momentId);
+  const { comment, handleChange, handleSubmit, isSuccess } = useSendComments(momentId);
 
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
@@ -54,7 +54,7 @@ export const TodayCommentWriteContent = ({
           Icon={Send}
           title="코멘트 보내기"
           onClick={handleSubmit}
-          disabled={isDisabled || !isLoggedIn}
+          disabled={isSuccess || isDisabled || !isLoggedIn}
         />
       </Card.Action>
     </S.TodayContentWrapper>
