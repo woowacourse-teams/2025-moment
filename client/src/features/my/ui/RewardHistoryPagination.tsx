@@ -13,7 +13,7 @@ export const RewardHistoryPagination = ({
   onPageChange,
 }: RewardHistoryPaginationProps) => {
   const handlePrevious = () => {
-    if (currentPage > 1) {
+    if (currentPage > 0) {
       onPageChange(currentPage - 1);
     }
   };
@@ -26,18 +26,21 @@ export const RewardHistoryPagination = ({
 
   return (
     <S.PaginationContainer>
-      <Button title="이전" onClick={handlePrevious} disabled={currentPage <= 1} variant="primary" />
+      {currentPage > 0 ? (
+        <Button title="이전" onClick={handlePrevious} variant="primary" />
+      ) : (
+        <Button title="이전" onClick={handlePrevious} variant="primary" disabled />
+      )}
 
       <S.PageInfo>
-        {currentPage} / {totalPages}
+        {currentPage + 1} / {totalPages}
       </S.PageInfo>
 
-      <Button
-        title="다음"
-        onClick={handleNext}
-        disabled={currentPage >= totalPages}
-        variant="primary"
-      />
+      {currentPage < totalPages - 1 ? (
+        <Button title="다음" onClick={handleNext} variant="primary" />
+      ) : (
+        <Button title="다음" onClick={handleNext} variant="primary" disabled />
+      )}
     </S.PaginationContainer>
   );
 };
