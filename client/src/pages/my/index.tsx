@@ -150,7 +150,13 @@ export default function MyPage() {
 
       <S.Divider />
 
-      <Modal isOpen={isLevelOpen} position="center" size="large" onClose={handleCloseLevelModal}>
+      <Modal
+        isOpen={isLevelOpen}
+        position="center"
+        size="medium"
+        height="80vh"
+        onClose={handleCloseLevelModal}
+      >
         <Modal.Header title="레벨 등급표" />
         <Modal.Content>
           <LevelTable />

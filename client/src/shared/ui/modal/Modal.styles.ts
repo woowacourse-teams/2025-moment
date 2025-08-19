@@ -109,6 +109,7 @@ export const ModalContent = styled.div`
   flex-direction: column;
   height: 100%;
   gap: 10px;
+  overflow-y: auto;
 `;
 
 export const ModalFooter = styled.div`
