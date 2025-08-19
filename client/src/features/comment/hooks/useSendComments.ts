@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSendCommentsMutation } from './useSendCommentsMutation';
+import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
 
 export const useSendComments = () => {
   const [comment, setComment] = useState('');
