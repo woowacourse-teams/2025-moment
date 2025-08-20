@@ -27,6 +27,7 @@ export const NotFound = ({
       <S.NotFoundContainer $size={size}>
         <S.NotFoundTitle $size={size}>{title}</S.NotFoundTitle>
         <S.NotFoundSubtitle $size={size}>{subtitle}</S.NotFoundSubtitle>
+        <S.NotFoundImage src={'/images/character.png'} alt="notFound" />
       </S.NotFoundContainer>
     </S.NotFoundWrapper>
   );
