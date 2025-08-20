@@ -1,7 +1,7 @@
 import { CustomTheme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary';
 export type ExternalVariant = (theme: CustomTheme) => string;
 
 const buttonStyles = {
@@ -80,6 +80,27 @@ const buttonStyles = {
         transform: translateY(-2px);
     }
     `,
+
+  quaternary: (theme: CustomTheme) => `
+    background-color: transparent;
+    color: ${theme.colors['gray-200']};
+    border: 1px solid ${theme.colors['slate-700']};
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+
+    @media (max-width: 1024px) {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+
+  `,
 };
 
 export const Button = styled.button<{
