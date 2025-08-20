@@ -12,11 +12,11 @@ export const useNewPasswordMutation = () => {
   return useMutation({
     mutationFn: (data: NewPassword) => getNewPassword(data),
     onSuccess: () => {
-      showSuccess('비밀번호가 재변경되었습니다.');
+      showSuccess('비밀번호가 재발급되었습니다.');
       navigate(ROUTES.LOGIN);
     },
     onError: () => {
-      showError('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
+      showError('비밀번호 재발급을 실패했습니다. 다시 시도해주세요.');
     },
   });
 };
