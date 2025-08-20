@@ -13,6 +13,7 @@ export const theme = {
     'yellow-500': '#F1C40F',
     'yellow-300': '#F4D03F',
     'yellow-300_10': 'color-mix(in srgb, #F4D03F 10%, transparent)',
+    'yellow-300_30': 'color-mix(in srgb, #F4D03F 30%, transparent)',
     'yellow-300_50': 'color-mix(in srgb, #F4D03F 50%, transparent)',
     'yellow-300_80': 'color-mix(in srgb, #F4D03F 80%, transparent)',
     'emerald-500': '#10B981',

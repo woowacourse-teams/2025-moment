@@ -33,6 +33,7 @@ const CardStyles = {
 
     @media (max-width: 768px) {
       width: 90%;
+      padding: 10px 20px;
     }
     `,
 };

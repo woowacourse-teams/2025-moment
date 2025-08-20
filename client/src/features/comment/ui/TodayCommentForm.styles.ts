@@ -26,17 +26,6 @@ export const LevelImage = styled.img`
   object-fit: contain;
 `;
 
-export const TimeWrapper = styled.div`
-  ${({ theme }) => css`
-    color: ${theme.colors['gray-400']};
-  `}
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 16px;
-  font-weight: 500;
-`;
-
 export const RefreshButton = styled.button`
   display: flex;
   align-items: center;

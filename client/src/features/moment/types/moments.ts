@@ -18,7 +18,7 @@ export interface MyMomentsItem {
   comments: Comment[] | null;
 }
 
-interface Comment {
+export interface Comment {
   id: number;
   content: string;
   nickname: string;

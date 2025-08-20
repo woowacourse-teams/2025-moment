@@ -1,5 +1,6 @@
+import { api } from '@/app/lib/api';
 import { useQuery } from '@tanstack/react-query';
-import { getProfile } from '../api/getProfile';
+import { Profile, ProfileResponse } from '../types/profile';
 
 interface UseProfileQueryOptions {
   enabled: boolean;
@@ -12,4 +13,9 @@ export const useProfileQuery = ({ enabled }: UseProfileQueryOptions) => {
     queryFn: getProfile,
     retry: false, // interceptor 처리
   });
+};
+
+export const getProfile = async (): Promise<Profile> => {
+  const response = await api.get<ProfileResponse>('/users/me');
+  return response.data.data;
 };

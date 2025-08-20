@@ -1,4 +1,4 @@
-import { useSignupMutation } from '@/features/auth/hooks/useSignupMutation';
+import { useSignupMutation } from '@/features/auth/api/useSignupMutation';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { isSignupFormValid, validateSignupField } from '@/features/auth/utils/validateAuth';
 import { useCallback, useState } from 'react';

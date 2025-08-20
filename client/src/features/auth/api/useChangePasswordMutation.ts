@@ -1,8 +1,8 @@
+import { api } from '@/app/lib/api';
+import { useToast } from '@/shared/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { useToast } from '@/shared/hooks';
-import { changePassword } from '../api/changePassword';
-import { ChangePasswordRequest } from '../types/changePassword';
+import { ChangePasswordRequest, ChangePasswordResponse } from '../types/changePassword';
 
 export const useChangePasswordMutation = () => {
   const navigate = useNavigate();
@@ -19,4 +19,11 @@ export const useChangePasswordMutation = () => {
       showError(errorMessage);
     },
   });
+};
+
+export const changePassword = async (
+  data: ChangePasswordRequest,
+): Promise<ChangePasswordResponse> => {
+  const response = await api.post('/me/password', data);
+  return response.data;
 };

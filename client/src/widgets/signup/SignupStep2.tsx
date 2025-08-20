@@ -1,4 +1,4 @@
-import { useRandomNicknameQuery } from '@/features/auth/hooks/useRandomNicknameQuery';
+import { useRandomNicknameQuery } from '@/features/auth/api/useRandomNicknameQuery';
 import { SignupFormData } from '@/features/auth/types/signup';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import { Input } from '@/shared/ui/input/Input';
