@@ -4,7 +4,9 @@ import { Button } from '@/shared/ui';
 import { Input } from '@/shared/ui/input/Input';
 import { RotateNicknameButton } from '@/widgets/signup/SignupStep2';
 import { RotateCw } from 'lucide-react';
+import { useEffect } from 'react';
 import { useChangeNicknameMutation } from '../api/useChangeNicknameMutation';
+import * as S from './ChangeNicknameForm.styles';
 
 export const ChangeNicknameForm = ({
   nickname,
