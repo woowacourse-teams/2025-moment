@@ -63,3 +63,15 @@ auth:
 
 logging:
   config: classpath:logback-prod.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics"
+  metrics:
+    export:
+      cloudwatch:
+        namespace: Moment/prod
+        step: 1m
+        enabled: true

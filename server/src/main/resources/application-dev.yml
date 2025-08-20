@@ -63,3 +63,15 @@ auth:
 
 logging:
   config: classpath:logback-dev.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, metrics, threaddump"
+  metrics:
+    export:
+      cloudwatch:
+        namespace: Moment/dev
+        step: 1m
+        enabled: true
