@@ -54,7 +54,7 @@ export const SignupStep1 = ({
           <CheckButton
             title="인증코드 전송"
             onClick={() => handleCheckEmail(signupData.email)}
-            disabled={isEmailCheckLoading || errors.email !== ''}
+            disabled={isEmailCheckLoading || errors.email !== '' || isCheckEmailCodeSuccess}
           />
         </S.CheckExistContainer>
         {isEmailChecked && !emailErrorMessage ? (
