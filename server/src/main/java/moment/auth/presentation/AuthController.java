@@ -251,7 +251,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
-                    """)
+                    """),
+            @ApiResponse(responseCode = "409", description = """
+                    - [U-001] 이미 가입된 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @PostMapping("/email")
     public ResponseEntity<SuccessResponse<Void>> checkEmail(@Valid @RequestBody EmailRequest request) {
