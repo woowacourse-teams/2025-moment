@@ -1,24 +1,21 @@
+import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks';
-import { useState } from 'react';
-import { checkEmailExist } from '../api/checkEmailExist';
+import { useMutation } from '@tanstack/react-query';
 
 export const useCheckEmail = () => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
-  const { showError } = useToast();
+  const { showSuccess, showError } = useToast();
 
-  const handleCheckEmail = async (value: string) => {
-    try {
-      const result = await checkEmailExist(value);
-      const isExists = result.data.isExists;
-      setErrorMessage(isExists ? '이미 존재하는 이메일입니다.' : '');
-      setIsEmailChecked(true);
-    } catch (error) {
-      console.error(error);
-      showError('중복 확인 실패', 3000);
-      setIsEmailChecked(false);
-    }
-  };
+  return useMutation({
+    mutationFn: (email: string) => checkEmail(email),
+    onSuccess: () => {
+      showSuccess('이메일로 인증 코드가 전송되었습니다. 인증 코드를 확인하고 입력해주세요.');
+    },
+    onError: error => {
+      showError(error.message);
+    },
+  });
+};
 
-  return { errorMessage, isEmailChecked, handleCheckEmail };
+const checkEmail = async (email: string) => {
+  await api.post('/users/auth/email', { email });
 };
