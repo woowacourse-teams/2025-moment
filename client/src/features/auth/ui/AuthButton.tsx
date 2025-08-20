@@ -1,4 +1,4 @@
-import { useLogoutMutation } from '@/features/auth/hooks/useLogoutMutation';
+import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 import { Profile } from '@/features/auth/types/profile';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';

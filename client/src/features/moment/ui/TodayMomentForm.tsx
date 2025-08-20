@@ -1,11 +1,11 @@
-import { Card, TextArea } from '@/shared/ui';
-import * as S from './TodayContent.styles';
-import { Send, Star } from 'lucide-react';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
-import { useNavigate } from 'react-router';
 import { ROUTES } from '@/app/routes/routes';
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
+import { Card, TextArea } from '@/shared/ui';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { Send, Star } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import * as S from './TodayContent.styles';
 
 export function TodayMomentForm({
   handleContentChange,
