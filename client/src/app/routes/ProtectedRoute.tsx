@@ -1,4 +1,4 @@
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks';
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';

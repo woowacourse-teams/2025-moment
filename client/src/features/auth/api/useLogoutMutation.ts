@@ -1,7 +1,7 @@
+import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { logoutUser } from '../api/logoutUser';
 
 export const useLogoutMutation = () => {
   const queryClient = useQueryClient();
@@ -19,4 +19,9 @@ export const useLogoutMutation = () => {
       showError('로그아웃에 실패했습니다.');
     },
   });
+};
+
+const logoutUser = async (): Promise<void> => {
+  const response = await api.post('/auth/logout');
+  return response.data;
 };

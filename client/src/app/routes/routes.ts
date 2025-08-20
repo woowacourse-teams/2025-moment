@@ -10,4 +10,6 @@ export const ROUTES = {
   TODAY_MOMENT_SUCCESS: '/today-moment/success',
   GOOGLE_CALLBACK: '/auth/callback',
   MY: '/my',
+  FIND_PASSWORD: '/find-password',
+  NEW_PASSWORD: '/passwordUpdate',
 };

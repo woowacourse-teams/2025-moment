@@ -1,5 +1,5 @@
 import { LEVEL_MAP, navItems } from '@/app/layout/data/navItems';
-import { useProfileQuery } from '@/features/auth/hooks/useProfileQuery';
+import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
@@ -7,13 +7,13 @@ import { sendEvent } from '@/shared/lib/ga';
 import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
-import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 
 export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
