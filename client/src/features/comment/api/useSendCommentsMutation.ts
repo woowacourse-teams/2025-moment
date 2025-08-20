@@ -15,6 +15,8 @@ export const useSendCommentsMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['commentableMoments'] });
       queryClient.invalidateQueries({ queryKey: ['comments'] });
 
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
       showSuccess(`별조각 ${COMMENTS_REWARD_POINT} 개를 획득했습니다!`);
