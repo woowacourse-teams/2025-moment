@@ -30,4 +30,9 @@ const EchoButtonStyle = styled.button<{
   padding: 4px 16px;
   font-size: 1rem;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    padding: 2px 10px;
+    font-size: 0.9rem;
+  }
 `;

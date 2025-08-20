@@ -30,7 +30,7 @@ const modalFrameStyles = {
     }
   `,
 
-  memoji: (theme: CustomTheme, props: { $position: ModalPosition }) => `
+  memoji: (theme: CustomTheme) => `
     background-color: ${theme.colors['slate-800']};
     border-radius: 10px;
     border: 1px solid ${theme.colors['gray-700']};
@@ -42,13 +42,14 @@ const modalFrameStyles = {
     
     ${theme.mediaQueries.tablet} {
       padding: 20px 28px;
-      width: ${props.$position === 'center' ? '400px' : '100%'};
-      height: 400px;
+      width: 450px
+      height: 450px;
     }
     
     ${theme.mediaQueries.mobile} {
-      padding: 16px 24px;
-      width: ${props.$position === 'center' ? '95%' : '100%'};
+      padding: 12px 18px;
+      width: 80%;
+      height: 400px;
     }
   `,
 };
