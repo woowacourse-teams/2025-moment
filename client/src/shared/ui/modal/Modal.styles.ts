@@ -37,8 +37,8 @@ const modalFrameStyles = {
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     
-    width: 500px;
-    height: 500px;
+    width: 520px;
+    height: 520px;
     
     ${theme.mediaQueries.mobile} {
       padding: 16px 28px;
