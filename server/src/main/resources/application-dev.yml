@@ -57,9 +57,9 @@ auth:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: http://api.dev.connectingmoment.com/api/v1/auth/callback/google
-    client-uri: http://d2rlxm2vzu73ry.cloudfront.net
+    client-uri: http://dev.connectingmoment.com
   password_update:
-    uri: http://d2rlxm2vzu73ry.cloudfront.net/passwordUpdate?token=
+    uri: http://dev.connectingmoment.com/passwordUpdate?token=
 
 logging:
   config: classpath:logback-dev.xml
