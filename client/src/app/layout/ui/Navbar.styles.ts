@@ -18,7 +18,7 @@ export const Navbar = styled.nav`
 `;
 
 export const LevelIcon = styled.img`
-  width: 40px;
+  width: 50px;
   height: 40px;
   cursor: pointer;
 `;

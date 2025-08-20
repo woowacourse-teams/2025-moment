@@ -8,10 +8,7 @@ interface HeroProps {
 
 export default function Hero({
   title = ['나의 모든 이야기가', '공감이 되는 순간'],
-  subtitle = [
-    '오늘 하루 공감이 필요한 사람들을 위해,',
-    '그 순간을 기록하고 따뜻한 공감을 받을 수 있는 공간',
-  ],
+  subtitle = ['당신의 이야기를 기록하고 따뜻한 공감을 받아보세요'],
 }: HeroProps) {
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
