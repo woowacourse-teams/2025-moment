@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,8 +18,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
 import moment.user.domain.User;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity(name = "moments")
+@SQLDelete(sql = "UPDATE moments SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -43,6 +48,8 @@ public class Moment extends BaseEntity {
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private WriteType writeType;
+
+    private LocalDateTime deletedAt;
 
     public Moment(String content, User momenter, WriteType writeType) {
         validate(content, momenter);

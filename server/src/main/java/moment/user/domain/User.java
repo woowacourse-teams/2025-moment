@@ -7,17 +7,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -45,12 +49,17 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
+
     @Column(nullable = false)
     private Integer availableStar = DEFAULT_POINT;
+
     @Column(nullable = false)
     private Integer expStar = DEFAULT_POINT;
+
     @Enumerated(EnumType.STRING)
     private Level level = Level.ASTEROID_WHITE;
+
+    private LocalDateTime deletedAt;
 
     public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
