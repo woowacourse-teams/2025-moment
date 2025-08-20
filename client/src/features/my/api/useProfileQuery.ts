@@ -8,7 +8,7 @@ export const useProfileQuery = () => {
   });
 };
 
-export const getProfile = async () => {
+const getProfile = async () => {
   const response = await api.get('/me/profile');
   return response.data.data;
 };

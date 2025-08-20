@@ -3,7 +3,7 @@ import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentabl
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, RotateCcw } from 'lucide-react';
+import { AlertCircle, Clock, Loader, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
@@ -16,6 +16,10 @@ export function TodayCommentForm() {
     error,
     refetch,
   } = useCommentableMomentsQuery({ enabled: isLoggedIn === true });
+
+  const handleRefetch = () => {
+    refetch();
+  };
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -55,6 +59,16 @@ export function TodayCommentForm() {
   if (isLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
+  if (!momentData) {
+    return (
+      <NotFound
+        title="누군가 모멘트를 보내길 기다리고 있어요"
+        subtitle=""
+        icon={Loader}
+        size="large"
+      />
+    );
+  }
 
   if (error || !momentData) {
     return (
@@ -84,7 +98,7 @@ export function TodayCommentForm() {
                 <Clock size={16} />
                 {formatRelativeTime(momentData.createdAt)}
               </S.TimeWrapper>
-              <S.RefreshButton onClick={() => refetch()}>
+              <S.RefreshButton onClick={handleRefetch}>
                 <RotateCcw size={28} />
               </S.RefreshButton>
             </S.ActionWrapper>
@@ -93,7 +107,11 @@ export function TodayCommentForm() {
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
-      <TodayCommentWriteContent momentId={momentData.id} isLoggedIn={isLoggedIn} />
+      <TodayCommentWriteContent
+        momentId={momentData.id}
+        isLoggedIn={isLoggedIn}
+        key={momentData.id}
+      />
     </Card>
   );
 }

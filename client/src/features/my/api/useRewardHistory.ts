@@ -17,7 +17,7 @@ export const useRewardHistoryQuery = ({
   });
 };
 
-export const getRewardHistory = async ({
+const getRewardHistory = async ({
   pageNum = 0,
   pageSize = 10,
 }: GetRewardHistoryParams = {}): Promise<RewardHistoryData> => {
