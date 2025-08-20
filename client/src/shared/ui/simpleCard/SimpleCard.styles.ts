@@ -11,7 +11,7 @@ const SimpleCardStyles = {
     padding: 10px 16px;
     background-color: ${$backgroundColor ? theme.colors[$backgroundColor] : theme.colors['gray-600_20']};
     border-radius: 5px;
-    height: ${theme.typography.textAreaHeight[$height]};
+    min-height: ${theme.typography.textAreaHeight[$height]};
     color: ${theme.colors['gray-200']};
     border: 1px solid ${theme.colors['gray-700']};
     `,
