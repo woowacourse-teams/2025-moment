@@ -57,7 +57,7 @@ const buttonStyles = {
     color: black;
     padding: 10px 20px;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1.1rem;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -66,12 +66,11 @@ const buttonStyles = {
 
     @media (max-width: 768px) {
         padding: 16px 24px;
-        font-size: 14px;
     }
 
     @media (max-width: 480px) {
         padding: 14px 20px;
-        font-size: 12px;
+        font-size: 1rem;
     }
 
     &:hover {

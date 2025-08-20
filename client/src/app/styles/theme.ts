@@ -78,7 +78,7 @@ export const theme = {
       small: {
         desktop: '30%',
         tablet: '50%',
-        mobile: '60%',
+        mobile: '70%',
       },
       medium: {
         desktop: '60%',
