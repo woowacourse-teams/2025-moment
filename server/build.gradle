@@ -33,8 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.flywaydb:flyway-mysql'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
 
     compileOnly 'org.projectlombok:lombok'
 
