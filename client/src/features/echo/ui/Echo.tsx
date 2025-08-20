@@ -12,4 +12,9 @@ const EchoStyle = styled.div`
   border-radius: 25px;
   font-size: 1rem;
   color: ${({ theme }) => theme.colors.white};
+
+  @media (max-width: 768px) {
+    padding: 2px 10px;
+    font-size: 0.9rem;
+  }
 `;

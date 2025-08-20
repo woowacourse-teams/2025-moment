@@ -1,28 +1,14 @@
 import styled from '@emotion/styled';
 
-export const EchoButton = ({
-  title,
-  onClick: handleClick,
-  isSelected,
-  isAlreadySent,
-  isDisabled = false,
-}: {
+interface EchoButton {
   title: string;
   onClick: () => void;
   isSelected: boolean;
-  isAlreadySent?: boolean | undefined;
-  isDisabled?: boolean;
-}) => {
+}
+
+export const EchoButton = ({ title, onClick: handleClick, isSelected }: EchoButton) => {
   return (
-    <EchoButtonStyle
-      type="button"
-      onClick={handleClick}
-      $isSelected={isSelected}
-      $isDisabled={isDisabled}
-      $isAlreadySent={isAlreadySent}
-      disabled={isDisabled}
-      aria-pressed={isSelected || !!isAlreadySent}
-    >
+    <EchoButtonStyle onClick={handleClick} $isSelected={isSelected} aria-pressed={isSelected}>
       {title}
     </EchoButtonStyle>
   );
@@ -30,20 +16,23 @@ export const EchoButton = ({
 
 const EchoButtonStyle = styled.button<{
   $isSelected: boolean;
-  $isDisabled: boolean;
-  $isAlreadySent: boolean | undefined;
 }>`
   border: 1px solid
-    ${({ $isSelected, $isAlreadySent, theme }) => {
-      if ($isSelected || $isAlreadySent) return theme.colors['yellow-500'];
+    ${({ $isSelected, theme }) => {
+      if ($isSelected) return theme.colors['yellow-500'];
       return theme.colors['gray-400'];
     }};
-  color: ${({ $isSelected, $isAlreadySent, theme }) => {
-    if ($isSelected || $isAlreadySent) return theme.colors['yellow-500'];
+  color: ${({ $isSelected, theme }) => {
+    if ($isSelected) return theme.colors['yellow-500'];
     return theme.colors['gray-400'];
   }};
   border-radius: 25px;
   padding: 4px 16px;
   font-size: 1rem;
-  cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    padding: 2px 10px;
+    font-size: 0.9rem;
+  }
 `;

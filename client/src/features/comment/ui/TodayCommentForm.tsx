@@ -3,10 +3,10 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQ
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { AlertCircle, Clock, Loader, RotateCcw } from 'lucide-react';
+import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -16,10 +16,6 @@ export function TodayCommentForm() {
     error,
     refetch,
   } = useCommentableMomentsQuery({ enabled: isLoggedIn === true });
-
-  const handleRefetch = () => {
-    refetch();
-  };
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -36,10 +32,7 @@ export function TodayCommentForm() {
                 <S.NotLoggedNickname>푸르른 물방울의 테리우스</S.NotLoggedNickname>
               </S.UserInfoWrapper>
               <S.ActionWrapper>
-                <S.TimeWrapper>
-                  <Clock size={16} />
-                  9시간 전
-                </S.TimeWrapper>
+                <WriteTime date="9시간 전" />
               </S.ActionWrapper>
             </S.TitleWrapper>
           }
@@ -94,11 +87,8 @@ export function TodayCommentForm() {
               <span>{momentData.nickname}</span>
             </S.UserInfoWrapper>
             <S.ActionWrapper>
-              <S.TimeWrapper>
-                <Clock size={16} />
-                {formatRelativeTime(momentData.createdAt)}
-              </S.TimeWrapper>
-              <S.RefreshButton onClick={handleRefetch}>
+              <WriteTime date={momentData.createdAt} />
+              <S.RefreshButton onClick={() => refetch()}>
                 <RotateCcw size={28} />
               </S.RefreshButton>
             </S.ActionWrapper>

@@ -31,6 +31,19 @@ export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean
   }
 `;
 
+export const MyMomentsTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const CommentCountWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: ${({ theme }) => theme.colors['gray-400']};
+`;
+
 export const MyMomentsContent = styled.p`
   height: 100%;
   width: 100%;
@@ -129,27 +142,10 @@ export const TitleWrapper = styled.div`
   gap: 4px;
 `;
 
-export const TimeStamp = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors['gray-400']};
-`;
-
 export const Title = styled.span`
   font-size: ${({ theme }) => theme.typography.title.fontSize.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};
   color: ${({ theme }) => theme.colors.white};
-`;
-
-export const EchoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-export const EchoButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
 `;
 
 export const NavigationContainer = styled.div`
