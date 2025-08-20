@@ -261,7 +261,7 @@
   }
 `,toastVariants={success:theme=>`\n    background-color: ${theme.colors["emerald-50"]};\n    border-left: 4px solid ${theme.colors["emerald-500"]};\n    color: ${theme.colors["emerald-600"]};\n  `,error:theme=>`\n    background-color: color-mix(in srgb, ${theme.colors["red-500"]} 10%, transparent);\n    border-left: 4px solid ${theme.colors["red-500"]};\n    color: ${theme.colors["red-500"]};\n  `},ToastContainer=_emotion_styled__WEBPACK_IMPORTED_MODULE_0__.A.div`
   position: fixed;
-  top: 20px;
+  top: 10vh;
   right: 20px;
   z-index: 9999;
   display: flex;
@@ -274,6 +274,7 @@
     right: 10px;
     left: 10px;
     max-width: none;
+    top: 8vh;
   }
 `,ToastItem=_emotion_styled__WEBPACK_IMPORTED_MODULE_0__.A.div`
   ${({theme,variant})=>toastVariants[variant](theme)};
@@ -325,4 +326,4 @@
     outline-offset: 2px;
   }
 `}}]);
-//# sourceMappingURL=300.a6e72b92.iframe.bundle.js.map
+//# sourceMappingURL=300.60269024.iframe.bundle.js.map
