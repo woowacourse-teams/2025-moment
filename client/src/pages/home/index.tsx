@@ -9,11 +9,13 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
+import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const ClickMeRef = useRef<HTMLDivElement | null>(null);
   const BlackHoleRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,15 +46,19 @@ export default function HomePage() {
       <S.ContentSection isVisible={isVisible}>
         <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
       </S.ContentSection>
-      <S.BlackHoleContainer ref={ClickMeRef}>
-        <S.BlackHoleText>click me</S.BlackHoleText>
-        <button onClick={handleWidgetClick}>
-          <S.BlackHoleImage src="/images/blackHole.png" alt="네비게이션 `메뉴 열기" />
-        </button>
-      </S.BlackHoleContainer>
-      <S.ClickMeContainer ref={BlackHoleRef} isWidgetOpen={isWidgetOpen}>
-        <NavigatorsBar $isNavBar={false} />
-      </S.ClickMeContainer>
+      {isLoggedIn && (
+        <>
+          <S.BlackHoleContainer ref={ClickMeRef}>
+            <S.BlackHoleText>click me</S.BlackHoleText>
+            <button onClick={handleWidgetClick}>
+              <S.BlackHoleImage src="/images/blackHole.png" alt="네비게이션 `메뉴 열기" />
+            </button>
+          </S.BlackHoleContainer>
+          <S.ClickMeContainer ref={BlackHoleRef} isWidgetOpen={isWidgetOpen}>
+            <NavigatorsBar $isNavBar={false} />
+          </S.ClickMeContainer>
+        </>
+      )}
     </S.HomePageWrapper>
   );
 }
