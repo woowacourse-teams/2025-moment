@@ -13,7 +13,11 @@ export const NavigatorsBarContainer = styled.div<{ $isNavBar?: boolean }>`
   }
 `;
 
-export const LinkContainer = styled.div<{ $isNavBar?: boolean; $shadow?: boolean }>`
+export const LinkContainer = styled.div<{
+  $isNavBar?: boolean;
+  $shadow?: boolean;
+  $isActive: boolean;
+}>`
   ${({ theme, $shadow }) =>
     $shadow &&
     css`
@@ -50,11 +54,12 @@ export const IconImage = styled.img`
   height: 40px;
 `;
 
-export const IconText = styled.p`
+export const IconText = styled.p<{ $isActive?: boolean }>`
   font-size: 1.3rem;
   font-weight: 600;
   line-height: 14.52px;
   letter-spacing: -0.01em;
+  color: ${({ theme, $isActive }) => ($isActive ? theme.colors['yellow-300'] : theme.colors.white)};
 
   @media (max-width: 1024px) {
     font-size: 1.1rem;
