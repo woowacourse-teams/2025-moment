@@ -51,7 +51,7 @@ export const MyMomentsList = () => {
   }
 
   return (
-    <S.MomentsContainer>
+    <S.MomentsContainer $display={!!hasMoments}>
       {hasMoments ? (
         <>
           {momentWithNotifications.map((myMoment: MomentWithNotifications) => (
@@ -69,12 +69,14 @@ export const MyMomentsList = () => {
           )}
         </>
       ) : (
-        <NotFound
-          title="아직 모멘트가 없어요"
-          subtitle="오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요"
-          icon={Clock}
-          size="large"
-        />
+        <>
+          <NotFound
+            title="아직 모멘트가 없어요"
+            subtitle="오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요"
+            icon={Clock}
+            size="large"
+          />
+        </>
       )}
     </S.MomentsContainer>
   );

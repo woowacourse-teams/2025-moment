@@ -1,4 +1,3 @@
-import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
