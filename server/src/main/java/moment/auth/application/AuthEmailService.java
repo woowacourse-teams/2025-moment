@@ -19,6 +19,7 @@ import moment.global.exception.MomentException;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -38,6 +39,9 @@ public class AuthEmailService implements EmailService{
     private final JavaMailSender mailSender;
     private final Map<String, EmailVerification> verificationInfos = new ConcurrentHashMap<>();
     private final Map<String, EmailVerification> passwordUpdateInfos = new ConcurrentHashMap<>();
+
+    @Value("${auth.password_update.uri}")
+    private String passwordUpdateUri;
 
     @Override
     public void sendVerificationEmail(EmailRequest request) {
@@ -118,10 +122,15 @@ public class AuthEmailService implements EmailService{
 
     private void sendUpdateMail(MimeMessageHelper helper, String email, String token)
             throws MessagingException {
+        String fullUrl = passwordUpdateUri + token + "&email=" + email;
+
+        String htmlContent = String.format(
+                "<p>비밀번호를 재설정하려면 다음 링크를 클릭하세요:</p><a href=\"%s\">비밀번호 재설정하기</a>",
+                fullUrl
+        );
+
         helper.setTo(email);
         helper.setSubject("[Moment] 비밀번호 재설정 안내");
-        String htmlContent = "<p>비밀번호를 재설정하려면 다음 링크를 클릭하세요:</p>"
-                + "<a href=\"https://connectingmoment.com/passwordUpdate?token=" + token + "&email=" + email +"\">비밀번호 재설정하기</a>";
         helper.setText(htmlContent, true);
 
         mailSender.send(helper.getMimeMessage());
