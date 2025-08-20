@@ -1,4 +1,5 @@
 import { useCheckEmailMutation } from '@/features/auth/api/useCheckEmailMutation';
+import { useCheckEmailCode } from '@/features/auth/hooks/useCheckEmailCode';
 import { useSignup } from '@/features/auth/hooks/useSignup';
 import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
@@ -22,6 +23,14 @@ export const SignupForm = () => {
     error: emailCheckError,
     isSuccess: isEmailCheckSuccess,
   } = useCheckEmailMutation();
+  const {
+    emailCode,
+    isCheckEmailCodeLoading,
+    isCheckEmailCodeError,
+    isCheckEmailCodeSuccess,
+    updateEmailCode,
+    checkEmailCode,
+  } = useCheckEmailCode();
 
   const handlePreviousStep = () => {
     if (beforeStep) {
@@ -35,7 +44,12 @@ export const SignupForm = () => {
     }
   };
 
-  const isDisabled = (nextStep && isFirstStepDisabled) || !isEmailCheckSuccess || isEmailCheckError;
+  const isDisabled =
+    (nextStep && isFirstStepDisabled) ||
+    !isEmailCheckSuccess ||
+    isEmailCheckError ||
+    !isEmailCheckSuccess ||
+    !isCheckEmailCodeSuccess;
 
   return (
     <S.SignupFormWrapper>
@@ -56,6 +70,12 @@ export const SignupForm = () => {
               }
               isEmailChecked={isEmailCheckSuccess}
               isEmailCheckLoading={isEmailCheckLoading}
+              emailCode={emailCode}
+              isCheckEmailCodeLoading={isCheckEmailCodeLoading}
+              isCheckEmailCodeError={isCheckEmailCodeError}
+              isCheckEmailCodeSuccess={isCheckEmailCodeSuccess}
+              updateEmailCode={updateEmailCode}
+              checkEmailCode={checkEmailCode}
             />
           </Step>
           <Step name="step2">

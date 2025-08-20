@@ -1,4 +1,3 @@
-import { useCheckEmailCode } from '@/features/auth/hooks/useCheckEmailCode';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { CheckButton } from '@/features/auth/ui/CheckButton';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
@@ -14,6 +13,12 @@ interface SignupStep1Props {
   emailErrorMessage: string;
   isEmailChecked: boolean;
   isEmailCheckLoading: boolean;
+  emailCode: string;
+  isCheckEmailCodeLoading: boolean;
+  isCheckEmailCodeError: boolean;
+  isCheckEmailCodeSuccess: boolean;
+  updateEmailCode: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  checkEmailCode: (email: string, code: string) => void;
 }
 
 export const SignupStep1 = ({
@@ -25,15 +30,13 @@ export const SignupStep1 = ({
   emailErrorMessage,
   isEmailChecked,
   isEmailCheckLoading,
+  emailCode,
+  isCheckEmailCodeLoading,
+  isCheckEmailCodeError,
+  isCheckEmailCodeSuccess,
+  updateEmailCode,
+  checkEmailCode,
 }: SignupStep1Props) => {
-  const {
-    emailCode,
-    isCheckEmailCodeLoading,
-    isCheckEmailCodeError,
-    isCheckEmailCodeSuccess,
-    updateEmailCode,
-    checkEmailCode,
-  } = useCheckEmailCode();
   useEnterKeyHandler(onNext);
 
   return (
@@ -70,7 +73,7 @@ export const SignupStep1 = ({
           <CheckButton
             title="인증코드 확인"
             onClick={() => checkEmailCode(signupData.email, emailCode)}
-            disabled={isCheckEmailCodeLoading}
+            disabled={isCheckEmailCodeSuccess || isCheckEmailCodeLoading || emailCode.length !== 6}
           />
         </S.CheckExistContainer>
         {isCheckEmailCodeSuccess ? (
