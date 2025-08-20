@@ -72,6 +72,6 @@ management:
   metrics:
     export:
       cloudwatch:
-        namespace: Moment/dev
+        namespace: "Moment/dev"
         step: 1m
         enabled: true
