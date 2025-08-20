@@ -28,7 +28,7 @@ export const useNewPassword = () => {
 
   useEffect(() => {
     if (!email || !token) {
-      showError('인증되지 않은 사용자입니다. 로그인해주세요.');
+      showError('인증되지 않은 사용자입니다. 다시 시도해주세요.');
       navigate('/login', { replace: true });
       return;
     }
