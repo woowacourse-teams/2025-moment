@@ -58,6 +58,8 @@ auth:
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: http://api.connectingmoment.com/api/v1/auth/callback/google
     client-uri: http://www.connectingmoment.com
+  password_update:
+    uri: https://connectingmoment.com/passwordUpdate?token=
 
 logging:
   config: classpath:logback-prod.xml
