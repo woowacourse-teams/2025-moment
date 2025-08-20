@@ -119,6 +119,8 @@ export const LoginButton = styled.button`
   }
 
   &:disabled {
+    border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+    color: ${({ theme }) => theme.colors['gray-600']};
     cursor: not-allowed;
   }
 `;
