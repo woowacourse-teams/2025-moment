@@ -42,6 +42,12 @@ public class AuthEmailService implements EmailService{
     @Override
     public void sendVerificationEmail(EmailRequest request) {
         String email = request.email();
+
+        userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)
+                .ifPresent(user -> {
+                    throw new MomentException(ErrorCode.USER_CONFLICT);
+                });
+
         EmailVerification existingInfo = verificationInfos.get(email);
 
         validateCoolTimePassed(existingInfo);
