@@ -1,10 +1,5 @@
 package moment.comment.application;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -32,6 +27,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -115,21 +116,22 @@ public class CommentService {
         String nextCursor = extractCursor(commentsWithinCursor, hasNextPage);
         List<Comment> comments = extractComments(commentsWithinCursor, pageSize);
 
-        List<Echo> echoes = echoRepository.findAllByCommentIn(comments);
+        List<Echo> allEchoes = echoRepository.findAllByCommentIn(comments);
 
-        if (echoes.isEmpty()) {
+        if (allEchoes.isEmpty()) {
             List<MyCommentResponse> responses = comments.stream()
                     .map(MyCommentResponse::from)
                     .toList();
             return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Comment, List<Echo>> commentAndEchos = echoes.stream()
+        Map<Comment, List<Echo>> commentAndEchos = allEchoes.stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
 
-        List<MyCommentResponse> responses = commentAndEchos.entrySet().stream()
-                .map(MyCommentResponse::from)
-                .toList();
+        List<MyCommentResponse> responses = comments.stream().map(comment -> {
+            List<Echo> echoes = commentAndEchos.getOrDefault(comment, new ArrayList<>());
+            return MyCommentResponse.from(comment, echoes);
+        }).toList();
 
         return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
     }
