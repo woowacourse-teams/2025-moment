@@ -1,3 +1,4 @@
+import { ROUTES } from '@/app/routes/routes';
 import { useNewPasswordMutation } from '@/features/auth/api/useNewPasswordMutation';
 import { NewPassword, NewPasswordErrors } from '@/features/auth/types/newPassword';
 import { validatePassword, validateRePassword } from '@/features/auth/utils/validateAuth';
@@ -29,7 +30,7 @@ export const useNewPassword = () => {
   useEffect(() => {
     if (!email || !token) {
       showError('인증되지 않은 사용자입니다. 다시 시도해주세요.');
-      navigate('/login', { replace: true });
+      navigate(ROUTES.FIND_PASSWORD, { replace: true });
       return;
     }
     setNewPasswordFormData(prev => ({ ...prev, email, token }));
