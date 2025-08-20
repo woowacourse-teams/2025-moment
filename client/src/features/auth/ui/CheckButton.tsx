@@ -2,12 +2,12 @@ import { CustomTheme } from '@/app/styles/theme';
 import { Button } from '@/shared/ui';
 
 interface CheckButton {
-  title:string;
+  title: string;
   onClick: () => void;
   disabled: boolean;
 }
 
-export const CheckButton = ({title, onClick: handleClick, disabled }: CheckButton) => {
+export const CheckButton = ({ title, onClick: handleClick, disabled }: CheckButton) => {
   return (
     <Button
       externalVariant={buttonVariant}
