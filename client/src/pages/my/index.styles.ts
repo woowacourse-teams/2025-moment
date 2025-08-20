@@ -285,6 +285,15 @@ export const EXPLabel = styled.p`
   margin: 0;
 `;
 
+export const AvailableStar = styled.p`
+  font-size: 18px;
+  font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
 export const Divider = styled.hr`
   border: none;
   height: 1px;
