@@ -21,16 +21,36 @@ export const LinkContainer = styled.div<{
   ${({ theme, $shadow }) =>
     $shadow &&
     css`
-      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
-      animation: shadowPulse 2s ease-in-out infinite;
+      position: relative;
+      padding: 4px;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0.8vh;
+        right: 0px;
+        width: 10px;
+        height: 10px;
+        background: ${theme.colors['yellow-300']};
+        border-radius: 50%;
+        box-shadow:
+          0 0 4px ${theme.colors['yellow-300']},
+          0 0 8px ${theme.colors['yellow-300_80']};
+        animation: dotPulse 2s ease-in-out infinite;
+      }
 
-      @keyframes shadowPulse {
+      @keyframes dotPulse {
         0%,
         100% {
-          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
+          transform: scale(0.6);
+          box-shadow:
+            0 0 2px ${theme.colors['yellow-300']},
+            0 0 4px ${theme.colors['yellow-300_80']};
         }
         50% {
-          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
+          transform: scale(1);
+          box-shadow:
+            0 0 4px ${theme.colors['yellow-300']},
+            0 0 8px ${theme.colors['yellow-300_80']};
         }
       }
     `}
