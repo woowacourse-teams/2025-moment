@@ -45,6 +45,7 @@ export const SignupForm = () => {
   };
 
   const isDisabled =
+    !nextStep ||
     (nextStep && isFirstStepDisabled) ||
     !isEmailCheckSuccess ||
     isEmailCheckError ||
