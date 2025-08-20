@@ -6,10 +6,8 @@ import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
-import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
@@ -71,10 +69,5 @@ public class UserService {
     public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
         boolean existsByNickname = userRepository.existsByNickname(request.nickname());
         return new NicknameConflictCheckResponse(existsByNickname);
-    }
-
-    public EmailConflictCheckResponse checkEmailConflictInBasicSignUp(EmailConflictCheckRequest request) {
-        boolean existsByEmail = userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL);
-        return new EmailConflictCheckResponse(existsByEmail);
     }
 }

@@ -15,9 +15,19 @@ export const LevelTableWrapper = styled.table`
     border-right: 1px solid ${({ theme }) => theme.colors.white};
     padding: 8px;
   }
+
+  @media (max-width: 768px) {
+    height: 50vh;
+    font-size: 0.8rem;
+  }
 `;
 
 export const LevelImage = styled.img`
   width: 50px;
   height: 50px;
+
+  @media (max-width: 768px) {
+    width: 25px;
+    height: 25px;
+  }
 `;

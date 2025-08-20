@@ -24,12 +24,30 @@ export const RewardHistoryPagination = ({
     }
   };
 
+  const handleTenPagePrevious = () => {
+    if (currentPage > 0) {
+      onPageChange(currentPage - 10);
+    }
+  };
+
+  const handleTenPageNext = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 10);
+    }
+  };
+
   return (
     <S.PaginationContainer>
-      {currentPage > 0 ? (
-        <Button title="이전" onClick={handlePrevious} variant="primary" />
+      {totalPages > 10 ? (
+        <Button title="<<" onClick={handleTenPagePrevious} variant="primary" />
       ) : (
-        <Button title="이전" onClick={handlePrevious} variant="primary" disabled />
+        <Button title="<<" onClick={handleTenPagePrevious} variant="primary" disabled />
+      )}
+
+      {currentPage > 0 ? (
+        <Button title="<" onClick={handlePrevious} variant="primary" />
+      ) : (
+        <Button title="<" onClick={handlePrevious} variant="primary" disabled />
       )}
 
       <S.PageInfo>
@@ -37,9 +55,14 @@ export const RewardHistoryPagination = ({
       </S.PageInfo>
 
       {currentPage < totalPages - 1 ? (
-        <Button title="다음" onClick={handleNext} variant="primary" />
+        <Button title=">" onClick={handleNext} variant="primary" />
       ) : (
-        <Button title="다음" onClick={handleNext} variant="primary" disabled />
+        <Button title=">" onClick={handleNext} variant="primary" disabled />
+      )}
+      {totalPages > 10 ? (
+        <Button title=">>" onClick={handleTenPageNext} variant="primary" />
+      ) : (
+        <Button title=">>" onClick={handleTenPageNext} variant="primary" disabled />
       )}
     </S.PaginationContainer>
   );
