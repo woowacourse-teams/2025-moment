@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 export const useNewPassword = () => {
-  const { mutate: newPasswordMutation, isPending } = useNewPasswordMutation();
+  const { mutate: newPasswordMutation, isPending, isError, error } = useNewPasswordMutation();
   const [newPasswordFormData, setNewPasswordFormData] = useState<NewPassword>({
     email: '',
     token: '',
@@ -23,6 +23,8 @@ export const useNewPassword = () => {
   const queryParams = new URLSearchParams(location.search);
   const email = queryParams.get('email');
   const token = queryParams.get('token');
+
+  if (isError) showError(error.message);
 
   useEffect(() => {
     if (!email || !token) {
