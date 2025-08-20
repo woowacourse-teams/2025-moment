@@ -50,6 +50,7 @@ export const ContentContainer = styled.div`
 
 export const EchoContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 `;
