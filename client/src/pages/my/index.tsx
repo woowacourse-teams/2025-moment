@@ -2,7 +2,7 @@ import { LEVEL_MAP } from '@/app/layout/data/navItems';
 
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
-import { Button, Card, NotFound } from '@/shared/ui';
+import { Button, Card, CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
@@ -125,7 +125,7 @@ export default function MyPage() {
         <Card width="large">
           <S.RewardHistoryContainer>
             {isLoading ? (
-              <p>로딩 중 입니다</p>
+              <CommonSkeletonCard variant="rewardHistory" />
             ) : error ? (
               <NotFound
                 title="데이터를 불러올 수 없습니다"
