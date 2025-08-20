@@ -1,6 +1,5 @@
-import axios from 'axios';
 import * as Sentry from '@sentry/react';
-import { AxiosError } from 'axios';
+import axios from 'axios';
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
 
@@ -17,5 +16,6 @@ api.interceptors.response.use(
   response => response,
   error => {
     Sentry.captureException(error.message);
+    return Promise.reject(error);
   },
 );
