@@ -38,12 +38,7 @@ export function TodayCommentForm() {
           }
           subtitle=""
         />
-        <SimpleCard
-          height="small"
-          content={
-            '오늘은 아침부터 굉장히 바쁜 하루였어요. 매일매일 이런 날로 채우면 언젠가는 취업할 수 있겠죠?'
-          }
-        />
+        <SimpleCard height="small" content={'다른 사람의 모멘트는 로그인 후에 확인할 수 있어요!'} />
         <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} />
       </Card>
     );

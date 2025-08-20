@@ -41,7 +41,7 @@ const toastVariants = {
 
 export const ToastContainer = styled.div`
   position: fixed;
-  top: 20px;
+  top: 10vh;
   right: 20px;
   z-index: 9999;
   display: flex;
@@ -54,6 +54,7 @@ export const ToastContainer = styled.div`
     right: 10px;
     left: 10px;
     max-width: none;
+    top: 8vh;
   }
 `;
 

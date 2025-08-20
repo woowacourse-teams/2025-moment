@@ -48,7 +48,7 @@ export const TitleContainer = styled.div<{ isVisible: boolean }>`
 
 export const Title = styled.h1`
   color: white;
-  font-size: clamp(2rem, 8vw, 4rem);
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
@@ -77,7 +77,7 @@ export const SubtitleContainer = styled.div<{ isVisible: boolean }>`
 `;
 
 export const Subtitle = styled.p`
-  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 400;
   line-height: 1.6;
   margin: 0;
