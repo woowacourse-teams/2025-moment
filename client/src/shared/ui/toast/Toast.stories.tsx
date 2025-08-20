@@ -20,7 +20,7 @@ const meta: Meta = {
 export default meta;
 
 const ToastExample: React.FC = () => {
-  const { showSuccess, showError } = useToast();
+  const { showSuccess, showError, showMessage } = useToast();
 
   return (
     <div style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
@@ -82,6 +82,50 @@ const ToastExample: React.FC = () => {
         }}
       >
         긴 지속 시간 메시지
+      </button>
+
+      <button
+        onClick={() => showMessage('나의 모멘트에 코멘트가 달렸습니다!', 'moment')}
+        style={{
+          padding: '12px 24px',
+          backgroundColor: '#8B5CF6',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+        }}
+      >
+        모멘트 알림 메시지 (클릭 가능)
+      </button>
+
+      <button
+        onClick={() =>
+          showMessage('나의 코멘트에 에코가 달렸습니다! 별조각 3개를 획득했습니다!', 'comment')
+        }
+        style={{
+          padding: '12px 24px',
+          backgroundColor: '#EC4899',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+        }}
+      >
+        코멘트 알림 메시지 (클릭 가능)
+      </button>
+
+      <button
+        onClick={() => showMessage('일반 알림 메시지입니다')}
+        style={{
+          padding: '12px 24px',
+          backgroundColor: '#64748B',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+        }}
+      >
+        일반 메시지 (클릭 불가)
       </button>
     </div>
   );
