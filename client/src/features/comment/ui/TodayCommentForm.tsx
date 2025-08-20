@@ -17,10 +17,6 @@ export function TodayCommentForm() {
     refetch,
   } = useCommentableMomentsQuery({ enabled: isLoggedIn === true });
 
-  const handleRefetch = () => {
-    refetch();
-  };
-
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
@@ -98,7 +94,7 @@ export function TodayCommentForm() {
                 <Clock size={16} />
                 {formatRelativeTime(momentData.createdAt)}
               </S.TimeWrapper>
-              <S.RefreshButton onClick={handleRefetch}>
+              <S.RefreshButton onClick={() => refetch()}>
                 <RotateCcw size={28} />
               </S.RefreshButton>
             </S.ActionWrapper>
