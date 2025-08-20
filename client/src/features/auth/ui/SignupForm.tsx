@@ -1,10 +1,11 @@
+import { useCheckEmailMutation } from '@/features/auth/api/useCheckEmailMutation';
 import { useSignup } from '@/features/auth/hooks/useSignup';
 import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
 import { Button } from '@/shared/ui/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
-import { useCheckEmail } from '../hooks/useCheckEmail';
+import { AxiosError } from 'axios';
 import * as S from './SignupForm.styles';
 
 export const SignupForm = () => {
@@ -14,7 +15,13 @@ export const SignupForm = () => {
     useSignup();
   const { step, setStep } = useStep();
 
-  const { handleCheckEmail, errorMessage: emailErrorMessage, isEmailChecked } = useCheckEmail();
+  const {
+    mutate: checkEmail,
+    isPending: isEmailCheckLoading,
+    isError: isEmailCheckError,
+    error: emailCheckError,
+    isSuccess: isEmailCheckSuccess,
+  } = useCheckEmailMutation();
 
   const handlePreviousStep = () => {
     if (beforeStep) {
@@ -28,8 +35,7 @@ export const SignupForm = () => {
     }
   };
 
-  const isDisabled =
-    (nextStep && isFirstStepDisabled) || !isEmailChecked || emailErrorMessage !== '';
+  const isDisabled = (nextStep && isFirstStepDisabled) || !isEmailCheckSuccess || isEmailCheckError;
 
   return (
     <S.SignupFormWrapper>
@@ -42,9 +48,14 @@ export const SignupForm = () => {
               errors={errors}
               handleChange={handleChange}
               onNext={isDisabled ? undefined : handleNextStep}
-              handleCheckEmail={handleCheckEmail}
-              emailErrorMessage={emailErrorMessage}
-              isEmailChecked={isEmailChecked}
+              handleCheckEmail={checkEmail}
+              emailErrorMessage={
+                emailCheckError instanceof AxiosError
+                  ? (emailCheckError.response?.data?.message ?? '')
+                  : ''
+              }
+              isEmailChecked={isEmailCheckSuccess}
+              isEmailCheckLoading={isEmailCheckLoading}
             />
           </Step>
           <Step name="step2">

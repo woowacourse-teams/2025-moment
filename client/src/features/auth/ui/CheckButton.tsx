@@ -2,11 +2,20 @@ import { CustomTheme } from '@/app/styles/theme';
 import { Button } from '@/shared/ui';
 
 interface CheckButton {
+  title:string;
   onClick: () => void;
+  disabled: boolean;
 }
 
-export const CheckButton = ({ onClick: handleClick }: CheckButton) => {
-  return <Button externalVariant={buttonVariant} title={'중복 확인'} onClick={handleClick} />;
+export const CheckButton = ({title, onClick: handleClick, disabled }: CheckButton) => {
+  return (
+    <Button
+      externalVariant={buttonVariant}
+      title={title}
+      onClick={handleClick}
+      disabled={disabled}
+    />
+  );
 };
 
 const CheckButtonStyle = {
