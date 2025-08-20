@@ -9,7 +9,7 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 
 export default function HomePage() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
