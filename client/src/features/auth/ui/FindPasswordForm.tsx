@@ -29,7 +29,7 @@ export const FindPasswordForm = () => {
             <S.ErrorMessage>{error}</S.ErrorMessage>
           </S.InputGroup>
         </S.LoginFormContent>
-        <S.LoginButton type="submit" disabled={isLoading && error !== ''}>
+        <S.LoginButton type="submit" disabled={isLoading || error !== ''}>
           인증 링크 전송하기
         </S.LoginButton>
       </S.LoginFormContainer>

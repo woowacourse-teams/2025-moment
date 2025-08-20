@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
+import { useChangePasswordMutation } from '../api/useChangePasswordMutation';
 import { ChangePasswordErrors, ChangePasswordRequest } from '../types/changePassword';
 import { isChangePasswordFormValid, validateChangePasswordField } from '../utils/validateAuth';
-import { useChangePasswordMutation } from './useChangePasswordMutation';
 
 export const useChangePassword = () => {
   const [changePasswordData, setChangePasswordData] = useState<ChangePasswordRequest>({

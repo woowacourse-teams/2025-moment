@@ -1,4 +1,5 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
@@ -6,7 +7,6 @@ import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
 import { AlertCircle, Clock, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();

@@ -1,12 +1,12 @@
-import { useRandomNicknameQuery } from '@/features/auth/hooks/useRandomNicknameQuery';
-import { useChangeNicknameMutation } from '../hooks/useChangeNicknameMutation';
+import { useRandomNicknameQuery } from '@/features/auth/api/useRandomNicknameQuery';
 import { useEnterKeyHandler } from '@/shared/hooks';
-import { useEffect } from 'react';
-import * as S from './ChangeNicknameForm.styles';
+import { Button } from '@/shared/ui';
+import { Input } from '@/shared/ui/input/Input';
 import { RotateNicknameButton } from '@/widgets/signup/SignupStep2';
 import { RotateCw } from 'lucide-react';
-import { Input } from '@/shared/ui/input/Input';
-import { Button } from '@/shared/ui';
+import { useEffect } from 'react';
+import { useChangeNicknameMutation } from '../hooks/useChangeNicknameMutation';
+import * as S from './ChangeNicknameForm.styles';
 
 export const ChangeNicknameForm = ({
   nickname,

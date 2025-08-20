@@ -43,7 +43,7 @@ export const NewPasswordForm = () => {
           <S.InputGroup>
             <S.Label htmlFor="password">비밀번호 확인</S.Label>
             <Input
-              id="password"
+              id="passwordCheck"
               type="password"
               placeholder="비밀번호 재입력해주세요"
               value={formData.newPasswordCheck}

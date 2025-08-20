@@ -1,4 +1,4 @@
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
