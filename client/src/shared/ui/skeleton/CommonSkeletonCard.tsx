@@ -3,7 +3,7 @@ import React from 'react';
 import * as S from './CommonSkeletonCard.styles';
 
 interface CommonSkeletonCardProps {
-  variant?: 'moment' | 'comment';
+  variant?: 'moment' | 'comment' | 'rewardHistory';
 }
 
 export const CommonSkeletonCard: React.FC<CommonSkeletonCardProps> = ({ variant = 'moment' }) => {
@@ -65,6 +65,30 @@ export const CommonSkeletonCard: React.FC<CommonSkeletonCardProps> = ({ variant 
             </S.SkeletonActionButtons>
           </S.SkeletonCardAction>
         </>
+      )}
+
+      {variant === 'rewardHistory' && (
+        <S.SkeletonRewardHistoryTable>
+          <thead>
+            <tr>
+              <th>
+                <Skeleton width="100px" height="16px" />
+              </th>
+              <th>
+                <Skeleton width="100px" height="16px" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 10 }, (_, index) => `skeleton-row-${index}`).map(uniqueKey => (
+              <tr key={uniqueKey}>
+                <td>
+                  <Skeleton width="100px" height="16px" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </S.SkeletonRewardHistoryTable>
       )}
     </S.SkeletonCard>
   );

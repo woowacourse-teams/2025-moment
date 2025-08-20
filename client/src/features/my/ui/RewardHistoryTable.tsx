@@ -13,7 +13,7 @@ export const RewardHistoryTable = ({ items }: RewardHistoryTableProps) => {
         <S.TableHeader>
           <S.HeaderRow>
             <S.HeaderCell>날짜</S.HeaderCell>
-            <S.HeaderCell>사유</S.HeaderCell>
+            <S.HeaderCell>내역</S.HeaderCell>
             <S.HeaderCell>변경량</S.HeaderCell>
           </S.HeaderRow>
         </S.TableHeader>
