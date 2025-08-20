@@ -9,7 +9,7 @@ export const NavigatorsBarContainer = styled.div<{ $isNavBar?: boolean }>`
   gap: 60px;
 
   @media (max-width: 1024px) {
-    gap: 30px;
+    gap: 10px;
   }
 `;
 
@@ -21,16 +21,36 @@ export const LinkContainer = styled.div<{
   ${({ theme, $shadow }) =>
     $shadow &&
     css`
-      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
-      animation: shadowPulse 2s ease-in-out infinite;
+      position: relative;
+      padding: 4px;
+      &::after {
+        content: '';
+        position: absolute;
+        top: -0.6vh;
+        right: -0.8vh;
+        width: 10px;
+        height: 10px;
+        background: ${theme.colors['yellow-300']};
+        border-radius: 50%;
+        box-shadow:
+          0 0 4px ${theme.colors['yellow-300']},
+          0 0 8px ${theme.colors['yellow-300_80']};
+        animation: dotPulse 2s ease-in-out infinite;
+      }
 
-      @keyframes shadowPulse {
+      @keyframes dotPulse {
         0%,
         100% {
-          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
+          transform: scale(0.6);
+          box-shadow:
+            0 0 2px ${theme.colors['yellow-300']},
+            0 0 4px ${theme.colors['yellow-300_80']};
         }
         50% {
-          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
+          transform: scale(1);
+          box-shadow:
+            0 0 4px ${theme.colors['yellow-300']},
+            0 0 8px ${theme.colors['yellow-300_80']};
         }
       }
     `}
@@ -41,7 +61,6 @@ export const LinkContainer = styled.div<{
   flex-direction: ${({ $isNavBar }) => ($isNavBar ? 'row' : 'column')};
   gap: 12px;
   border-radius: 10px;
-  padding: 10px 20px;
 
   &:hover {
     transform: scale(1.1);
