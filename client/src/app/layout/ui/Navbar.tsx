@@ -94,7 +94,7 @@ export const Navbar = () => {
                 $shadow={item.label === '나만의 모음집' && isNotificationExisting}
               >
                 <Link to={item.href} onClick={toggleMobileMenu}>
-                  {item.label}
+                  <span>{item.label}</span>
                 </Link>
               </S.MobileNavItem>
             ))}

@@ -171,42 +171,49 @@ export const MobileNavItem = styled.div<{ $isActive?: boolean; $shadow?: boolean
     text-decoration: none;
     display: block;
     transition: all 0.3s ease;
-    position: relative; // 이 부분 추가
+    position: relative;
+    width: 100%;
+    text-align: center;
 
-    ${({ theme, $shadow }) =>
-      $shadow &&
-      css`
-        &::after {
-          content: '';
-          position: absolute;
-          top: -4px;
-          right: -16px;
-          width: 8px;
-          height: 8px;
-          background: ${theme.colors['yellow-300']};
-          border-radius: 50%;
-          box-shadow:
-            0 0 4px ${theme.colors['yellow-300']},
-            0 0 8px ${theme.colors['yellow-300_80']};
-          animation: dotPulse 2s ease-in-out infinite;
-        }
+    span {
+      position: relative;
+      display: inline-block;
 
-        @keyframes dotPulse {
-          0%,
-          100% {
-            transform: scale(0.6);
-            box-shadow:
-              0 0 2px ${theme.colors['yellow-300']},
-              0 0 4px ${theme.colors['yellow-300_80']};
-          }
-          50% {
-            transform: scale(1);
+      ${({ theme, $shadow }) =>
+        $shadow &&
+        css`
+          &::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -12px;
+            width: 8px;
+            height: 8px;
+            background: ${theme.colors['yellow-300']};
+            border-radius: 50%;
             box-shadow:
               0 0 4px ${theme.colors['yellow-300']},
               0 0 8px ${theme.colors['yellow-300_80']};
+            animation: dotPulse 2s ease-in-out infinite;
           }
-        }
-      `}
+
+          @keyframes dotPulse {
+            0%,
+            100% {
+              transform: scale(0.6);
+              box-shadow:
+                0 0 2px ${theme.colors['yellow-300']},
+                0 0 4px ${theme.colors['yellow-300_80']};
+            }
+            50% {
+              transform: scale(1);
+              box-shadow:
+                0 0 4px ${theme.colors['yellow-300']},
+                0 0 8px ${theme.colors['yellow-300_80']};
+            }
+          }
+        `}
+    }
   }
 
   &:hover a {
