@@ -75,3 +75,8 @@ management:
         namespace: "Moment/dev"
         step: 1m
         enabled: true
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
