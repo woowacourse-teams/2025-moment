@@ -78,6 +78,7 @@ public class AuthService {
         return tokensIssuer.renewTokens(refreshToken);
     }
 
+    @Transactional
     public void resetPassword(PasswordResetRequest request) {
         if (!request.newPassword().equals(request.newPasswordCheck())) {
             throw new MomentException(ErrorCode.PASSWORD_MISMATCHED);
