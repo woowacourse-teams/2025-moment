@@ -1,7 +1,7 @@
 import { theme } from '@/app/styles/theme';
 import styled from '@emotion/styled';
 
-export const SkeletonCard = styled.div<{ variant?: 'moment' | 'comment' }>`
+export const SkeletonCard = styled.div<{ variant?: 'moment' | 'comment' | 'rewardHistory' }>`
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -106,4 +106,17 @@ export const SkeletonMomentContent = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+`;
+
+export const SkeletonRewardHistoryTable = styled.table`
+  display: flex;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid ${theme.colors['gray-700']};
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  th, td {
 `;

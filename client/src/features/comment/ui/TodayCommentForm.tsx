@@ -2,7 +2,7 @@ import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { AlertCircle, RotateCcw } from 'lucide-react';
+import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
@@ -52,6 +52,16 @@ export function TodayCommentForm() {
   if (isLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
+  if (!momentData) {
+    return (
+      <NotFound
+        title="누군가 모멘트를 보내길 기다리고 있어요"
+        subtitle=""
+        icon={Loader}
+        size="large"
+      />
+    );
+  }
 
   if (error || !momentData) {
     return (
@@ -87,7 +97,11 @@ export function TodayCommentForm() {
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
-      <TodayCommentWriteContent momentId={momentData.id} isLoggedIn={isLoggedIn} />
+      <TodayCommentWriteContent
+        momentId={momentData.id}
+        isLoggedIn={isLoggedIn}
+        key={momentData.id}
+      />
     </Card>
   );
 }

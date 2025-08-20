@@ -21,3 +21,13 @@ export interface RewardHistoryData {
   pageSize: number;
   totalPages: number;
 }
+
+export interface UseRewardHistoryQueryOptions {
+  pageNum?: number;
+  pageSize?: number;
+  enabled?: boolean;
+}
+export interface GetRewardHistoryParams {
+  pageNum?: number;
+  pageSize?: number;
+}

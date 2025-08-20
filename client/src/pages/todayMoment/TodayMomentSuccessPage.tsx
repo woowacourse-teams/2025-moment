@@ -8,7 +8,7 @@ export default function TodayMomentSuccessPage() {
     <S.TodayPageWrapper>
       <TitleContainer
         title="오늘의 모멘트"
-        subtitle="특별한 모멘트를 공유받고 따뜻한 공감을 보내보세요"
+        subtitle="하루에 한 번, 당신의 특별한 모멘트를 공유해보세요"
       />
       <Card width="medium">
         <TodayMomentSuccessContent />

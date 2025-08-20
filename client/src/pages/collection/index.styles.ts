@@ -100,7 +100,7 @@ export const CollectionHeaderLinkContainer = styled(Link, {
   }
 `;
 
-export const Description = styled.span`
+export const Description = styled.p`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.white};
   font-weight: bold;

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +58,8 @@ class AuthEmailServiceTest {
     @Test
     void 인증_메일_전송에_성공한다() {
         // given
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(Optional.empty());
+
         doNothing().when(mailSender).send(any(SimpleMailMessage.class));
         EmailRequest request = new EmailRequest(email);
 
@@ -84,6 +87,8 @@ class AuthEmailServiceTest {
     @Test
     void 쿨다운이_지나지_않았으면_인증_메일_재전송시_예외가_발생한다() {
         // given
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)).thenReturn(Optional.empty());
+
         EmailRequest request = new EmailRequest(email);
         Map<String, EmailVerification> verificationInfos = getVerificationInfosMap();
         verificationInfos.put(email, new EmailVerification("123456", LocalDateTime.now().minusSeconds(1), expirySeconds));
@@ -92,6 +97,23 @@ class AuthEmailServiceTest {
         assertThatThrownBy(() -> authEmailService.sendVerificationEmail(request))
             .isInstanceOf(MomentException.class)
             .hasFieldOrPropertyWithValue("errorCode", ErrorCode.EMAIL_COOL_DOWN_NOT_PASSED);
+    }
+
+    @Test
+    void 이미_가입된_이메일로_인증을_요청하면_예외가_발생한다() {
+        // given
+        User user = new User(email, "1q2w3e4r!", "drago", ProviderType.EMAIL);
+        when(userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL))
+                .thenReturn(Optional.of(user));
+
+        EmailRequest request = new EmailRequest(email);
+
+        // when & then
+        assertThatThrownBy(() -> authEmailService.sendVerificationEmail(request))
+                .isInstanceOf(MomentException.class)
+                .hasMessageContaining(ErrorCode.USER_CONFLICT.getMessage());
+
+        verify(mailSender, never()).send(any(SimpleMailMessage.class));
     }
 
     @Test
