@@ -1,8 +1,8 @@
-import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/app/lib/queryClient';
-import { ChangeNicknameRequest } from '../types/changeNickname';
-import { useToast } from '@/shared/hooks';
 import { api } from '@/app/lib/api';
+import { queryClient } from '@/app/lib/queryClient';
+import { useToast } from '@/shared/hooks';
+import { useMutation } from '@tanstack/react-query';
+import { ChangeNicknameRequest } from '../types/changeNickname';
 
 export const useChangeNicknameMutation = () => {
   const { showSuccess, showError } = useToast();
@@ -10,6 +10,7 @@ export const useChangeNicknameMutation = () => {
   return useMutation({
     mutationFn: ({ newNickname }: ChangeNicknameRequest) => changeNickname({ newNickname }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       showSuccess('닉네임이 변경되었습니다.');
     },
