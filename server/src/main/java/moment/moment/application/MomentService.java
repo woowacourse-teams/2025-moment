@@ -1,22 +1,27 @@
 package moment.moment.application;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import jakarta.validation.Valid;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
-import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
-import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
@@ -27,13 +32,6 @@ import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,14 +72,14 @@ public class MomentService {
     public MomentCreateResponse addExtraMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        if(!extraMomentCreatePolicy.canCreate(momenter)) {
+        if (!extraMomentCreatePolicy.canCreate(momenter)) {
             throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
         }
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        rewardService.rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
+        rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
         return MomentCreateResponse.of(savedMoment);
     }
@@ -179,7 +177,7 @@ public class MomentService {
         User user = userQueryService.getUserById(id);
 
         if (extraMomentCreatePolicy.canCreate(user)) {
-            return  MomentCreationStatusResponse.createAllowedStatus();
+            return MomentCreationStatusResponse.createAllowedStatus();
         }
 
         return MomentCreationStatusResponse.createDeniedStatus();
@@ -191,7 +189,7 @@ public class MomentService {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
         List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
 
-        if(commentableMoments.isEmpty()) {
+        if (commentableMoments.isEmpty()) {
             return CommentableMomentResponse.empty();
         }
 

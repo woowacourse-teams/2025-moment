@@ -18,6 +18,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -52,6 +53,9 @@ class MomentControllerTest {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private RewardRepository rewardRepository;
 
     @BeforeEach
     void setUp() {
@@ -115,6 +119,85 @@ class MomentControllerTest {
         assertAll(
                 () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
                 () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+    @Test
+    void 추가_모멘트를_등록_시_별조각을_차감한다() {
+
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(30);
+        User savedMomenter = userRepository.saveAndFlush(momenter);
+        String content = "재미있는 내용이네요~~?";
+
+        MomentCreateRequest request = new MomentCreateRequest(content);
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        MomentCreateResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("/api/v1/moments")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        User user = userRepository.findById(savedMomenter.getId()).get();
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content),
+                () -> assertThat(user.getAvailableStar()).isEqualTo(35)
+        );
+
+        String contentExtra = "추가 모멘트 재미있는 내용이네요~~?";
+
+        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra);
+
+        // when
+        MomentCreateResponse responseExtra = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(requestExtra)
+                .when().post("/api/v1/moments/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        User findUser = userRepository.findById(savedMomenter.getId()).get();
+        // then
+        assertAll(
+                () -> assertThat(responseExtra.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(responseExtra.content()).isEqualTo(contentExtra),
+                () -> assertThat(findUser.getAvailableStar()).isEqualTo(25)
+        );
+
+        // when
+        String contentExtraExtra = "추가 추가 모멘트 재미있는 내용이네요~~?";
+        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra);
+
+        MomentCreateResponse responseExtraExtra = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(requestExtraExtra)
+                .when().post("/api/v1/moments/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        User findfindUser = userRepository.findById(savedMomenter.getId()).get();
+
+        // then
+        assertAll(
+                () -> assertThat(responseExtraExtra.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(responseExtraExtra.content()).isEqualTo(contentExtraExtra),
+                () -> assertThat(findfindUser.getAvailableStar()).isEqualTo(15)
         );
     }
 
