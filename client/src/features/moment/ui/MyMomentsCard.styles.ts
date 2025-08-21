@@ -60,6 +60,7 @@ export const MyMomentsContent = styled.p`
   align-items: center;
   justify-content: center;
   text-align: center;
+  word-break: break-all;
 `;
 
 export const MyMomentsModalContent = styled.div`
@@ -86,6 +87,10 @@ export const CommentContent = styled.div`
   text-align: center;
   line-height: 1.6;
   padding: 0 20px;
+
+  & > div {
+    word-break: break-all;
+  }
 `;
 
 export const CommentNavigationButton = styled.button<{ position: 'left' | 'right' }>`
