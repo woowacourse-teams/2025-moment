@@ -3,6 +3,12 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
 
+type ShowToastFn = (message: string, duration?: number) => void;
+let showErrorToast: ShowToastFn | null = null;
+export const setToastFunctions = (errorFn: ShowToastFn) => {
+  showErrorToast = errorFn;
+};
+
 export const api = axios.create({
   baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -25,12 +31,6 @@ const redirectToLogin = (): void => {
   }
 };
 
-const isPublicEndpoint = (url: string): boolean => {
-  const publicEndpoints = ['/auth/login', '/auth/refresh', '/auth/email', '/users/signup'];
-
-  return publicEndpoints.some(endpoint => url.includes(endpoint));
-};
-
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -40,11 +40,10 @@ api.interceptors.response.use(
 
     Sentry.captureException(error);
 
-    if (isPublicEndpoint(url)) {
-      return Promise.reject(error);
-    }
-
     if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
+      if (showErrorToast) {
+        showErrorToast('로그인이 필요해요! 다시 로그인해 주세요.');
+      }
       redirectToLogin();
       return Promise.reject(error);
     }
@@ -57,6 +56,9 @@ api.interceptors.response.use(
           await refreshPromise;
           return api(originalRequest);
         } catch {
+          if (showErrorToast) {
+            showErrorToast('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
+          }
           redirectToLogin();
           return Promise.reject(error);
         }
@@ -69,6 +71,9 @@ api.interceptors.response.use(
         await refreshPromise;
         return api(originalRequest);
       } catch (refreshError) {
+        if (showErrorToast) {
+          showErrorToast('로그인이 만료되었어요. 다시 로그인해 주세요.');
+        }
         redirectToLogin();
         return Promise.reject(refreshError);
       } finally {
