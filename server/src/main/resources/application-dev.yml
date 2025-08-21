@@ -3,7 +3,7 @@ spring:
     name: moment
   mvc:
     async:
-      request-timeout: 0
+      request-timeout: -1
 
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
