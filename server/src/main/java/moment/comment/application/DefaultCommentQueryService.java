@@ -6,7 +6,6 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,7 @@ public class DefaultCommentQueryService implements CommentQueryService {
     }
 
     @Override
-    public boolean existsByMomentAndCommenter(Moment moment, User user) {
-        return commentRepository.existsByMomentAndCommenter(moment, user);
+    public boolean existsByMoment(Moment moment) {
+        return commentRepository.existsByMoment(moment);
     }
 }

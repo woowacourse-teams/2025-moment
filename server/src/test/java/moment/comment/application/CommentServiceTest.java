@@ -1,7 +1,6 @@
 package moment.comment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,8 +12,11 @@ import static org.mockito.Mockito.times;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -184,7 +186,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void 동일_유저가_이미_코멘트를_등록한_모멘트에_다시_등록하는_경우_예외가_발생한다() {
+    void 코멘트가_이미_등록된_모멘트에_코멘트를_등록하는_경우_예외가_발생한다() {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
 
@@ -195,7 +197,7 @@ class CommentServiceTest {
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
-        given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(true);
+        given(commentQueryService.existsByMoment(any(Moment.class))).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> commentService.addComment(request, 1L))
@@ -204,7 +206,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void 다른_유저가_이미_코멘트가_있는_모멘트에_새로_코멘트를_등록하는_경우_성공한다() {
+    void 아직_매칭된_모멘트가_존재하지_않을_경우의_상태를_반환한다() {
         // given
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
@@ -213,6 +215,7 @@ class CommentServiceTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment newComment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(newComment, "id", 1L);
+
 
         Notification notification = new Notification(
                 momenter,
@@ -227,8 +230,57 @@ class CommentServiceTest {
         given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForComment(any(), any(), any());
 
-        // when & then
-        assertThatCode(() -> commentService.addComment(request, commenter.getId()))
-                .doesNotThrowAnyException();
+        // when
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.NOT_MATCHED),
+                () -> then(momentQueryService).should(times(1)).findTodayMatchedMomentByCommenter(commenter)
+        );
+    }
+
+    @Test
+    void 이미_매칭된_모멘트에_코멘트를_작성한_경우의_상태를_반환한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com", "1234", "hippo", ProviderType.EMAIL);
+        Moment moment = new Moment("집가고 싶어요..", momenter);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(true);
+
+        // when
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED),
+                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
+        );
+    }
+
+    @Test
+    void 코멘트를_등록할_수_있는_상태를_반환한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com", "1234", "mimi", ProviderType.EMAIL);
+        User momenter = new User("hippo@icloud.com", "1234", "hippo", ProviderType.EMAIL);
+        Moment moment = new Moment("집가고 싶어요..", momenter);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.findTodayMatchedMomentByCommenter(any(User.class))).willReturn(Optional.of(moment));
+        given(commentRepository.existsByMoment(any(Moment.class))).willReturn(false);
+
+        // when
+        CommentCreationStatusResponse response = commentService.canCreateComment(commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE),
+                () -> then(commentRepository).should(times(1)).existsByMoment(moment)
+        );
     }
 }

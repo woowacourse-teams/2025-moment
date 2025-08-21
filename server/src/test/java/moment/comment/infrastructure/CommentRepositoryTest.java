@@ -1,9 +1,5 @@
 package moment.comment.infrastructure;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
@@ -19,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -125,7 +126,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    void User가_Moment에_작성한_Comment가_존재하면_true를_반환한다() {
+    void Momment의_Comment가_존재하면_true를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
@@ -140,11 +141,11 @@ class CommentRepositoryTest {
         commentRepository.save(comment);
 
         // when & then
-        assertThat(commentRepository.existsByMomentAndCommenter(moment, commenter)).isTrue();
+        assertThat(commentRepository.existsByMoment(moment)).isTrue();
     }
 
     @Test
-    void User가_Moment에_작성한_Comment가_존재하지_않으면_false를_반환한다() {
+    void Momment의_Comment가_존재하면_false를_반환한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter);
@@ -156,6 +157,6 @@ class CommentRepositoryTest {
         momentRepository.save(moment);
 
         // when & then
-        assertThat(commentRepository.existsByMomentAndCommenter(moment, commenter)).isFalse();
+        assertThat(commentRepository.existsByMoment(moment)).isFalse();
     }
 }
