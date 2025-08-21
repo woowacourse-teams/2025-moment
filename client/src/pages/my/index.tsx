@@ -1,7 +1,13 @@
 import { LEVEL_MAP } from '@/app/layout/data/navItems';
 
+import { useProfileQuery } from '@/features/my/api/useProfileQuery';
+import { useRewardHistoryQuery } from '@/features/my/api/useRewardHistory';
+import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
+import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
+import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
+import { useModal } from '@/shared/hooks/useModal';
 import { Button, Card, CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
@@ -9,12 +15,6 @@ import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './index.styles';
-import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
-import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
-import { useModal } from '@/shared/hooks/useModal';
-import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
-import { useRewardHistoryQuery } from '@/features/my/api/useRewardHistory';
-import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -57,6 +57,7 @@ export default function MyPage() {
 
   const handleNicknameChange = (nickname: string) => {
     setLocalNickname(nickname);
+    handleCloseNicknameModal();
   };
 
   const EXPBarProgress = (myProfile.expStar / myProfile.nextStepExp) * 100;
