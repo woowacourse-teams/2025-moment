@@ -11,9 +11,11 @@ import * as S from './ChangeNicknameForm.styles';
 export const ChangeNicknameForm = ({
   nickname,
   updateNickname,
+  handleCloseNicknameModal,
 }: {
   nickname: string;
   updateNickname: (nickname: string) => void;
+  handleCloseNicknameModal: () => void;
 }) => {
   const { data: randomNickname, refetch } = useRandomNicknameQuery();
   const { mutate: changeNickname } = useChangeNicknameMutation();
@@ -31,6 +33,7 @@ export const ChangeNicknameForm = ({
 
   const handleSubmit = () => {
     changeNickname({ newNickname: nickname });
+    handleCloseNicknameModal();
   };
   return (
     <S.ChangeNicknameFormWrapper>

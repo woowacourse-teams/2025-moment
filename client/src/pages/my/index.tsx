@@ -57,7 +57,6 @@ export default function MyPage() {
 
   const handleNicknameChange = (nickname: string) => {
     setLocalNickname(nickname);
-    handleCloseNicknameModal();
   };
 
   const EXPBarProgress = (myProfile.expStar / myProfile.nextStepExp) * 100;
@@ -187,7 +186,11 @@ export default function MyPage() {
           {myProfile.expStar < 100 ? (
             <p>별조각 100개 이상 보유 시 닉네임 변경이 가능합니다.</p>
           ) : (
-            <ChangeNicknameForm nickname={localNickname} updateNickname={handleNicknameChange} />
+            <ChangeNicknameForm
+              nickname={localNickname}
+              updateNickname={handleNicknameChange}
+              handleCloseNicknameModal={handleCloseNicknameModal}
+            />
           )}
         </Modal.Content>
       </Modal>
