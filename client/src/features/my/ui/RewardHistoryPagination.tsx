@@ -38,32 +38,35 @@ export const RewardHistoryPagination = ({
 
   return (
     <S.PaginationContainer>
-      {totalPages > 10 ? (
-        <Button title="<<" onClick={handleTenPagePrevious} variant="quaternary" />
-      ) : (
-        <Button title="<<" onClick={handleTenPagePrevious} variant="quaternary" disabled />
-      )}
-
-      {currentPage > 0 ? (
-        <Button title="<" onClick={handlePrevious} variant="quaternary" />
-      ) : (
-        <Button title="<" onClick={handlePrevious} variant="quaternary" disabled />
-      )}
+      <Button
+        title="<<"
+        onClick={handleTenPagePrevious}
+        variant="quaternary"
+        disabled={currentPage < 10}
+      />
+      <Button
+        title="<"
+        onClick={handlePrevious}
+        variant="quaternary"
+        disabled={currentPage === 0}
+      />
 
       <S.PageInfo>
         {currentPage + 1} / {totalPages}
       </S.PageInfo>
 
-      {currentPage < totalPages - 1 ? (
-        <Button title=">" onClick={handleNext} variant="quaternary" />
-      ) : (
-        <Button title=">" onClick={handleNext} variant="quaternary" disabled />
-      )}
-      {totalPages > 10 ? (
-        <Button title=">>" onClick={handleTenPageNext} variant="quaternary" />
-      ) : (
-        <Button title=">>" onClick={handleTenPageNext} variant="quaternary" disabled />
-      )}
+      <Button
+        title=">"
+        onClick={handleNext}
+        variant="quaternary"
+        disabled={currentPage === totalPages}
+      />
+      <Button
+        title=">>"
+        onClick={handleTenPageNext}
+        variant="quaternary"
+        disabled={currentPage >= totalPages - 10}
+      />
     </S.PaginationContainer>
   );
 };
