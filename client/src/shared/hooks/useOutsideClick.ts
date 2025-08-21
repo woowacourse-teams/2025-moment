@@ -20,9 +20,6 @@ export const useOutsideClick = ({
       const target = e.target as Node;
 
       if (ref.current && ref.current.contains(target)) {
-        if ((target as Element).tagName === 'BUTTON') {
-          callback();
-        }
         return;
       }
 
