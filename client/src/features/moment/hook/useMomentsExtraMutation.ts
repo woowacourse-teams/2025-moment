@@ -10,9 +10,7 @@ export const useMomentsExtraMutation = () => {
     mutationFn: sendExtraMoments,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
-
       queryClient.invalidateQueries({ queryKey: ['profile'] });
-
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
 
