@@ -42,7 +42,7 @@ export const MyMomentsList = () => {
 
   if (isLoading) {
     return (
-      <S.MomentsContainer>
+      <S.MomentsContainer $display={!!hasMoments || isLoading}>
         {Array.from({ length: 3 }).map((_, index) => (
           <CommonSkeletonCard key={`moments-skeleton-card-${index}`} variant="moment" />
         ))}
@@ -51,7 +51,7 @@ export const MyMomentsList = () => {
   }
 
   return (
-    <S.MomentsContainer $display={!!hasMoments}>
+    <S.MomentsContainer $display={!!hasMoments || isLoading}>
       {hasMoments ? (
         <>
           {momentWithNotifications.map((myMoment: MomentWithNotifications) => (
