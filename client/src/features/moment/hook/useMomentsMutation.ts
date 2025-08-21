@@ -14,6 +14,8 @@ export const useMomentsMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
       queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
 
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
       showSuccess(`별조각 ${MOMENTS_REWARD_POINT} 개를 획득했습니다!`);
