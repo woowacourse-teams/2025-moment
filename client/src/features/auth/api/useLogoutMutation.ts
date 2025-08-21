@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router';
 
 export const useLogoutMutation = () => {
@@ -11,7 +12,9 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      queryClient.clear();
+      flushSync(() => {
+        queryClient.clear();
+      });
       showSuccess('로그아웃 되었습니다.');
       navigate('/login');
     },
