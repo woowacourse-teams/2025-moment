@@ -1,12 +1,14 @@
 package moment.auth.application;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
-import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
@@ -67,8 +69,9 @@ public class AuthService {
     }
 
     @Transactional
-    public Map<String, String> refresh(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(request.refreshToken())
+    public Map<String, String> refresh(HttpServletRequest request) {
+        String refreshTokenValue = extractRefreshTokenValue(request);
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(refreshTokenValue)
                 .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         if (refreshToken.isExpired(LocalDateTime.now())) {
@@ -76,6 +79,20 @@ public class AuthService {
         }
 
         return tokensIssuer.renewTokens(refreshToken);
+    }
+
+    private String extractRefreshTokenValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName()
+                        .equals("refreshToken"))
+                .findFirst()
+                .orElseThrow(() -> new MomentException(ErrorCode.TOKEN_NOT_FOUND))
+                .getValue();
     }
 
     @Transactional

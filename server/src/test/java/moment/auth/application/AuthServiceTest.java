@@ -8,13 +8,13 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
+import jakarta.servlet.http.Cookie;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
-import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -32,6 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
@@ -209,15 +210,19 @@ class AuthServiceTest {
     @Test
     void 유효한_리프레시_토큰으로_새로운_엑세스_토큰과_리프레시_토큰을_발급받는다() {
         // given
-        RefreshTokenRequest request = new RefreshTokenRequest("existingRefreshToken");
+        String refreshTokenValue = "existingRefreshToken";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshTokenValue);
+        request.setCookies(refreshTokenCookie);
         RefreshToken refreshToken = new RefreshToken(
-                "existingRefreshToken",
+                refreshTokenValue,
                 user,
                 new Date(System.currentTimeMillis()),
                 new Date(System.currentTimeMillis() + 60000) // 만료되지 않은 토큰
         );
 
-        given(refreshTokenRepository.findByTokenValue(request.refreshToken())).willReturn(Optional.of(refreshToken));
+        given(refreshTokenRepository.findByTokenValue(refreshTokenValue)).willReturn(Optional.of(refreshToken));
 
         String newAccessToken = "newAccessToken";
         String newRefreshToken = "newRefreshToken";
@@ -238,8 +243,12 @@ class AuthServiceTest {
     @DisplayName("존재하지 않는 리프레시 토큰으로 요청하면 예외가 발생한다.")
     void refresh_fail_tokenNotFound() {
         // given
-        RefreshTokenRequest request = new RefreshTokenRequest("nonExistentToken");
-        given(refreshTokenRepository.findByTokenValue(request.refreshToken())).willReturn(Optional.empty());
+        String refreshTokenValue = "nonExistentToken";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshTokenValue);
+
+        request.setCookies(refreshTokenCookie);
+        given(refreshTokenRepository.findByTokenValue(refreshTokenValue)).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> authService.refresh(request))
@@ -251,14 +260,20 @@ class AuthServiceTest {
     @DisplayName("만료된 리프레시 토큰으로 요청하면 예외가 발생한다.")
     void refresh_fail_tokenExpired() {
         // given
-        RefreshTokenRequest request = new RefreshTokenRequest("expiredRefreshToken");
+        String refreshTokenValue = "expiredRefreshToken";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshTokenValue);
+
+        request.setCookies(refreshTokenCookie);
+
         RefreshToken expiredToken = new RefreshToken(
                 "expiredRefreshToken",
                 user,
                 new Date(),
                 new Date()
         );
-        given(refreshTokenRepository.findByTokenValue(request.refreshToken())).willReturn(Optional.of(expiredToken));
+
+        given(refreshTokenRepository.findByTokenValue(refreshTokenValue)).willReturn(Optional.of(expiredToken));
 
         // when & then
         assertThatThrownBy(() -> authService.refresh(request))
