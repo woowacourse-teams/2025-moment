@@ -7,10 +7,27 @@ export const initGA = () => {
     return;
   }
 
+  const hostname = window.location.hostname;
+  if (hostname !== 'connectingmoment.com') {
+    return;
+  }
+
+  if (!GA_MEASUREMENT_ID) {
+    console.warn('GA_MEASUREMENT_ID is not set');
+    return;
+  }
+
   ReactGA.initialize(GA_MEASUREMENT_ID);
 };
 
 export const sendPageview = (path: string) => {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    window.location.hostname !== 'connectingmoment.com'
+  ) {
+    return;
+  }
+
   ReactGA.send({ hitType: 'pageview', page: path });
 };
 
@@ -20,5 +37,12 @@ export const sendEvent = (event: {
   label?: string;
   value?: number;
 }) => {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    window.location.hostname !== 'connectingmoment.com'
+  ) {
+    return;
+  }
+
   ReactGA.event(event);
 };
