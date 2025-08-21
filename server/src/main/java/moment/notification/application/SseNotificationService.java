@@ -43,7 +43,7 @@ public class SseNotificationService {
         }
     }
 
-    @Scheduled(fixedRate = 30_000)
+    @Scheduled(fixedRate = 25_000)
     @NoLogging
     public void sendHeartbeat() {
         emitters.forEach((userId, emitter) -> {
