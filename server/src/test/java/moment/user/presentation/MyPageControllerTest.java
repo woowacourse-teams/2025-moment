@@ -1,5 +1,8 @@
 package moment.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -29,9 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -168,7 +168,6 @@ class MyPageControllerTest {
         String accessToken = tokenManager.createAccessToken(user.getId(), "test123!@#");
         String refreshToken = tokenManager.createRefreshToken(user.getId(), "test123!@#");
 
-
         ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
 
         Response response = RestAssured.given().log().all()
@@ -196,6 +195,101 @@ class MyPageControllerTest {
                         passwordEncoder.matches(user.getPassword(), changePasswordUser.getPassword())).isFalse(),
                 () -> assertThat(
                         passwordEncoder.matches(request.newPassword(), changePasswordUser.getPassword())).isTrue()
+        );
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_변경된다() {
+        // given
+        String nickname = "신비로운 우주의 지구";
+        String encodePassword = passwordEncoder.encode("test123!@#");
+        User user = new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "availableStar", 100);
+        User savedUser = userRepository.save(user);
+
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), "test123!@#");
+        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), "test123!@#");
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 아이디");
+
+        Response response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
+                .when().post("/api/v1/me/nickname")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+
+        SuccessResponse<Void> body = response.as(new TypeRef<>() {
+        });
+
+        User newNicknameUser = userRepository.findById(user.getId()).get();
+
+        // then
+        assertAll(
+                () -> assertThat(body.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(newNicknameUser.getNickname()).isEqualTo(request.newNickname())
+        );
+    }
+
+    @Test
+    void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_별조각을_사용하면_몇번이던_변경된다() {
+        // given
+        String nickname = "신비로운 우주의 지구";
+        String encodePassword = passwordEncoder.encode("test123!@#");
+        User user = new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL);
+        ReflectionTestUtils.setField(user, "availableStar", 200);
+        User savedUser = userRepository.save(user);
+
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), "test123!@#");
+        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), "test123!@#");
+
+        NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 아이디");
+
+        Response response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
+                .when().post("/api/v1/me/nickname")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+
+        SuccessResponse<Void> body = response.as(new TypeRef<>() {
+        });
+
+        User newNicknameUser = userRepository.findById(user.getId()).get();
+
+        // then
+        assertAll(
+                () -> assertThat(body.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(newNicknameUser.getNickname()).isEqualTo(request.newNickname())
+        );
+
+        NicknameChangeRequest retryRequest = new NicknameChangeRequest("또변경된 유저의 아이디");
+
+        Response retryResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(retryRequest)
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
+                .when().post("/api/v1/me/nickname")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+
+        SuccessResponse<Void> retryBody = retryResponse.as(new TypeRef<>() {
+        });
+
+        User retryNewNicknameUser = userRepository.findById(user.getId()).get();
+
+        // then
+        assertAll(
+                () -> assertThat(retryBody.status()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(retryNewNicknameUser.getNickname()).isEqualTo(retryRequest.newNickname())
         );
     }
 }
