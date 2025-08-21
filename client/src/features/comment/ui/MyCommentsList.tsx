@@ -1,10 +1,9 @@
 import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
-import * as S from './MyCommentsList.styles';
-import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
 import { AlertCircle } from 'lucide-react';
+import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
+import * as S from './MyCommentsList.styles';
 
 export const MyCommentsList = () => {
   const {
@@ -43,7 +42,6 @@ export const MyCommentsList = () => {
   if (isLoading) {
     return (
       <S.MyCommentsPageContainer>
-        <TitleContainer title="보낸 코멘트" subtitle="내가 보낸 공감을 확인해보세요" />
         {Array.from({ length: 3 }).map((_, index) => (
           <CommonSkeletonCard key={`myComments-skeleton-card-${index}`} variant="comment" />
         ))}
