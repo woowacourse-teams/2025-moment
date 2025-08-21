@@ -50,6 +50,8 @@ export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
 
   const handleMyPageClick = () => {
     navigate('/my');
+    closeDropdown();
+    onClick?.();
   };
 
   if (!profile) {
