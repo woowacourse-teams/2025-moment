@@ -1,17 +1,27 @@
 package moment.moment.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.Collections;
+import java.util.List;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
+import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
-import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
-import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -32,18 +42,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -129,7 +127,7 @@ class momentServiceTest {
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
-        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+        doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -142,7 +140,7 @@ class momentServiceTest {
         assertAll(
                 () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
                 () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
-                () -> then(rewardService).should(times(1)).rewardForMoment(
+                () -> then(rewardService).should(times(1)).useReward(
                         momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId())
         );
     }
@@ -193,7 +191,8 @@ class momentServiceTest {
         assertAll(
                 () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
                 () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
-                () -> then(momentRepository).should(times(1)).findMyMomentFirstPage(any(User.class), any(Pageable.class)),
+                () -> then(momentRepository).should(times(1))
+                        .findMyMomentFirstPage(any(User.class), any(Pageable.class)),
                 () -> assertThat(response.nextCursor()).isNull(),
                 () -> assertThat(response.hasNextPage()).isFalse(),
                 () -> assertThat(response.pageSize()).isEqualTo(1)
@@ -265,7 +264,7 @@ class momentServiceTest {
     @Test
     void 오늘_기본_모멘트를_작성한_경우_사용자의_포인트가_추가된다() {
         // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미",  ProviderType.EMAIL);
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
         Moment savedMoment = new Moment("레벨3 (리)바이", momenter, WriteType.BASIC);
         Long momentId = 1L;
         ReflectionTestUtils.setField(savedMoment, "id", momentId);
@@ -273,7 +272,6 @@ class momentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
-
 
         MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여");
 
