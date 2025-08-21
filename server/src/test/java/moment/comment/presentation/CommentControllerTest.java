@@ -9,18 +9,13 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
-import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-
-import moment.matching.domain.Matching;
-import moment.matching.infrastructure.MatchingRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
@@ -164,101 +159,5 @@ class CommentControllerTest {
                 () -> assertThat(firstResponse.echos().getFirst().id()).isEqualTo(savedEcho2.getId()),
                 () -> assertThat(firstResponse.echos().getFirst().echoType()).isEqualTo(savedEcho2.getEchoType())
         );
-    }
-
-    @Test
-    void 매칭된_모멘트가_없는_경우_상태를_반환한다() {
-        // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
-        userRepository.saveAndFlush(momenter);
-
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
-        userRepository.saveAndFlush(commenter);
-
-        Moment moment = new Moment("오늘은 화요일", momenter);
-        momentRepository.saveAndFlush(moment);
-
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
-
-        // when
-        CommentCreationStatusResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", token)
-                .when().get("/api/v1/comments/me/creation-status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", CommentCreationStatusResponse.class);
-
-        // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.NOT_MATCHED);
-    }
-
-    @Test
-    void 이미_코멘트를_작성한_경우_상태를_반환한다() {
-        // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
-        userRepository.saveAndFlush(momenter);
-
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
-        userRepository.saveAndFlush(commenter);
-
-        Moment moment = new Moment("오늘은 화요일", momenter);
-        momentRepository.saveAndFlush(moment);
-
-        Matching matching = new Matching(moment, commenter);
-        matchingRepository.saveAndFlush(matching);
-
-        Comment comment = new Comment("맞아요 화요일이에요", commenter, moment);
-        commentRepository.saveAndFlush(comment);
-
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
-
-        // when
-        CommentCreationStatusResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", token)
-                .when().get("/api/v1/comments/me/creation-status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", CommentCreationStatusResponse.class);
-
-        // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.ALREADY_COMMENTED);
-    }
-
-    @Test
-    void 코멘트를_작성할_수_있는_상태를_반환한다() {
-        // given
-        User momenter = new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL);
-        userRepository.saveAndFlush(momenter);
-
-        User commenter = new User("hippo@icloud.com", "hippo1234!", "hippo", ProviderType.EMAIL);
-        userRepository.saveAndFlush(commenter);
-
-        Moment moment = new Moment("오늘은 화요일", momenter);
-        momentRepository.saveAndFlush(moment);
-
-        Matching matching = new Matching(moment, commenter);
-        matchingRepository.saveAndFlush(matching);
-
-        String token = jwtTokenManager.createToken(commenter.getId(), commenter.getEmail());
-
-        // when
-        CommentCreationStatusResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("token", token)
-                .when().get("/api/v1/comments/me/creation-status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", CommentCreationStatusResponse.class);
-
-        // then
-        assertThat(response.commentCreationStatus()).isEqualTo(CommentCreationStatus.WRITABLE);
     }
 }
