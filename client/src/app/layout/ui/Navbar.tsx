@@ -10,7 +10,6 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
-import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
@@ -52,10 +51,6 @@ export const Navbar = () => {
     sendEvent(HomePageAnalyticsEvent.ClickMobileAuthButton);
   };
 
-  const expStar = profile?.expStar ?? 0;
-  const nextStepExp = profile?.nextStepExp ?? 0;
-  const EXPBarProgress = (expStar / (nextStepExp + expStar)) * 100;
-
   const isActiveNavItem = (href: string) => {
     if (href === ROUTES.TODAY_MOMENT) {
       return currentPath.startsWith('/today-moment');
@@ -76,9 +71,6 @@ export const Navbar = () => {
               src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
               alt="레벨 등급표"
             />
-            <S.EXPBarTooltip>
-              <EXPBar progress={EXPBarProgress} />
-            </S.EXPBarTooltip>
           </S.LevelIconWrapper>
         ) : null}
         <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
