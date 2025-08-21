@@ -40,6 +40,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
               message={toast.message}
               variant={toast.variant}
               duration={toast.duration}
+              routeType={toast.routeType}
               onClose={removeToast}
             />
           </ToastContainer>,
