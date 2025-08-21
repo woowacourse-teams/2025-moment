@@ -14,6 +14,9 @@ const SimpleCardStyles = {
     min-height: ${theme.typography.textAreaHeight[$height]};
     color: ${theme.colors['gray-200']};
     border: 1px solid ${theme.colors['gray-700']};
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
     `,
 };
 
