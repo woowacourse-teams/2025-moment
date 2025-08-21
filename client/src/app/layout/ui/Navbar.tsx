@@ -14,6 +14,7 @@ import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
+import { ROUTES } from '@/app/routes/routes';
 
 export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -55,6 +56,13 @@ export const Navbar = () => {
   const nextStepExp = profile?.nextStepExp ?? 0;
   const EXPBarProgress = (expStar / (nextStepExp + expStar)) * 100;
 
+  const isActiveNavItem = (href: string) => {
+    if (href === ROUTES.TODAY_MOMENT) {
+      return currentPath.startsWith('/today-moment');
+    }
+    return currentPath === href;
+  };
+
   return (
     <S.Navbar>
       <Logo />
@@ -90,11 +98,11 @@ export const Navbar = () => {
             {navItems.map(item => (
               <S.MobileNavItem
                 key={item.href}
-                $isActive={currentPath === item.href}
+                $isActive={isActiveNavItem(item.href)}
                 $shadow={item.label === '나만의 모음집' && isNotificationExisting}
               >
                 <Link to={item.href} onClick={toggleMobileMenu}>
-                  {item.label}
+                  <span>{item.label}</span>
                 </Link>
               </S.MobileNavItem>
             ))}

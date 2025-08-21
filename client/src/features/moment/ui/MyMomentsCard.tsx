@@ -1,29 +1,29 @@
-import { theme } from '@/app/styles/theme';
-import { ECHO_TYPE } from '@/features/echo/const/echoType';
+import { useMemo } from 'react';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
-import { EchoTypeKey } from '@/features/echo/type/echos';
-import { EchoButton } from '@/features/echo/ui/EchoButton';
-import { SendEchoButton } from '@/features/echo/ui/SendEchoButton';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { ChevronLeft, ChevronRight, Heart, Timer } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
 import { WriterInfo } from '@/widgets/writerInfo';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { WriteTime } from '@/shared/ui/writeTime';
+import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
-  const { selectedEchos, toggleEcho, clearSelection, isSelected, hasSelection } =
-    useEchoSelection();
-  const comments = myMoment.comments;
-  const navigation = useCommentNavigation(comments?.length || 0);
+  useEchoSelection();
+  const { data: notifications } = useNotificationsQuery();
+  const sortedComments = useMemo(() => {
+    return myMoment.comments?.slice().reverse() || [];
+  }, [myMoment.comments]);
+  const navigation = useCommentNavigation(sortedComments?.length || 0);
+  const currentComment = sortedComments?.[navigation.currentIndex];
 
   const handleModalClose = () => {
-    clearSelection();
     navigation.reset();
     handleClose();
   };
@@ -32,15 +32,20 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
     handleOpen();
     navigation.reset();
     if (myMoment.read || isReadingNotification) return;
-    if (myMoment.notificationId) {
-      handleReadNotifications(myMoment.notificationId);
-    }
+
+    const unreadMomentNotifications =
+      notifications?.data.filter(
+        notification => notification.targetId === myMoment.id && !notification.isRead,
+      ) || [];
+
+    unreadMomentNotifications.forEach(notification => {
+      if (notification.id) {
+        handleReadNotifications(notification.id);
+      }
+    });
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
-  const currentComment = comments?.[navigation.currentIndex];
-  const echoType = currentComment?.echos.map(echo => echo.echoType);
-  const hasAnyEcho = echoType && echoType.length > 0;
 
   return (
     <>
@@ -50,6 +55,13 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.read}
       >
+        <S.MyMomentsTitleWrapper>
+          <S.CommentCountWrapper>
+            <Mail size={16} />
+            <span>{sortedComments?.length}</span>
+          </S.CommentCountWrapper>
+          <WriteTime date={myMoment.createdAt} />
+        </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
       </S.MyMomentsCard>
       {isOpen && (
@@ -65,71 +77,40 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             {currentComment && (
               <>
                 <S.MyMomentsModalContent key={currentComment.id}>
-                  <S.MyMomentsModalHeader>
-                    <S.WriterInfoWrapper>
-                      <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
-                    </S.WriterInfoWrapper>
+                  <S.CommentContentWrapper>
+                    <S.MyMomentsModalHeader>
+                      <S.WriterInfoWrapper>
+                        <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
+                      </S.WriterInfoWrapper>
+                      <S.TitleWrapper>
+                        <WriteTime date={currentComment.createdAt} />
+                      </S.TitleWrapper>
+                    </S.MyMomentsModalHeader>
+                    <S.CommentContainer>
+                      {navigation.hasPrevious && (
+                        <S.CommentNavigationButton
+                          onClick={navigation.goToPrevious}
+                          position="left"
+                        >
+                          <ChevronLeft size={16} />
+                        </S.CommentNavigationButton>
+                      )}
 
+                      <S.CommentContent>
+                        <div>{currentComment.content}</div>
+                      </S.CommentContent>
+
+                      {navigation.hasNext && (
+                        <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
+                          <ChevronRight size={16} />
+                        </S.CommentNavigationButton>
+                      )}
+                    </S.CommentContainer>
                     <S.CommentIndicator>
-                      {navigation.currentIndex + 1} / {comments?.length || 0}
+                      {navigation.currentIndex + 1} / {sortedComments?.length || 0}
                     </S.CommentIndicator>
-                    <S.TitleWrapper>
-                      <Timer size={16} color={theme.colors['gray-400']} />
-                      <S.TimeStamp>
-                        {formatRelativeTime(currentComment.createdAt || '')}
-                      </S.TimeStamp>
-                    </S.TitleWrapper>
-                  </S.MyMomentsModalHeader>
-
-                  <S.CommentContainer>
-                    {navigation.hasPrevious && (
-                      <S.CommentNavigationButton onClick={navigation.goToPrevious} position="left">
-                        <ChevronLeft size={16} />
-                      </S.CommentNavigationButton>
-                    )}
-
-                    <S.CommentContent>
-                      <div>{currentComment.content}</div>
-                    </S.CommentContent>
-
-                    {navigation.hasNext && (
-                      <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
-                        <ChevronRight size={16} />
-                      </S.CommentNavigationButton>
-                    )}
-                  </S.CommentContainer>
-
-                  <S.EchoContainer>
-                    <S.TitleContainer>
-                      <Heart size={16} color={theme.colors['yellow-500']} />
-                      <span>{hasAnyEcho ? '보낸 에코' : '에코 보내기'}</span>
-                    </S.TitleContainer>
-                    <S.EchoButtonContainer>
-                      {Object.entries(ECHO_TYPE).map(([key, title]) => {
-                        const isAlreadySent = currentComment.echos
-                          .map(echo => echo.echoType)
-                          .includes(key as EchoTypeKey);
-                        return (
-                          <EchoButton
-                            key={key}
-                            onClick={() => toggleEcho(key as EchoTypeKey)}
-                            title={title}
-                            isSelected={isSelected(key as EchoTypeKey)}
-                            isAlreadySent={isAlreadySent}
-                            isDisabled={hasAnyEcho}
-                          />
-                        );
-                      })}
-                    </S.EchoButtonContainer>
-                    {!hasAnyEcho && (
-                      <SendEchoButton
-                        commentId={currentComment.id || 0}
-                        selectedEchos={selectedEchos}
-                        hasSelection={hasSelection}
-                        isDisabled={hasAnyEcho}
-                      />
-                    )}
-                  </S.EchoContainer>
+                  </S.CommentContentWrapper>
+                  <SendEchoForm currentComment={currentComment} />
                 </S.MyMomentsModalContent>
               </>
             )}

@@ -30,25 +30,19 @@ const modalFrameStyles = {
     }
   `,
 
-  memoji: (theme: CustomTheme, props: { $position: ModalPosition }) => `
+  memoji: (theme: CustomTheme) => `
     background-color: ${theme.colors['slate-800']};
     border-radius: 10px;
     border: 1px solid ${theme.colors['gray-700']};
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     
-    width: 500px;
-    height: 500px;
-    
-    ${theme.mediaQueries.tablet} {
-      padding: 20px 28px;
-      width: ${props.$position === 'center' ? '400px' : '100%'};
-      height: 400px;
-    }
+    width: 520px;
+    height: 520px;
     
     ${theme.mediaQueries.mobile} {
-      padding: 16px 24px;
-      width: ${props.$position === 'center' ? '95%' : '100%'};
+      padding: 16px 28px;
+      width: 90%;
     }
   `,
 };
@@ -109,6 +103,7 @@ export const ModalContent = styled.div`
   flex-direction: column;
   height: 100%;
   gap: 10px;
+  overflow-y: auto;
 `;
 
 export const ModalFooter = styled.div`

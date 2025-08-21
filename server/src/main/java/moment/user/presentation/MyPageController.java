@@ -86,7 +86,6 @@ public class MyPageController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-
     @Operation(summary = "마이페이지 닉네임 변경", description = "리워드를 사용하여 닉네임을 변경합니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),

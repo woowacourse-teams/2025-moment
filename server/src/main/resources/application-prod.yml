@@ -58,6 +58,33 @@ auth:
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: http://api.connectingmoment.com/api/v1/auth/callback/google
     client-uri: http://www.connectingmoment.com
+  password_update:
+    uri: https://connectingmoment.com/passwordUpdate?token=
 
 logging:
   config: classpath:logback-prod.xml
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+
+management:
+  metrics:
+    enable:
+      jvm.memory.used: true
+      jvm.memory.max: true
+      jvm.gc.pause: true
+      jvm.threads: true
+      hikaricp: true
+      http.server: true
+      process.cpu: true
+      process.uptime: true
+
+  cloudwatch:
+    metrics:
+      export:
+        enabled: true
+        step: 1m
+        namespace: Moment/prod
+        

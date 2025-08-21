@@ -1,5 +1,5 @@
 import { useToastContext } from '@/shared/context/toast/useToastContext';
-import { UseToastReturn } from '@/shared/types/toast';
+import { ToastRouteType, UseToastReturn } from '@/shared/types/toast';
 
 export const useToast = (): UseToastReturn => {
   const { addToast, removeToast, toast } = useToastContext();
@@ -20,9 +20,19 @@ export const useToast = (): UseToastReturn => {
     });
   };
 
+  const showMessage = (message: string, routeType?: ToastRouteType, duration?: number) => {
+    addToast({
+      message,
+      variant: 'message',
+      duration,
+      routeType,
+    });
+  };
+
   return {
     showSuccess,
     showError,
+    showMessage,
     removeToast,
     toast,
   };

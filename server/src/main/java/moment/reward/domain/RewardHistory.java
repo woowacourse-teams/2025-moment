@@ -9,14 +9,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import moment.global.domain.BaseEntity;
 import moment.user.domain.User;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity(name = "reward_history")
+@SQLDelete(sql = "UPDATE reward_history SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -37,6 +42,8 @@ public class RewardHistory extends BaseEntity {
     private Reason reason;
 
     private Long contentId;
+
+    private LocalDateTime deletedAt;
 
     public RewardHistory(User user, Integer amount, Reason reason, Long contentId) {
         validate(user, amount, reason, contentId);

@@ -1,4 +1,8 @@
 export const formatRelativeTime = (dateString: string): string => {
+  if (dateString.includes('전') || dateString.includes('ago')) {
+    return dateString;
+  }
+
   const now = new Date();
   const targetDate = new Date(dateString);
   const targetKoreaTime = new Date(targetDate.getTime() + 9 * 60 * 60 * 1000);

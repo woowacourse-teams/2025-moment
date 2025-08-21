@@ -10,7 +10,12 @@ export const useMomentsExtraMutation = () => {
     mutationFn: sendExtraMoments,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
-      // TODO: 추후 별조각 포인트 invalidateQueries 추가해야 함
+
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+
+      queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
+      queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
+
       showSuccess('추가 모멘트가 성공적으로 등록되었습니다!');
     },
     onError: () => {

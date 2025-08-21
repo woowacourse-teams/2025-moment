@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
@@ -17,7 +20,6 @@ import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
-import moment.auth.dto.request.RefreshTokenRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
@@ -35,9 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
-import java.util.Map;
 
 @Tag(name = "Auth API", description = "인증/인가 관련 API 명세")
 @RestController
@@ -216,7 +215,8 @@ public class AuthController {
             ),
     })
     @PostMapping("/refresh")
-    public ResponseEntity<SuccessResponse<Void>> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<SuccessResponse<Void>> refresh(HttpServletRequest request) {
+        
         Map<String, String> tokens = authService.refresh(request);
 
         String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
@@ -251,7 +251,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [V-002] 이메일 요청은 1분에 한번만 요청 할 수 있습니다.
-                    """)
+                    """),
+            @ApiResponse(responseCode = "409", description = """
+                    - [U-001] 이미 가입된 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @PostMapping("/email")
     public ResponseEntity<SuccessResponse<Void>> checkEmail(@Valid @RequestBody EmailRequest request) {
