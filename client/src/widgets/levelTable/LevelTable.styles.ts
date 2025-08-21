@@ -25,6 +25,7 @@ export const LevelTableWrapper = styled.table`
 export const LevelImage = styled.img`
   width: 50px;
   height: 50px;
+  object-fit: contain;
 
   @media (max-width: 768px) {
     width: 25px;
