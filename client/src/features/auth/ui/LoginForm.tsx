@@ -12,12 +12,16 @@ export const LoginForm = () => {
     navigate('/signup');
   };
 
+  const handleNewPassword = () => {
+    navigate('/find-password');
+  };
+
   return (
     <S.LoginFormWrapper>
       <S.LoginFormContainer onSubmit={handleSubmit}>
         <S.LoginFormTitleContainer>
           <S.LoginLogoTitleContainer>
-            <S.LogoImage src="/logo.webp" alt="" />
+            <S.LogoImage src="/images/logo.webp" alt="" />
             <S.LogoTitle>모멘트</S.LogoTitle>
           </S.LoginLogoTitleContainer>
           <S.LoginTitle>로그인</S.LoginTitle>
@@ -54,6 +58,9 @@ export const LoginForm = () => {
       <S.LoginFooter>
         <GoogleLoginButton />
         <S.LoginFooterContent>
+          <S.LoginSignupContainer>
+            <S.NewPasswordLink onClick={handleNewPassword}>비밀번호 찾기</S.NewPasswordLink>
+          </S.LoginSignupContainer>
           <S.LoginSignupContainer>
             <p>아직 회원이 아니신가요?</p>
             <S.LoginSignupLink onClick={handleSignupClick}>회원가입</S.LoginSignupLink>

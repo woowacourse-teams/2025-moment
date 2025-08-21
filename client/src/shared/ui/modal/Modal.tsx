@@ -16,8 +16,11 @@ export function Modal({
   children,
   position = 'center',
   size = 'medium',
+  height,
   isOpen,
   onClose: handleClose,
+  variant = 'default',
+  externalVariant,
 }: ModalProps) {
   if (!isOpen) return null;
 
@@ -41,10 +44,13 @@ export function Modal({
     <ModalContext.Provider value={{ handleClose }}>
       <S.ModalWrapper onClick={handleCloseByBackdrop}>
         <S.ModalFrame
+          variant={variant}
+          externalVariant={externalVariant}
           role="dialog"
           aria-modal="true"
           $position={position}
           $size={size}
+          $height={height}
           onClick={e => e.stopPropagation()}
           ref={modalRef}
         >

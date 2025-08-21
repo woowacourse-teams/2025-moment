@@ -2,9 +2,9 @@ import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { AlertCircle, Clock } from 'lucide-react';
 import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 
 export const MyMomentsList = () => {
   const {
@@ -42,7 +42,7 @@ export const MyMomentsList = () => {
 
   if (isLoading) {
     return (
-      <S.MomentsContainer>
+      <S.MomentsContainer $display={!!hasMoments || isLoading}>
         {Array.from({ length: 3 }).map((_, index) => (
           <CommonSkeletonCard key={`moments-skeleton-card-${index}`} variant="moment" />
         ))}
@@ -51,10 +51,10 @@ export const MyMomentsList = () => {
   }
 
   return (
-    <S.MomentsContainer>
+    <S.MomentsContainer $display={!!hasMoments || isLoading}>
       {hasMoments ? (
         <>
-          {momentWithNotifications?.map((myMoment: MomentWithNotifications) => (
+          {momentWithNotifications.map((myMoment: MomentWithNotifications) => (
             <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
           ))}
 
@@ -69,12 +69,14 @@ export const MyMomentsList = () => {
           )}
         </>
       ) : (
-        <NotFound
-          title="아직 모멘트가 없어요"
-          subtitle="오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요"
-          icon={Clock}
-          size="large"
-        />
+        <>
+          <NotFound
+            title="아직 모멘트가 없어요"
+            subtitle="오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요"
+            icon={Clock}
+            size="large"
+          />
+        </>
       )}
     </S.MomentsContainer>
   );

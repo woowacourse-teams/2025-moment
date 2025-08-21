@@ -44,3 +44,12 @@ export const NotFoundSubtitle = styled.div<StyledProps>`
   font-size: ${({ $size }) => ($size === 'large' ? '16px' : '14px')};
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
+
+export const NotFoundImage = styled.img`
+  width: 250px;
+  object-fit: contain;
+
+  @media (max-width: 768px) {
+    width: 180px;
+  }
+`;

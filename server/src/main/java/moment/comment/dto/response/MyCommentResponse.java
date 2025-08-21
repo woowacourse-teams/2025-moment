@@ -2,11 +2,10 @@ package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.comment.domain.Comment;
-import moment.reply.domain.Emoji;
+import moment.reply.domain.Echo;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map.Entry;
 
 @Schema(description = "나의 Comment 목록 조회 응답")
 public record MyCommentResponse(
@@ -22,17 +21,25 @@ public record MyCommentResponse(
         @Schema(description = "Comment가 등록된 Moment")
         MomentDetailResponse moment,
 
-        @Schema(description = "Comment에 등록된 이모지 목록")
-        List<EmojiDetailResponse> emojis
+        @Schema(description = "Comment에 등록된 에코 목록")
+        List<EchoDetailResponse> echos
 ) {
-    public static MyCommentResponse from(Entry<Comment, List<Emoji>> commentAndEmojis) {
-        Comment comment = commentAndEmojis.getKey();
-        List<Emoji> emojis = commentAndEmojis.getValue();
-
+    public static MyCommentResponse from(Comment comment) {
         MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
+        List<EchoDetailResponse> echosResponse = null;
+        return new MyCommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                momentResponse,
+                echosResponse
+        );
+    }
 
-        List<EmojiDetailResponse> emojisResponse = emojis.stream()
-                .map(EmojiDetailResponse::from)
+    public static MyCommentResponse from(Comment comment, List<Echo> echoes) {
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
+        List<EchoDetailResponse> echosResponse = echoes.stream()
+                .map(EchoDetailResponse::from)
                 .toList();
 
         return new MyCommentResponse(
@@ -40,19 +47,7 @@ public record MyCommentResponse(
                 comment.getContent(),
                 comment.getCreatedAt(),
                 momentResponse,
-                emojisResponse
-        );
-    }
-
-    public static MyCommentResponse from(Comment comment) {
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
-        List<EmojiDetailResponse> emojisResponse = null;
-        return new MyCommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                momentResponse,
-                emojisResponse
+                echosResponse
         );
     }
 }

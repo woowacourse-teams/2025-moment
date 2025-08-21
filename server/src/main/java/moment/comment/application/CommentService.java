@@ -1,17 +1,9 @@
 package moment.comment.application;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
-import moment.comment.domain.CommentCreationStatus;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
-import moment.comment.dto.response.CommentCreationStatusResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
@@ -25,8 +17,8 @@ import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.domain.Emoji;
-import moment.reply.infrastructure.EmojiRepository;
+import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -35,6 +27,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class CommentService {
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
-    private final EmojiRepository emojiRepository;
+    private final EchoRepository echoRepository;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
     private final NotificationRepository notificationRepository;
@@ -59,18 +58,12 @@ public class CommentService {
         User commenter = userQueryService.getUserById(commenterId);
         Moment moment = momentQueryService.getMomentById(request.momentId());
 
-        if (commentQueryService.existsByMoment(moment)) {
+        if (commentQueryService.existsByMomentAndCommenter(moment, commenter)) {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
 
         Comment commentWithoutId = request.toComment(commenter, moment);
         Comment savedComment = commentRepository.save(commentWithoutId);
-
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                moment.getId()
-        );
 
         Notification notificationWithoutId = new Notification(
                 moment.getMomenter(),
@@ -78,11 +71,18 @@ public class CommentService {
                 TargetType.MOMENT,
                 moment.getId());
 
+        Notification savedNotification = notificationRepository.save(notificationWithoutId);
+
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                savedNotification.getId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                moment.getId()
+        );
+
         sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
 
-        notificationRepository.save(notificationWithoutId);
-
-        rewardService.reward(commenter, Reason.COMMENT_CREATION, savedComment.getId());
+        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
         return CommentCreateResponse.from(savedComment);
     }
@@ -116,21 +116,22 @@ public class CommentService {
         String nextCursor = extractCursor(commentsWithinCursor, hasNextPage);
         List<Comment> comments = extractComments(commentsWithinCursor, pageSize);
 
-        List<Emoji> emojis = emojiRepository.findAllByCommentIn(comments);
+        List<Echo> allEchoes = echoRepository.findAllByCommentIn(comments);
 
-        if (emojis.isEmpty()) {
+        if (allEchoes.isEmpty()) {
             List<MyCommentResponse> responses = comments.stream()
                     .map(MyCommentResponse::from)
                     .toList();
             return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
-        Map<Comment, List<Emoji>> commentAndEmojis = emojis.stream()
-                .collect(Collectors.groupingBy(Emoji::getComment));
+        Map<Comment, List<Echo>> commentAndEchos = allEchoes.stream()
+                .collect(Collectors.groupingBy(Echo::getComment));
 
-        List<MyCommentResponse> responses = commentAndEmojis.entrySet().stream()
-                .map(MyCommentResponse::from)
-                .toList();
+        List<MyCommentResponse> responses = comments.stream().map(comment -> {
+            List<Echo> echoes = commentAndEchos.getOrDefault(comment, new ArrayList<>());
+            return MyCommentResponse.from(comment, echoes);
+        }).toList();
 
         return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
     }
@@ -153,20 +154,5 @@ public class CommentService {
         }
 
         return nextCursor;
-    }
-
-    public CommentCreationStatusResponse canCreateComment(Long commenterId) {
-        User commenter = userQueryService.getUserById(commenterId);
-        Optional<Moment> matchedMoment = momentQueryService.findTodayMatchedMomentByCommenter(commenter);
-
-        if (matchedMoment.isEmpty()) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.NOT_MATCHED);
-        }
-
-        if (commentRepository.existsByMoment(matchedMoment.get())) {
-            return CommentCreationStatusResponse.from(CommentCreationStatus.ALREADY_COMMENTED);
-        }
-
-        return CommentCreationStatusResponse.from(CommentCreationStatus.WRITABLE);
     }
 }

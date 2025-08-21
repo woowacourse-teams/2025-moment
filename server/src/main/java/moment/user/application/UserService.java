@@ -6,10 +6,8 @@ import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
-import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
@@ -30,7 +28,7 @@ public class UserService {
 
     @Transactional
     public void addUser(UserCreateRequest request) {
-        comparePasswordWithRepassword(request);
+        comparePasswordWithRepassword(request.password(), request.rePassword());
         validateEmailInBasicSignUp(request);
         validateNickname(request);
 
@@ -40,8 +38,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private void comparePasswordWithRepassword(UserCreateRequest request) {
-        if (!request.password().equals(request.rePassword())) {
+    private void comparePasswordWithRepassword(String password, String rePassword) {
+        if (!password.equals(rePassword)) {
             throw new MomentException(ErrorCode.PASSWORD_MISMATCHED);
         }
     }
@@ -71,10 +69,5 @@ public class UserService {
     public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
         boolean existsByNickname = userRepository.existsByNickname(request.nickname());
         return new NicknameConflictCheckResponse(existsByNickname);
-    }
-
-    public EmailConflictCheckResponse checkEmailConflictInBasicSignUp(EmailConflictCheckRequest request) {
-        boolean existsByEmail = userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL);
-        return new EmailConflictCheckResponse(existsByEmail);
     }
 }

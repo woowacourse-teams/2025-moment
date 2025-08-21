@@ -1,6 +1,9 @@
 spring:
   application:
     name: moment
+  mvc:
+    async:
+      request-timeout: -1
 
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
@@ -21,23 +24,67 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration/mysql
+    user: ${FLYWAY_DB_USER}
+    password: ${FLYWAY_DB_PASSWORD}
 
   sql:
     init:
       mode: never
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GOOGLE_EMAIL_ACCOUNT}
+    password: ${GOOGLE_EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret:
-    key: ${JWT_SECRET_KEY}
+    access_key: ${JWT_ACCESS_SECRET_KEY}
+    refresh_key: ${JWT_REFRESH_SECRET_KEY}
 
 expiration:
-  time: ${EXPIRATION_TIME}
+  access-token-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
+  refresh-token-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
 
 auth:
   google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
-    redirect-uri: ${GOOGLE_REDIRECT_URL}
+    redirect-uri: http://api.connectingmoment.com/api/v1/auth/callback/google
+    client-uri: http://www.connectingmoment.com
+  password_update:
+    uri: https://connectingmoment.com/passwordUpdate?token=
 
 logging:
   config: classpath:logback-prod.xml
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+
+management:
+  metrics:
+    enable:
+      jvm.memory.used: true
+      jvm.memory.max: true
+      jvm.gc.pause: true
+      jvm.threads: true
+      hikaricp: true
+      http.server: true
+      process.cpu: true
+      process.uptime: true
+
+  cloudwatch:
+    metrics:
+      export:
+        enabled: true
+        step: 1m
+        namespace: Moment/prod
+        

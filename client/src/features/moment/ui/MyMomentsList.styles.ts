@@ -1,40 +1,33 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-export const TitleContainer = styled.div`
+export const MomentsContainer = styled.section<{ $display?: boolean }>`
+  ${({ $display }) =>
+    $display
+      ? css`
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+        `
+      : css`
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        `}
+
+  gap: 28px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 
-export const TitleWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-`;
+  ${({ theme }) => theme.mediaQueries.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
 
-export const TimeStamp = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors['gray-400']};
-`;
-
-export const Title = styled.span`
-  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.large};
-  color: ${({ theme }) => theme.colors.white};
-`;
-
-export const MomentsContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-`;
-
-export const EmojiContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 12px;
+  }
 `;

@@ -7,6 +7,13 @@ export const PostCommentsPageContainer = styled.section`
   margin: 20px;
 `;
 
+export const MyMomentContent = styled.p`
+  font-size: 1.1rem;
+  text-align: left;
+  color: ${({ theme }) => theme.colors['gray-400']};
+  word-break: break-all;
+`;
+
 export const TitleContainer = styled.div`
   width: 100%;
   display: flex;
@@ -20,11 +27,6 @@ export const TitleWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-`;
-
-export const TimeStamp = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
 export const Title = styled.span`
@@ -47,14 +49,15 @@ export const ContentContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-export const Emoji = styled.div`
+export const EchoContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  background-color: ${({ theme }) => theme.colors['gray-600_20']};
-  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+`;
+
+export const NoEchoContent = styled.p`
+  text-align: center;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors['gray-400']};
 `;

@@ -23,7 +23,7 @@ export const AuthButtonContainer = styled.div`
 `;
 
 export const AuthButtonText = styled.p`
-  color: ${({ theme }) => theme.colors['yellow-300']};
+  color: ${({ theme }) => theme.colors.white};
 `;
 export const DropdownContainer = styled.div<{ $isOpen: boolean }>`
   position: absolute;

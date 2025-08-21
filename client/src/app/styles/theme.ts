@@ -7,11 +7,14 @@ export const theme = {
     'slate-800': '#1E293B',
     'slate-700': '#334155',
     white: '#FFFFFF',
+    black: '#000000',
     black_70: 'color-mix(in srgb, #000000 70%, transparent)',
     'yellow-600': '#92610a',
     'yellow-500': '#F1C40F',
     'yellow-300': '#F4D03F',
     'yellow-300_10': 'color-mix(in srgb, #F4D03F 10%, transparent)',
+    'yellow-300_30': 'color-mix(in srgb, #F4D03F 30%, transparent)',
+    'yellow-300_50': 'color-mix(in srgb, #F4D03F 50%, transparent)',
     'yellow-300_80': 'color-mix(in srgb, #F4D03F 80%, transparent)',
     'emerald-500': '#10B981',
     'emerald-600': '#059669',
@@ -33,6 +36,7 @@ export const theme = {
     'gray-800_90': 'color-mix(in srgb, #1E293B 90%, transparent)',
     'blue-600': '#497CBC',
     'green-500': '#059669',
+    'green-700_20': 'color-mix(in srgb, #99CC00 20%, transparent)',
   },
   typography: {
     title: {
@@ -67,7 +71,33 @@ export const theme = {
       small: '30%',
       medium: '60%',
       large: '90%',
+      full: '100%',
     },
+
+    modalWidth: {
+      small: {
+        desktop: '30%',
+        tablet: '50%',
+        mobile: '70%',
+      },
+      medium: {
+        desktop: '60%',
+        tablet: '70%',
+        mobile: '90%',
+      },
+      large: {
+        desktop: '90%',
+        tablet: '95%',
+        mobile: '100%',
+      },
+    },
+  },
+
+  mediaQueries: {
+    mobile: '@media (max-width: 767px)',
+    tablet: '@media (min-width: 768px) and (max-width: 1023px)',
+    desktop: '@media (min-width: 1024px)',
+    largeDesktop: '@media (min-width: 1440px)',
   },
 } as const;
 

@@ -7,17 +7,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -46,10 +50,16 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    private Integer currentPoint = DEFAULT_POINT;
+    @Column(nullable = false)
+    private Integer availableStar = DEFAULT_POINT;
+
+    @Column(nullable = false)
+    private Integer expStar = DEFAULT_POINT;
 
     @Enumerated(EnumType.STRING)
-    private Level level = Level.METEOR;
+    private Level level = Level.ASTEROID_WHITE;
+
+    private LocalDateTime deletedAt;
 
     public User(String email, String password, String nickname, ProviderType providerType) {
         validate(email, password, nickname);
@@ -97,8 +107,30 @@ public class User extends BaseEntity {
         return password.equals(loginPassword);
     }
 
-    public void addPointAndUpdateLevel(int pointToAdd) {
-        this.currentPoint += pointToAdd;
-        this.level = Level.getLevel(this.currentPoint);
+    public void addStarAndUpdateLevel(int pointToAdd) {
+        this.availableStar += pointToAdd;
+        if (pointToAdd >= 0) {
+            this.expStar += pointToAdd;
+        }
+        this.level = Level.getLevel(this.expStar);
+    }
+
+    public boolean canNotUseStars(int requiredStars) {
+        return (availableStar + requiredStars) < 0;
+    }
+
+    public void updatePassword(String newPassword) {
+        validatePassword(newPassword);
+        this.password = newPassword;
+    }
+
+    public void updateNickname(String newNickname, int requiredStar) {
+        validateNickname(newNickname);
+        this.availableStar += requiredStar;
+        this.nickname = newNickname;
+    }
+
+    public boolean checkProviderType(ProviderType providerType) {
+        return this.providerType == providerType;
     }
 }

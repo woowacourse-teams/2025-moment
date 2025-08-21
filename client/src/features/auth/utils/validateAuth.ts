@@ -1,5 +1,6 @@
 import { LoginError, LoginFormData } from '@/features/auth/types/login';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
+import { ChangePasswordErrors, ChangePasswordRequest } from '../types/changePassword';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const NICKNAME_REGEX = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gim;
@@ -64,6 +65,21 @@ export const validateSignupField = (
   }
 };
 
+export const validateChangePasswordField = (
+  field: keyof ChangePasswordRequest,
+  value: string,
+  formData: ChangePasswordRequest,
+): string => {
+  switch (field) {
+    case 'newPassword':
+      return validatePassword(value);
+    case 'checkedPassword':
+      return validateRePassword(formData.newPassword, value);
+    default:
+      return '';
+  }
+};
+
 export const validateLoginForm = (data: LoginFormData): LoginError => {
   return {
     email: validateEmail(data.email),
@@ -80,6 +96,13 @@ export const validateSignupForm = (data: SignupFormData): SignupErrors => {
   };
 };
 
+export const validateChangePasswordForm = (data: ChangePasswordRequest): ChangePasswordErrors => {
+  return {
+    newPassword: validatePassword(data.newPassword),
+    checkedPassword: validateRePassword(data.newPassword, data.checkedPassword),
+  };
+};
+
 export const isLoginFormValid = (errors: LoginError): boolean => {
   return Object.values(errors).every(error => error === '');
 };
@@ -90,4 +113,8 @@ export const isSignupFormValid = (errors: SignupErrors): boolean => {
 
 export const isLoginFormEmpty = (data: LoginFormData): boolean => {
   return Object.values(data).every(value => value === '');
+};
+
+export const isChangePasswordFormValid = (errors: ChangePasswordErrors): boolean => {
+  return Object.values(errors).every(error => error === '');
 };

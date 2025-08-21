@@ -5,7 +5,11 @@ export const ROUTES = {
   COLLECTION_MYMOMENT: '/collection/my-moment',
   COLLECTION_MYCOMMENT: '/collection/my-comment',
   TODAY_MOMENT: '/today-moment',
+  TODAY_MOMENT_EXTRA: '/today-moment-extra',
   TODAY_COMMENT: '/today-comment',
-  TODAY_COMMENT_SUCCESS: '/today-comment/success',
+  TODAY_MOMENT_SUCCESS: '/today-moment/success',
   GOOGLE_CALLBACK: '/auth/callback',
+  MY: '/my',
+  FIND_PASSWORD: '/find-password',
+  NEW_PASSWORD: '/passwordUpdate',
 };

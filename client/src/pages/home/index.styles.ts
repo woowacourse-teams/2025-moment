@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 
 const fadeInUp = keyframes`
   from {
@@ -52,7 +52,7 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
 
 export const BlackHoleContainer = styled.aside`
   position: fixed;
-  left: 60px;
+  left: max(60px, 6vw);
   transform: translateY(-50%);
   transform: rotate(-20deg);
   z-index: 50;
@@ -63,7 +63,11 @@ export const BlackHoleContainer = styled.aside`
     transition: transform 0.3s ease-in-out;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 1200px) {
+    left: max(40px, 4vw);
+  }
+
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -71,6 +75,11 @@ export const BlackHoleContainer = styled.aside`
 export const BlackHoleImage = styled.img`
   width: 150px;
   height: 150px;
+
+  @media (max-width: 1200px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 export const BlackHoleText = styled.p`
@@ -83,9 +92,9 @@ export const BlackHoleText = styled.p`
   pointer-events: none;
 `;
 
-export const WidgetContainer = styled.div<{ isWidgetOpen: boolean }>`
+export const ClickMeContainer = styled.div<{ isWidgetOpen: boolean }>`
   position: fixed;
-  left: 90px;
+  left: max(100px, 10vw);
   transform: translateY(-110%);
   z-index: 51;
   opacity: ${({ isWidgetOpen }) => (isWidgetOpen ? 1 : 0)};

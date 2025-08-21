@@ -1,82 +1,122 @@
-import { theme } from '@/app/styles/theme';
-import { useDeleteEmoji } from '@/features/emoji/hooks/useDeleteEmoji';
-import { Emoji } from '@/features/emoji/ui/Emoji';
-import { EmojiButton } from '@/features/emoji/ui/EmojiButton';
-import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
-import { Button, Card, NotFound, SimpleCard } from '@/shared/ui';
-import { formatRelativeTime } from '@/shared/utils/formatRelativeTime';
-import { Send, Timer } from 'lucide-react';
-import * as S from './MyMomentsList.styles';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
+import { useMemo } from 'react';
+import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
+import { useModal } from '@/shared/hooks/useModal';
+import { Modal } from '@/shared/ui/modal/Modal';
+import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
+import { useCommentNavigation } from '../hook/useCommentNavigation';
+import type { MomentWithNotifications } from '../types/momentsWithNotifications';
+import * as S from './MyMomentsCard.styles';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { WriteTime } from '@/shared/ui/writeTime';
+import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
-  const { handleDeleteEmoji } = useDeleteEmoji();
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
-  const emojis = myMoment.comment?.emojis || [];
+  const { handleOpen, handleClose, isOpen } = useModal();
+  useEchoSelection();
+  const { data: notifications } = useNotificationsQuery();
+  const sortedComments = useMemo(() => {
+    return myMoment.comments?.slice().reverse() || [];
+  }, [myMoment.comments]);
+  const navigation = useCommentNavigation(sortedComments?.length || 0);
+  const currentComment = sortedComments?.[navigation.currentIndex];
 
-  const handleMomentOpen = () => {
+  const handleModalClose = () => {
+    navigation.reset();
+    handleClose();
+  };
+
+  const handleMomentClick = () => {
+    handleOpen();
+    navigation.reset();
     if (myMoment.read || isReadingNotification) return;
-    if (myMoment.notificationId) {
-      handleReadNotifications(myMoment.notificationId);
-    }
+
+    const unreadMomentNotifications =
+      notifications?.data.filter(
+        notification => notification.targetId === myMoment.id && !notification.isRead,
+      ) || [];
+
+    unreadMomentNotifications.forEach(notification => {
+      if (notification.id) {
+        handleReadNotifications(notification.id);
+      }
+    });
   };
 
-  const getFormattedTime = (dateString: string) => {
-    try {
-      if (!dateString) return '시간 정보 없음';
-      return formatRelativeTime(dateString);
-    } catch (error) {
-      console.error('Date formatting error:', error, 'dateString:', dateString);
-      return '시간 정보 오류';
-    }
-  };
+  const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
 
   return (
-    <Card width="medium" key={myMoment.id} shadow={!myMoment.read}>
-      <Card.TitleContainer
-        title={
-          <S.TitleWrapper>
-            <Timer size={16} color={theme.colors['gray-400']} />
-            <S.TimeStamp>{getFormattedTime(myMoment.createdAt)}</S.TimeStamp>
-          </S.TitleWrapper>
-        }
-        subtitle={myMoment.content}
-      />
-      <Card.Content>
-        <S.TitleContainer>
-          <Send size={20} color={theme.colors['yellow-500']} />
-          <p>받은 공감</p>
-        </S.TitleContainer>
-        <SimpleCard
-          height="small"
-          content={
-            myMoment.comment?.content || (
-              <NotFound
-                title="아직 응답이 없어요."
-                subtitle="곧 누군가가 따뜻한 응답을 보내줄 거예요."
-                size="small"
-              />
-            )
-          }
-        />
-      </Card.Content>
-      <Card.Action position="space-between">
-        {myMoment.comment?.content && emojis.length === 0 && (
-          <EmojiButton commentId={myMoment.comment.id} />
-        )}
-        {myMoment.comment && (
-          <S.EmojiContainer>
-            {emojis.map(emoji => (
-              <Emoji key={emoji.id} onClick={() => handleDeleteEmoji(emoji.id)}>
-                {emojiMapping(emoji.emojiType)}
-              </Emoji>
-            ))}
-          </S.EmojiContainer>
-        )}
-        {/* TODO: 임시방편.추후 모멘트 모달 버튼으로 대체 */}
-        {!myMoment.read && <Button onClick={handleMomentOpen} title="확인" />}
-      </Card.Action>
-    </Card>
+    <>
+      <S.MyMomentsCard
+        key={myMoment.id}
+        $hasComment={hasComments}
+        onClick={hasComments ? handleMomentClick : undefined}
+        $shadow={!myMoment.read}
+      >
+        <S.MyMomentsTitleWrapper>
+          <S.CommentCountWrapper>
+            <Mail size={16} />
+            <span>{sortedComments?.length}</span>
+          </S.CommentCountWrapper>
+          <WriteTime date={myMoment.createdAt} />
+        </S.MyMomentsTitleWrapper>
+        <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
+      </S.MyMomentsCard>
+      {isOpen && (
+        <Modal
+          isOpen={true}
+          onClose={handleModalClose}
+          variant="memoji"
+          position="center"
+          size="small"
+        >
+          <Modal.Header showCloseButton={true} />
+          <Modal.Content>
+            {currentComment && (
+              <>
+                <S.MyMomentsModalContent key={currentComment.id}>
+                  <S.CommentContentWrapper>
+                    <S.MyMomentsModalHeader>
+                      <S.WriterInfoWrapper>
+                        <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
+                      </S.WriterInfoWrapper>
+                      <S.TitleWrapper>
+                        <WriteTime date={currentComment.createdAt} />
+                      </S.TitleWrapper>
+                    </S.MyMomentsModalHeader>
+                    <S.CommentContainer>
+                      {navigation.hasPrevious && (
+                        <S.CommentNavigationButton
+                          onClick={navigation.goToPrevious}
+                          position="left"
+                        >
+                          <ChevronLeft size={16} />
+                        </S.CommentNavigationButton>
+                      )}
+
+                      <S.CommentContent>
+                        <div>{currentComment.content}</div>
+                      </S.CommentContent>
+
+                      {navigation.hasNext && (
+                        <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
+                          <ChevronRight size={16} />
+                        </S.CommentNavigationButton>
+                      )}
+                    </S.CommentContainer>
+                    <S.CommentIndicator>
+                      {navigation.currentIndex + 1} / {sortedComments?.length || 0}
+                    </S.CommentIndicator>
+                  </S.CommentContentWrapper>
+                  <SendEchoForm currentComment={currentComment} />
+                </S.MyMomentsModalContent>
+              </>
+            )}
+          </Modal.Content>
+        </Modal>
+      )}
+    </>
   );
 };

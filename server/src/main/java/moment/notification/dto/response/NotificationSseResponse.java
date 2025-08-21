@@ -7,6 +7,9 @@ import moment.notification.domain.TargetType;
 
 @Schema(description = "SSE 알림 응답")
 public record NotificationSseResponse(
+        @Schema(description = "알림 id", example = "1")
+        Long notificationId,
+
         @Schema(description = "알림 타입", example = "NEW_COMMENT_ON_MOMENT")
         NotificationType notificationType,
 
@@ -24,11 +27,18 @@ public record NotificationSseResponse(
 ) {
 
     public static NotificationSseResponse createSseResponse(
+            Long notificationId,
             NotificationType notificationType,
             TargetType targetType,
             Long targetId
     ) {
-        return new NotificationSseResponse(notificationType, targetType, targetId, notificationType.getMessage(),
-                false);
+        return new NotificationSseResponse(
+                notificationId,
+                notificationType,
+                targetType,
+                targetId,
+                notificationType.getMessage(),
+                false
+        );
     }
 }

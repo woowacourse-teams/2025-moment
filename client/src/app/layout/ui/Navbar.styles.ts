@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Navbar = styled.nav`
@@ -17,8 +18,13 @@ export const Navbar = styled.nav`
 `;
 
 export const LevelIcon = styled.img`
-  width: 40px;
+  width: 50px;
   height: 40px;
+`;
+
+export const LevelIconWrapper = styled.div`
+  position: relative;
+  display: inline-block;
 `;
 
 export const NavItem = styled.div<{ $isActive?: boolean }>`
@@ -125,12 +131,13 @@ export const MobileNavItems = styled.div`
   gap: 16px;
 `;
 
-export const MobileNavItem = styled.div<{ $isActive?: boolean }>`
+export const MobileNavItem = styled.div<{ $isActive?: boolean; $shadow?: boolean }>`
   padding: 16px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
 
   a {
     color: ${({ theme, $isActive }) =>
@@ -140,6 +147,49 @@ export const MobileNavItem = styled.div<{ $isActive?: boolean }>`
     text-decoration: none;
     display: block;
     transition: all 0.3s ease;
+    position: relative;
+    width: 100%;
+    text-align: center;
+
+    span {
+      position: relative;
+      display: inline-block;
+
+      ${({ theme, $shadow }) =>
+        $shadow &&
+        css`
+          &::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -12px;
+            width: 8px;
+            height: 8px;
+            background: ${theme.colors['yellow-300']};
+            border-radius: 50%;
+            box-shadow:
+              0 0 4px ${theme.colors['yellow-300']},
+              0 0 8px ${theme.colors['yellow-300_80']};
+            animation: dotPulse 2s ease-in-out infinite;
+          }
+
+          @keyframes dotPulse {
+            0%,
+            100% {
+              transform: scale(0.6);
+              box-shadow:
+                0 0 2px ${theme.colors['yellow-300']},
+                0 0 4px ${theme.colors['yellow-300_80']};
+            }
+            50% {
+              transform: scale(1);
+              box-shadow:
+                0 0 4px ${theme.colors['yellow-300']},
+                0 0 8px ${theme.colors['yellow-300_80']};
+            }
+          }
+        `}
+    }
   }
 
   &:hover a {

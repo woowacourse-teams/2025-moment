@@ -13,10 +13,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import moment.user.dto.request.EmailConflictCheckRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
-import moment.user.dto.response.EmailConflictCheckResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -113,21 +111,6 @@ class UserServiceTest {
     }
 
     @Test
-    void 일반_회원가입에서_중복_이메일_확인시_이미_존재하는_이메일일_경우_참을_반환한다() {
-        // given
-        String email = "mimi@icloud.com";
-        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
-
-        given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(true);
-
-        // when
-        EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
-
-        // & then
-        assertThat(response.isExists()).isTrue();
-    }
-
-    @Test
     void 이미_존재하는_닉네임이_아닐_경우_거짓을_반환한다() {
         // given
         NicknameConflictCheckRequest request = new NicknameConflictCheckRequest("mimi");
@@ -136,21 +119,6 @@ class UserServiceTest {
 
         // when
         NicknameConflictCheckResponse response = userService.checkNicknameConflict(request);
-
-        // & then
-        assertThat(response.isExists()).isFalse();
-    }
-
-    @Test
-    void 이미_존재하는_이메일이_아닐_경우_거짓을_반환한다() {
-        // given
-        String email = "mimi@icloud.com";
-        EmailConflictCheckRequest request = new EmailConflictCheckRequest(email);
-
-        given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(false);
-
-        // when
-        EmailConflictCheckResponse response = userService.checkEmailConflictInBasicSignUp(request);
 
         // & then
         assertThat(response.isExists()).isFalse();

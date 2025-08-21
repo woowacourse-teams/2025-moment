@@ -3,9 +3,11 @@ import { SignupFormData } from '@/features/auth/types/signup';
 import {
   validateLoginForm,
   validatePassword,
+  validateChangePasswordForm,
   validateRePassword,
   validateSignupForm,
 } from './validateAuth';
+import { ChangePasswordRequest } from '../types/changePassword';
 
 describe('비밀번호 유효성 검사', () => {
   it('비밀번호가 비어있는 경우 에러를 반환해야 한다', () => {
@@ -189,5 +191,60 @@ describe('회원가입 폼에서 비밀번호 유효성 검사', () => {
     const result = validateSignupForm(signupData);
     expect(result.password).toBe('');
     expect(result.rePassword).toBe('');
+  });
+});
+
+describe('비밀번호 변경 폼에서 비밀번호 유효성 검사', () => {
+  it('새 비밀번호가 비어있는 경우 에러를 반환해야 한다', () => {
+    const changePasswordData: ChangePasswordRequest = {
+      newPassword: '',
+      checkedPassword: 'Valid123!',
+    };
+
+    const result = validateChangePasswordForm(changePasswordData);
+    expect(result.newPassword).toBe('비밀번호를 입력해주세요.');
+  });
+
+  it('새 비밀번호가 규칙에 맞지 않는 경우 에러를 반환해야 한다', () => {
+    const changePasswordData: ChangePasswordRequest = {
+      newPassword: '123',
+      checkedPassword: '123',
+    };
+
+    const result = validateChangePasswordForm(changePasswordData);
+    expect(result.newPassword).toBe(
+      '비밀번호는 8-16자의 영문 소문자, 숫자, 특수문자(!@#$%^&*())를 포함해야 합니다.',
+    );
+  });
+
+  it('새 비밀번호 확인이 비어있는 경우 에러를 반환해야 한다', () => {
+    const changePasswordData: ChangePasswordRequest = {
+      newPassword: 'Valid123!',
+      checkedPassword: '',
+    };
+
+    const result = validateChangePasswordForm(changePasswordData);
+    expect(result.checkedPassword).toBe('비밀번호를 입력해주세요.');
+  });
+
+  it('새 비밀번호와 비밀번호 확인이 일치하지 않는 경우 에러를 반환해야 한다', () => {
+    const changePasswordData: ChangePasswordRequest = {
+      newPassword: 'Valid123!',
+      checkedPassword: 'Different456@',
+    };
+
+    const result = validateChangePasswordForm(changePasswordData);
+    expect(result.checkedPassword).toBe('비밀번호가 일치하지 않습니다.');
+  });
+
+  it('새 비밀번호와 비밀번호 확인이 모두 유효한 경우 빈 에러를 반환해야 한다', () => {
+    const changePasswordData: ChangePasswordRequest = {
+      newPassword: 'Valid123!',
+      checkedPassword: 'Valid123!',
+    };
+
+    const result = validateChangePasswordForm(changePasswordData);
+    expect(result.newPassword).toBe('');
+    expect(result.checkedPassword).toBe('');
   });
 });

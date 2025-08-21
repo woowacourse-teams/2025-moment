@@ -1,10 +1,13 @@
 import { theme } from '@/app/styles/theme';
-import { emojiMapping } from '@/features/emoji/utils/emojiMapping';
 import { Button, Card, SimpleCard } from '@/shared/ui';
-import { Gift, MessageSquare, Send } from 'lucide-react';
+import { Heart, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
+import { EchoTypeKey } from '@/features/echo/type/echos';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { Echo } from '@/features/echo/ui/Echo';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -21,29 +24,37 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
-            <Gift size={16} color={theme.colors['gray-400']} />
-            <S.TimeStamp>{new Date(myComment.createdAt).toLocaleDateString()}</S.TimeStamp>
+            <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
+            <WriteTime date={myComment.createdAt} />
           </S.TitleWrapper>
         }
-        subtitle={myComment.moment.content}
+        subtitle={''}
       />
       <Card.Content>
         <S.ContentContainer>
+          <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
+        </S.ContentContainer>
+        <S.ContentContainer>
           <S.TitleContainer>
-            <MessageSquare size={20} color={theme.colors['yellow-500']} />
+            <Send size={20} color={theme.colors['yellow-500']} />
             <p>보낸 코멘트</p>
           </S.TitleContainer>
           <SimpleCard height="small" content={myComment.content} />
         </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
-            <Send size={20} color={theme.colors['yellow-500']} />
-            <p>받은 리액션</p>
+            <Heart size={20} color={theme.colors['yellow-500']} />
+            <p>받은 에코</p>
           </S.TitleContainer>
-          <S.Emoji>
-            {(myComment.emojis || []).map(emoji => emojiMapping(emoji.emojiType)).join(' ')}
-          </S.Emoji>
-          {/* TODO: 임시방편.추후 코멘트 모달 버튼으로 대체 */}
+          <S.EchoContainer>
+            {myComment.echos && myComment.echos.length > 0 ? (
+              myComment.echos.map(echo => (
+                <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
+              ))
+            ) : (
+              <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
+            )}
+          </S.EchoContainer>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
       </Card.Content>

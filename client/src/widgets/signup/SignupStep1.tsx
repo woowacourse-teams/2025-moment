@@ -12,6 +12,13 @@ interface SignupStep1Props {
   handleCheckEmail: (value: string) => void;
   emailErrorMessage: string;
   isEmailChecked: boolean;
+  isEmailCheckLoading: boolean;
+  emailCode: string;
+  isCheckEmailCodeLoading: boolean;
+  isCheckEmailCodeError: boolean;
+  isCheckEmailCodeSuccess: boolean;
+  updateEmailCode: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  checkEmailCode: (email: string, code: string) => void;
 }
 
 export const SignupStep1 = ({
@@ -22,13 +29,20 @@ export const SignupStep1 = ({
   handleCheckEmail,
   emailErrorMessage,
   isEmailChecked,
+  isEmailCheckLoading,
+  emailCode,
+  isCheckEmailCodeLoading,
+  isCheckEmailCodeError,
+  isCheckEmailCodeSuccess,
+  updateEmailCode,
+  checkEmailCode,
 }: SignupStep1Props) => {
   useEnterKeyHandler(onNext);
 
   return (
     <S.StepContainer>
-      <S.InputGroup>
-        <S.Label htmlFor="username">이메일</S.Label>
+      <S.EmailGroup>
+        <S.EmailLabel htmlFor="username">이메일</S.EmailLabel>
         <S.CheckExistContainer>
           <Input
             id="email"
@@ -37,14 +51,39 @@ export const SignupStep1 = ({
             value={signupData.email}
             onChange={handleChange('email')}
           />
-          <CheckButton onClick={() => handleCheckEmail(signupData.email)} />
+          <CheckButton
+            title="인증코드 전송"
+            onClick={() => handleCheckEmail(signupData.email)}
+            disabled={isEmailCheckLoading || errors.email !== '' || isCheckEmailCodeSuccess}
+          />
         </S.CheckExistContainer>
         {isEmailChecked && !emailErrorMessage ? (
-          <S.SuccessMessage>사용 가능한 이메일입니다.</S.SuccessMessage>
+          <S.SuccessMessage>이메일 중복 확인에 성공했습니다.</S.SuccessMessage>
         ) : (
           <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
         )}
-      </S.InputGroup>
+        <S.CheckExistContainer>
+          <Input
+            id="email"
+            type="email"
+            placeholder="이메일로 전송된 인증코드를 입력해주세요"
+            value={emailCode}
+            onChange={updateEmailCode}
+          />
+          <CheckButton
+            title="인증코드 확인"
+            onClick={() => checkEmailCode(signupData.email, emailCode)}
+            disabled={isCheckEmailCodeSuccess || isCheckEmailCodeLoading || emailCode.length !== 6}
+          />
+        </S.CheckExistContainer>
+        {isCheckEmailCodeSuccess ? (
+          <S.SuccessMessage>인증코드가 확인되었습니다.</S.SuccessMessage>
+        ) : emailCode !== '' && isCheckEmailCodeError ? (
+          <S.ErrorMessage>인증코드가 일치하지 않습니다.</S.ErrorMessage>
+        ) : (
+          <S.ErrorMessage></S.ErrorMessage>
+        )}
+      </S.EmailGroup>
 
       <S.InputGroup>
         <S.Label htmlFor="password">비밀번호</S.Label>

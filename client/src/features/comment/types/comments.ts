@@ -15,13 +15,16 @@ export interface CommentItem {
   moment: {
     content: string;
     createdAt: string;
+    id: number;
+    level: string;
+    nickName: string;
   };
-  emojis: Emoji[];
+  echos: Echo[];
 }
 
-export interface Emoji {
+export interface Echo {
   id: number;
-  emojiType: string;
+  echoType: string;
   userId: number;
 }
 
@@ -45,11 +48,15 @@ export interface SendCommentsError {
   status: number;
 }
 
-export type CommentCreationStatus = 'NOT_MATCHED' | 'ALREADY_COMMENTED' | 'WRITABLE';
-
-export interface CommentCreationStatusResponse {
+export interface GetCommentableMomentsResponse {
   status: number;
-  data: {
-    commentCreationStatus: CommentCreationStatus;
-  };
+  data: GetCommentableMoments;
+}
+
+export interface GetCommentableMoments {
+  id: number;
+  nickname: string;
+  level: string;
+  content: string;
+  createdAt: string;
 }

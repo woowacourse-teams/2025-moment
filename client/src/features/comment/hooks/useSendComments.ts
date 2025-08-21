@@ -1,11 +1,8 @@
-import { useMatchMomentsQuery } from '@/features/moment/hook/useMatchMomentsQuery';
 import { useState } from 'react';
-import { useSendCommentsMutation } from './useSendCommentsMutation';
+import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
 
-export const useSendComments = () => {
+export const useSendComments = (momentId: number) => {
   const [comment, setComment] = useState('');
-
-  const { data: momentsData } = useMatchMomentsQuery();
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
@@ -16,12 +13,11 @@ export const useSendComments = () => {
   const handleSubmit = async () => {
     await sendComments({
       content: comment,
-      momentId: momentsData?.data.id || 0,
+      momentId: momentId,
     });
   };
 
   return {
-    momentsData: momentsData?.data.content,
     error,
     comment,
     isPending,

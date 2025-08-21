@@ -2,7 +2,6 @@ package moment.global.logging;
 
 import static java.util.stream.Collectors.joining;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Parameter;
@@ -15,6 +14,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,12 +28,16 @@ public class ControllerLogAspect {
     public void allController() {
     }
 
-    @Before("allController()")
+    @Pointcut("allController() && !within(org.springdoc..*)")
+    public void allControllerWithoutSwagger() {
+    }
+
+    @Before("allControllerWithoutSwagger()")
     public void logControllerRequest(JoinPoint joinPoint) {
         getRequest(joinPoint);
     }
 
-    @AfterReturning(pointcut = "allController()", returning = "responseBody")
+    @AfterReturning(pointcut = "allControllerWithoutSwagger()", returning = "responseBody")
     public void logControllerResponse(Object responseBody) {
         getResponse(responseBody);
     }

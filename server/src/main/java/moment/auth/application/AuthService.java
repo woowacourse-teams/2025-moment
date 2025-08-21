@@ -1,10 +1,19 @@
 package moment.auth.application;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import moment.auth.domain.RefreshToken;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.response.LoginCheckResponse;
+import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -19,10 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
+    private final EmailService emailService;
     private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokensIssuer tokensIssuer;
 
-    public String login(LoginRequest request) {
+    @Transactional
+    public Map<String, String> login(LoginRequest request) {
         User user = userRepository.findByEmailAndProviderType(request.email(), ProviderType.EMAIL)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
@@ -30,7 +44,7 @@ public class AuthService {
             throw new MomentException(ErrorCode.USER_LOGIN_FAILED);
         }
 
-        return tokenManager.createToken(user.getId(), user.getEmail());
+        return tokensIssuer.issueTokens(user);
     }
 
     public Authentication getAuthenticationByToken(String token) {
@@ -42,5 +56,56 @@ public class AuthService {
             return LoginCheckResponse.createNotLogged();
         }
         return LoginCheckResponse.createLogged();
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+
+        if (refreshTokenRepository.existsByUser(user)) {
+            refreshTokenRepository.deleteByUser(user);
+        }
+    }
+
+    @Transactional
+    public Map<String, String> refresh(HttpServletRequest request) {
+        String refreshTokenValue = extractRefreshTokenValue(request);
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(refreshTokenValue)
+                .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        if (refreshToken.isExpired(LocalDateTime.now())) {
+            throw new MomentException(ErrorCode.TOKEN_EXPIRED);
+        }
+
+        return tokensIssuer.renewTokens(refreshToken);
+    }
+
+    private String extractRefreshTokenValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName()
+                        .equals("refreshToken"))
+                .findFirst()
+                .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND))
+                .getValue();
+    }
+
+    @Transactional
+    public void resetPassword(PasswordResetRequest request) {
+        if (!request.newPassword().equals(request.newPasswordCheck())) {
+            throw new MomentException(ErrorCode.PASSWORD_MISMATCHED);
+        }
+
+        emailService.verifyPasswordResetToken(request);
+
+        User user = userQueryService.findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL)
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+        String encryptedPassword = passwordEncoder.encode(request.newPassword());
+        user.updatePassword(encryptedPassword);
     }
 }

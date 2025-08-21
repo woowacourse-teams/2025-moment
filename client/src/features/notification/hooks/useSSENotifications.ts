@@ -1,4 +1,4 @@
-import { useCheckIfLoggedInQuery } from '@/features/auth/hooks/useCheckIfLoggedInQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -6,9 +6,11 @@ import { subscribeNotifications } from '../api/subscribeNotifications';
 import { NotificationItem, NotificationResponse } from '../types/notifications';
 import { SSENotification } from '../types/sseNotification';
 
+const ECHO_REWARD_POINT = 3;
+
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
-  const { showError, showSuccess } = useToast();
+  const { showError, showSuccess, showMessage } = useToast();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
@@ -58,9 +60,13 @@ export const useSSENotifications = () => {
         queryClient.setQueryData(['notifications'], updatedData);
 
         if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
-          showSuccess('나의 모멘트에 코멘트가 달렸습니다!');
+          showMessage('나의 모멘트에 코멘트가 달렸습니다!', 'moment', 5000);
         } else if (sseData.notificationType === 'NEW_REPLY_ON_COMMENT') {
-          showSuccess('나의 코멘트에 이모지가 달렸습니다!');
+          showMessage(
+            `나의 코멘트에 에코가 달렸습니다! 별조각 ${ECHO_REWARD_POINT}개를 획득했습니다!`,
+            'comment',
+            5000,
+          );
         }
 
         if (sseData.targetType === 'MOMENT') {
@@ -68,6 +74,7 @@ export const useSSENotifications = () => {
         } else if (sseData.targetType === 'COMMENT') {
           queryClient.invalidateQueries({ queryKey: ['comments'] });
         }
+        queryClient.invalidateQueries({ queryKey: ['notifications'] });
       } catch (error) {
         console.error(error);
         showError('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
@@ -82,7 +89,7 @@ export const useSSENotifications = () => {
       console.log('🔌 [SSE] 연결 해제...');
       eventSource.close();
     };
-  }, [isLoggedIn, queryClient, showError, showSuccess]);
+  }, [isLoggedIn, queryClient, showError, showSuccess, showMessage]);
 
   return { isConnected: isLoggedIn };
 };

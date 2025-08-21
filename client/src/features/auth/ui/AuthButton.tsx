@@ -1,4 +1,4 @@
-import { useLogoutMutation } from '@/features/auth/hooks/useLogoutMutation';
+import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 import { Profile } from '@/features/auth/types/profile';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
@@ -48,6 +48,12 @@ export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
     onClick?.();
   };
 
+  const handleMyPageClick = () => {
+    navigate('/my');
+    closeDropdown();
+    onClick?.();
+  };
+
   if (!profile) {
     return <Button title="로그인" onClick={handleLoginClick} variant="primary" />;
   }
@@ -58,6 +64,7 @@ export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
 
       <S.DropdownContainer ref={dropdownRef} $isOpen={isDropdownOpen}>
         <S.DropdownItem onClick={handleLogoutClick}>로그아웃</S.DropdownItem>
+        <S.DropdownItem onClick={handleMyPageClick}>마이페이지</S.DropdownItem>
       </S.DropdownContainer>
     </S.AuthButtonContainer>
   );

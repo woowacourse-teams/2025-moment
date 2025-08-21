@@ -1,20 +1,38 @@
+import { ROUTES } from '@/app/routes/routes';
+
 export const navItems = [
   {
     label: '오늘의 모멘트',
-    href: '/today-moment',
+    href: ROUTES.TODAY_MOMENT,
   },
   {
     label: '오늘의 코멘트',
-    href: '/today-comment',
+    href: ROUTES.TODAY_COMMENT,
   },
   {
     label: '나만의 모음집',
-    href: '/collection',
+    href: ROUTES.COLLECTION_MYMOMENT,
   },
 ];
 
-export const levelMap = {
-  METEOR: '/meteor.png',
-  ASTEROID: '/asteroid.png',
-  COMET: '/comet.png',
+export const LEVEL_MAP = {
+  ASTEROID_WHITE: '/images/firstAsteroid.png',
+  ASTEROID_YELLOW: '/images/secondAsteroid.png',
+  ASTEROID_SKY: '/images/thirdAsteroid.png',
+
+  METEOR_WHITE: '/images/firstMeteor.png',
+  METEOR_YELLOW: '/images/secondMeteor.png',
+  METEOR_SKY: '/images/thirdMeteor.png',
+
+  COMET_WHITE: '/images/firstComa.png',
+  COMET_YELLOW: '/images/secondComa.png',
+  COMET_SKY: '/images/thirdComa.png',
+
+  ROCKY_PLANET_WHITE: '/images/firstPlanet.png',
+  ROCKY_PLANET_YELLOW: '/images/secondPlanet.png',
+  ROCKY_PLANET_SKY: '/images/thirdPlanet.png',
+
+  GAS_GIANT_WHITE: '/images/firstBigPlanet.png',
+  GAS_GIANT_YELLOW: '/images/secondBigPlanet.png',
+  GAS_GIANT_SKY: '/images/thirdBigPlanet.png',
 };

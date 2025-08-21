@@ -15,7 +15,7 @@ const TextAreaStyles = {
     resize: none; 
     
     &::placeholder {
-        color: ${theme.colors.white};
+        color: ${theme.colors['gray-400']};
     }
     `,
 };

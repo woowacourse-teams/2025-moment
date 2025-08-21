@@ -25,7 +25,7 @@ class MomentTest {
         User user = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         // when & then
-        assertThatThrownBy(() -> new Moment(content, user))
+        assertThatThrownBy(() -> new Moment(content, user, WriteType.BASIC))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
     }
@@ -37,7 +37,7 @@ class MomentTest {
         String longContent = "=".repeat(201);
 
         // when & then
-        assertThatThrownBy(() -> new Moment(longContent, user))
+        assertThatThrownBy(() -> new Moment(longContent, user, WriteType.BASIC))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("모멘트는 1자 이상, 200자 이하로만 작성 가능합니다.");
     }
@@ -45,7 +45,7 @@ class MomentTest {
     @Test
     void 사용자가_없는_경우_예외가_발생한다() {
         // when & then
-        assertThatThrownBy(() -> new Moment("굿", null))
+        assertThatThrownBy(() -> new Moment("굿", null, WriteType.BASIC))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("momenter가 null이 되어서는 안 됩니다.");
     }
@@ -59,7 +59,7 @@ class MomentTest {
         User unAuthorizedUser = new User("unAuth@email.com", "1234", "unAuth", ProviderType.EMAIL);
         ReflectionTestUtils.setField(unAuthorizedUser, "id", 2L);
 
-        Moment moment = new Moment("오늘 달리기 완료!", momenter);
+        Moment moment = new Moment("오늘 달리기 완료!", momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(moment, "id", 1L);
 
         // when & then
