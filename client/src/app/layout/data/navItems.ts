@@ -24,9 +24,9 @@ export const LEVEL_MAP = {
   METEOR_YELLOW: '/images/secondMeteor.png',
   METEOR_SKY: '/images/thirdMeteor.png',
 
-  COMET_WHITE: '/images/firstComet.png',
-  COMET_YELLOW: '/images/secondComet.png',
-  COMET_SKY: '/images/thirdComet.png',
+  COMET_WHITE: '/images/firstComa.png',
+  COMET_YELLOW: '/images/secondComa.png',
+  COMET_SKY: '/images/thirdComa.png',
 
   ROCKY_PLANET_WHITE: '/images/firstPlanet.png',
   ROCKY_PLANET_YELLOW: '/images/secondPlanet.png',
