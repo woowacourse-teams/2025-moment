@@ -65,7 +65,7 @@ export const useSSENotifications = () => {
           showMessage(
             `나의 코멘트에 에코가 달렸습니다! 별조각 ${ECHO_REWARD_POINT}개를 획득했습니다!`,
             'comment',
-            5000
+            5000,
           );
         }
 
