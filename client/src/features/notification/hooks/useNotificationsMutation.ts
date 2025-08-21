@@ -1,6 +1,6 @@
+import { useToast } from '@/shared/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchNotifications } from '../api/patchNotifications';
-import { useToast } from '@/shared/hooks/useToast';
 
 export const useNotificationsMutation = () => {
   const queryClient = useQueryClient();
