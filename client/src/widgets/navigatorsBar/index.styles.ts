@@ -9,7 +9,7 @@ export const NavigatorsBarContainer = styled.div<{ $isNavBar?: boolean }>`
   gap: 60px;
 
   @media (max-width: 1024px) {
-    gap: 10px;
+    gap: 24px;
   }
 `;
 

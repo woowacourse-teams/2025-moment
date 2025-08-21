@@ -11,6 +11,7 @@ export const MyMomentContent = styled.p`
   font-size: 1.1rem;
   text-align: left;
   color: ${({ theme }) => theme.colors['gray-400']};
+  word-break: break-all;
 `;
 
 export const TitleContainer = styled.div`

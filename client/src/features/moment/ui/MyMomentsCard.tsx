@@ -77,36 +77,39 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             {currentComment && (
               <>
                 <S.MyMomentsModalContent key={currentComment.id}>
-                  <S.MyMomentsModalHeader>
-                    <S.WriterInfoWrapper>
-                      <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
-                    </S.WriterInfoWrapper>
+                  <S.CommentContentWrapper>
+                    <S.MyMomentsModalHeader>
+                      <S.WriterInfoWrapper>
+                        <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
+                      </S.WriterInfoWrapper>
+                      <S.TitleWrapper>
+                        <WriteTime date={currentComment.createdAt} />
+                      </S.TitleWrapper>
+                    </S.MyMomentsModalHeader>
+                    <S.CommentContainer>
+                      {navigation.hasPrevious && (
+                        <S.CommentNavigationButton
+                          onClick={navigation.goToPrevious}
+                          position="left"
+                        >
+                          <ChevronLeft size={16} />
+                        </S.CommentNavigationButton>
+                      )}
 
+                      <S.CommentContent>
+                        <div>{currentComment.content}</div>
+                      </S.CommentContent>
+
+                      {navigation.hasNext && (
+                        <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
+                          <ChevronRight size={16} />
+                        </S.CommentNavigationButton>
+                      )}
+                    </S.CommentContainer>
                     <S.CommentIndicator>
                       {navigation.currentIndex + 1} / {sortedComments?.length || 0}
                     </S.CommentIndicator>
-                    <S.TitleWrapper>
-                      <WriteTime date={currentComment.createdAt} />
-                    </S.TitleWrapper>
-                  </S.MyMomentsModalHeader>
-
-                  <S.CommentContainer>
-                    {navigation.hasPrevious && (
-                      <S.CommentNavigationButton onClick={navigation.goToPrevious} position="left">
-                        <ChevronLeft size={16} />
-                      </S.CommentNavigationButton>
-                    )}
-
-                    <S.CommentContent>
-                      <div>{currentComment.content}</div>
-                    </S.CommentContent>
-
-                    {navigation.hasNext && (
-                      <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
-                        <ChevronRight size={16} />
-                      </S.CommentNavigationButton>
-                    )}
-                  </S.CommentContainer>
+                  </S.CommentContentWrapper>
                   <SendEchoForm currentComment={currentComment} />
                 </S.MyMomentsModalContent>
               </>

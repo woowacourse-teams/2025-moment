@@ -44,6 +44,15 @@ export const CommentCountWrapper = styled.div`
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
+export const CommentContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+`;
+
 export const MyMomentsContent = styled.p`
   height: 100%;
   width: 100%;
@@ -56,19 +65,10 @@ export const MyMomentsContent = styled.p`
 export const MyMomentsModalContent = styled.div`
   height: 100%;
   width: 100%;
-  padding: 20px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-
-  @media (max-width: 768px) {
-    padding: 16px 0px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px 0px;
-  }
 `;
 
 export const CommentContainer = styled.div`
@@ -77,15 +77,15 @@ export const CommentContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 20px;
-  margin: 20px 0;
+  padding: 10px 20px;
 `;
 
 export const CommentContent = styled.div`
   width: 100%;
+  height: 100%;
   text-align: center;
   line-height: 1.6;
-  padding: 0 40px;
+  padding: 0 20px;
 `;
 
 export const CommentNavigationButton = styled.button<{ position: 'left' | 'right' }>`
@@ -135,11 +135,9 @@ export const TitleContainer = styled.div`
 `;
 
 export const TitleWrapper = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  gap: 4px;
 `;
 
 export const Title = styled.span`

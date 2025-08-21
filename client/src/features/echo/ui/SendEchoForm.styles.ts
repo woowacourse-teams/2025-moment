@@ -9,7 +9,7 @@ export const TitleContainer = styled.div`
 `;
 
 export const EchoContainer = styled.div`
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,5 +19,7 @@ export const EchoContainer = styled.div`
 export const EchoButtonContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
 `;

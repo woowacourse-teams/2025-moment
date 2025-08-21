@@ -1,4 +1,3 @@
-import { LEVEL_MAP } from '@/app/layout/data/navItems';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
@@ -7,6 +6,7 @@ import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { WriteTime } from '@/shared/ui/writeTime';
+import { WriterInfo } from '@/widgets/writerInfo';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -27,10 +27,7 @@ export function TodayCommentForm() {
         <Card.TitleContainer
           title={
             <S.TitleWrapper>
-              <S.UserInfoWrapper>
-                <S.NotLoggedIcon src={'/images/firstAsteroid.png'} alt={''} />
-                <S.NotLoggedNickname>푸르른 물방울의 테리우스</S.NotLoggedNickname>
-              </S.UserInfoWrapper>
+              <WriterInfo writer={'푸르른 물방울의 테리우스'} level={'ASTEROID_WHITE'} />
               <S.ActionWrapper>
                 <WriteTime date="9시간 전" />
               </S.ActionWrapper>
@@ -74,13 +71,7 @@ export function TodayCommentForm() {
       <Card.TitleContainer
         title={
           <S.TitleWrapper>
-            <S.UserInfoWrapper>
-              <S.LevelImage
-                src={LEVEL_MAP[momentData.level as keyof typeof LEVEL_MAP]}
-                alt={momentData.level}
-              />
-              <span>{momentData.nickname}</span>
-            </S.UserInfoWrapper>
+            <WriterInfo writer={momentData.nickname} level={momentData.level} />
             <S.ActionWrapper>
               <WriteTime date={momentData.createdAt} />
               <S.RefreshButton onClick={() => refetch()}>

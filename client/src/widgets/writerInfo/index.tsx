@@ -18,14 +18,23 @@ export const WriterInfo = ({ writer, level }: WriterInfo) => {
 const CommenterInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 `;
 
 const LevelIcon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
+
+  @media (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const WriterName = styled.span`
-  font-size: 1rem;
+  font-size: 1.4rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;

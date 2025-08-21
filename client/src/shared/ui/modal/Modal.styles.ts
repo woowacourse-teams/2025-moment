@@ -37,19 +37,12 @@ const modalFrameStyles = {
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     
-    width: 500px;
-    height: 500px;
-    
-    ${theme.mediaQueries.tablet} {
-      padding: 20px 28px;
-      width: 450px
-      height: 450px;
-    }
+    width: 520px;
+    height: 520px;
     
     ${theme.mediaQueries.mobile} {
-      padding: 12px 18px;
-      width: 80%;
-      height: 400px;
+      padding: 16px 28px;
+      width: 90%;
     }
   `,
 };

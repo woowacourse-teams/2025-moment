@@ -162,22 +162,6 @@ export const MobileNavItem = styled.div<{ $isActive?: boolean; $shadow?: boolean
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  ${({ theme, $shadow }) =>
-    $shadow &&
-    css`
-      box-shadow: 0px 0px 15px ${theme.colors['yellow-300_80']};
-      animation: shadowPulse 2s ease-in-out infinite;
-
-      @keyframes shadowPulse {
-        0%,
-        100% {
-          box-shadow: 0px 0px 10px ${theme.colors['yellow-300_80']};
-        }
-        50% {
-          box-shadow: 0px 0px 25px ${theme.colors['yellow-300_80']};
-        }
-      }
-    `}
 
   a {
     color: ${({ theme, $isActive }) =>
@@ -187,6 +171,49 @@ export const MobileNavItem = styled.div<{ $isActive?: boolean; $shadow?: boolean
     text-decoration: none;
     display: block;
     transition: all 0.3s ease;
+    position: relative;
+    width: 100%;
+    text-align: center;
+
+    span {
+      position: relative;
+      display: inline-block;
+
+      ${({ theme, $shadow }) =>
+        $shadow &&
+        css`
+          &::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -12px;
+            width: 8px;
+            height: 8px;
+            background: ${theme.colors['yellow-300']};
+            border-radius: 50%;
+            box-shadow:
+              0 0 4px ${theme.colors['yellow-300']},
+              0 0 8px ${theme.colors['yellow-300_80']};
+            animation: dotPulse 2s ease-in-out infinite;
+          }
+
+          @keyframes dotPulse {
+            0%,
+            100% {
+              transform: scale(0.6);
+              box-shadow:
+                0 0 2px ${theme.colors['yellow-300']},
+                0 0 4px ${theme.colors['yellow-300_80']};
+            }
+            50% {
+              transform: scale(1);
+              box-shadow:
+                0 0 4px ${theme.colors['yellow-300']},
+                0 0 8px ${theme.colors['yellow-300_80']};
+            }
+          }
+        `}
+    }
   }
 
   &:hover a {
