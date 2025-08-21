@@ -91,7 +91,7 @@ public class AuthService {
                 .filter(cookie -> cookie.getName()
                         .equals("refreshToken"))
                 .findFirst()
-                .orElseThrow(() -> new MomentException(ErrorCode.TOKEN_NOT_FOUND))
+                .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND))
                 .getValue();
     }
 
