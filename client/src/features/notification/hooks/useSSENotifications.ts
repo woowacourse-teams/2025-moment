@@ -10,7 +10,7 @@ const ECHO_REWARD_POINT = 3;
 
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
-  const { showError, showSuccess } = useToast();
+  const { showError, showSuccess, showMessage } = useToast();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
@@ -60,10 +60,11 @@ export const useSSENotifications = () => {
         queryClient.setQueryData(['notifications'], updatedData);
 
         if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
-          showSuccess('나의 모멘트에 코멘트가 달렸습니다!');
+          showMessage('나의 모멘트에 코멘트가 달렸습니다!', 'moment');
         } else if (sseData.notificationType === 'NEW_REPLY_ON_COMMENT') {
-          showSuccess(
-            `나의 코멘트에 에코가 달렸습니다! 별조각 ${ECHO_REWARD_POINT} 개를 획득했습니다!`,
+          showMessage(
+            `나의 코멘트에 에코가 달렸습니다! 별조각 ${ECHO_REWARD_POINT}개를 획득했습니다!`,
+            'comment',
           );
         }
 
@@ -87,7 +88,7 @@ export const useSSENotifications = () => {
       console.log('🔌 [SSE] 연결 해제...');
       eventSource.close();
     };
-  }, [isLoggedIn, queryClient, showError, showSuccess]);
+  }, [isLoggedIn, queryClient, showError, showSuccess, showMessage]);
 
   return { isConnected: isLoggedIn };
 };

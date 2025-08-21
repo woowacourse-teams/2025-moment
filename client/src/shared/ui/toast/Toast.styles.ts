@@ -2,7 +2,7 @@ import { CustomTheme } from '@/app/styles/theme';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
-export type ToastVariant = 'success' | 'error';
+export type ToastVariant = 'success' | 'error' | 'message';
 
 const slideIn = keyframes`
   from {
@@ -37,6 +37,11 @@ const toastVariants = {
     border-left: 4px solid ${theme.colors['red-500']};
     color: ${theme.colors['red-500']};
   `,
+  message: (theme: CustomTheme) => `
+    background-color: color-mix(in srgb, ${theme.colors['yellow-300_80']} 10%, transparent);
+    border-left: 4px solid ${theme.colors['yellow-300_80']};
+    color: ${theme.colors['yellow-300_80']};
+  `,
 };
 
 export const ToastContainer = styled.div`
@@ -61,6 +66,7 @@ export const ToastContainer = styled.div`
 export const ToastItem = styled.div<{
   variant: ToastVariant;
   isExiting?: boolean;
+  $isClickable?: boolean;
 }>`
   ${({ theme, variant }) => toastVariants[variant](theme)};
   padding: 16px 20px;
@@ -75,6 +81,22 @@ export const ToastItem = styled.div<{
   animation: ${({ isExiting }) => (isExiting ? slideOut : slideIn)} 0.3s ease-out forwards;
   backdrop-filter: blur(8px);
   min-height: 60px;
+
+  ${({ $isClickable }) =>
+    $isClickable &&
+    `
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  `}
 
   @media (max-width: 768px) {
     padding: 14px 16px;

@@ -1,11 +1,12 @@
 import { Navbar } from '@/app/layout/ui/Navbar';
 import { StarField } from '@/app/layout/ui/StarField';
+import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
+import { ToastProvider } from '@/shared/context/toast/ToastProvider';
 import { initGA, sendPageview } from '@/shared/lib/ga';
 import { ErrorBoundary } from '@/shared/ui';
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import * as S from './Layout.styles';
-import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
 
 const GATracker = () => {
   const location = useLocation();
@@ -21,7 +22,7 @@ const GATracker = () => {
   return null;
 };
 
-export const Layout: React.FC = () => {
+const LayoutContent: React.FC = () => {
   useSSENotifications();
 
   return (
@@ -35,5 +36,13 @@ export const Layout: React.FC = () => {
         </ErrorBoundary>
       </S.Main>
     </S.Wrapper>
+  );
+};
+
+export const Layout: React.FC = () => {
+  return (
+    <ToastProvider>
+      <LayoutContent />
+    </ToastProvider>
   );
 };
