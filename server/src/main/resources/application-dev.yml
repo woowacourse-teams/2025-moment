@@ -56,8 +56,8 @@ auth:
   google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
-    redirect-uri: http://api.dev.connectingmoment.com/api/v1/auth/callback/google
-    client-uri: http://dev.connectingmoment.com
+    redirect-uri: https://api.dev.connectingmoment.com/api/v1/auth/callback/google
+    client-uri: https://dev.connectingmoment.com
   password_update:
     uri: http://dev.connectingmoment.com/passwordUpdate?token=
 
