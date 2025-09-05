@@ -3,6 +3,7 @@ package moment.moment.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
 
 @Schema(description = "모멘트 응답")
 public record MomentCreateResponse(
@@ -16,15 +17,19 @@ public record MomentCreateResponse(
         LocalDateTime createdAt,
 
         @Schema(description = "모멘트 내용", example = "야근 힘들어용")
-        String content
+        String content,
+
+        @Schema(description = "태그 이름", example = "일상/여가")
+        String tagName
 ) {
 
-    public static MomentCreateResponse of(Moment moment) {
+    public static MomentCreateResponse of(Moment moment, MomentTag momentTag) {
         return new MomentCreateResponse(
                 moment.getId(),
                 moment.getMomenter().getId(),
                 moment.getCreatedAt(),
-                moment.getContent()
+                moment.getContent(),
+                momentTag.getTagName()
         );
     }
 }

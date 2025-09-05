@@ -15,6 +15,8 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -23,6 +25,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.moment.infrastructure.MomentTagRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -45,8 +48,10 @@ public class MomentService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
     private final EchoRepository echoRepository;
+    private final MomentTagRepository momentTagRepository;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
+    private final TagService tagService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
@@ -63,9 +68,13 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Tag registeredTag = tagService.register(request.tagName());
+        MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+        momentTagRepository.save(momentTag);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return MomentCreateResponse.of(savedMoment, momentTag);
     }
 
     @Transactional
@@ -79,9 +88,13 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Tag registeredTag = tagService.register(request.tagName());
+        MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+        momentTagRepository.save(momentTag);
+
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return MomentCreateResponse.of(savedMoment, momentTag);
     }
 
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {

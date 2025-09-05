@@ -44,4 +44,8 @@ public class MomentTag extends BaseEntity {
         this.moment = moment;
         this.tag = tag;
     }
+
+    public String getTagName() {
+        return tag.getName();
+    }
 }

@@ -28,7 +28,7 @@ public class Tag extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String name;
 
     // TODO : 삭제 전략 고민
