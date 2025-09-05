@@ -319,12 +319,13 @@ class momentServiceTest {
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
         Moment moment = new Moment("안녕", user, WriteType.BASIC);
+        List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response.id()).isEqualTo(moment.getId());
@@ -336,11 +337,13 @@ class momentServiceTest {
         // given
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        List<String> tagNames = List.of("일상/여가");
+
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(Collections.emptyList());
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(Collections.emptyList());
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response).isEqualTo(CommentableMomentResponse.empty());

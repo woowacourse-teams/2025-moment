@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -207,11 +208,18 @@ public class MomentService {
         return MomentCreationStatusResponse.createDeniedStatus();
     }
 
-    public CommentableMomentResponse getCommentableMoment(Long id) {
+    public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
         User user = userQueryService.getUserById(id);
 
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+
+        List<Moment> commentableMoments = Collections.emptyList();
+        if(tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+        }
+        if(!tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
+        }
 
         if (commentableMoments.isEmpty()) {
             return CommentableMomentResponse.empty();
