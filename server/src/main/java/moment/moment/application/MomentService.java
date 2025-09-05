@@ -127,9 +127,18 @@ public class MomentService {
         String nextCursor = extractCursor(momentsWithinCursor, hasNextPage);
         List<Moment> moments = extractMoments(momentsWithinCursor, pageSize);
 
+        List<MomentTag> momentTags = momentTagRepository.findAllByMomentIn(moments);
+
+        Map<Moment, List<MomentTag>> momentTagsByMoment = momentTags.stream()
+                .collect(Collectors.groupingBy(MomentTag::getMoment));
+
         if (comments.isEmpty()) {
             List<MyMomentResponse> responses = moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, Collections.emptyList(), Collections.emptyMap()))
+                    .map(moment -> MyMomentResponse.of(
+                            moment,
+                            Collections.emptyList(),
+                            Collections.emptyMap(),
+                            momentTagsByMoment.getOrDefault(moment, Collections.emptyList())))
                     .toList();
 
             return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
@@ -149,7 +158,9 @@ public class MomentService {
                             .collect(Collectors.toMap(Comment::getId,
                                     comment -> echosByComment.getOrDefault(comment, List.of())));
 
-                    return MyMomentResponse.of(moment, momentComments, commentEchos);
+                    List<MomentTag> momentTag = momentTagsByMoment.getOrDefault(moment, List.of());
+
+                    return MyMomentResponse.of(moment, momentComments, commentEchos, momentTag);
                 })
                 .toList();
 

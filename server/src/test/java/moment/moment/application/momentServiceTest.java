@@ -192,6 +192,8 @@ class momentServiceTest {
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Echo echo = new Echo("HEART", commenter, comment);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(moment, tag);
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
@@ -204,6 +206,9 @@ class momentServiceTest {
 
         given(echoRepository.findAllByCommentIn(any(List.class)))
                 .willReturn(List.of(echo));
+
+        given(momentTagRepository.findAllByMomentIn(any(List.class)))
+                .willReturn(List.of(momentTag));
 
         // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
