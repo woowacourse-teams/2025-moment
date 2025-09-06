@@ -91,4 +91,5 @@ cloud:
       auto: false
 
 s3:
-  bucket-name: techcourse-project-2025
+  bucket-name: ${S3_BUCKET_NAME}
+  bucket-path: ${S3_PROD_BUCKET_PATH}
