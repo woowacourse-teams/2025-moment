@@ -64,11 +64,6 @@ auth:
 logging:
   config: classpath:logback-prod.xml
 
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-
 management:
   metrics:
     enable:
@@ -87,4 +82,14 @@ management:
         enabled: true
         step: 1m
         namespace: Moment/prod
-        
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+s3:
+  bucket-name: ${S3_BUCKET_NAME}
+  bucket-path: ${S3_PROD_BUCKET_PATH}
