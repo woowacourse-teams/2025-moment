@@ -1,4 +1,11 @@
 package moment.storage.dto.request;
 
-public record UploadUrlRequest() {
+import jakarta.validation.constraints.NotNull;
+
+public record UploadUrlRequest(
+        @NotNull
+        String imageName,
+        @NotNull
+        String imageType
+) {
 }

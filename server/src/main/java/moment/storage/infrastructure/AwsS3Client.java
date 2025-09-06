@@ -25,7 +25,7 @@ public class AwsS3Client {
 
         String presignedUrl = s3Presigner.presignPutObject(presignRequest).url().toString();
 
-        return new UploadUrlResponse(presignedUrl, filePath);
+        return new UploadUrlResponse(presignedUrl, presignedUrl.split("\\?")[0]);
     }
 
     private PutObjectPresignRequest buildPresignedRequest(String filePath) {

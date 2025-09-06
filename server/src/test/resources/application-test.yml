@@ -61,3 +61,14 @@ auth:
 
 logging:
   config: classpath:logback-test.xml
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+s3:
+  bucket-name: ${S3_BUCKET_NAME}
+  bucket-path: ${S3_DEV_BUCKET_PATH}
