@@ -64,11 +64,6 @@ auth:
 logging:
   config: classpath:logback-dev.xml
 
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-
 management:
   metrics:
     enable:
@@ -87,3 +82,13 @@ management:
         enabled: true
         step: 1m
         namespace: Moment/dev
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+s3:
+  bucket-name: techcourse-project-2025
