@@ -1,5 +1,6 @@
 package moment.global.config;
 
+import java.net.URI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -14,6 +15,7 @@ public class S3Config {
         return S3Presigner.builder()
                 .region(Region.AP_NORTHEAST_2)
                 .credentialsProvider(DefaultCredentialsProvider.create())
+                .endpointOverride(URI.create("https://s3.ap-northeast-2.amazonaws.com"))
                 .build();
     }
 }
