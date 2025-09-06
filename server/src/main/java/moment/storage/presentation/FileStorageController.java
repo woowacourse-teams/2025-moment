@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/storage")
 public class FileStorageController {
 
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/upload-url")
     public ResponseEntity<SuccessResponse<UploadUrlResponse>> getUploadUrl(
