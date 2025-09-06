@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Moment API", description = "모멘트 관련 API 명세")
+@Tag(name = "STORAGE API", description = "S3 저장소 API 명세")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/storage")
