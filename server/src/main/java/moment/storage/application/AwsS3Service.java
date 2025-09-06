@@ -17,7 +17,7 @@ public class AwsS3Service {
     private String bucketPath;
 
     public UploadUrlResponse getUploadUrl(String fileName) {
-        String filePath = UUID.randomUUID() + fileName;
+        String filePath = bucketPath + UUID.randomUUID() + fileName;
 
         return awsS3Client.getUploadUrl(filePath);
     }
