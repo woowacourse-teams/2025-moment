@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.global.dto.response.SuccessResponse;
-import moment.storage.application.AwsS3Service;
+import moment.storage.application.FileStorageService;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import org.springframework.http.HttpStatus;
@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/storage")
-public class StorageController {
+public class FileStorageController {
 
-    private AwsS3Service awsS3Service;
+    private FileStorageService fileStorageService;
 
     @GetMapping("/upload-url")
     public ResponseEntity<SuccessResponse<UploadUrlResponse>> getUploadUrl(
             @Valid @RequestBody UploadUrlRequest request
     ) {
-        UploadUrlResponse response = awsS3Service.getUploadUrl(request.imageName());
+        UploadUrlResponse response = fileStorageService.getUploadUrl(request.imageName());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

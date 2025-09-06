@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AwsS3Service {
+public class FileStorageService {
 
     private final AwsS3Client awsS3Client;
 
