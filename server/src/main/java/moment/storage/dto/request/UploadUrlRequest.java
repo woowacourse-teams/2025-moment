@@ -3,6 +3,7 @@ package moment.storage.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(description = "파일 업로드 Url 요청")
 public record UploadUrlRequest(
         @Schema(description = "파일 이름", example = "my_cat.jpg")
         @NotBlank(message = "FILE_NAME_NOT_EXIST")
