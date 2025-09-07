@@ -43,6 +43,13 @@ spring:
           starttls:
             enable: true
 
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      stack:
+        auto: false
+
 jwt:
   secret:
     access_key: ${JWT_ACCESS_SECRET_KEY}
@@ -82,13 +89,6 @@ management:
         enabled: true
         step: 1m
         namespace: Moment/dev
-
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
 
 s3:
   bucket-name: ${S3_BUCKET_NAME}
