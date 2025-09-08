@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
@@ -51,6 +53,7 @@ public class MomentService {
     private final MomentTagRepository momentTagRepository;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
+    private final MomentImageService momentImageService;
     private final TagService tagService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
@@ -68,6 +71,8 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
         for(String tagName : request.tagNames()) {
             Tag registeredTag = tagService.getOrRegister(tagName);
             MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
@@ -77,7 +82,8 @@ public class MomentService {
 
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment, savedMomentTags);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
 
     @Transactional
@@ -91,6 +97,8 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
         for(String tagName : request.tagNames()) {
             Tag registeredTag = tagService.getOrRegister(tagName);
             MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
@@ -100,7 +108,8 @@ public class MomentService {
 
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment, savedMomentTags);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
 
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {

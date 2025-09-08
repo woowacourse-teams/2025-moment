@@ -1,7 +1,14 @@
 package moment.comment.application;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
@@ -28,12 +35,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class CommentService {
     private final RewardService rewardService;
     private final NotificationRepository notificationRepository;
     private final SseNotificationService sseNotificationService;
+    private final CommentImageService commentImageService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -64,6 +66,8 @@ public class CommentService {
 
         Comment commentWithoutId = request.toComment(commenter, moment);
         Comment savedComment = commentRepository.save(commentWithoutId);
+
+        Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
 
         Notification notificationWithoutId = new Notification(
                 moment.getMomenter(),
@@ -84,7 +88,8 @@ public class CommentService {
 
         rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
-        return CommentCreateResponse.from(savedComment);
+        return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
+                .orElseGet(() -> CommentCreateResponse.from(savedComment));
     }
 
     public MyCommentPageResponse getCommentsByUserIdWithCursor(String cursor, int pageSize, Long commenterId) {

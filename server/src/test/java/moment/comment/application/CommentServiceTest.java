@@ -13,7 +13,9 @@ import static org.mockito.Mockito.times;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
@@ -74,10 +76,13 @@ class CommentServiceTest {
     @Mock
     private RewardService rewardService;
 
+    @Mock
+    private CommentImageService commentImageService;
+
     @Test
     void Comment를_등록한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -105,7 +110,7 @@ class CommentServiceTest {
     @Test
     void 존재하지_않는_Moment에_Comment_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(
                 new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
@@ -121,7 +126,7 @@ class CommentServiceTest {
     @Test
     void 존재하지_않는_User가_Comment_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         given(userQueryService.getUserById(any(Long.class))).willThrow(new MomentException(ErrorCode.USER_NOT_FOUND));
 
@@ -186,7 +191,7 @@ class CommentServiceTest {
     @Test
     void 동일_유저가_이미_코멘트를_등록한_모멘트에_다시_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -206,7 +211,7 @@ class CommentServiceTest {
     @Test
     void 다른_유저가_이미_코멘트가_있는_모멘트에_새로_코멘트를_등록하는_경우_성공한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         ReflectionTestUtils.setField(commenter, "id", 1L);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -230,5 +235,41 @@ class CommentServiceTest {
         // when & then
         assertThatCode(() -> commentService.addComment(request, commenter.getId()))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 이미지를_포함한_Comment를_등록한다() {
+        // given
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, imageUrl, imageName);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+
+        CommentImage commentImage = new CommentImage(comment, imageUrl, imageName);
+
+        Notification notification = new Notification(
+                momenter,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                1L);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
+        given(commentImageService.create(any(CommentCreateRequest.class), any(Comment.class)))
+                .willReturn(Optional.of(commentImage));
+        doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
+
+        // when
+        commentService.addComment(request, 1L);
+
+        // then
+        then(commentRepository).should(times(1)).save(any(Comment.class));
     }
 }
