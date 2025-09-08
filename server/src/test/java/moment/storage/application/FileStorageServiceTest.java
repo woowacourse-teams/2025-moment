@@ -8,6 +8,7 @@ import java.util.UUID;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.storage.infrastructure.AwsS3Client;
+import moment.user.application.UserQueryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,9 @@ class FileStorageServiceTest {
     @Mock
     AwsS3Client awsS3Client;
 
+    @Mock
+    UserQueryService userQueryService;
+
     @Test
     void 이미지_업로드_url을_생성한다() {
         // given
@@ -43,7 +47,7 @@ class FileStorageServiceTest {
         // when
         try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
             mockedUuid.when(UUID::randomUUID).thenReturn(fixedUuid);
-            uploadUrl = fileStorageService.getUploadUrl(request);
+            uploadUrl = fileStorageService.getUploadUrl(request, 1L);
         }
 
         // that
