@@ -1,5 +1,7 @@
 package moment.moment.infrastructure;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.user.domain.User;
@@ -8,9 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public interface MomentRepository extends JpaRepository<Moment, Long> {
@@ -68,4 +67,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     List<Moment> findCommentableMomentsByTagNames(@Param("user") User user,
                                                   @Param("someDaysAgo") LocalDateTime someDaysAgo,
                                                   @Param("tagNames") List<String> tagNames);
+
+    List<Moment> findByMomenterAndCreatedAtAfter(User momenter, LocalDateTime dateTime);
 }
