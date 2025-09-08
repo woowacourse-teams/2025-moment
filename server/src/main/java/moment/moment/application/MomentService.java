@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +68,7 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        Tag registeredTag = tagService.register(request.tagName());
+        Tag registeredTag = tagService.getOrRegister(request.tagName());
         MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
         momentTagRepository.save(momentTag);
 
@@ -89,7 +88,7 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        Tag registeredTag = tagService.register(request.tagName());
+        Tag registeredTag = tagService.getOrRegister(request.tagName());
         MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
         momentTagRepository.save(momentTag);
 

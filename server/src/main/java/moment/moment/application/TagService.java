@@ -14,7 +14,7 @@ public class TagService {
     private final TagRepository tagRepository;
 
     @Transactional
-    public Tag register(String name) {
+    public Tag getOrRegister(String name) {
         Optional<Tag> tag = tagRepository.findByName(name);
         return tag.orElseGet(() -> tagRepository.save(new Tag(name)));
     }

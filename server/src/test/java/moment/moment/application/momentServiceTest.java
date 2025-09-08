@@ -96,7 +96,7 @@ class momentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
-        given(tagService.register(any(String.class))).willReturn(tag);
+        given(tagService.getOrRegister(any(String.class))).willReturn(tag);
         given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
@@ -146,7 +146,7 @@ class momentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
-        given(tagService.register(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
         given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
@@ -300,7 +300,7 @@ class momentServiceTest {
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
-        given(tagService.register(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
         given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
         MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", "일상/여가");
