@@ -21,12 +21,15 @@ import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.MomentImage;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.moment.infrastructure.MomentTagRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -76,19 +79,30 @@ class momentServiceTest {
     @Mock
     private MomentImageService momentImageService;
 
+    @Mock
+    private TagService tagService;
+
+    @Mock
+    private MomentTagRepository momentTagRepository;
+
     @Test
     void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(expect, tag);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
+        given(tagService.getOrRegister(any(String.class))).willReturn(tag);
+        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -108,7 +122,8 @@ class momentServiceTest {
     void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
@@ -123,15 +138,20 @@ class momentServiceTest {
     void 추가_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(expect, tag);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -153,7 +173,8 @@ class momentServiceTest {
     void 추가_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -175,6 +196,8 @@ class momentServiceTest {
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Echo echo = new Echo("HEART", commenter, comment);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(moment, tag);
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
@@ -187,6 +210,9 @@ class momentServiceTest {
 
         given(echoRepository.findAllByCommentIn(any(List.class)))
                 .willReturn(List.of(echo));
+
+        given(momentTagRepository.findAllByMomentIn(any(List.class)))
+                .willReturn(List.of(momentTag));
 
         // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
@@ -272,12 +298,17 @@ class momentServiceTest {
         Moment savedMoment = new Moment("레벨3 (리)바이", momenter, WriteType.BASIC);
         Long momentId = 1L;
         ReflectionTestUtils.setField(savedMoment, "id", momentId);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(savedMoment, tag);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
-        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", null, null);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", tagNames, null, null);
 
         // when
         momentService.addBasicMoment(request, 1L);
@@ -293,12 +324,13 @@ class momentServiceTest {
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
         Moment moment = new Moment("안녕", user, WriteType.BASIC);
+        List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response.id()).isEqualTo(moment.getId());
@@ -310,11 +342,13 @@ class momentServiceTest {
         // given
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        List<String> tagNames = List.of("일상/여가");
+
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(Collections.emptyList());
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(Collections.emptyList());
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response).isEqualTo(CommentableMomentResponse.empty());

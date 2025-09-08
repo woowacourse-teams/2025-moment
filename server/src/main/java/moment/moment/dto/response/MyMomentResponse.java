@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
 import moment.reply.domain.Echo;
 
 @Schema(description = "내 모멘트 조회 응답")
@@ -20,13 +21,16 @@ public record MyMomentResponse(
         @Schema(description = "내 모멘트 내용", example = "야근 힘들어요 퓨ㅠㅠ")
         String content,
 
+        @Schema(description = "태그 이름", example = "일상/여가")
+        TagNamesResponse tagNames,
+
         @Schema(description = "내 모멘트 작성 시간,", example = "2025-07-14T16:24:34Z")
         LocalDateTime createdAt,
 
         List<MyMomentCommentResponse> comments
 ) {
 
-    public static MyMomentResponse of(Moment moment, List<Comment> comments, Map<Long, List<Echo>> echoMap) {
+    public static MyMomentResponse of(Moment moment, List<Comment> comments, Map<Long, List<Echo>> echoMap, List<MomentTag> momentTags) {
         if (!comments.isEmpty()) {
             List<MyMomentCommentResponse> myMomentCommentResponses = comments.stream()
                     .map(comment -> MyMomentCommentResponse.of(
@@ -37,6 +41,7 @@ public record MyMomentResponse(
                     moment.getId(),
                     moment.getMomenterId(),
                     moment.getContent(),
+                    TagNamesResponse.from(momentTags),
                     moment.getCreatedAt(),
                     myMomentCommentResponses);
         }
@@ -45,6 +50,7 @@ public record MyMomentResponse(
                 moment.getId(),
                 moment.getMomenterId(),
                 moment.getContent(),
+                TagNamesResponse.from(momentTags),
                 moment.getCreatedAt(),
                 Collections.emptyList());
     }

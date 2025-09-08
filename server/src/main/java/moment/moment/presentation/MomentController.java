@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.parameters.QueryParameter;
 import jakarta.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
@@ -171,9 +174,10 @@ public class MomentController {
     })
     @GetMapping("/commentable")
     public ResponseEntity<SuccessResponse<CommentableMomentResponse>> readCommentableMoment(
-            @AuthenticationPrincipal Authentication authentication
+            @AuthenticationPrincipal Authentication authentication,
+            @RequestParam(required = false, defaultValue = "") List<String> tagName
     ) {
-        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id());
+        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id(), tagName);
 
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

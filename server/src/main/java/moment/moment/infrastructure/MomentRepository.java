@@ -40,15 +40,32 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     );
 
     @Query("""
-    SELECT m FROM moments m
-    WHERE m.momenter <> :user
-      AND NOT EXISTS (
-          SELECT 1 FROM comments c
-          WHERE c.moment = m
-            AND c.commenter = :user
-      )
-      AND m.createdAt >= :someDaysAgo
-    """)
+            SELECT m FROM moments m
+            WHERE m.momenter <> :user
+              AND NOT EXISTS (
+                  SELECT 1 FROM comments c
+                  WHERE c.moment = m
+                    AND c.commenter = :user
+              )
+              AND m.createdAt >= :someDaysAgo
+            """)
     List<Moment> findCommentableMoments(@Param("user") User user,
                                         @Param("someDaysAgo") LocalDateTime someDaysAgo);
+
+    @Query("""
+            SELECT m FROM moments m
+            LEFT JOIN moment_tags mt ON mt.moment = m
+            LEFT JOIN tags t ON t = mt.tag
+            WHERE m.momenter <> :user
+              AND NOT EXISTS (
+                  SELECT 1 FROM comments c
+                  WHERE c.moment = m
+                    AND c.commenter = :user
+              )
+              AND m.createdAt >= :someDaysAgo
+              AND (t.name IN :tagNames)
+            """)
+    List<Moment> findCommentableMomentsByTagNames(@Param("user") User user,
+                                                  @Param("someDaysAgo") LocalDateTime someDaysAgo,
+                                                  @Param("tagNames") List<String> tagNames);
 }
