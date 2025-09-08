@@ -26,7 +26,7 @@ public class FileStorageController {
     public ResponseEntity<SuccessResponse<UploadUrlResponse>> getUploadUrl(
             @Valid @RequestBody UploadUrlRequest request
     ) {
-        UploadUrlResponse response = fileStorageService.getUploadUrl(request.imageName());
+        UploadUrlResponse response = fileStorageService.getUploadUrl(request);
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
