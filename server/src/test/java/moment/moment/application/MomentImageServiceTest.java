@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import java.util.List;
 import java.util.Optional;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
@@ -38,8 +39,9 @@ class MomentImageServiceTest {
         String momentContent = "재미있는 내용이네요.";
         String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
         String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
 
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment moment = new Moment(momentContent, momenter, WriteType.BASIC);
@@ -64,8 +66,9 @@ class MomentImageServiceTest {
         String momentContent = "재미있는 내용이네요.";
         String imageUrl = null;
         String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
 
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment moment = new Moment(momentContent, momenter, WriteType.BASIC);

@@ -345,7 +345,8 @@ class momentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(Collections.emptyList());
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(
+                Collections.emptyList());
 
         // when
         CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
@@ -360,8 +361,9 @@ class momentServiceTest {
         String momentContent = "재미있는 내용이네요.";
         String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
         String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
@@ -397,8 +399,9 @@ class momentServiceTest {
         String momentContent = "재미있는 내용이네요.";
         String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
         String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
