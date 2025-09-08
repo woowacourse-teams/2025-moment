@@ -6,15 +6,20 @@ import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
+import { TagList } from '@/features/moment/ui/TagList';
 
 export function TodayMomentForm({
   handleContentChange,
   handleSendContent,
+  handleTagNameClick,
   content,
+  tagNames,
 }: {
   handleContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSendContent: () => void;
+  handleTagNameClick: (tagName: string) => void;
   content: string;
+  tagNames: string[];
 }) {
   const navigate = useNavigate();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
@@ -46,6 +51,10 @@ export function TodayMomentForm({
           subtitle="뿌듯한 순간, 위로받고 싶은 순간, 기쁜 순간 모든 모멘트를 자유롭게 적어보세요"
         />
         <Card.Content>
+          <S.TagWrapper>
+            <S.TagLabel>태그: </S.TagLabel>
+            <TagList onTagClick={handleTagNameClick} selectedTag={tagNames} />
+          </S.TagWrapper>
           <TextArea
             maxLength={MAX_LENGTH}
             placeholder="오늘 어떤 모멘트를 경험하셨나요? 솔직한 마음을 들려주세요..."
