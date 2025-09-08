@@ -3,6 +3,7 @@ import { useMomentsExtraMutation } from './useMomentsExtraMutation';
 
 export const useSendExtraMoments = () => {
   const [content, setContent] = useState('');
+  const [tagNames, setTagNames] = useState<string[]>([]);
 
   const { mutateAsync: sendExtraMoments, isSuccess } = useMomentsExtraMutation();
 
@@ -11,9 +12,13 @@ export const useSendExtraMoments = () => {
     setContent(newContent);
   };
 
+  const handleTagNameClick = (tagName: string) => {
+    setTagNames([...tagNames, tagName]);
+  };
+
   const handleSendExtraContent = async () => {
     try {
-      await sendExtraMoments(content);
+      await sendExtraMoments({ content: content, tagNames: tagNames });
     } catch (error) {
       console.error('Error sending moments:', error);
     }
@@ -21,8 +26,10 @@ export const useSendExtraMoments = () => {
 
   return {
     handleExtraContentChange,
+    handleTagNameClick,
     handleSendExtraContent,
     content,
+    tagNames,
     isSuccess,
   };
 };
