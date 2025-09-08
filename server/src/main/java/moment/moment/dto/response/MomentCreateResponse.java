@@ -2,7 +2,10 @@ package moment.moment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.List;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
+import software.amazon.awssdk.services.cloudwatch.endpoints.internal.Value.Str;
 
 @Schema(description = "모멘트 응답")
 public record MomentCreateResponse(
@@ -16,15 +19,23 @@ public record MomentCreateResponse(
         LocalDateTime createdAt,
 
         @Schema(description = "모멘트 내용", example = "야근 힘들어용")
-        String content
+        String content,
+
+        @Schema(description = "태그 이름 목록", example = "[\"일상/여가\", \"운동\"]")
+        List<String> tagNames
 ) {
 
-    public static MomentCreateResponse of(Moment moment) {
+    public static MomentCreateResponse of(Moment moment, List<MomentTag> momentTags) {
+        List<String> tagNames = momentTags.stream()
+                .map(MomentTag::getTagName)
+                .toList();
+
         return new MomentCreateResponse(
                 moment.getId(),
                 moment.getMomenter().getId(),
                 moment.getCreatedAt(),
-                moment.getContent()
+                moment.getContent(),
+                tagNames
         );
     }
 }

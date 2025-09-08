@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Comparator;
+import java.util.List;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
@@ -69,8 +70,9 @@ class MomentControllerTest {
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -99,8 +101,9 @@ class MomentControllerTest {
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -129,8 +132,9 @@ class MomentControllerTest {
         momenter.addStarAndUpdateLevel(30);
         User savedMomenter = userRepository.saveAndFlush(momenter);
         String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         MomentCreateResponse response = RestAssured.given().log().all()
@@ -154,7 +158,7 @@ class MomentControllerTest {
 
         String contentExtra = "추가 모멘트 재미있는 내용이네요~~?";
 
-        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra);
+        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra, tagNames);
 
         // when
         MomentCreateResponse responseExtra = RestAssured.given().log().all()
@@ -178,7 +182,8 @@ class MomentControllerTest {
 
         // when
         String contentExtraExtra = "추가 추가 모멘트 재미있는 내용이네요~~?";
-        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra);
+
+        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra, tagNames);
 
         MomentCreateResponse responseExtraExtra = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

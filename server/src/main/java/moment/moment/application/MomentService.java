@@ -15,6 +15,8 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -23,6 +25,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.moment.infrastructure.MomentTagRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -45,8 +48,10 @@ public class MomentService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
     private final EchoRepository echoRepository;
+    private final MomentTagRepository momentTagRepository;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
+    private final TagService tagService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
@@ -63,9 +68,16 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        for(String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+            momentTagRepository.save(momentTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagRepository.findAllByMoment(savedMoment);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return MomentCreateResponse.of(savedMoment, savedMomentTags);
     }
 
     @Transactional
@@ -79,9 +91,16 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        for(String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+            momentTagRepository.save(momentTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagRepository.findAllByMoment(savedMoment);
+
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return MomentCreateResponse.of(savedMoment, savedMomentTags);
     }
 
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
@@ -114,9 +133,18 @@ public class MomentService {
         String nextCursor = extractCursor(momentsWithinCursor, hasNextPage);
         List<Moment> moments = extractMoments(momentsWithinCursor, pageSize);
 
+        List<MomentTag> momentTags = momentTagRepository.findAllByMomentIn(moments);
+
+        Map<Moment, List<MomentTag>> momentTagsByMoment = momentTags.stream()
+                .collect(Collectors.groupingBy(MomentTag::getMoment));
+
         if (comments.isEmpty()) {
             List<MyMomentResponse> responses = moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, Collections.emptyList(), Collections.emptyMap()))
+                    .map(moment -> MyMomentResponse.of(
+                            moment,
+                            Collections.emptyList(),
+                            Collections.emptyMap(),
+                            momentTagsByMoment.getOrDefault(moment, Collections.emptyList())))
                     .toList();
 
             return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
@@ -136,7 +164,9 @@ public class MomentService {
                             .collect(Collectors.toMap(Comment::getId,
                                     comment -> echosByComment.getOrDefault(comment, List.of())));
 
-                    return MyMomentResponse.of(moment, momentComments, commentEchos);
+                    List<MomentTag> momentTag = momentTagsByMoment.getOrDefault(moment, List.of());
+
+                    return MyMomentResponse.of(moment, momentComments, commentEchos, momentTag);
                 })
                 .toList();
 
@@ -183,11 +213,18 @@ public class MomentService {
         return MomentCreationStatusResponse.createDeniedStatus();
     }
 
-    public CommentableMomentResponse getCommentableMoment(Long id) {
+    public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
         User user = userQueryService.getUserById(id);
 
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+
+        List<Moment> commentableMoments = Collections.emptyList();
+        if(tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+        }
+        if(!tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
+        }
 
         if (commentableMoments.isEmpty()) {
             return CommentableMomentResponse.empty();
