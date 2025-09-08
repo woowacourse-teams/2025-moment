@@ -84,8 +84,8 @@ class momentServiceTest {
     void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        String tagName = "일상/여가";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagName);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -118,8 +118,8 @@ class momentServiceTest {
     void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        String tagName = "일상/여가";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagName);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
@@ -134,8 +134,8 @@ class momentServiceTest {
     void 추가_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        String tagName = "일상/여가";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagName);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -169,8 +169,8 @@ class momentServiceTest {
     void 추가_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        String tagName = "일상/여가";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagName);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -303,7 +303,8 @@ class momentServiceTest {
         given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
         given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
 
-        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", "일상/여가");
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", tagNames);
 
         // when
         momentService.addBasicMoment(request, 1L);

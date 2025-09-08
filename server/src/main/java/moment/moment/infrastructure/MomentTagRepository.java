@@ -10,4 +10,6 @@ public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
 
     @EntityGraph(attributePaths = {"moment", "tag"})
     List<MomentTag> findAllByMomentIn(List<Moment> moments);
+
+    List<MomentTag> findAllByMoment(Moment savedMoment);
 }

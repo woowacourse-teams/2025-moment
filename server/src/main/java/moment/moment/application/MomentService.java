@@ -68,13 +68,16 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        Tag registeredTag = tagService.getOrRegister(request.tagName());
-        MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
-        momentTagRepository.save(momentTag);
+        for(String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+            momentTagRepository.save(momentTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagRepository.findAllByMoment(savedMoment);
 
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment, momentTag);
+        return MomentCreateResponse.of(savedMoment, savedMomentTags);
     }
 
     @Transactional
@@ -88,13 +91,16 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
-        Tag registeredTag = tagService.getOrRegister(request.tagName());
-        MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
-        momentTagRepository.save(momentTag);
+        for(String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
+            momentTagRepository.save(momentTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagRepository.findAllByMoment(savedMoment);
 
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment, momentTag);
+        return MomentCreateResponse.of(savedMoment, savedMomentTags);
     }
 
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
