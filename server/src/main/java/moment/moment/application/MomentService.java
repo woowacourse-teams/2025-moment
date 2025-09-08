@@ -47,6 +47,7 @@ public class MomentService {
     private final EchoRepository echoRepository;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
+    private final MomentImageService momentImageService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
