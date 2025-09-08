@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -19,6 +20,7 @@ import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -71,11 +73,14 @@ class momentServiceTest {
     @Mock
     private RewardService rewardService;
 
+    @Mock
+    private MomentImageService momentImageService;
+
     @Test
     void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -97,14 +102,13 @@ class momentServiceTest {
                 () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
                 () -> then(momentRepository).should(times(1)).save(any(Moment.class))
         );
-
     }
 
     @Test
     void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
@@ -119,7 +123,7 @@ class momentServiceTest {
     void 추가_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -149,7 +153,7 @@ class momentServiceTest {
     void 추가_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -273,7 +277,7 @@ class momentServiceTest {
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
 
-        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여");
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", null, null);
 
         // when
         momentService.addBasicMoment(request, 1L);
@@ -314,5 +318,79 @@ class momentServiceTest {
 
         // then
         assertThat(response).isEqualTo(CommentableMomentResponse.empty());
+    }
+
+    @Test
+    void 이미지를_포함한_기본_모멘트를_작성한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
+
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentImageService.create(any(MomentCreateRequest.class), any(Moment.class)))
+                .willReturn(Optional.of(momentImage));
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
+
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
+        // when
+        momentService.addBasicMoment(request, 1L);
+
+        // then
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(momentImageService).should(times(1))
+                        .create(any(MomentCreateRequest.class), any(Moment.class))
+        );
+    }
+
+    @Test
+    void 이미지를_포함한_추가_모멘트를_작성한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, imageUrl, imageName);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
+
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentImageService.create(any(MomentCreateRequest.class), any(Moment.class)))
+                .willReturn(Optional.of(momentImage));
+        doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
+        // when
+        momentService.addExtraMoment(request, 1L);
+
+        // then
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(momentImageService).should(times(1))
+                        .create(any(MomentCreateRequest.class), any(Moment.class))
+        );
     }
 }

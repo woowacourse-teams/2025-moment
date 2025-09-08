@@ -81,7 +81,7 @@ class CommentControllerTest {
         Moment moment = new Moment("개발의 세계는 신비해요!", true, user2, WriteType.BASIC);
         momentRepository.saveAndFlush(moment);
 
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         CommentCreateResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

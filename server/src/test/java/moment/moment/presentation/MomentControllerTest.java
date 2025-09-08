@@ -70,7 +70,7 @@ class MomentControllerTest {
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, null, null);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -100,7 +100,7 @@ class MomentControllerTest {
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, null, null);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -130,7 +130,7 @@ class MomentControllerTest {
         User savedMomenter = userRepository.saveAndFlush(momenter);
         String content = "재미있는 내용이네요~~?";
 
-        MomentCreateRequest request = new MomentCreateRequest(content);
+        MomentCreateRequest request = new MomentCreateRequest(content, null, null);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         MomentCreateResponse response = RestAssured.given().log().all()
@@ -154,7 +154,7 @@ class MomentControllerTest {
 
         String contentExtra = "추가 모멘트 재미있는 내용이네요~~?";
 
-        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra);
+        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra, null, null);
 
         // when
         MomentCreateResponse responseExtra = RestAssured.given().log().all()
@@ -178,7 +178,7 @@ class MomentControllerTest {
 
         // when
         String contentExtraExtra = "추가 추가 모멘트 재미있는 내용이네요~~?";
-        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra);
+        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra, null, null);
 
         MomentCreateResponse responseExtraExtra = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

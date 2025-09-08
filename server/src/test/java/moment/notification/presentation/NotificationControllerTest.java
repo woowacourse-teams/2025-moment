@@ -107,7 +107,7 @@ public class NotificationControllerTest {
         given(sseNotificationService.subscribe(anyLong())).willReturn(new SseEmitter());
 
         // when
-        CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
+        CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId(), null, null);
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
                 .contentType(ContentType.JSON)
@@ -167,9 +167,9 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_읽지_않은_모멘트_알림을_받는다() {
         // given
-        CommentCreateRequest request1 = new CommentCreateRequest("굿~", moment.getId());
-        CommentCreateRequest request2 = new CommentCreateRequest("굿~", moment2.getId());
-        CommentCreateRequest request3 = new CommentCreateRequest("굿~", moment3.getId());
+        CommentCreateRequest request1 = new CommentCreateRequest("굿~", moment.getId(), null, null);
+        CommentCreateRequest request2 = new CommentCreateRequest("굿~", moment2.getId(), null, null);
+        CommentCreateRequest request3 = new CommentCreateRequest("굿~", moment3.getId(), null, null);
 
         // when
         RestAssured.given().log().all()
@@ -247,7 +247,7 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_알림을_확인한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId());
+        CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId(), null, null);
 
         // when
         RestAssured.given().log().all()

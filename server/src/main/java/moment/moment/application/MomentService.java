@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -64,9 +66,12 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment));
     }
 
     @Transactional
@@ -80,9 +85,12 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment));
     }
 
     public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
