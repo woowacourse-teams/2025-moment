@@ -8,6 +8,7 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR("G-001", "오류가 발생했습니다. 관리자에게 문의하세요.", HttpStatus.INTERNAL_SERVER_ERROR),
     REQUEST_INVALID("G-002", "유효하지 않은 요청 값입니다.", HttpStatus.BAD_REQUEST),
+    CURSOR_INVALID("G-003", "유효하지 않은 커서 형식입니다.", HttpStatus.BAD_REQUEST),
 
     USER_CONFLICT("U-001", "이미 가입된 사용자입니다.", HttpStatus.CONFLICT),
     USER_LOGIN_FAILED("U-002", "아이디 또는 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
@@ -55,7 +56,7 @@ public enum ErrorCode {
     EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
-    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST);
+    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST),;
 
     private final String code;
     private final String message;

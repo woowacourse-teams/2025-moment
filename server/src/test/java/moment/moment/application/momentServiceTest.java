@@ -12,7 +12,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -30,6 +32,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
+import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
@@ -59,10 +62,10 @@ class momentServiceTest {
     private MomentRepository momentRepository;
 
     @Mock
-    private CommentRepository commentRepository;
+    private CommentQueryService commentQueryService;
 
     @Mock
-    private EchoRepository echoRepository;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private UserQueryService userQueryService;
@@ -83,7 +86,10 @@ class momentServiceTest {
     private TagService tagService;
 
     @Mock
-    private MomentTagRepository momentTagRepository;
+    private MomentTagService momentTagService;
+
+    @Mock
+    private MomentTagQueryService momentTagQueryService;
 
     @Test
     void 기본_모멘트_생성에_성공한다() {
@@ -102,7 +108,7 @@ class momentServiceTest {
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
         given(tagService.getOrRegister(any(String.class))).willReturn(tag);
-        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -151,7 +157,7 @@ class momentServiceTest {
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
         given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
-        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -205,22 +211,19 @@ class momentServiceTest {
         given(momentRepository.findMyMomentFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(List.of(moment));
 
-        given(commentRepository.findAllByMomentIn(any(List.class)))
+        given(commentQueryService.getAllByMomentIn(any(List.class)))
                 .willReturn(List.of(comment));
 
-        given(echoRepository.findAllByCommentIn(any(List.class)))
-                .willReturn(List.of(echo));
-
-        given(momentTagRepository.findAllByMomentIn(any(List.class)))
-                .willReturn(List.of(momentTag));
+        given(echoQueryService.getEchosOfComments(any(List.class)))
+                .willReturn(Map.of(comment, List.of(echo)));
 
         // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
 
         // then
         assertAll(
-                () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
-                () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
+                () -> then(commentQueryService).should(times(1)).getAllByMomentIn(any(List.class)),
+                () -> then(echoQueryService).should(times(1)).getEchosOfComments(any(List.class)),
                 () -> then(momentRepository).should(times(1))
                         .findMyMomentFirstPage(any(User.class), any(Pageable.class)),
                 () -> assertThat(response.nextCursor()).isNull(),
@@ -305,7 +308,7 @@ class momentServiceTest {
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
         given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
-        given(momentTagRepository.save(any(MomentTag.class))).willReturn(momentTag);
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
         List<String> tagNames = List.of("일상/여가");
         MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", tagNames, null, null);

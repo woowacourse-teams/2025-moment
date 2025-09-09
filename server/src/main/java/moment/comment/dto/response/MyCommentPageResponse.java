@@ -2,12 +2,14 @@ package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Collections;
 import java.util.List;
+import moment.comment.domain.Comment;
 
 @Schema(description = "나의 Comment 페이지 조회 응답")
 public record MyCommentPageResponse(
         @Schema(description = "조회된 나의 Comment 목록 응답")
-        List<MyCommentResponse> items,
+        MyCommentsResponse items,
 
         @Schema(description = "다음 페이지 시작 커서", example = "2025-07-21T10:57:08.926954_1")
         String nextCursor,
@@ -19,7 +21,7 @@ public record MyCommentPageResponse(
         int pageSize
 ) {
     public static MyCommentPageResponse of(
-            List<MyCommentResponse> responses,
+            MyCommentsResponse responses,
             String nextCursor,
             boolean hasNextPage,
             int pageSize

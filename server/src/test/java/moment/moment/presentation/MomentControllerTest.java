@@ -242,11 +242,11 @@ class MomentControllerTest {
         String expectedNextCursor = cursorMoment.getCreatedAt().toString() + "_" + cursorMoment.getId();
 
         assertAll(
-                () -> assertThat(response.items()).hasSize(3),
-                () -> assertThat(response.items().stream()
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(3),
+                () -> assertThat(response.items().myMomentsResponse().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
-                () -> assertThat(response.items())
+                () -> assertThat(response.items().myMomentsResponse())
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
@@ -289,11 +289,11 @@ class MomentControllerTest {
 
         // then
         assertAll(
-                () -> assertThat(response.items()).hasSize(4),
-                () -> assertThat(response.items().stream()
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(4),
+                () -> assertThat(response.items().myMomentsResponse().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
-                () -> assertThat(response.items())
+                () -> assertThat(response.items().myMomentsResponse())
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isNull(),
                 () -> assertThat(response.hasNextPage()).isFalse(),

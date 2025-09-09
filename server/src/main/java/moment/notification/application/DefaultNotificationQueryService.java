@@ -1,10 +1,13 @@
 package moment.notification.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.notification.domain.Notification;
+import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,5 +23,11 @@ public class DefaultNotificationQueryService implements NotificationQueryService
 
         return notificationRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.NOTIFICATION_NOT_FOUND));
+    }
+
+    @Override
+    public List<Notification> getUnreadMomentNotifications(User user) {
+
+        return notificationRepository.findAllByUserAndIsReadAndTargetType(user, false, TargetType.MOMENT);
     }
 }

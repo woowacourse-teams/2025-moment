@@ -29,6 +29,7 @@ import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.reply.application.EchoQueryService;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
@@ -59,7 +60,7 @@ class CommentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private EchoRepository echoRepository;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -163,14 +164,14 @@ class CommentServiceTest {
         given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(echoRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+        given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
         // when
         MyCommentPageResponse actualComments = commentService.getCommentsByUserIdWithCursor(null, 1, 1L);
 
         // then
         assertAll(
-                () -> assertThat(actualComments.items()).hasSize(1),
+                () -> assertThat(actualComments.items().myCommentsResponse()).hasSize(1),
                 () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now2, 2)),
                 () -> assertThat(actualComments.hasNextPage()).isTrue(),
                 () -> assertThat(actualComments.pageSize()).isEqualTo(1)
