@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -191,7 +192,11 @@ class MomentRepositoryTest {
         Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
 
         // when
-        List<Moment> result = momentRepository.findMyUnreadMomentNextPage(Set.of(moment1.getId(), moment2.getId(), moment3.getId()), moment3.getCreatedAt(), moment3.getId(), PageRequest.of(0, 1));
+        List<Moment> result = momentRepository.findMyUnreadMomentNextPage(
+                Set.of(moment1.getId(), moment2.getId(), moment3.getId()),
+                moment3.getCreatedAt().truncatedTo(ChronoUnit.MILLIS),
+                moment3.getId(),
+                PageRequest.of(0, 1));
 
         // then
         assertThat(result).hasSize(1)
