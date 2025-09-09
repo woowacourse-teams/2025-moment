@@ -3,6 +3,7 @@ import { useMomentsExtraMutation } from './useMomentsExtraMutation';
 
 export const useSendExtraMoments = () => {
   const [content, setContent] = useState('');
+  const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
 
   const { mutateAsync: sendExtraMoments, isSuccess } = useMomentsExtraMutation();
 
@@ -11,9 +12,17 @@ export const useSendExtraMoments = () => {
     setContent(newContent);
   };
 
+  const handleExtraImageChange = (newImageData: { imageUrl: string; imageName: string } | null) => {
+    setImageData(newImageData);
+  };
+
   const handleSendExtraContent = async () => {
     try {
-      await sendExtraMoments(content);
+      const payload = imageData
+        ? { content, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
+        : { content };
+
+      await sendExtraMoments(payload);
     } catch (error) {
       console.error('Error sending moments:', error);
     }
@@ -21,8 +30,10 @@ export const useSendExtraMoments = () => {
 
   return {
     handleExtraContentChange,
+    handleExtraImageChange,
     handleSendExtraContent,
     content,
+    imageData,
     isSuccess,
   };
 };
