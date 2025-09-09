@@ -6,6 +6,7 @@ import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
+import { checkProfanityWord } from '@/converter/checkProfanityWord';
 
 export function TodayMomentForm({
   handleContentChange,
@@ -21,6 +22,10 @@ export function TodayMomentForm({
   const { showError } = useToast();
 
   const handleNavigateToTodayMomentSuccess = () => {
+    if (checkProfanityWord(content)) {
+      showError('모멘트에 욕설이 포함되어 있습니다.');
+      return;
+    }
     handleSendContent();
     navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };

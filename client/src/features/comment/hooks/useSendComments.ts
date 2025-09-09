@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
+import { checkProfanityWord } from '@/converter/checkProfanityWord';
+import { useToast } from '@/shared/hooks/useToast';
 
 export const useSendComments = (momentId: number) => {
   const [comment, setComment] = useState('');
+  const { showError } = useToast();
 
   const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
 
@@ -11,6 +14,10 @@ export const useSendComments = (momentId: number) => {
   };
 
   const handleSubmit = async () => {
+    if (checkProfanityWord(comment)) {
+      showError('코멘트에 욕설이 포함되어 있습니다.');
+      return;
+    }
     await sendComments({
       content: comment,
       momentId: momentId,

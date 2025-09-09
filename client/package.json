@@ -18,7 +18,8 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:silent": "jest --silent",
-    "test:debug": "jest --no-cache --verbose"
+    "test:debug": "jest --no-cache --verbose",
+    "convertor:csv": "node src/converter/csv/csvToTs.js"
   },
   "license": "MIT",
   "dependencies": {
@@ -54,6 +55,7 @@
     "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
+    "csv-parser": "^3.2.0",
     "dotenv": "^17.2.0",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.5",
