@@ -8,6 +8,9 @@ import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { theme } from '@/app/styles/theme';
+import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
+import { useModal } from '@/shared/hooks/useModal';
+import { ComplaintFormData } from '@/features/complaint/types/complaintType';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -17,6 +20,16 @@ export function TodayCommentForm() {
     error,
     refetch,
   } = useCommentableMomentsQuery({ enabled: isLoggedIn === true });
+
+  const {
+    handleOpen: handleComplaintOpen,
+    handleClose: handleComplaintClose,
+    isOpen: isComplaintOpen,
+  } = useModal();
+
+  const handleComplaintSubmit = (data: ComplaintFormData) => {
+    console.log(data);
+  };
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -68,30 +81,41 @@ export function TodayCommentForm() {
   }
 
   return (
-    <Card width="medium">
-      <Card.TitleContainer
-        title={
-          <S.TitleWrapper>
-            <WriterInfo writer={momentData.nickname} level={momentData.level} />
-            <S.ActionWrapper>
-              <WriteTime date={momentData.createdAt} />
-              <S.ComplaintButton onClick={() => {}}>
-                <Siren size={28} color={theme.colors['red-500']} />
-              </S.ComplaintButton>
-              <S.RefreshButton onClick={() => refetch()}>
-                <RotateCcw size={28} />
-              </S.RefreshButton>
-            </S.ActionWrapper>
-          </S.TitleWrapper>
-        }
-        subtitle=""
-      />
-      <SimpleCard height="small" content={momentData.content} />
-      <TodayCommentWriteContent
-        momentId={momentData.id}
-        isLoggedIn={isLoggedIn}
-        key={momentData.id}
-      />
-    </Card>
+    <>
+      <Card width="medium">
+        <Card.TitleContainer
+          title={
+            <S.TitleWrapper>
+              <WriterInfo writer={momentData.nickname} level={momentData.level} />
+              <S.ActionWrapper>
+                <WriteTime date={momentData.createdAt} />
+                <S.ComplaintButton onClick={handleComplaintOpen}>
+                  <Siren size={28} color={theme.colors['red-500']} />
+                </S.ComplaintButton>
+                <S.RefreshButton onClick={() => refetch()}>
+                  <RotateCcw size={28} />
+                </S.RefreshButton>
+              </S.ActionWrapper>
+            </S.TitleWrapper>
+          }
+          subtitle=""
+        />
+        <SimpleCard height="small" content={momentData.content} />
+        <TodayCommentWriteContent
+          momentId={momentData.id}
+          isLoggedIn={isLoggedIn}
+          key={momentData.id}
+        />
+      </Card>
+      {isComplaintOpen && (
+        <ComplaintModal
+          isOpen={isComplaintOpen}
+          onClose={handleComplaintClose}
+          targetId={momentData.id}
+          targetType="MOMENT"
+          onSubmit={handleComplaintSubmit}
+        />
+      )}
+    </>
   );
 }

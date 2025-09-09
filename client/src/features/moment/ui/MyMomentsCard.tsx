@@ -13,9 +13,17 @@ import { WriteTime } from '@/shared/ui/writeTime';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 import { theme } from '@/app/styles/theme';
 
+import { ComplaintFormData } from '@/features/complaint/types/complaintType';
+import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
+
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
+  const {
+    handleOpen: handleComplaintOpen,
+    handleClose: handleComplaintClose,
+    isOpen: isComplaintOpen,
+  } = useModal();
   useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
   const sortedComments = useMemo(() => {
@@ -23,6 +31,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   }, [myMoment.comments]);
   const navigation = useCommentNavigation(sortedComments?.length || 0);
   const currentComment = sortedComments?.[navigation.currentIndex];
+
+  const handleComplaintSubmit = (data: ComplaintFormData) => {
+    console.log(data);
+  };
 
   const handleModalClose = () => {
     navigation.reset();
@@ -85,7 +97,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />
-                        <S.ComplaintButton onClick={() => {}}>
+                        <S.ComplaintButton onClick={handleComplaintOpen}>
                           <Siren size={28} color={theme.colors['red-500']} />
                         </S.ComplaintButton>
                       </S.TitleWrapper>
@@ -120,6 +132,15 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             )}
           </Modal.Content>
         </Modal>
+      )}
+      {isComplaintOpen && (
+        <ComplaintModal
+          isOpen={isComplaintOpen}
+          onClose={handleComplaintClose}
+          targetId={currentComment.id}
+          targetType="COMMENT"
+          onSubmit={handleComplaintSubmit}
+        />
       )}
     </>
   );
