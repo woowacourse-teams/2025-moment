@@ -22,6 +22,7 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
+import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.NotificationQueryService;
@@ -83,6 +84,9 @@ class CommentServiceTest {
 
     @Mock
     private NotificationQueryService notificationQueryService;
+
+    @Mock
+    private MomentTagService momentTagService;
 
     @Test
     void Comment를_등록한다() {
