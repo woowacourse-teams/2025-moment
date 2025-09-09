@@ -6,7 +6,8 @@ import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
-import { TagList } from '@/features/moment/ui/TagList';
+import { TagList } from '@/shared/ui/tag/TagList';
+import { TAGS } from '../const/tags';
 
 export function TodayMomentForm({
   handleContentChange,
@@ -53,7 +54,7 @@ export function TodayMomentForm({
         <Card.Content>
           <S.TagWrapper>
             <S.TagLabel>태그: </S.TagLabel>
-            <TagList onTagClick={handleTagNameClick} selectedTag={tagNames} />
+            <TagList tags={TAGS} onTagClick={handleTagNameClick} selectedTag={tagNames} />
           </S.TagWrapper>
           <TextArea
             maxLength={MAX_LENGTH}
