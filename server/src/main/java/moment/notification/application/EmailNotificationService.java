@@ -3,12 +3,9 @@ package moment.notification.application;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -96,19 +93,20 @@ public class EmailNotificationService {
     }
 
     private String loadEmailTemplate() throws IOException {
-        URL systemResource = ClassLoader.getSystemResource("email/reminder.html");
-        Path path = Path.of(systemResource.getPath());
-        byte[] bytes = Files.readAllBytes(path);
+        try (
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("email/reminder.html")
+        ) {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes)));
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line + "\r\n");
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line + "\r\n");
+            }
+            return stringBuilder.toString();
+        } catch (IOException e) {
+            throw new IOException();
         }
-        return stringBuilder.toString();
     }
 
     private String parseContent(User user, long momentCount, long commentCount) throws IOException {
