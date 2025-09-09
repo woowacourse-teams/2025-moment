@@ -1,4 +1,4 @@
-package moment.notification.domain;
+package moment.report.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,48 +20,36 @@ import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-@Entity(name = "notifications")
-@SQLDelete(sql = "UPDATE notifications SET deleted_at = NOW() WHERE id = ?")
+@Entity(name = "reports")
+@SQLDelete(sql = "UPDATE reports SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString
-public class Notification extends BaseEntity {
+public class Report extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Long Id;
+    Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    TargetType targetType;
+
+    Long targetId;
 
     @Enumerated(EnumType.STRING)
-    private TargetType targetType;
+    ReportReason reportReason;
 
-    private Long targetId;
-
-    private boolean isRead;
-
-    private LocalDateTime deletedAt;
-
-    public Notification(User user,
-                        NotificationType notificationType,
-                        TargetType targetType,
-                        Long targetId) {
+    public Report(User user, TargetType targetType, Long targetId, ReportReason reportReason) {
         this.user = user;
-        this.notificationType = notificationType;
         this.targetType = targetType;
         this.targetId = targetId;
-        this.isRead = false;
-    }
-
-    public void checkNotification() {
-        isRead = true;
+        this.reportReason = reportReason;
     }
 }

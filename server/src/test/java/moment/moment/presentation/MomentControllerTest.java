@@ -13,9 +13,11 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
@@ -422,5 +424,35 @@ class MomentControllerTest {
 
         // then
         assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
+    }
+
+    @Test
+    void 모멘트를_신고한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(9);
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");
+
+        // when
+        MomentReportCreateResponse momentReportCreateResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("api/v1/moments/1/reports")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentReportCreateResponse.class);
+
+        // then
+        assertThat(momentReportCreateResponse.id()).isEqualTo(1L);
     }
 }

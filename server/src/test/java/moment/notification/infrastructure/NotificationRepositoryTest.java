@@ -2,7 +2,7 @@ package moment.notification.infrastructure;
 
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
+import moment.global.domain.TargetType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;

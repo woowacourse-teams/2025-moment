@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
@@ -25,13 +26,18 @@ import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
+import moment.report.domain.ReportReason;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -84,6 +90,12 @@ class momentServiceTest {
 
     @Mock
     private MomentTagRepository momentTagRepository;
+
+    @Mock
+    private ReportService reportService;
+
+    @Mock
+    private MomentQueryService momentQueryService;
 
     @Test
     void 기본_모멘트_생성에_성공한다() {
@@ -429,5 +441,31 @@ class momentServiceTest {
                 () -> then(momentImageService).should(times(1))
                         .create(any(MomentCreateRequest.class), any(Moment.class))
         );
+    }
+
+    @Test
+    void 모멘트를_신고한다() {
+        // given
+        Long momentId = 1L;
+        Long reporterId = 1L;
+        User user = new User("drago@email.com", "1234", "drago", ProviderType.EMAIL);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment moment = new Moment("잘자요", momenter, WriteType.BASIC);
+        Report report = new Report(user, TargetType.MOMENT, momentId, ReportReason.SEXUAL_CONTENT);
+
+        MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");
+        given(userQueryService.getUserById(any(Long.class))).willReturn(user);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(reportService.createReport(TargetType.MOMENT, user, moment, request)).willReturn(report);
+
+        // when
+        MomentReportCreateResponse momentReportCreateResponse = momentService.reportMoment(
+                momentId,
+                reporterId,
+                request
+        );
+
+        // then
+        then(reportService).should(times(1)).createReport(TargetType.MOMENT, user, moment, request);
     }
 }

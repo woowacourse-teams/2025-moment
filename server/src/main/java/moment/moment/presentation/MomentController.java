@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.models.parameters.QueryParameter;
 import jakarta.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -16,14 +14,17 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
-import moment.moment.dto.response.CommentableMomentResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -180,6 +181,31 @@ public class MomentController {
         CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id(), tagName);
 
         HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "모멘트 신고", description = "부적절한 모멘트를 신고합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모멘트 신고 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [M-002] 존재하지 않는 모멘트입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/{id}/reports")
+    public ResponseEntity<SuccessResponse<MomentReportCreateResponse>> createMomentReport(
+            @AuthenticationPrincipal Authentication authentication,
+            @RequestBody MomentReportCreateRequest request,
+            @PathVariable(name = "id") Long momentId
+    ) {
+        MomentReportCreateResponse response = momentService.reportMoment(momentId, authentication.id(), request);
+        HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }

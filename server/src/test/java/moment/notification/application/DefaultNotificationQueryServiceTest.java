@@ -8,7 +8,7 @@ import static org.mockito.Mockito.times;
 import java.util.Optional;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
+import moment.global.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;

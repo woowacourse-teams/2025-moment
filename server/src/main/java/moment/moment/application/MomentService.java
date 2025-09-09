@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.BasicMomentCreatePolicy;
@@ -21,15 +22,19 @@ import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -55,9 +60,11 @@ public class MomentService {
     private final RewardService rewardService;
     private final MomentImageService momentImageService;
     private final TagService tagService;
+    private final ReportService reportService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
+    private final MomentQueryService momentQueryService;
 
 
     @Transactional
@@ -242,5 +249,14 @@ public class MomentService {
         Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
 
         return CommentableMomentResponse.from(moment);
+    }
+
+    @Transactional
+    public MomentReportCreateResponse reportMoment(Long momentId, Long reporterId, MomentReportCreateRequest request) {
+        User user = userQueryService.getUserById(reporterId);
+        Moment moment = momentQueryService.getMomentById(momentId);
+
+        Report report = reportService.createReport(TargetType.MOMENT, user, moment, request);
+        return MomentReportCreateResponse.from(report);
     }
 }
