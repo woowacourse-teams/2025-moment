@@ -1,5 +1,7 @@
 package moment.comment.infrastructure;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
@@ -8,9 +10,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
@@ -37,4 +36,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByMomentIn(List<Moment> moments);
 
     boolean existsByMomentAndCommenter(Moment moment, User commenter);
+
+    long countByMomentAndCreatedAtBetween(Moment moment, LocalDateTime start, LocalDateTime end);
 }
