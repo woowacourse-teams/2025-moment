@@ -10,10 +10,13 @@ import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
+import moment.common.DatabaseCleaner;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
@@ -62,9 +65,13 @@ class CommentControllerTest {
     @Autowired
     private JwtTokenManager jwtTokenManager;
 
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleaner.clean();
     }
 
     @Test
@@ -159,5 +166,39 @@ class CommentControllerTest {
                 () -> assertThat(firstResponse.echos().getFirst().id()).isEqualTo(savedEcho2.getId()),
                 () -> assertThat(firstResponse.echos().getFirst().echoType()).isEqualTo(savedEcho2.getEchoType())
         );
+    }
+
+    @Test
+    void 코멘트를_신고한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User commenter = new User("good@gmail.com", "1234", "lebron", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        User savedCommenter = userRepository.save(commenter);
+
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        Comment comment = new Comment("아 행복해", savedCommenter, savedMoment);
+        Comment savedComment = commentRepository.save(comment);
+
+        String token = jwtTokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        CommentReportCreateRequest request = new CommentReportCreateRequest("SEXUAL_CONTENT");
+
+        // when
+        CommentReportCreateResponse commentReportCreateResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("api/v1/comments/1/reports")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", CommentReportCreateResponse.class);
+
+        // then
+        assertThat(commentReportCreateResponse.id()).isEqualTo(1L);
     }
 }

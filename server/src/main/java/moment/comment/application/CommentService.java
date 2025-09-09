@@ -10,10 +10,13 @@ import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
@@ -21,11 +24,12 @@ import moment.moment.domain.Moment;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Echo;
 import moment.reply.infrastructure.EchoRepository;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -54,6 +58,7 @@ public class CommentService {
     private final NotificationRepository notificationRepository;
     private final SseNotificationService sseNotificationService;
     private final CommentImageService commentImageService;
+    private final ReportService reportService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -159,5 +164,18 @@ public class CommentService {
         }
 
         return nextCursor;
+    }
+
+    public CommentReportCreateResponse reportComment(Long commentId, Long id, CommentReportCreateRequest request) {
+        User reporter = userQueryService.getUserById(id);
+        Comment comment = commentQueryService.getCommentById(commentId);
+
+        Report savedReport = reportService.createReport(
+                TargetType.COMMENT,
+                reporter,
+                comment.getId(),
+                request.reason());
+
+        return CommentReportCreateResponse.from(savedReport);
     }
 }

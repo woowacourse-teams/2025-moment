@@ -451,12 +451,13 @@ class momentServiceTest {
         User user = new User("drago@email.com", "1234", "drago", ProviderType.EMAIL);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment moment = new Moment("잘자요", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment, "id", 1L);
         Report report = new Report(user, TargetType.MOMENT, momentId, ReportReason.SEXUAL_CONTENT);
 
         MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");
         given(userQueryService.getUserById(any(Long.class))).willReturn(user);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
-        given(reportService.createReport(TargetType.MOMENT, user, moment, request)).willReturn(report);
+        given(reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason())).willReturn(report);
 
         // when
         MomentReportCreateResponse momentReportCreateResponse = momentService.reportMoment(
@@ -466,6 +467,6 @@ class momentServiceTest {
         );
 
         // then
-        then(reportService).should(times(1)).createReport(TargetType.MOMENT, user, moment, request);
+        then(reportService).should(times(1)).createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
     }
 }

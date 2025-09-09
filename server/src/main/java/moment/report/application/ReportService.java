@@ -2,8 +2,6 @@ package moment.report.application;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
-import moment.moment.domain.Moment;
-import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
@@ -18,14 +16,16 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    public Report createReport(TargetType targetType, User reporter, Moment moment, MomentReportCreateRequest request) {
+    public Report createReport(TargetType targetType,
+                               User reporter,
+                               Long targetId,
+                               String reason) {
 
         Report report = new Report(
                 reporter,
                 targetType,
-                moment.getId(),
-                ReportReason.valueOf(request.reason()
-                )
+                targetId,
+                ReportReason.valueOf(reason)
         );
         return reportRepository.save(report);
     }

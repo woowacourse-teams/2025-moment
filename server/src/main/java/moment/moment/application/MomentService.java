@@ -80,7 +80,7 @@ public class MomentService {
 
         Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
 
-        for(String tagName : request.tagNames()) {
+        for (String tagName : request.tagNames()) {
             Tag registeredTag = tagService.getOrRegister(tagName);
             MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
             momentTagRepository.save(momentTag);
@@ -106,7 +106,7 @@ public class MomentService {
 
         Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
 
-        for(String tagName : request.tagNames()) {
+        for (String tagName : request.tagNames()) {
             Tag registeredTag = tagService.getOrRegister(tagName);
             MomentTag momentTag = new MomentTag(savedMoment, registeredTag);
             momentTagRepository.save(momentTag);
@@ -235,10 +235,10 @@ public class MomentService {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
 
         List<Moment> commentableMoments = Collections.emptyList();
-        if(tagNames.isEmpty()) {
+        if (tagNames.isEmpty()) {
             commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
         }
-        if(!tagNames.isEmpty()) {
+        if (!tagNames.isEmpty()) {
             commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
         }
 
@@ -256,7 +256,7 @@ public class MomentService {
         User user = userQueryService.getUserById(reporterId);
         Moment moment = momentQueryService.getMomentById(momentId);
 
-        Report report = reportService.createReport(TargetType.MOMENT, user, moment, request);
+        Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
         return MomentReportCreateResponse.from(report);
     }
 }

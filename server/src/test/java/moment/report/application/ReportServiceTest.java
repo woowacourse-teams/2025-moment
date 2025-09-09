@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ReportServiceTest {
@@ -37,12 +38,14 @@ class ReportServiceTest {
         User user = new User("drago@mail.com", "1234", "drago", ProviderType.EMAIL);
         User momenter = new User("ama@mail.com", "1234", "ama", ProviderType.EMAIL);
         Moment moment = new Moment("잘자요", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment, "id", 1L);
+
         MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");
         Report report = new Report(user, targetType, 1L, ReportReason.SEXUAL_CONTENT);
         given(reportRepository.save(any(Report.class))).willReturn(report);
 
         // when
-        Report result = reportService.createReport(targetType, user, moment, request);
+        Report result = reportService.createReport(targetType, user, moment.getId(), request.reason());
 
         // then
         assertThat(result).isEqualTo(report);
