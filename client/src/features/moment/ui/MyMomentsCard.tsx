@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
@@ -11,6 +11,7 @@ import { WriterInfo } from '@/widgets/writerInfo';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
+import { theme } from '@/app/styles/theme';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -84,6 +85,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />
+                        <S.ComplaintButton onClick={() => {}}>
+                          <Siren size={28} color={theme.colors['red-500']} />
+                        </S.ComplaintButton>
                       </S.TitleWrapper>
                     </S.MyMomentsModalHeader>
                     <S.CommentContainer>

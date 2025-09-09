@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const MyMomentsCard = styled.div<{ $shadow: boolean; $hasComment: boolean }>`
@@ -91,6 +92,19 @@ export const CommentContent = styled.div`
   & > div {
     word-break: break-all;
   }
+`;
+
+export const ComplaintButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  ${({ theme }) => css`
+    color: ${theme.colors['red-500']};
+  `}
 `;
 
 export const CommentNavigationButton = styled.button<{ position: 'left' | 'right' }>`

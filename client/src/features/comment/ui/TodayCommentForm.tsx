@@ -2,11 +2,12 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQ
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
+import { AlertCircle, Loader, RotateCcw, Siren } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
+import { theme } from '@/app/styles/theme';
 
 export function TodayCommentForm() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -74,6 +75,9 @@ export function TodayCommentForm() {
             <WriterInfo writer={momentData.nickname} level={momentData.level} />
             <S.ActionWrapper>
               <WriteTime date={momentData.createdAt} />
+              <S.ComplaintButton onClick={() => {}}>
+                <Siren size={28} color={theme.colors['red-500']} />
+              </S.ComplaintButton>
               <S.RefreshButton onClick={() => refetch()}>
                 <RotateCcw size={28} />
               </S.RefreshButton>

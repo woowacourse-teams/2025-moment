@@ -17,13 +17,26 @@ export const UserInfoWrapper = styled.div`
 export const ActionWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 `;
 
 export const LevelImage = styled.img`
   width: 30px;
   height: 30px;
   object-fit: contain;
+`;
+
+export const ComplaintButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  ${({ theme }) => css`
+    color: ${theme.colors['red-500']};
+  `}
 `;
 
 export const RefreshButton = styled.button`
