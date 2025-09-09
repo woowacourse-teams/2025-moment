@@ -8,7 +8,15 @@ import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 
 export default function TodayMomentPage() {
-  const { handleContentChange, handleImageChange, handleSendContent, content } = useSendMoments();
+  const {
+    handleContentChange,
+    handleImageChange,
+    handleTagNameClick,
+    handleSendContent,
+    content,
+    tagNames,
+  } = useSendMoments();
+  useSendMoments();
   const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
   const momentBasicWritable = momentWritingStatusData?.data?.status;
   const navigate = useNavigate();
@@ -28,8 +36,10 @@ export default function TodayMomentPage() {
       <TodayMomentForm
         handleContentChange={handleContentChange}
         handleImageChange={handleImageChange}
+        handleTagNameClick={handleTagNameClick}
         handleSendContent={handleSendContent}
         content={content}
+        tagNames={tagNames}
       />
     </S.TodayPageWrapper>
   );

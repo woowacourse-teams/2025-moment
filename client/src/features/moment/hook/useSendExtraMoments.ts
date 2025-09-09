@@ -4,6 +4,7 @@ import { useMomentsExtraMutation } from './useMomentsExtraMutation';
 export const useSendExtraMoments = () => {
   const [content, setContent] = useState('');
   const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
+  const [tagNames, setTagNames] = useState<string[]>([]);
 
   const { mutateAsync: sendExtraMoments, isSuccess } = useMomentsExtraMutation();
 
@@ -15,12 +16,15 @@ export const useSendExtraMoments = () => {
   const handleExtraImageChange = (newImageData: { imageUrl: string; imageName: string } | null) => {
     setImageData(newImageData);
   };
+  const handleTagNameClick = (tagName: string) => {
+    setTagNames([...tagNames, tagName]);
+  };
 
   const handleSendExtraContent = async () => {
     try {
       const payload = imageData
-        ? { content, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
-        : { content };
+        ? { content, tagNames, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
+        : { content, tagNames };
 
       await sendExtraMoments(payload);
     } catch (error) {
@@ -32,8 +36,10 @@ export const useSendExtraMoments = () => {
     handleExtraContentChange,
     handleExtraImageChange,
     handleSendExtraContent,
+    handleTagNameClick,
     content,
     imageData,
+    tagNames,
     isSuccess,
   };
 };

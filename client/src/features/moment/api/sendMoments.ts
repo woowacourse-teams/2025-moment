@@ -2,13 +2,15 @@ import { api } from '@/app/lib/api';
 
 interface SendMomentsData {
   content: string;
+  tagNames: string[];
   imageUrl?: string;
   imageName?: string;
 }
 
 export const sendMoments = async (data: SendMomentsData) => {
-  const payload: { content: string; imageUrl?: string; imageName?: string } = {
+  const payload: { content: string; tagNames: string[]; imageUrl?: string; imageName?: string } = {
     content: data.content,
+    tagNames: data.tagNames,
   };
 
   if (data.imageUrl && data.imageName) {
