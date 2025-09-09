@@ -2,6 +2,7 @@ package moment.comment.infrastructure;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
@@ -24,10 +25,29 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
             SELECT c FROM comments c
+            WHERE c.id IN :ids
+            ORDER BY c.createdAt DESC, c.id DESC
+            """)
+    List<Comment> findUnreadCommentsFirstPage(@Param("ids") Set<Long> ids, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"moment.momenter"})
+    @Query("""
+            SELECT c FROM comments c
             WHERE c.commenter = :commenter AND (c.createdAt < :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
             ORDER BY c.createdAt DESC, c.id DESC
             """)
     List<Comment> findCommentsNextPage(@Param("commenter") User commenter,
+                                       @Param("cursorTime") LocalDateTime cursorDateTime,
+                                       @Param("cursorId") Long cursorId,
+                                       Pageable pageable);
+
+    @EntityGraph(attributePaths = {"moment.momenter"})
+    @Query("""
+            SELECT c FROM comments c
+            WHERE c.id IN :ids AND (c.createdAt < :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
+            ORDER BY c.createdAt DESC, c.id DESC
+            """)
+    List<Comment> findUnreadCommentsNextPage(@Param("ids") Set<Long> ids,
                                        @Param("cursorTime") LocalDateTime cursorDateTime,
                                        @Param("cursorId") Long cursorId,
                                        Pageable pageable);

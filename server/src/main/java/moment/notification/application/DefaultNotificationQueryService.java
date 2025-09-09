@@ -25,9 +25,8 @@ public class DefaultNotificationQueryService implements NotificationQueryService
                 .orElseThrow(() -> new MomentException(ErrorCode.NOTIFICATION_NOT_FOUND));
     }
 
-    @Override
-    public List<Notification> getUnreadMomentNotifications(User user) {
+    public List<Notification> getUnreadContentsNotifications(User user, TargetType targetType) {
 
-        return notificationRepository.findAllByUserAndIsReadAndTargetType(user, false, TargetType.MOMENT);
+        return notificationRepository.findAllByUserAndIsReadAndTargetType(user, false, targetType);
     }
 }

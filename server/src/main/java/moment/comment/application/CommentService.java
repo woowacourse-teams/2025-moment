@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
@@ -11,7 +12,6 @@ import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
-import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
@@ -20,6 +20,8 @@ import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.application.MomentQueryService;
 import moment.moment.domain.Moment;
+import moment.moment.dto.response.MyMomentPageResponse;
+import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -54,6 +56,7 @@ public class CommentService {
     private final NotificationRepository notificationRepository;
     private final SseNotificationService sseNotificationService;
     private final CommentImageService commentImageService;
+    private final NotificationQueryService notificationQueryService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -100,6 +103,13 @@ public class CommentService {
 
         List<Comment> commentsWithinCursor = getRawComments(cursor, commenter, pageSize);
 
+        return getMyCommentPageResponse(pageSize, commentsWithinCursor, cursor);
+    }
+
+    private MyCommentPageResponse getMyCommentPageResponse(PageSize pageSize,
+                                                           List<Comment> commentsWithinCursor,
+                                                           Cursor cursor) {
+
         boolean hasNextPage = pageSize.hasNextPage(commentsWithinCursor.size());
 
         List<Comment> commentsWithoutCursor = removeCursor(commentsWithinCursor, pageSize);
@@ -143,4 +153,32 @@ public class CommentService {
         }
         return commentsWithinCursor;
     }
+
+    public MyCommentPageResponse getMyUnreadComments(String nextCursor, int size, Long commenterId) {
+        User user = userQueryService.getUserById(commenterId);
+
+        Cursor cursor = new Cursor(nextCursor);
+        PageSize pageSize = new PageSize(size);
+
+        List<Comment> unreadRawComments = getUnreadRawComments(user, cursor, pageSize);
+
+        return getMyCommentPageResponse(pageSize, unreadRawComments, cursor);
+    }
+
+    private List<Comment> getUnreadRawComments(User user, Cursor cursor, PageSize pageSize) {
+        Set<Long> unreadCommentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.COMMENT)
+                .stream()
+                .map(Notification::getTargetId)
+                .collect(Collectors.toSet());
+
+        if(cursor.isFirstPage()) {
+            return commentRepository.findUnreadCommentsFirstPage(unreadCommentIds, pageSize.getPageRequest());
+        }
+        return commentRepository.findUnreadCommentsNextPage(
+                unreadCommentIds,
+                cursor.dateTime(),
+                cursor.id(),
+                pageSize.getPageRequest());
+    }
+
 }

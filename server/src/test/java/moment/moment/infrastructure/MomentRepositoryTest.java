@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
@@ -161,5 +162,39 @@ class MomentRepositoryTest {
         // then
         assertThat(recentMoments).hasSize(2)
                 .containsExactlyInAnyOrder(newMoment1, newMoment2);
+    }
+
+    @Test
+    void 읽지_않은_모멘트_목록의_첫_페이지를_조회한다() {
+        // given
+        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
+        momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC)); // This one is not unread
+
+        // when
+        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(Set.of(moment1.getId(), moment2.getId()), PageRequest.of(0, 5));
+
+        // then
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(moment1, moment2);
+    }
+
+    @Test
+    void 읽지_않은_모멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
+        // given
+        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+
+        // when
+        List<Moment> result = momentRepository.findMyUnreadMomentNextPage(Set.of(moment1.getId(), moment2.getId(), moment3.getId()), moment3.getCreatedAt(), moment3.getId(), PageRequest.of(0, 1));
+
+        // then
+        assertThat(result).hasSize(1)
+                .containsExactly(moment2);
     }
 }

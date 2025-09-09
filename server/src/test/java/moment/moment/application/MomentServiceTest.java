@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
@@ -31,10 +30,11 @@ import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.moment.infrastructure.MomentTagRepository;
+import moment.notification.application.NotificationQueryService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.TargetType;
 import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -53,7 +53,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class momentServiceTest {
+class MomentServiceTest {
 
     @InjectMocks
     private MomentService momentService;
@@ -90,6 +90,9 @@ class momentServiceTest {
 
     @Mock
     private MomentTagQueryService momentTagQueryService;
+
+    @Mock
+    private NotificationQueryService notificationQueryService;
 
     @Test
     void 기본_모멘트_생성에_성공한다() {
@@ -431,6 +434,39 @@ class momentServiceTest {
                 () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
                 () -> then(momentImageService).should(times(1))
                         .create(any(MomentCreateRequest.class), any(Moment.class))
+        );
+    }
+
+    @Test
+    void 읽지_않은_모멘트를_조회한다() {
+        // given
+        Long momenterId = 1L;
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment1 = new Moment("안녕", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment1, "id", 1L);
+        Moment moment2 = new Moment("안녕2", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment2, "id", 2L);
+
+        Notification notification1 = new Notification(momenter, null, null, 1L);
+        Notification notification2 = new Notification(momenter, null, null, 2L);
+
+        given(userQueryService.getUserById(momenterId)).willReturn(momenter);
+        given(notificationQueryService.getUnreadContentsNotifications(momenter, TargetType.MOMENT))
+                .willReturn(List.of(notification1, notification2));
+        given(momentRepository.findMyUnreadMomentFirstPage(any(), any()))
+                .willReturn(List.of(moment1, moment2));
+        given(commentQueryService.getAllByMomentIn(any())).willReturn(Collections.emptyList());
+        given(momentTagService.getMomentTagsByMoment(any())).willReturn(Collections.emptyMap());
+
+        // when
+        MyMomentPageResponse response = momentService.getMyUnreadMoments(null, 10, momenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(2),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(momenter, TargetType.MOMENT),
+                () -> then(momentRepository).should(times(1)).findMyUnreadMomentFirstPage(any(), any())
         );
     }
 }

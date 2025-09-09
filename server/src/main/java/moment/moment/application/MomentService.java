@@ -28,13 +28,12 @@ import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
-import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.dto.response.MyMomentsResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
+import moment.notification.domain.TargetType;
 import moment.reply.application.EchoQueryService;
-import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
@@ -121,6 +120,13 @@ public class MomentService {
         PageSize pageSize = new PageSize(size);
 
         List<Moment> momentsWithinCursor = getRawMoments(cursor, momenter, pageSize.getPageRequest());
+
+        return getMyMomentPageResponse(momentsWithinCursor, pageSize, cursor);
+    }
+
+    private MyMomentPageResponse getMyMomentPageResponse(List<Moment> momentsWithinCursor,
+                                                         PageSize pageSize,
+                                                         Cursor cursor) {
 
         List<Comment> comments = commentQueryService.getAllByMomentIn(momentsWithinCursor);
 
@@ -218,13 +224,31 @@ public class MomentService {
         return CommentableMomentResponse.from(moment);
     }
 
-//    public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int limit, Long momenterId) {
-//        User user = userQueryService.getUserById(momenterId);
-//        Set<Long> unreadMomentIds = notificationQueryService.getUnreadMomentNotifications(user)
-//                .stream()
-//                .map(Notification::getTargetId)
-//                .collect(Collectors.toSet());
-//
-//        List<Moment> unreadMoments = momentRepository.findAllById(unreadMomentIds);
-//    }
+    public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
+        User user = userQueryService.getUserById(momenterId);
+
+
+        Cursor cursor = new Cursor(nextCursor);
+        PageSize pageSize = new PageSize(size);
+
+        List<Moment> unreadRawMoments = getUnreadRawMoments(cursor, user, pageSize);
+
+        return getMyMomentPageResponse(unreadRawMoments, pageSize, cursor);
+    }
+
+    private List<Moment> getUnreadRawMoments(Cursor cursor, User user, PageSize pageSize) {
+        Set<Long> unreadMomentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.MOMENT)
+                .stream()
+                .map(Notification::getTargetId)
+                .collect(Collectors.toSet());
+
+        if(cursor.isFirstPage()) {
+            return momentRepository.findMyUnreadMomentFirstPage(unreadMomentIds, pageSize.getPageRequest());
+        }
+        return momentRepository.findMyUnreadMomentNextPage(
+                unreadMomentIds,
+                cursor.dateTime(),
+                cursor.id(),
+                pageSize.getPageRequest());
+    }
 }
