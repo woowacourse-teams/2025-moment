@@ -16,6 +16,7 @@ import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
