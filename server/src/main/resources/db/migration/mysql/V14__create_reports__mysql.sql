@@ -9,10 +9,10 @@ CREATE TABLE IF NOT EXISTS reports
     CONSTRAINT fk_reports_users
     FOREIGN KEY (user_id)
     REFERENCES users (id)
-    );
+);
 
 -- 인덱스 추가 쿼리
 CREATE INDEX idx_reports_on_target ON reports (target_type, target_id);
 
--- 유니크 제약조건 추가 쿼리 (H2 호환)
-ALTER TABLE reports ADD CONSTRAINT uidx_reports_on_user_target UNIQUE (user_id, target_type, target_id);
+-- 유니크 인덱스 추가 쿼리
+ALTER TABLE reports ADD UNIQUE INDEX uidx_reports_on_user_target (user_id, target_type, target_id);
