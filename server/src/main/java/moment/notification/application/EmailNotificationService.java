@@ -104,8 +104,6 @@ public class EmailNotificationService {
                 stringBuilder.append(line + "\r\n");
             }
             return stringBuilder.toString();
-        } catch (IOException e) {
-            throw new IOException();
         }
     }
 
