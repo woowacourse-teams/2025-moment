@@ -1,5 +1,5 @@
 import { useFileUpload } from '@/shared/hooks';
-import { ImageUploadData } from '@/shared/types';
+import { ImageUploadData } from '@/shared/types/upload';
 import { ImagePlus, X } from 'lucide-react';
 import * as S from './FileUpload.styles';
 
