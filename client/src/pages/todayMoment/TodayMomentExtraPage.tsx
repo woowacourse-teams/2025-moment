@@ -4,7 +4,13 @@ import * as S from './index.styles';
 import { useSendExtraMoments } from '@/features/moment/hook/useSendExtraMoments';
 
 export default function TodayMomentExtraPage() {
-  const { handleExtraContentChange, handleSendExtraContent, content } = useSendExtraMoments();
+  const {
+    handleExtraContentChange,
+    handleTagNameClick,
+    handleSendExtraContent,
+    content,
+    tagNames,
+  } = useSendExtraMoments();
 
   return (
     <S.TodayPageWrapper>
@@ -14,8 +20,10 @@ export default function TodayMomentExtraPage() {
       />
       <TodayMomentForm
         handleContentChange={handleExtraContentChange}
+        handleTagNameClick={handleTagNameClick}
         handleSendContent={handleSendExtraContent}
         content={content}
+        tagNames={tagNames}
       />
     </S.TodayPageWrapper>
   );

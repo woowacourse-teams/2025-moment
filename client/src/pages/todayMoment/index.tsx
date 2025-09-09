@@ -8,7 +8,8 @@ import { useEffect } from 'react';
 import { ROUTES } from '@/app/routes/routes';
 
 export default function TodayMomentPage() {
-  const { handleContentChange, handleSendContent, content } = useSendMoments();
+  const { handleContentChange, handleTagNameClick, handleSendContent, content, tagNames } =
+    useSendMoments();
   const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
   const momentBasicWritable = momentWritingStatusData?.data?.status;
   const navigate = useNavigate();
@@ -27,8 +28,10 @@ export default function TodayMomentPage() {
       />
       <TodayMomentForm
         handleContentChange={handleContentChange}
+        handleTagNameClick={handleTagNameClick}
         handleSendContent={handleSendContent}
         content={content}
+        tagNames={tagNames}
       />
     </S.TodayPageWrapper>
   );
