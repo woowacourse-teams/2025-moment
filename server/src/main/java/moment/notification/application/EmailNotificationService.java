@@ -35,7 +35,7 @@ public class EmailNotificationService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
 
-    @Scheduled(cron = "0 0 15 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 16 * * ?", zone = "Asia/Seoul")
     public void schedule() {
         List<User> users = userQueryService.findAll();
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
