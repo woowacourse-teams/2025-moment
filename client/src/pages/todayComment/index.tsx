@@ -1,10 +1,11 @@
 import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from '../todayMoment/index.styles';
-import { TagList } from '@/features/moment/ui/TagList';
+import { TagList } from '@/shared/ui/tag/TagList';
 import { useState } from 'react';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { TAGS } from '@/features/moment/const/tags';
 
 export default function TodayCommentPage() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -27,7 +28,11 @@ export default function TodayCommentPage() {
         title="오늘의 코멘트"
         subtitle="특별한 모멘트를 공유받고 따뜻한 공감을 보내보세요"
       />
-      <TagList onTagClick={handleTagClick} selectedTag={selectedTag ? [selectedTag] : undefined} />
+      <TagList
+        tags={TAGS}
+        onTagClick={handleTagClick}
+        selectedTag={selectedTag ? [selectedTag] : undefined}
+      />
       <TodayCommentForm
         momentData={momentData}
         isLoading={isLoading}
