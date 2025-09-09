@@ -21,6 +21,7 @@ export const PROFANITY_WORDS = [
   "ㄱㅐ",
   "ㅅㅐ",
   "ㄲㅣ",
+  "ㅂㅅ",
   "ㅅㅂ",
   "ㅅㅂㄹ",
   "ㅅㅂㄴ",
