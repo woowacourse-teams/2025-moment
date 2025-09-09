@@ -6,7 +6,7 @@ import * as S from './index.styles';
 export default function TodayMomentExtraPage() {
   const {
     handleExtraContentChange,
-     handleExtraImageChange
+    handleExtraImageChange,
     handleTagNameClick,
     handleSendExtraContent,
     content,

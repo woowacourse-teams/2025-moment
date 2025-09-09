@@ -1,6 +1,6 @@
 import { uploadImageToS3 } from '@/shared/api/uploadImageToS3';
 import { usePresignedUrlMutation } from '@/shared/hooks/usePresignedUrlMutation';
-import { ImageUploadData, UploadedImage } from '@/shared/types';
+import { ImageUploadData, UploadedImage } from '@/shared/types/upload';
 import { useRef, useState } from 'react';
 import { useCloudFrontUrl } from './useCloudFrontUrl';
 
