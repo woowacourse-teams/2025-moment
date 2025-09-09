@@ -17,7 +17,7 @@ import moment.storage.dto.response.UploadUrlResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +43,7 @@ public class FileStorageController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/upload-url")
+    @PostMapping("/upload-url")
     public ResponseEntity<SuccessResponse<UploadUrlResponse>> getUploadUrl(
             @Valid @RequestBody UploadUrlRequest request,
             @AuthenticationPrincipal Authentication authentication

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>오늘의 모멘트 리마인더</title>
+    <style>
+        body {
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.5;
+        }
+
+        .content p {
+            margin: 12px 0;
+        }
+
+        .highlight {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 12px;
+            background-color: #4a90e2;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 헤더 -->
+    <div class="header">
+        오늘의 모멘트 리마인더
+    </div>
+
+    <!-- 본문 -->
+    <div class="content">
+        <p>안녕하세요, <strong>%s</strong>!</p>
+        <p>오늘 하루 모멘트 작성 여부: <span class="highlight">%s</span></p>
+        <p>오늘 달린 코멘트 개수: <span class="highlight">%s</span></p>
+        <p>오늘 하루를 돌아보시고, 친구들의 반응도 확인해보세요!</p>
+        <a class="button" href="https://your-page-link.com">우리 페이지 바로가기</a>
+    </div>
+
+    <!-- 푸터 -->
+    <div class="footer">
+        본 메일은 자동 발송된 메일입니다. 수신을 원하지 않으시면 설정에서 알림을 변경해주세요.
+    </div>
+</div>
+</body>
+</html>
+

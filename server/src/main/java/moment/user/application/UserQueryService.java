@@ -14,4 +14,6 @@ public interface UserQueryService {
     List<User> findNotMatchedUsersTodayByMomenter(User momenter);
 
     Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType);
+
+    List<User> findAll();
 }
