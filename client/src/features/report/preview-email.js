@@ -1,0 +1,83 @@
+import fs from 'fs';
+
+const generateHtml = () => {
+  return `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Moment 일일 리포트</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #ffffff; font-family: 'IanSui', sans-serif; }
+         /* 다크모드 대응 */
+        @media (prefers-color-scheme: dark) {
+          .email-container {
+            background-color: #ffffff !important;
+          }
+        }
+        /* 모바일 대응 */
+        @media screen and (max-width: 600px) {
+          .email-container {
+            width: 100% !important;
+            margin: 0 !important;
+          }
+        }
+        .container { font-family: 'IanSui', sans-serif; max-width: 600px; margin: 0 auto; background-color: #0F172A; }
+        .logo-section { padding: 20px 40px; text-align: left;}
+        .logo { display: inline-flex; color: #ffffff; padding: 8px 16px; border-radius: 8px; gap: 8px; align-items: center; }
+        .logoText {font-size: 18px; font-weight: 600;}
+        .logoImage {width: 30px; height: 30px; object-fit: contain; object-position: center; border-radius: 100%;}
+        .main-header {color: #ffffff; padding: 60px 40px; text-align: center; }
+        .main-title { font-size: 48px; font-weight: 700; margin: 0 0 20px 0; }
+        .subtitle { font-size: 20px; font-weight: 400; margin: 0; opacity: 0.9; }
+        .content-section { padding: 40px;}
+        .content-container { display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #334155; border-radius: 8px; gap: 12px; padding: 20px;}
+        .content-status { text-align: center;}
+        .content-title { font-size: 18px; font-weight: 600; color: #ffffff; margin: 0 0 12px 0; text-decoration: underline; }
+        .content-message { font-size: 16px; color: #ffffff; margin: 0; line-height: 1.6; }
+        .cta-section { text-align: center; padding: 40px;}
+        .cta-text { font-size: 18px; color: #F1C40F; margin: 0 0 24px 0; font-weight: 500; }
+        .cta-button { display: inline-block; background-color: #F1C40F; color: #ffffff; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; }
+        .footer { text-align: center; padding: 20px; color: #ffffff; font-size: 12px; background-color: #0F172A; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+        <div class="logo">
+            <img src="./public/images/logo.webp" alt="Moment" class="logoImage" /> <div class="logoText">Moment</div>
+            </div>
+        </div>
+        <div class="main-header">
+            <h1 class="main-title">%s님!</h1>
+            <p class="subtitle">오늘 하루의 기록을 전해드립니다</p>
+        </div>
+        <div class="content-section">
+            <div class="content-container">
+            <div class="content-status">
+                <h2 class="content-title">일일 모멘트 작성여부</h2>
+                <p class="content-message">%s</p>
+            </div>
+            <div class="content-status">
+                <h2 class="content-title">일일 코멘트 현황</h2>
+                <p class="content-message">%s</p>
+            </div>
+            </div>
+        </div>
+        <div class="cta-section">
+            <p class="cta-text">지금 바로 확인하러 가볼까요?</p>
+            <a href="https://connectingmoment.com" class="cta-button">Moment 바로가기</a>
+        </div>
+        <div class="footer">
+            <p>이 메일은 매일 저녁 7시에 발송됩니다.</p>
+            <p>© 2025 Moment. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>`;
+};
+
+const serverHtml = generateHtml();
+fs.writeFileSync('server-template.html', serverHtml);
+console.log('server-template.html 파일이 생성되었습니다!');
