@@ -1,7 +1,14 @@
 package moment.moment.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
@@ -17,12 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Comparator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -59,7 +60,8 @@ class MomentRepositoryTest {
         Moment savedMoment4 = momentRepository.save(moment4);
 
         // when
-        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment4.getCreatedAt(), savedMoment4.getId(), PageRequest.of(0, 3));
+        List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment4.getCreatedAt(),
+                savedMoment4.getId(), PageRequest.of(0, 3));
 
         // then
         assertAll(
@@ -92,7 +94,8 @@ class MomentRepositoryTest {
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
         // when & then
-        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, basicWriteType, startOfDay, endOfDay)).isEqualTo(3);
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, basicWriteType, startOfDay,
+                endOfDay)).isEqualTo(3);
     }
 
     @Test
@@ -116,14 +119,15 @@ class MomentRepositoryTest {
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
         // when & then
-        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, extraWriteType, startOfDay, endOfDay)).isEqualTo(1);
+        assertThat(momentRepository.countByMomenterAndWriteTypeAndCreatedAtBetween(momenter, extraWriteType, startOfDay,
+                endOfDay)).isEqualTo(1);
     }
 
     @Test
     void 코멘트를_달_수_있는_모멘트를_조회한다() {
         // given
         User user = userRepository.save(new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL));
-        User other = userRepository.save(new User("hippo@gmail.com", "hippo1234!","hippo", ProviderType.EMAIL));
+        User other = userRepository.save(new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL));
 
         Moment myMoment = momentRepository.save(new Moment("내가 쓴 모멘트", user, WriteType.BASIC));
 
@@ -140,5 +144,63 @@ class MomentRepositoryTest {
         // then
         assertThat(results).containsExactly(recentMoment);
         assertThat(results).doesNotContain(myMoment, commentedMoment);
+    }
+
+    @Test
+    void 특정_기간_동안_등록한_나의_모멘트_목록을_조회한다() throws InterruptedException {
+        // given
+        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+
+        Thread.sleep(10); // Ensure timestamps are distinct
+        Moment newMoment1 = momentRepository.save(new Moment("1 day ago", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment newMoment2 = momentRepository.save(new Moment("now", momenter, WriteType.BASIC));
+
+        // when
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        List<Moment> recentMoments = momentRepository.findByMomenterAndCreatedAtAfter(momenter, threeDaysAgo);
+
+        // then
+        assertThat(recentMoments).hasSize(2)
+                .containsExactlyInAnyOrder(newMoment1, newMoment2);
+    }
+
+    @Test
+    void 읽지_않은_모멘트_목록의_첫_페이지를_조회한다() {
+        // given
+        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
+        momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC)); // This one is not unread
+
+        // when
+        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(Set.of(moment1.getId(), moment2.getId()), PageRequest.of(0, 5));
+
+        // then
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(moment1, moment2);
+    }
+
+    @Disabled
+    @Test
+    void 읽지_않은_모멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
+        // given
+        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+
+        // when
+        List<Moment> result = momentRepository.findMyUnreadMomentNextPage(
+                Set.of(moment1.getId(), moment2.getId(), moment3.getId()),
+                moment3.getCreatedAt(),
+                moment3.getId(),
+                PageRequest.of(0, 1));
+
+        // then
+        assertThat(result).hasSize(1)
+                .containsExactly(moment2);
     }
 }

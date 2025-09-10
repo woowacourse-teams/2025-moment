@@ -43,6 +43,13 @@ spring:
           starttls:
             enable: true
 
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      stack:
+        auto: false
+
 jwt:
   secret:
     access_key: ${JWT_ACCESS_SECRET_KEY}
@@ -64,11 +71,6 @@ auth:
 logging:
   config: classpath:logback-dev.xml
 
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-
 management:
   metrics:
     enable:
@@ -87,3 +89,7 @@ management:
         enabled: true
         step: 1m
         namespace: Moment/dev
+
+s3:
+  bucket-name: ${S3_BUCKET_NAME}
+  bucket-path: ${S3_DEV_BUCKET_PATH}

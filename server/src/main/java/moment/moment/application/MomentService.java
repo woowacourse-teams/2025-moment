@@ -5,26 +5,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.global.page.Cursor;
+import moment.global.page.PageSize;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
-import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.dto.response.MyMomentsResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.notification.application.NotificationQueryService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.TargetType;
+import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -38,15 +48,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentService {
 
-    private static final String CURSOR_PART_DELIMITER = "_";
-    private static final int CURSOR_TIME_INDEX = 0;
-    private static final int CURSOR_ID_INDEX = 1;
-
     private final MomentRepository momentRepository;
-    private final CommentRepository commentRepository;
-    private final EchoRepository echoRepository;
+    private final CommentQueryService commentQueryService;
+    private final EchoQueryService echoQueryService;
+    private final MomentTagQueryService momentTagQueryService;
+    private final MomentTagService momentTagService;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
+    private final MomentImageService momentImageService;
+    private final TagService tagService;
+    private final NotificationQueryService notificationQueryService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
@@ -63,9 +74,18 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
+        for (String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            momentTagService.save(savedMoment, registeredTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagQueryService.getAllByMoment(savedMoment);
+
         rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
 
     @Transactional
@@ -79,88 +99,86 @@ public class MomentService {
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.EXTRA);
         Moment savedMoment = momentRepository.save(momentWithoutId);
 
+        Optional<MomentImage> savedMomentImage = momentImageService.create(request, savedMoment);
+
+        for (String tagName : request.tagNames()) {
+            Tag registeredTag = tagService.getOrRegister(tagName);
+            momentTagService.save(savedMoment, registeredTag);
+        }
+        List<MomentTag> savedMomentTags = momentTagQueryService.getAllByMoment(savedMoment);
+
         rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
-        return MomentCreateResponse.of(savedMoment);
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
 
-    public MyMomentPageResponse getMyMoments(String cursor, int pageSize, Long momenterId) {
+    public MyMomentPageResponse getMyMoments(String nextCursor, int size, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        // todo : 커서 검증 필요
+        Cursor cursor = new Cursor(nextCursor);
+        PageSize pageSize = new PageSize(size);
 
-        if (pageSize <= 0 || pageSize > 100) {
-            throw new MomentException(ErrorCode.MOMENTS_LIMIT_INVALID);
-        }
+        List<Moment> momentsWithinCursor = getRawMoments(cursor, momenter, pageSize.getPageRequest());
 
-        PageRequest pageable = PageRequest.of(0, pageSize + 1);
+        return getMyMomentPageResponse(momentsWithinCursor, pageSize, cursor);
+    }
 
-        List<Moment> momentsWithinCursor = new ArrayList<>();
+    private MyMomentPageResponse getMyMomentPageResponse(List<Moment> momentsWithinCursor,
+                                                         PageSize pageSize,
+                                                         Cursor cursor) {
 
-        if (cursor == null || cursor.isBlank()) {
-            momentsWithinCursor = momentRepository.findMyMomentFirstPage(momenter, pageable);
-        }
+        List<Comment> comments = commentQueryService.getAllByMomentIn(momentsWithinCursor);
 
-        if (cursor != null) {
-            String[] cursorParts = cursor.split(CURSOR_PART_DELIMITER);
-            LocalDateTime cursorDateTime = LocalDateTime.parse(cursorParts[CURSOR_TIME_INDEX]);
-            Long cursorId = Long.valueOf(cursorParts[CURSOR_ID_INDEX]);
-            momentsWithinCursor = momentRepository.findMyMomentsNextPage(momenter, cursorDateTime, cursorId, pageable);
-        }
+        boolean hasNextPage = pageSize.hasNextPage(momentsWithinCursor.size());
+        List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
-        List<Comment> comments = commentRepository.findAllByMomentIn(momentsWithinCursor);
-
-        boolean hasNextPage = momentsWithinCursor.size() > pageSize;
-        String nextCursor = extractCursor(momentsWithinCursor, hasNextPage);
-        List<Moment> moments = extractMoments(momentsWithinCursor, pageSize);
+        Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsWithoutCursor);
 
         if (comments.isEmpty()) {
-            List<MyMomentResponse> responses = moments.stream()
-                    .map(moment -> MyMomentResponse.of(moment, Collections.emptyList(), Collections.emptyMap()))
-                    .toList();
-
-            return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
+            return MyMomentPageResponse.of(
+                    MyMomentsResponse.of(
+                            momentsWithoutCursor,
+                            momentTagsByMoment
+                    ),
+                    cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
+                    hasNextPage,
+                    momentsWithoutCursor.size());
         }
 
         Map<Moment, List<Comment>> commentsByMoment = comments.stream()
                 .collect(Collectors.groupingBy(Comment::getMoment));
 
-        Map<Comment, List<Echo>> echosByComment = echoRepository.findAllByCommentIn(comments).stream()
-                .collect(Collectors.groupingBy(Echo::getComment));
+        Map<Comment, List<Echo>> echosByComment = echoQueryService.getEchosOfComments(comments);
 
-        List<MyMomentResponse> responses = moments.stream()
-                .map(moment -> {
-                    List<Comment> momentComments = commentsByMoment.getOrDefault(moment, List.of());
-
-                    Map<Long, List<Echo>> commentEchos = momentComments.stream()
-                            .collect(Collectors.toMap(Comment::getId,
-                                    comment -> echosByComment.getOrDefault(comment, List.of())));
-
-                    return MyMomentResponse.of(moment, momentComments, commentEchos);
-                })
-                .toList();
-
-        return MyMomentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
+        return MyMomentPageResponse.of(
+                MyMomentsResponse.of(
+                        momentsWithoutCursor,
+                        commentsByMoment,
+                        echosByComment,
+                        momentTagsByMoment
+                ),
+                cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
+                hasNextPage,
+                momentsWithoutCursor.size());
     }
 
-    private List<Moment> extractMoments(List<Moment> momentsWithinCursor, int pageSize) {
-        if (momentsWithinCursor.size() > pageSize) {
-            return momentsWithinCursor.subList(0, pageSize);
+    private List<Moment> getRawMoments(Cursor cursor, User momenter, PageRequest pageable) {
+        if (cursor.isFirstPage()) {
+            return momentRepository.findMyMomentFirstPage(momenter, pageable);
+        }
+        return momentRepository.findMyMomentsNextPage(
+                momenter,
+                cursor.dateTime(),
+                cursor.id(),
+                pageable);
+    }
+
+    private List<Moment> removeCursor(List<Moment> momentsWithinCursor, PageSize pageSize) {
+        if (pageSize.hasNextPage(momentsWithinCursor.size())) {
+            return momentsWithinCursor.subList(0, pageSize.size());
         }
         return momentsWithinCursor;
-    }
-
-    private String extractCursor(List<Moment> moments, boolean hasNext) {
-        String nextCursor = null;
-
-        List<Moment> pagingMoments = new ArrayList<>(moments);
-
-        if (!pagingMoments.isEmpty() && hasNext) {
-            Moment cursor = pagingMoments.get(moments.size() - 2);
-            nextCursor = cursor.getCreatedAt().toString() + CURSOR_PART_DELIMITER + cursor.getId();
-        }
-
-        return nextCursor;
     }
 
     public MomentCreationStatusResponse canCreateMoment(Long id) {
@@ -183,11 +201,19 @@ public class MomentService {
         return MomentCreationStatusResponse.createDeniedStatus();
     }
 
-    public CommentableMomentResponse getCommentableMoment(Long id) {
+    public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
         User user = userQueryService.getUserById(id);
 
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        List<Moment> commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+
+        List<Moment> commentableMoments = Collections.emptyList();
+
+        if (tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+        }
+        if (!tagNames.isEmpty()) {
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
+        }
 
         if (commentableMoments.isEmpty()) {
             return CommentableMomentResponse.empty();
@@ -196,5 +222,33 @@ public class MomentService {
         Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
 
         return CommentableMomentResponse.from(moment);
+    }
+
+    public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
+        User user = userQueryService.getUserById(momenterId);
+
+
+        Cursor cursor = new Cursor(nextCursor);
+        PageSize pageSize = new PageSize(size);
+
+        List<Moment> unreadRawMoments = getUnreadRawMoments(cursor, user, pageSize);
+
+        return getMyMomentPageResponse(unreadRawMoments, pageSize, cursor);
+    }
+
+    private List<Moment> getUnreadRawMoments(Cursor cursor, User user, PageSize pageSize) {
+        Set<Long> unreadMomentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.MOMENT)
+                .stream()
+                .map(Notification::getTargetId)
+                .collect(Collectors.toSet());
+
+        if(cursor.isFirstPage()) {
+            return momentRepository.findMyUnreadMomentFirstPage(unreadMomentIds, pageSize.getPageRequest());
+        }
+        return momentRepository.findMyUnreadMomentNextPage(
+                unreadMomentIds,
+                cursor.dateTime(),
+                cursor.id(),
+                pageSize.getPageRequest());
     }
 }

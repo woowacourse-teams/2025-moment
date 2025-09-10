@@ -1,5 +1,10 @@
 import type { Echos } from '@/features/echo/type/echos';
 
+export interface MomentsRequest {
+  content: string;
+  tagNames: string[];
+}
+
 export interface MomentsResponse {
   status: number;
   data: {

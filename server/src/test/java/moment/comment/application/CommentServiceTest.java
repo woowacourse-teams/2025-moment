@@ -13,20 +13,25 @@ import static org.mockito.Mockito.times;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentQueryService;
+import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
+import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.reply.application.EchoQueryService;
 import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
@@ -57,7 +62,7 @@ class CommentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private EchoRepository echoRepository;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -74,10 +79,19 @@ class CommentServiceTest {
     @Mock
     private RewardService rewardService;
 
+    @Mock
+    private CommentImageService commentImageService;
+
+    @Mock
+    private NotificationQueryService notificationQueryService;
+
+    @Mock
+    private MomentTagService momentTagService;
+
     @Test
     void Comment를_등록한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -105,7 +119,7 @@ class CommentServiceTest {
     @Test
     void 존재하지_않는_Moment에_Comment_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(
                 new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
@@ -121,7 +135,7 @@ class CommentServiceTest {
     @Test
     void 존재하지_않는_User가_Comment_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         given(userQueryService.getUserById(any(Long.class))).willThrow(new MomentException(ErrorCode.USER_NOT_FOUND));
 
@@ -158,14 +172,14 @@ class CommentServiceTest {
         given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(echoRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+        given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
         // when
         MyCommentPageResponse actualComments = commentService.getCommentsByUserIdWithCursor(null, 1, 1L);
 
         // then
         assertAll(
-                () -> assertThat(actualComments.items()).hasSize(1),
+                () -> assertThat(actualComments.items().myCommentsResponse()).hasSize(1),
                 () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now2, 2)),
                 () -> assertThat(actualComments.hasNextPage()).isTrue(),
                 () -> assertThat(actualComments.pageSize()).isEqualTo(1)
@@ -186,7 +200,7 @@ class CommentServiceTest {
     @Test
     void 동일_유저가_이미_코멘트를_등록한_모멘트에_다시_등록하는_경우_예외가_발생한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -206,7 +220,7 @@ class CommentServiceTest {
     @Test
     void 다른_유저가_이미_코멘트가_있는_모멘트에_새로_코멘트를_등록하는_경우_성공한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L);
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
         User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         ReflectionTestUtils.setField(commenter, "id", 1L);
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -230,5 +244,74 @@ class CommentServiceTest {
         // when & then
         assertThatCode(() -> commentService.addComment(request, commenter.getId()))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 이미지를_포함한_Comment를_등록한다() {
+        // given
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+
+        CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, imageUrl, imageName);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+
+        CommentImage commentImage = new CommentImage(comment, imageUrl, imageName);
+
+        Notification notification = new Notification(
+                momenter,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT,
+                1L);
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
+        given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
+        given(commentImageService.create(any(CommentCreateRequest.class), any(Comment.class)))
+                .willReturn(Optional.of(commentImage));
+        doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
+
+        // when
+        commentService.addComment(request, 1L);
+
+        // then
+        then(commentRepository).should(times(1)).save(any(Comment.class));
+    }
+
+    @Test
+    void 읽지_않은_코멘트를_조회한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment = new Moment("안녕", commenter, WriteType.BASIC);
+        Comment comment1 = new Comment("안녕1", commenter, moment);
+        ReflectionTestUtils.setField(comment1, "id", 1L);
+        Comment comment2 = new Comment("안녕2", commenter, moment);
+        ReflectionTestUtils.setField(comment2, "id", 2L);
+
+        Notification notification1 = new Notification(commenter, null, TargetType.COMMENT, 1L);
+        Notification notification2 = new Notification(commenter, null, TargetType.COMMENT, 2L);
+
+        given(userQueryService.getUserById(commenterId)).willReturn(commenter);
+        given(notificationQueryService.getUnreadContentsNotifications(commenter, TargetType.COMMENT))
+                .willReturn(List.of(notification1, notification2));
+        given(commentRepository.findUnreadCommentsFirstPage(any(), any()))
+                .willReturn(List.of(comment1, comment2));
+        given(echoQueryService.getAllByCommentIn(any())).willReturn(Collections.emptyList());
+
+        // when
+        MyCommentPageResponse response = commentService.getMyUnreadComments(null, 10, commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.items().myCommentsResponse()).hasSize(2),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(commenter, TargetType.COMMENT),
+                () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
+        );
     }
 }

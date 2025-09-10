@@ -12,21 +12,29 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.MomentImage;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
+import moment.notification.application.NotificationQueryService;
+import moment.notification.domain.Notification;
+import moment.notification.domain.TargetType;
+import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -45,7 +53,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
-class momentServiceTest {
+class MomentServiceTest {
 
     @InjectMocks
     private MomentService momentService;
@@ -54,10 +62,10 @@ class momentServiceTest {
     private MomentRepository momentRepository;
 
     @Mock
-    private CommentRepository commentRepository;
+    private CommentQueryService commentQueryService;
 
     @Mock
-    private EchoRepository echoRepository;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private UserQueryService userQueryService;
@@ -71,19 +79,39 @@ class momentServiceTest {
     @Mock
     private RewardService rewardService;
 
+    @Mock
+    private MomentImageService momentImageService;
+
+    @Mock
+    private TagService tagService;
+
+    @Mock
+    private MomentTagService momentTagService;
+
+    @Mock
+    private MomentTagQueryService momentTagQueryService;
+
+    @Mock
+    private NotificationQueryService notificationQueryService;
+
     @Test
     void 기본_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(expect, tag);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
+        given(tagService.getOrRegister(any(String.class))).willReturn(tag);
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -97,14 +125,14 @@ class momentServiceTest {
                 () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
                 () -> then(momentRepository).should(times(1)).save(any(Moment.class))
         );
-
     }
 
     @Test
     void 기본_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
@@ -119,15 +147,20 @@ class momentServiceTest {
     void 추가_모멘트_생성에_성공한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(expect, tag);
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
         ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
 
@@ -149,7 +182,8 @@ class momentServiceTest {
     void 추가_모멘트_생성에_실패한다() {
         // given
         String momentContent = "재미있는 내용이네요.";
-        MomentCreateRequest request = new MomentCreateRequest(momentContent);
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, null, null);
         User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
         Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
         ReflectionTestUtils.setField(expect, "id", 1L);
@@ -171,6 +205,8 @@ class momentServiceTest {
         Moment moment = new Moment("야근 힘들어용 ㅠㅠ", momenter, WriteType.BASIC);
         Comment comment = new Comment("안됐네요.", commenter, moment);
         Echo echo = new Echo("HEART", commenter, comment);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(moment, tag);
 
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
@@ -178,19 +214,19 @@ class momentServiceTest {
         given(momentRepository.findMyMomentFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(List.of(moment));
 
-        given(commentRepository.findAllByMomentIn(any(List.class)))
+        given(commentQueryService.getAllByMomentIn(any(List.class)))
                 .willReturn(List.of(comment));
 
-        given(echoRepository.findAllByCommentIn(any(List.class)))
-                .willReturn(List.of(echo));
+        given(echoQueryService.getEchosOfComments(any(List.class)))
+                .willReturn(Map.of(comment, List.of(echo)));
 
         // when
         MyMomentPageResponse response = momentService.getMyMoments(null, 1, 1L);
 
         // then
         assertAll(
-                () -> then(commentRepository).should(times(1)).findAllByMomentIn(any(List.class)),
-                () -> then(echoRepository).should(times(1)).findAllByCommentIn(any(List.class)),
+                () -> then(commentQueryService).should(times(1)).getAllByMomentIn(any(List.class)),
+                () -> then(echoQueryService).should(times(1)).getEchosOfComments(any(List.class)),
                 () -> then(momentRepository).should(times(1))
                         .findMyMomentFirstPage(any(User.class), any(Pageable.class)),
                 () -> assertThat(response.nextCursor()).isNull(),
@@ -268,12 +304,17 @@ class momentServiceTest {
         Moment savedMoment = new Moment("레벨3 (리)바이", momenter, WriteType.BASIC);
         Long momentId = 1L;
         ReflectionTestUtils.setField(savedMoment, "id", momentId);
+        Tag tag = new Tag("일상/여가");
+        MomentTag momentTag = new MomentTag(savedMoment, tag);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
         given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
         given(momentRepository.save(any(Moment.class))).willReturn(savedMoment);
+        given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
+        given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
 
-        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여");
+        List<String> tagNames = List.of("일상/여가");
+        MomentCreateRequest request = new MomentCreateRequest("레벨3도 끝나가네여", tagNames, null, null);
 
         // when
         momentService.addBasicMoment(request, 1L);
@@ -289,12 +330,13 @@ class momentServiceTest {
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
         Moment moment = new Moment("안녕", user, WriteType.BASIC);
+        List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response.id()).isEqualTo(moment.getId());
@@ -306,13 +348,125 @@ class momentServiceTest {
         // given
         Long userId = 1L;
         User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        List<String> tagNames = List.of("일상/여가");
+
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMoments(any(), any())).willReturn(Collections.emptyList());
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(
+                Collections.emptyList());
 
         // when
-        CommentableMomentResponse response = momentService.getCommentableMoment(userId);
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
 
         // then
         assertThat(response).isEqualTo(CommentableMomentResponse.empty());
+    }
+
+    @Test
+    void 이미지를_포함한_기본_모멘트를_작성한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
+
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
+
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(basicMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentImageService.create(any(MomentCreateRequest.class), any(Moment.class)))
+                .willReturn(Optional.of(momentImage));
+        doNothing().when(rewardService).rewardForMoment(momenter, Reason.MOMENT_CREATION, expect.getId());
+
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
+        // when
+        momentService.addBasicMoment(request, 1L);
+
+        // then
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.BASIC),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(momentImageService).should(times(1))
+                        .create(any(MomentCreateRequest.class), any(Moment.class))
+        );
+    }
+
+    @Test
+    void 이미지를_포함한_추가_모멘트를_작성한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        String imageUrl = "https://asdfasdfasdfasdfasdfasdfcat.jgp";
+        String imageName = "cat.jpg";
+        List<String> tagNames = List.of("일상/여가");
+
+        MomentCreateRequest request = new MomentCreateRequest(momentContent, tagNames, imageUrl, imageName);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        Moment expect = new Moment(momentContent, momenter, WriteType.BASIC);
+        MomentImage momentImage = new MomentImage(expect, imageUrl, imageName);
+
+        ReflectionTestUtils.setField(expect, "id", 1L);
+
+        given(momentRepository.save(any(Moment.class))).willReturn(expect);
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(momentImageService.create(any(MomentCreateRequest.class), any(Moment.class)))
+                .willReturn(Optional.of(momentImage));
+        doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
+
+        ArgumentCaptor<Moment> captor = ArgumentCaptor.forClass(Moment.class);
+
+        // when
+        momentService.addExtraMoment(request, 1L);
+
+        // then
+        verify(momentRepository).save(captor.capture());
+        Moment savedMoment = captor.getValue();
+        assertAll(
+                () -> assertThat(savedMoment.getWriteType()).isEqualTo(WriteType.EXTRA),
+                () -> then(momentRepository).should(times(1)).save(any(Moment.class)),
+                () -> then(momentImageService).should(times(1))
+                        .create(any(MomentCreateRequest.class), any(Moment.class))
+        );
+    }
+
+    @Test
+    void 읽지_않은_모멘트를_조회한다() {
+        // given
+        Long momenterId = 1L;
+        User momenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment1 = new Moment("안녕", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment1, "id", 1L);
+        Moment moment2 = new Moment("안녕2", momenter, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment2, "id", 2L);
+
+        Notification notification1 = new Notification(momenter, null, null, 1L);
+        Notification notification2 = new Notification(momenter, null, null, 2L);
+
+        given(userQueryService.getUserById(momenterId)).willReturn(momenter);
+        given(notificationQueryService.getUnreadContentsNotifications(momenter, TargetType.MOMENT))
+                .willReturn(List.of(notification1, notification2));
+        given(momentRepository.findMyUnreadMomentFirstPage(any(), any()))
+                .willReturn(List.of(moment1, moment2));
+        given(commentQueryService.getAllByMomentIn(any())).willReturn(Collections.emptyList());
+        given(momentTagService.getMomentTagsByMoment(any())).willReturn(Collections.emptyMap());
+
+        // when
+        MyMomentPageResponse response = momentService.getMyUnreadMoments(null, 10, momenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(2),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(momenter, TargetType.MOMENT),
+                () -> then(momentRepository).should(times(1)).findMyUnreadMomentFirstPage(any(), any())
+        );
     }
 }
