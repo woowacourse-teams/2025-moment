@@ -125,6 +125,72 @@ class MomentControllerTest {
         );
     }
 
+
+    @Test
+    void 이미지를_첨부한_기본_모멘트를_등록한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
+        String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
+        String imageName = "abcde.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreateResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("/api/v1/moments")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+    @Test
+    void 이미지를_첨부한_추가_모멘트를_등록한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
+        String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
+        String imageName = "abcde.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreateResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("/api/v1/moments/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
     @Test
     void 추가_모멘트를_등록_시_별조각을_차감한다() {
 
