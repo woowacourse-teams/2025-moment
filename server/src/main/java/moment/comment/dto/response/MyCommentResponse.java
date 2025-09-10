@@ -2,6 +2,7 @@ package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.comment.domain.Comment;
+import moment.moment.domain.MomentTag;
 import moment.reply.domain.Echo;
 
 import java.time.LocalDateTime;
@@ -24,8 +25,8 @@ public record MyCommentResponse(
         @Schema(description = "Comment에 등록된 에코 목록")
         List<EchoDetailResponse> echos
 ) {
-    public static MyCommentResponse from(Comment comment) {
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
+    public static MyCommentResponse from(Comment comment, List<MomentTag> momentTags) {
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment(), momentTags);
         List<EchoDetailResponse> echosResponse = null;
         return new MyCommentResponse(
                 comment.getId(),
@@ -36,8 +37,8 @@ public record MyCommentResponse(
         );
     }
 
-    public static MyCommentResponse from(Comment comment, List<Echo> echoes) {
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment());
+    public static MyCommentResponse from(Comment comment, List<Echo> echoes,  List<MomentTag> momentTags) {
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment(), momentTags);
         List<EchoDetailResponse> echosResponse = echoes.stream()
                 .map(EchoDetailResponse::from)
                 .toList();

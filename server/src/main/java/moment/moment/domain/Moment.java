@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
+import moment.global.page.Cursorable;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -28,7 +29,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString
-public class Moment extends BaseEntity {
+public class Moment extends BaseEntity implements Cursorable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

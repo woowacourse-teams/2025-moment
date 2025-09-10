@@ -2,6 +2,7 @@ package moment.moment.infrastructure;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.user.domain.User;
@@ -23,6 +24,13 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
+            WHERE m.id IN :ids
+            ORDER BY m.createdAt DESC, m.id DESC
+            """)
+    List<Moment> findMyUnreadMomentFirstPage(@Param("ids") Set<Long> ids, Pageable pageable);
+
+    @Query("""
+            SELECT m FROM moments m
             WHERE m.momenter = :momenter AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
@@ -30,6 +38,16 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                        @Param("cursorTime") LocalDateTime cursorDateTime,
                                        @Param("cursorId") Long cursorId,
                                        Pageable pageable);
+
+    @Query("""
+            SELECT m FROM moments m
+            WHERE m.id IN :ids AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
+            ORDER BY m.createdAt DESC, m.id DESC
+            """)
+    List<Moment> findMyUnreadMomentNextPage(@Param("ids") Set<Long> ids,
+                                            @Param("cursorTime") LocalDateTime cursorDateTime,
+                                            @Param("cursorId") Long cursorId,
+                                            Pageable pageable);
 
     int countByMomenterAndWriteTypeAndCreatedAtBetween(
             User user,

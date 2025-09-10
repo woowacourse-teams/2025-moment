@@ -17,6 +17,7 @@ import lombok.ToString;
 import moment.global.domain.BaseEntity;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.global.page.Cursorable;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
@@ -29,7 +30,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString
-public class Comment extends BaseEntity {
+public class Comment extends BaseEntity implements Cursorable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
