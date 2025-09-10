@@ -15,7 +15,7 @@ export const useSendComments = (momentId: number) => {
 
   const handleSubmit = async () => {
     if (checkProfanityWord(comment)) {
-      showError('코멘트에 욕설이 포함되어 있습니다.');
+      showError('코멘트에 부적절한 단어가 포함되어 있습니다.');
       return;
     }
     await sendComments({
