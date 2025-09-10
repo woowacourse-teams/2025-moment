@@ -8,6 +8,7 @@ import { EchoTypeKey } from '@/features/echo/type/echos';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Echo } from '@/features/echo/ui/Echo';
 import { WriteTime } from '@/shared/ui/writeTime';
+import Tag from '@/shared/ui/tag/Tag';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -55,6 +56,11 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
             )}
           </S.EchoContainer>
+          <S.MyCommentsTagWrapper>
+            {myComment.moment.tagNames.map((tag: string) => (
+              <Tag key={tag} tag={tag} />
+            ))}
+          </S.MyCommentsTagWrapper>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
       </Card.Content>
