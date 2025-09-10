@@ -6,9 +6,6 @@ phases:
       - cd client
       - npm install -g pnpm
       - pnpm install
-  pre_build:
-    commands:
-      - pnpm run converter:csv
   build:
     commands:
       - pnpm run build

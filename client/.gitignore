@@ -35,6 +35,3 @@ storybook-static
 
 # cursor
 .cursor/
-
-# filter word
-src/converter/ts/profanityWords.ts
