@@ -19,7 +19,6 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -54,9 +53,6 @@ class MomentControllerTest {
 
     @Autowired
     private TokenManager tokenManager;
-
-    @Autowired
-    private RewardRepository rewardRepository;
 
     @BeforeEach
     void setUp() {
