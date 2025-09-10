@@ -19,7 +19,6 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -54,9 +53,6 @@ class MomentControllerTest {
 
     @Autowired
     private TokenManager tokenManager;
-
-    @Autowired
-    private RewardRepository rewardRepository;
 
     @BeforeEach
     void setUp() {
@@ -242,11 +238,11 @@ class MomentControllerTest {
         String expectedNextCursor = cursorMoment.getCreatedAt().toString() + "_" + cursorMoment.getId();
 
         assertAll(
-                () -> assertThat(response.items()).hasSize(3),
-                () -> assertThat(response.items().stream()
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(3),
+                () -> assertThat(response.items().myMomentsResponse().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
-                () -> assertThat(response.items())
+                () -> assertThat(response.items().myMomentsResponse())
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
@@ -289,11 +285,11 @@ class MomentControllerTest {
 
         // then
         assertAll(
-                () -> assertThat(response.items()).hasSize(4),
-                () -> assertThat(response.items().stream()
+                () -> assertThat(response.items().myMomentsResponse()).hasSize(4),
+                () -> assertThat(response.items().myMomentsResponse().stream()
                         .allMatch(item -> item.momenterId().equals(savedMomenter.getId())))
                         .isTrue(),
-                () -> assertThat(response.items())
+                () -> assertThat(response.items().myMomentsResponse())
                         .isSortedAccordingTo(Comparator.comparing(MyMomentResponse::createdAt).reversed()),
                 () -> assertThat(response.nextCursor()).isNull(),
                 () -> assertThat(response.hasNextPage()).isFalse(),

@@ -1,9 +1,11 @@
 package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import moment.moment.domain.Moment;
 
 import java.time.LocalDateTime;
+import moment.moment.domain.MomentTag;
 import moment.user.domain.Level;
 
 @Schema(description = "Comment가 등록된 Moment 상세 내용")
@@ -21,14 +23,22 @@ public record MomentDetailResponse(
         Level level,
 
         @Schema(description = "Moment 등록 시간", example = "2025-07-21T10:57:08.926954")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        @Schema(description = "Moment 태그", example = "일상/여가")
+        List<String> tagNames
 ) {
-    public static MomentDetailResponse from(Moment moment) {
+    public static MomentDetailResponse from(Moment moment, List<MomentTag> momentTags) {
+        List<String> tagNames = momentTags.stream()
+                .map(MomentTag::getTagName)
+                .toList();
+
         return new MomentDetailResponse(
                 moment.getId(),
                 moment.getContent(),
                 moment.getMomenter().getNickname(),
                 moment.getMomenter().getLevel(),
-                moment.getCreatedAt());
+                moment.getCreatedAt(),
+                tagNames);
     }
 }
