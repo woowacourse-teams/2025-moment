@@ -1,6 +1,6 @@
-import { PROFANITY_WORDS } from '@/converter/ts/profanityWords';
+import { PROFANITY_WORDS } from '../ts/profanityWords';
 
-export const checkProfanityWord = (content: string) => {
+export const checkProfanityWord = (content: string): boolean => {
   if (!content || !content.trim()) return false;
 
   const normalizedContent = content.trim();

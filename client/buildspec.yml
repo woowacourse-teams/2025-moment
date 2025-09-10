@@ -6,6 +6,9 @@ phases:
       - cd client
       - npm install -g pnpm
       - pnpm install
+  pre_build:
+    commands:
+      - node src/converter/csv/csvToTs.js
   build:
     commands:
       - pnpm run build
