@@ -1,5 +1,5 @@
 import React from 'react';
-import { COMPLAINT_REASONS } from '../complaintReasons';
+import { COMPLAINT_REASONS_LIST } from '../complaintReasons';
 
 import * as S from './ComplaintReasonSelector.styles';
 import { ComplaintReason } from '@/features/complaint/types/complaintType';
@@ -17,7 +17,7 @@ export const ComplaintReasonSelector: React.FC<ComplaintReasonSelector> = ({
     <S.Container>
       <S.Title>신고 사유를 선택해주세요</S.Title>
       <S.ReasonList>
-        {COMPLAINT_REASONS.map(reasonItem => (
+        {COMPLAINT_REASONS_LIST.map(reasonItem => (
           <S.ReasonItem
             key={reasonItem.value}
             isSelected={selectedReason === reasonItem.value}
