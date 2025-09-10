@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import moment.comment.application.CommentImageService;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
@@ -93,6 +94,9 @@ class MomentServiceTest {
 
     @Mock
     private NotificationQueryService notificationQueryService;
+
+    @Mock
+    private CommentImageService commentImageService;
 
     @Test
     void 기본_모멘트_생성에_성공한다() {
