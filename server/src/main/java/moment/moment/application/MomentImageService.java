@@ -24,4 +24,8 @@ public class MomentImageService {
         MomentImage momentImageWithoutId = new MomentImage(moment, request.imageUrl(), request.imageName());
         return Optional.of(momentImageRepository.save(momentImageWithoutId));
     }
+
+    public Optional<MomentImage> findMomentImage(Moment moment) {
+        return momentImageRepository.findMomentImageByMoment(moment);
+    }
 }

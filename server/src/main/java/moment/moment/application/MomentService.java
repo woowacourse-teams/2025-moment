@@ -221,7 +221,10 @@ public class MomentService {
 
         Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
 
-        return CommentableMomentResponse.from(moment);
+        Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
+
+        MomentImage test = momentImage.orElse(null);
+        return CommentableMomentResponse.of(moment, test);
     }
 
     public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
