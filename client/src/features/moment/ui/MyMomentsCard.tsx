@@ -12,9 +12,8 @@ import { useNotificationsQuery } from '@/features/notification/hooks/useNotifica
 import { WriteTime } from '@/shared/ui/writeTime';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 import { theme } from '@/app/styles/theme';
-
-import { ComplaintFormData } from '@/features/complaint/types/complaintType';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
+import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -32,9 +31,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const navigation = useCommentNavigation(sortedComments?.length || 0);
   const currentComment = sortedComments?.[navigation.currentIndex];
 
-  const handleComplaintSubmit = (data: ComplaintFormData) => {
-    console.log(data);
-  };
+  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
 
   const handleModalClose = () => {
     navigation.reset();

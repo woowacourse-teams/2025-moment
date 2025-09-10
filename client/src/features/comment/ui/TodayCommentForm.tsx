@@ -8,8 +8,7 @@ import { WriterInfo } from '@/widgets/writerInfo';
 import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useModal } from '@/shared/hooks/useModal';
-import { ComplaintFormData } from '@/features/complaint/types/complaintType';
-
+import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
 
 export function TodayCommentForm({
@@ -37,9 +36,7 @@ export function TodayCommentForm({
     isOpen: isComplaintOpen,
   } = useModal();
 
-  const handleComplaintSubmit = (data: ComplaintFormData) => {
-    console.log(data);
-  };
+  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose, refetch);
 
   if (!isLoggedIn) {
     return (
