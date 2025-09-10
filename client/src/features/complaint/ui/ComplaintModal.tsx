@@ -30,7 +30,6 @@ export const ComplaintModal: React.FC<ComplaintModal> = ({
     };
 
     onSubmit(formData);
-    handleClose();
   };
 
   const handleClose = () => {
