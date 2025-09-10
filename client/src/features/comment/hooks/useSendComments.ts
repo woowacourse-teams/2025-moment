@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
-import { checkProfanityWord } from '@/converter/checkProfanityWord';
+import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
 import { useToast } from '@/shared/hooks/useToast';
 
 export const useSendComments = (momentId: number) => {
