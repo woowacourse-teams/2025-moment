@@ -8,7 +8,7 @@ phases:
       - pnpm install
   pre_build:
     commands:
-      - node src/converter/csv/csvToTs.js
+      - pnpm run converter:csv
   build:
     commands:
       - pnpm run build
