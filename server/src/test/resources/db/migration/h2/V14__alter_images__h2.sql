@@ -1,6 +1,6 @@
 -- 1. 기존의 잘못된 제약조건 삭제
 ALTER TABLE moment_images
-DROP FOREIGN KEY fk_moment_images_moments;
+DROP CONSTRAINT fk_moment_images_moments;
 
 -- 2. 새로운 올바른 제약조건 추가
 ALTER TABLE moment_images
@@ -9,7 +9,7 @@ ALTER TABLE moment_images
 
 -- 1. 기존의 잘못된 제약조건 삭제
 ALTER TABLE comment_images
-DROP FOREIGN KEY fk_comment_images_comment;
+DROP CONSTRAINT fk_comment_images_comment;
 
 -- 2. 새로운 올바른 제약조건 추가
 ALTER TABLE comment_images
