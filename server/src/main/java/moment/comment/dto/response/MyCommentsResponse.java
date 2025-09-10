@@ -1,5 +1,6 @@
 package moment.comment.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,8 @@ public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {
                                         Map<Moment, List<MomentTag>> momentTagsOfMoment) {
 
         return new MyCommentsResponse(comments.stream()
-                .map(comment -> MyCommentResponse.from(comment, momentTagsOfMoment.getOrDefault(comment.getMoment(), Collections.emptyList())))
+                .map(comment -> MyCommentResponse.from(comment,
+                        momentTagsOfMoment.getOrDefault(comment.getMoment(), Collections.emptyList())))
                 .toList());
     }
 
@@ -25,8 +27,14 @@ public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {
         return new MyCommentsResponse(comments.stream()
                 .map(comment -> {
                     List<Echo> echoes = commentAndEchos.getOrDefault(comment, Collections.emptyList());
-                    List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(comment.getMoment(), Collections.emptyList());
+                    List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(comment.getMoment(),
+                            Collections.emptyList());
                     return MyCommentResponse.from(comment, echoes, momentTags);
                 }).toList());
+    }
+
+    @JsonValue
+    public List<MyCommentResponse> getMyCommentsResponse() {
+        return myCommentsResponse;
     }
 }
