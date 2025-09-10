@@ -223,8 +223,7 @@ public class MomentService {
 
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
 
-        MomentImage test = momentImage.orElse(null);
-        return CommentableMomentResponse.of(moment, test);
+        return CommentableMomentResponse.of(moment, momentImage.orElse(null));
     }
 
     public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
