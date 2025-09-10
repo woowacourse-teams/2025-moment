@@ -67,6 +67,7 @@ export const MyMomentsTagWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  justify-content: flex-end;
 `;
 
 export const MyMomentsModalContent = styled.div`

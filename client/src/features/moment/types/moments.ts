@@ -21,7 +21,7 @@ export interface MyMomentsItem {
   content: string;
   createdAt: string;
   comments: Comment[] | null;
-  tagNames: { tagNames: string[] }; // TODO: 추후 DTO 변경 예정
+  tagNames: string[];
 }
 
 export interface Comment {

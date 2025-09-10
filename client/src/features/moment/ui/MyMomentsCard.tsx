@@ -65,8 +65,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsTagWrapper>
-          {/* TODO: 추후 DTO 변경 예정 */}
-          {myMoment.tagNames?.tagNames.map((tag: string) => (
+          {myMoment.tagNames.map((tag: string) => (
             <Tag key={tag} tag={tag} />
           ))}
         </S.MyMomentsTagWrapper>
