@@ -38,4 +38,3 @@ storybook-static
 
 # filter word
 src/converter/ts/profanityWords.ts
-src/converter/csv/filteringList.csv

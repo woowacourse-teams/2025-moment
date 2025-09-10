@@ -19,7 +19,7 @@
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:silent": "jest --silent",
     "test:debug": "jest --no-cache --verbose",
-    "convertor:csv": "node src/converter/csv/csvToTs.js"
+    "converter:csv": "node src/converter/csv/csvToTs.js"
   },
   "license": "MIT",
   "dependencies": {

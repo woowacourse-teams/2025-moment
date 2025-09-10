@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate profanity words file
+        run: pnpm run converter:csv
+
       - name: TypeScript type check
         run: pnpm exec tsc --noEmit
 
