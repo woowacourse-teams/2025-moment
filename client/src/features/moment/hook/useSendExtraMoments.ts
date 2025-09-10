@@ -13,6 +13,10 @@ export const useSendExtraMoments = () => {
   };
 
   const handleTagNameClick = (tagName: string) => {
+    if (tagNames.includes(tagName)) {
+      setTagNames(tagNames.filter(tag => tag !== tagName));
+      return;
+    }
     setTagNames([...tagNames, tagName]);
   };
 
