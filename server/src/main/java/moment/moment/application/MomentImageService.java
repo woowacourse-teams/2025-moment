@@ -26,6 +26,6 @@ public class MomentImageService {
     }
 
     public Optional<MomentImage> findMomentImage(Moment moment) {
-        return momentImageRepository.findByMomentId(moment.getId());
+        return momentImageRepository.findByMoment(moment);
     }
 }

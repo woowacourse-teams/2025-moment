@@ -344,6 +344,33 @@ class MomentServiceTest {
     }
 
     @Test
+    void 코멘트를_달_수_있는_이미지가_첨부된_모멘트를_반환한다() {
+        // given
+        Long userId = 1L;
+        User user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment = new Moment("안녕", user, WriteType.BASIC);
+
+        String imageUrl = "https://s3:moment-dev/images/고양이.jpg";
+        String imageName = "고양이.jpg";
+        MomentImage momentImage = new MomentImage(moment, imageUrl, imageName);
+        List<String> tagNames = List.of("일상/여가");
+
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
+        given(momentImageService.findMomentImage(any(Moment.class))).willReturn(Optional.of(momentImage));
+
+        // when
+        CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
+
+        // then
+        assertAll(
+                () -> assertThat(response.id()).isEqualTo(moment.getId()),
+                () -> assertThat(response.content()).isEqualTo(moment.getContent()),
+                () -> assertThat(response.imageUrl()).isEqualTo(momentImage.getImageUrl())
+        );
+    }
+
+    @Test
     void 코멘트를_달_수_있는_모멘트가_없는_경우_빈_값을_반환한다() {
         // given
         Long userId = 1L;
@@ -465,7 +492,8 @@ class MomentServiceTest {
         assertAll(
                 () -> assertThat(response.items().myMomentsResponse()).hasSize(2),
                 () -> assertThat(response.hasNextPage()).isFalse(),
-                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(momenter, TargetType.MOMENT),
+                () -> then(notificationQueryService).should(times(1))
+                        .getUnreadContentsNotifications(momenter, TargetType.MOMENT),
                 () -> then(momentRepository).should(times(1)).findMyUnreadMomentFirstPage(any(), any())
         );
     }
