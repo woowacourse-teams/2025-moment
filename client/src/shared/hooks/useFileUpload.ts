@@ -2,7 +2,6 @@ import { uploadImageToS3 } from '@/shared/api/uploadImageToS3';
 import { usePresignedUrlMutation } from '@/shared/hooks/usePresignedUrlMutation';
 import { ImageUploadData, UploadedImage } from '@/shared/types/upload';
 import { useRef, useState } from 'react';
-import { useCloudFrontUrl } from './useCloudFrontUrl';
 
 interface UseFileUploadProps {
   onImageChange: (imageData: ImageUploadData | null) => void;
@@ -14,7 +13,6 @@ export const useFileUpload = ({ onImageChange }: UseFileUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: getPresignedUrl } = usePresignedUrlMutation();
-  const { generateCloudFrontUrl } = useCloudFrontUrl();
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -47,12 +45,10 @@ export const useFileUpload = ({ onImageChange }: UseFileUploadProps) => {
 
       await uploadImageToS3(presignedUrl, file);
 
-      // CloudFront URL로 미리보기 URL 교체
-      const cloudFrontUrl = generateCloudFrontUrl(filePath);
-
+      // 백엔드에서 받은 filePath를 그대로 미리보기 URL로 사용
       setUploadedImage(prev => ({
         ...prev!,
-        previewUrl: cloudFrontUrl,
+        previewUrl: filePath,
       }));
     } catch (error) {
       console.error('Failed to process image:', error);
