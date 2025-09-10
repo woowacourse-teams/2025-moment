@@ -14,8 +14,11 @@ import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
+import { useState } from 'react';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
+  const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
+
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   const {
@@ -25,13 +28,28 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   } = useModal();
   useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
+  const filteredComments = useMemo(() => {
+    return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
+  }, [myMoment.comments, complainedCommentId]);
   const sortedComments = useMemo(() => {
-    return myMoment.comments?.slice().reverse() || [];
-  }, [myMoment.comments]);
+    return filteredComments?.slice().reverse() || [];
+  }, [filteredComments]);
   const navigation = useCommentNavigation(sortedComments?.length || 0);
   const currentComment = sortedComments?.[navigation.currentIndex];
 
-  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
+  const { handleComplaintSubmit } = useSendComplaint(() => {
+    handleComplaintClose();
+
+    if (currentComment) {
+      setComplainedCommentId(prev => new Set([...prev, currentComment.id]));
+    }
+
+    if (filteredComments.length <= 1) {
+      handleModalClose();
+    } else if (navigation.currentIndex >= filteredComments.length - 1) {
+      navigation.goToPrevious();
+    }
+  });
 
   const handleModalClose = () => {
     navigation.reset();
