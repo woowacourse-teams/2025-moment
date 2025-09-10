@@ -1,3 +1,7 @@
+import fs from 'fs';
+
+const generateHtml = () => {
+  return `
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -15,7 +19,7 @@
         /* 모바일 대응 */
         @media screen and (max-width: 600px) {
           .email-container {
-            width: 100%% !important;
+            width: 100% !important;
             margin: 0 !important;
           }
         }
@@ -23,7 +27,7 @@
         .logo-section { padding: 20px 40px; text-align: left;}
         .logo { display: inline-flex; color: #ffffff; padding: 8px 16px; border-radius: 8px; gap: 8px; align-items: center; }
         .logoText {font-size: 18px; font-weight: 600;}
-        .logoImage {width: 30px; height: 30px; object-fit: contain; object-position: center; border-radius: 100%%;}
+        .logoImage {width: 30px; height: 30px; object-fit: contain; object-position: center; border-radius: 100%;}
         .main-header {color: #ffffff; padding: 60px 40px; text-align: center; }
         .main-title { font-size: 48px; font-weight: 700; margin: 0 0 20px 0; }
         .subtitle { font-size: 20px; font-weight: 400; margin: 0; opacity: 0.9; }
@@ -71,4 +75,9 @@
         </div>
     </div>
 </body>
-</html>
+</html>`;
+};
+
+const serverHtml = generateHtml();
+fs.writeFileSync('server-template.html', serverHtml);
+console.log('server-template.html 파일이 생성되었습니다!');

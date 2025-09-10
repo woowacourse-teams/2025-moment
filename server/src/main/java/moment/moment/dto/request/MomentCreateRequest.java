@@ -3,6 +3,7 @@ package moment.moment.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
@@ -14,8 +15,9 @@ public record MomentCreateRequest(
         String content,
 
         @Schema(description = "모멘트 태그 이름 목록", example = "[\"일상/여가\", \"운동\"]")
-        @NotNull(message = "TAG_NAME_EMPTY")
-        List<String> tagNames,
+        @NotNull(message = "TAG_INVALID")
+        @Size(min = 1, message = "TAG_INVALID")
+        List<@NotBlank(message = "TAG_INVALID") @Pattern(regexp = "^[^\\s]+$", message = "TAG_INVALID") String> tagNames,
 
         @Schema(
                 description = "모멘트 사진 저장 경로",
