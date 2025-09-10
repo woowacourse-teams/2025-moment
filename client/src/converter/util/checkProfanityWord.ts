@@ -5,5 +5,5 @@ export const checkProfanityWord = (content: string) => {
 
   const normalizedContent = content.trim();
 
-  return PROFANITY_WORDS.some(word => normalizedContent.includes(word));
+  return PROFANITY_WORDS.some((word: string) => normalizedContent.includes(word));
 };
