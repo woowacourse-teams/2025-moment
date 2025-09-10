@@ -138,12 +138,14 @@ public class MomentService {
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsWithoutCursor);
+        Map<Moment, MomentImage> momentImagesByMoment = momentImageService.getMomentImageByMoment(momentsWithinCursor);
 
         if (comments.isEmpty()) {
             return MyMomentPageResponse.of(
                     MyMomentsResponse.of(
                             momentsWithoutCursor,
-                            momentTagsByMoment
+                            momentTagsByMoment,
+                            momentImagesByMoment
                     ),
                     cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                     hasNextPage,
@@ -155,17 +157,16 @@ public class MomentService {
 
         Map<Comment, List<Echo>> echosByComment = echoQueryService.getEchosOfComments(comments);
 
-        Map<Moment, MomentImage> momentImageByMoment = momentImageService.getMomentImageByMoment(momentsWithinCursor);
-        Map<Comment, CommentImage> commentImageByMoment = commentImageService.getCommentImageByMoment(comments);
+        Map<Comment, CommentImage> commentImagesByMoment = commentImageService.getCommentImageByMoment(comments);
 
         return MyMomentPageResponse.of(
                 MyMomentsResponse.of(
                         momentsWithoutCursor,
                         commentsByMoment,
                         echosByComment,
-                        momentTagsByMoment
-//                        momentImageByMoment,
-//                        commentImageByMoment
+                        momentTagsByMoment,
+                        momentImagesByMoment,
+                        commentImagesByMoment
                 ),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,

@@ -2,8 +2,6 @@ package moment.moment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
-
 @Schema(description = "나의 Moment 페이지 조회 응답")
 public record MyMomentPageResponse(
         @Schema(description = "조회된 나의 Moment 목록 응답")
