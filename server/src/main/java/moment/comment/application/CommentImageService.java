@@ -1,6 +1,10 @@
 package moment.comment.application;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
@@ -23,5 +27,23 @@ public class CommentImageService {
         }
         CommentImage commentImageWithoutId = new CommentImage(comment, request.imageUrl(), request.imageName());
         return Optional.of(commentImageRepository.save(commentImageWithoutId));
+    }
+
+    public Map<Comment, CommentImage> getCommentImageByMoment(List<Comment> comments) {
+        List<CommentImage> momentImages = commentImageRepository.findAllByCommentIn(comments);
+
+        Map<Comment, CommentImage> commentCommentImageMap = momentImages.stream().collect(Collectors.toMap(
+                CommentImage::getComment,
+                commentImage -> commentImage,
+                (existing, replacement) -> existing
+        ));
+
+        Map<Comment, CommentImage> results = new HashMap<>();
+
+        for (Comment comment : comments) {
+            results.put(comment, commentCommentImageMap.get(comment));
+        }
+
+        return results;
     }
 }

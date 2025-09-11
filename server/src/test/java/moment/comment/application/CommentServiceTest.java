@@ -21,6 +21,7 @@ import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.application.MomentImageService;
 import moment.moment.application.MomentQueryService;
 import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
@@ -32,7 +33,6 @@ import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
-import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -87,6 +87,9 @@ class CommentServiceTest {
 
     @Mock
     private MomentTagService momentTagService;
+
+    @Mock
+    private MomentImageService momentImageService;
 
     @Test
     void Comment를_등록한다() {

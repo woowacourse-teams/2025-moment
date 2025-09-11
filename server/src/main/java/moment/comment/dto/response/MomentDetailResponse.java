@@ -2,9 +2,11 @@ package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import java.util.Optional;
 import moment.moment.domain.Moment;
 
 import java.time.LocalDateTime;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.user.domain.Level;
 
@@ -22,13 +24,24 @@ public record MomentDetailResponse(
         @Schema(description = "Moment 작성자 레벨", example = "METEOR")
         Level level,
 
+        @Schema(description = "Moment 이미지 url", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
+        String imageUrl,
+
         @Schema(description = "Moment 등록 시간", example = "2025-07-21T10:57:08.926954")
         LocalDateTime createdAt,
 
         @Schema(description = "Moment 태그", example = "일상/여가")
         List<String> tagNames
 ) {
-    public static MomentDetailResponse from(Moment moment, List<MomentTag> momentTags) {
+    public static MomentDetailResponse from(
+            Moment moment,
+            List<MomentTag> momentTags,
+            MomentImage momentImage
+    ) {
+        String imageUrl = Optional.ofNullable(momentImage)
+                .map(MomentImage::getImageUrl)
+                .orElse(null);
+
         List<String> tagNames = momentTags.stream()
                 .map(MomentTag::getTagName)
                 .toList();
@@ -38,6 +51,7 @@ public record MomentDetailResponse(
                 moment.getContent(),
                 moment.getMomenter().getNickname(),
                 moment.getMomenter().getLevel(),
+                imageUrl,
                 moment.getCreatedAt(),
                 tagNames);
     }
