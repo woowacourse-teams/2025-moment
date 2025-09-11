@@ -58,7 +58,20 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
   const hasNextPage = isUnreadFilter ? hasNextPageUnread : hasNextPageAll;
   const isFetchingNextPage = isUnreadFilter ? isFetchingNextPageUnread : isFetchingNextPageAll;
 
-  const hasComments = currentComments?.length && currentComments.length > 0;
+  const sortedComments = useMemo(() => {
+    if (!currentComments) return [];
+
+    if (filterType === 'all') {
+      const unreadComments = currentComments.filter(comment => !comment.read);
+      const readComments = currentComments.filter(comment => comment.read);
+
+      return [...unreadComments, ...readComments];
+    }
+
+    return currentComments;
+  }, [currentComments, filterType]);
+
+  const hasComments = sortedComments?.length && sortedComments.length > 0;
 
   if (isError) {
     console.error('Error fetching comments:', error);
@@ -95,7 +108,7 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
     <S.MyCommentsListContainer>
       {hasComments ? (
         <>
-          {currentComments.map(myComment => (
+          {sortedComments.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
