@@ -59,17 +59,3 @@ export const NotLoggedNickname = styled.p`
   font-weight: 500;
   color: ${({ theme }) => theme.colors['yellow-500']};
 `;
-
-export const MomentImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 12px 0;
-`;
-
-export const MomentImage = styled.img`
-  max-width: 200px;
-  max-height: 150px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
-`;

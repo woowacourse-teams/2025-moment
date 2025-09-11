@@ -1,44 +1,38 @@
 package moment.comment.application;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
-import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
-import moment.comment.dto.response.MyCommentsResponse;
+import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.global.page.Cursor;
-import moment.global.page.PageSize;
-import moment.moment.application.MomentImageService;
 import moment.moment.application.MomentQueryService;
-import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
-import moment.moment.domain.MomentTag;
-import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
+import moment.reply.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,15 +47,11 @@ public class CommentService {
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
-    private final EchoQueryService echoQueryService;
+    private final EchoRepository echoRepository;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
     private final NotificationRepository notificationRepository;
     private final SseNotificationService sseNotificationService;
-    private final CommentImageService commentImageService;
-    private final MomentImageService momentImageService;
-    private final NotificationQueryService notificationQueryService;
-    private final MomentTagService momentTagService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -74,8 +64,6 @@ public class CommentService {
 
         Comment commentWithoutId = request.toComment(commenter, moment);
         Comment savedComment = commentRepository.save(commentWithoutId);
-
-        Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
 
         Notification notificationWithoutId = new Notification(
                 moment.getMomenter(),
@@ -96,101 +84,75 @@ public class CommentService {
 
         rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
-        return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
-                .orElseGet(() -> CommentCreateResponse.from(savedComment));
+        return CommentCreateResponse.from(savedComment);
     }
 
-    public MyCommentPageResponse getCommentsByUserIdWithCursor(String nextCursor, int size, Long commenterId) {
+    public MyCommentPageResponse getCommentsByUserIdWithCursor(String cursor, int pageSize, Long commenterId) {
         User commenter = userQueryService.getUserById(commenterId);
 
-        Cursor cursor = new Cursor(nextCursor);
-        PageSize pageSize = new PageSize(size);
+        if (pageSize <= 0 || pageSize > 100) {
+            throw new MomentException(ErrorCode.COMMENTS_LIMIT_INVALID);
+        }
 
-        List<Comment> commentsWithinCursor = getRawComments(cursor, commenter, pageSize);
+        // todo : 커서 검증 필요
 
-        return getMyCommentPageResponse(pageSize, commentsWithinCursor, cursor);
-    }
+        Pageable pageable = PageRequest.of(0, pageSize + 1);
 
-    private MyCommentPageResponse getMyCommentPageResponse(PageSize pageSize,
-                                                           List<Comment> commentsWithinCursor,
-                                                           Cursor cursor) {
+        List<Comment> commentsWithinCursor = new ArrayList<>();
 
-        boolean hasNextPage = pageSize.hasNextPage(commentsWithinCursor.size());
+        if (cursor == null || cursor.isBlank()) {
+            commentsWithinCursor = commentRepository.findCommentsFirstPage(commenter, pageable);
+        }
 
-        List<Comment> commentsWithoutCursor = removeCursor(commentsWithinCursor, pageSize);
-        Map<Comment, CommentImage> commentImages = commentImageService.getCommentImageByMoment(commentsWithoutCursor);
+        if (cursor != null) {
+            String[] cursorParts = cursor.split(CURSOR_PART_DELIMITER);
+            LocalDateTime cursorDateTime = LocalDateTime.parse(cursorParts[CURSOR_TIME_INDEX]);
+            Long cursorId = Long.valueOf(cursorParts[CURSOR_ID_INDEX]);
+            commentsWithinCursor = commentRepository.findCommentsNextPage(commenter, cursorDateTime, cursorId,
+                    pageable);
+        }
 
-        List<Moment> momentsOfComment = commentsWithoutCursor.stream()
-                .map(Comment::getMoment)
-                .toList();
-        Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsOfComment);
-        Map<Moment, MomentImage> momentImages = momentImageService.getMomentImageByMoment(momentsOfComment);
+        boolean hasNextPage = commentsWithinCursor.size() > pageSize;
+        String nextCursor = extractCursor(commentsWithinCursor, hasNextPage);
+        List<Comment> comments = extractComments(commentsWithinCursor, pageSize);
 
-        List<Echo> allEchoes = echoQueryService.getAllByCommentIn(commentsWithoutCursor);
+        List<Echo> allEchoes = echoRepository.findAllByCommentIn(comments);
 
         if (allEchoes.isEmpty()) {
-            return MyCommentPageResponse.of(
-                    MyCommentsResponse.of(commentsWithoutCursor, momentTagsByMoment, momentImages, commentImages),
-                    cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
-                    hasNextPage,
-                    commentsWithoutCursor.size()
-            );
+            List<MyCommentResponse> responses = comments.stream()
+                    .map(MyCommentResponse::from)
+                    .toList();
+            return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
         }
 
         Map<Comment, List<Echo>> commentAndEchos = allEchoes.stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
 
-        return MyCommentPageResponse.of(
-                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages, commentImages),
-                cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
-                hasNextPage,
-                commentsWithoutCursor.size()
-        );
+        List<MyCommentResponse> responses = comments.stream().map(comment -> {
+            List<Echo> echoes = commentAndEchos.getOrDefault(comment, new ArrayList<>());
+            return MyCommentResponse.from(comment, echoes);
+        }).toList();
+
+        return MyCommentPageResponse.of(responses, nextCursor, hasNextPage, responses.size());
     }
 
-    private List<Comment> getRawComments(Cursor cursor, User commenter, PageSize pageSize) {
-        if (cursor.isFirstPage()) {
-            return commentRepository.findCommentsFirstPage(commenter, pageSize.getPageRequest());
-        }
-        return commentRepository.findCommentsNextPage(
-                commenter,
-                cursor.dateTime(),
-                cursor.id(),
-                pageSize.getPageRequest());
-    }
-
-    private List<Comment> removeCursor(List<Comment> commentsWithinCursor, PageSize pageSize) {
-        if (pageSize.hasNextPage(commentsWithinCursor.size())) {
-            return commentsWithinCursor.subList(0, pageSize.size());
+    private List<Comment> extractComments(List<Comment> commentsWithinCursor, int pageSize) {
+        if (commentsWithinCursor.size() > pageSize) {
+            return commentsWithinCursor.subList(0, pageSize);
         }
         return commentsWithinCursor;
     }
 
-    public MyCommentPageResponse getMyUnreadComments(String nextCursor, int size, Long commenterId) {
-        User user = userQueryService.getUserById(commenterId);
+    private String extractCursor(List<Comment> comments, boolean hasNext) {
+        String nextCursor = null;
 
-        Cursor cursor = new Cursor(nextCursor);
-        PageSize pageSize = new PageSize(size);
+        List<Comment> pagingComments = new ArrayList<>(comments);
 
-        List<Comment> unreadRawComments = getUnreadRawComments(user, cursor, pageSize);
-
-        return getMyCommentPageResponse(pageSize, unreadRawComments, cursor);
-    }
-
-    private List<Comment> getUnreadRawComments(User user, Cursor cursor, PageSize pageSize) {
-        Set<Long> unreadCommentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.COMMENT)
-                .stream()
-                .map(Notification::getTargetId)
-                .collect(Collectors.toSet());
-
-        if(cursor.isFirstPage()) {
-            return commentRepository.findUnreadCommentsFirstPage(unreadCommentIds, pageSize.getPageRequest());
+        if (!pagingComments.isEmpty() && hasNext) {
+            Comment cursor = pagingComments.get(comments.size() - 2);
+            nextCursor = cursor.getCreatedAt().toString() + CURSOR_PART_DELIMITER + cursor.getId();
         }
-        return commentRepository.findUnreadCommentsNextPage(
-                unreadCommentIds,
-                cursor.dateTime(),
-                cursor.id(),
-                pageSize.getPageRequest());
-    }
 
+        return nextCursor;
+    }
 }

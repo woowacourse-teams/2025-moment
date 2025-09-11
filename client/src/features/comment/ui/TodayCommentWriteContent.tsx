@@ -1,11 +1,11 @@
-import { ROUTES } from '@/app/routes/routes';
-import { useToast } from '@/shared/hooks/useToast';
-import { Card, FileUpload, TextArea } from '@/shared/ui';
+import { Card, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
-import { useNavigate } from 'react-router';
 import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
+import { ROUTES } from '@/app/routes/routes';
+import { useNavigate } from 'react-router';
+import { useToast } from '@/shared/hooks/useToast';
 
 export const TodayCommentWriteContent = ({
   isLoggedIn,
@@ -16,8 +16,7 @@ export const TodayCommentWriteContent = ({
 }) => {
   const MAX_LENGTH = 200;
   const { showError } = useToast();
-  const { comment, handleChange, handleImageChange, handleSubmit, isPending } =
-    useSendComments(momentId);
+  const { comment, handleChange, handleSubmit, isPending } = useSendComments(momentId);
 
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
@@ -46,7 +45,6 @@ export const TodayCommentWriteContent = ({
           onFocus={handleTextAreaFocus}
           readOnly={!isLoggedIn}
         />
-        <FileUpload onImageChange={handleImageChange} disabled={!isLoggedIn} />
       </Card.Content>
       <Card.Action position="space-between">
         <p>

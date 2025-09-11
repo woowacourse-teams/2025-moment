@@ -1,14 +1,13 @@
 import { theme } from '@/app/styles/theme';
-import { EchoTypeKey } from '@/features/echo/type/echos';
-import { Echo } from '@/features/echo/ui/Echo';
-import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { Button, Card, SimpleCard } from '@/shared/ui';
-import Tag from '@/shared/ui/tag/Tag';
-import { WriteTime } from '@/shared/ui/writeTime';
-import { WriterInfo } from '@/widgets/writerInfo';
 import { Heart, Send } from 'lucide-react';
-import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import * as S from './MyCommentsCard.styles';
+import type { CommentWithNotifications } from '../types/commentsWithNotifications';
+import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
+import { EchoTypeKey } from '@/features/echo/type/echos';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { Echo } from '@/features/echo/ui/Echo';
+import { WriteTime } from '@/shared/ui/writeTime';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -34,11 +33,6 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
       <Card.Content>
         <S.ContentContainer>
           <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
-          {myComment.moment.imageUrl && (
-            <S.CommentImageContainer>
-              <S.CommentImage src={myComment.moment.imageUrl} alt="모멘트 이미지" />
-            </S.CommentImageContainer>
-          )}
         </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
@@ -46,11 +40,6 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <p>보낸 코멘트</p>
           </S.TitleContainer>
           <SimpleCard height="small" content={myComment.content} />
-          {myComment.imageUrl && (
-            <S.CommentImageContainer>
-              <S.CommentImage src={myComment.imageUrl} alt="코멘트 이미지" />
-            </S.CommentImageContainer>
-          )}
         </S.ContentContainer>
         <S.ContentContainer>
           <S.TitleContainer>
@@ -66,11 +55,6 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
             )}
           </S.EchoContainer>
-          <S.MyCommentsTagWrapper>
-            {myComment.moment.tagNames.map((tag: string) => (
-              <Tag key={tag} tag={tag} />
-            ))}
-          </S.MyCommentsTagWrapper>
           {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </S.ContentContainer>
       </Card.Content>

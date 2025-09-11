@@ -42,9 +42,4 @@ public class DefaultUserQueryService implements UserQueryService {
     public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
         return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
     }
-
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
 }

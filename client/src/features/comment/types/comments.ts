@@ -12,15 +12,12 @@ export interface CommentItem {
   id: number;
   content: string;
   createdAt: string;
-  imageUrl?: string | null;
   moment: {
     content: string;
     createdAt: string;
     id: number;
     level: string;
     nickName: string;
-    imageUrl?: string | null;
-    tagNames: string[];
   };
   echos: Echo[];
 }
@@ -34,8 +31,6 @@ export interface Echo {
 export interface SendCommentsData {
   content: string;
   momentId: number;
-  imageUrl?: string;
-  imageName?: string;
 }
 
 export interface SendCommentsResponse {
@@ -63,6 +58,5 @@ export interface GetCommentableMoments {
   nickname: string;
   level: string;
   content: string;
-  imageUrl?: string | null;
   createdAt: string;
 }

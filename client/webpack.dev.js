@@ -22,23 +22,7 @@ export default merge(common, {
     port: 3000,
     open: true,
     hot: true,
-    historyApiFallback: {
-      rewrites: [
-        {
-          from: /^\/moment(-dev)?\/images\//,
-          to: function () {
-            return false;
-          },
-        },
-        {
-          from: /^\/api\//,
-          to: function () {
-            return false;
-          },
-        },
-        { from: /./, to: '/index.html' },
-      ],
-    },
+    historyApiFallback: true,
     client: {
       overlay: true,
     },

@@ -1,6 +1,5 @@
 package moment.comment.application;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
@@ -27,10 +26,5 @@ public class DefaultCommentQueryService implements CommentQueryService {
     @Override
     public boolean existsByMomentAndCommenter(Moment moment, User user) {
         return commentRepository.existsByMomentAndCommenter(moment, user);
-    }
-
-    @Override
-    public List<Comment> getAllByMomentIn(List<Moment> moments) {
-        return commentRepository.findAllByMomentIn(moments);
     }
 }
