@@ -21,6 +21,7 @@ export interface MyMomentsItem {
   content: string;
   createdAt: string;
   comments: Comment[] | null;
+  tagNames: string[];
 }
 
 export interface Comment {
