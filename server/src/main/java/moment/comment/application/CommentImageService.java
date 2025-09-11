@@ -29,7 +29,7 @@ public class CommentImageService {
         return Optional.of(commentImageRepository.save(commentImageWithoutId));
     }
 
-    public Map<Comment, CommentImage> getCommentImageByMoment(final List<Comment> comments) {
+    public Map<Comment, CommentImage> getCommentImageByMoment(List<Comment> comments) {
         List<CommentImage> momentImages = commentImageRepository.findAllByCommentIn(comments);
 
         Map<Comment, CommentImage> commentCommentImageMap = momentImages.stream().collect(Collectors.toMap(
