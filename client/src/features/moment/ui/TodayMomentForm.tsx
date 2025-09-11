@@ -32,12 +32,13 @@ export function TodayMomentForm({
   const handleNavigateToTodayMomentSuccess = () => {
     if (checkProfanityWord(content)) {
       showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
-    if (tagNames.length === 0) {
-      showError('태그를 선택해주세요.');
-      return;
+      if (tagNames.length === 0) {
+        showError('태그를 선택해주세요.');
+        return;
+      }
+      handleSendContent();
+      navigate(ROUTES.TODAY_MOMENT_SUCCESS);
     }
-    handleSendContent();
-    navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };
 
   const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
