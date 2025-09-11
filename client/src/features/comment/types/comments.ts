@@ -60,3 +60,5 @@ export interface GetCommentableMoments {
   content: string;
   createdAt: string;
 }
+
+export type FilterType = 'all' | 'unread';

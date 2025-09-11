@@ -4,8 +4,14 @@ import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { AlertCircle } from 'lucide-react';
 import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
 import * as S from './MyCommentsList.styles';
+import { useMemo } from 'react';
+import { FilterType } from '../types/comments';
 
-export const MyCommentsList = () => {
+interface MyCommentsList {
+  filterType: FilterType;
+}
+
+export const MyCommentsList = ({ filterType }: MyCommentsList) => {
   const {
     commentsWithNotifications,
     isLoading,
@@ -16,7 +22,16 @@ export const MyCommentsList = () => {
     isFetchingNextPage,
   } = useCommentsWithNotifications();
 
-  const hasComments = commentsWithNotifications?.length && commentsWithNotifications.length > 0;
+  const filteredComments = useMemo(() => {
+    if (!commentsWithNotifications) return [];
+
+    if (filterType === 'unread') {
+      return commentsWithNotifications.filter(comment => !comment.read);
+    }
+    return commentsWithNotifications;
+  }, [commentsWithNotifications, filterType]);
+
+  const hasComments = filteredComments?.length && filteredComments.length > 0;
 
   if (isError) {
     console.error('Error fetching comments:', error);
@@ -53,7 +68,7 @@ export const MyCommentsList = () => {
     <S.MyCommentsListContainer>
       {hasComments ? (
         <>
-          {commentsWithNotifications.map(myComment => (
+          {filteredComments.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
@@ -69,8 +84,12 @@ export const MyCommentsList = () => {
         </>
       ) : (
         <NotFound
-          title="아직 작성한 코멘트가 없어요"
-          subtitle="다른 사용자의 모멘트에 따뜻한 공감을 보내보세요"
+          title={
+            filterType === 'unread' ? '모든 알림을 확인했습니다' : '아직 작성한 코멘트가 없어요'
+          }
+          subtitle={
+            filterType === 'unread' ? '' : '다른 사용자의 모멘트에 따뜻한 공감을 보내보세요'
+          }
         />
       )}
     </S.MyCommentsListContainer>
