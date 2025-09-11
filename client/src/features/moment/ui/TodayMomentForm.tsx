@@ -29,6 +29,10 @@ export function TodayMomentForm({
   const { showError } = useToast();
 
   const handleNavigateToTodayMomentSuccess = () => {
+    if (tagNames.length === 0) {
+      showError('태그를 선택해주세요.');
+      return;
+    }
     handleSendContent();
     navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };

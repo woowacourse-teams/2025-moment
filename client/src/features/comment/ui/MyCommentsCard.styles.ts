@@ -49,6 +49,13 @@ export const ContentContainer = styled.div`
   margin-bottom: 10px;
 `;
 
+export const MyCommentsTagWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+`;
+
 export const EchoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
