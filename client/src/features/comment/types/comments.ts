@@ -18,6 +18,7 @@ export interface CommentItem {
     id: number;
     level: string;
     nickName: string;
+    tagNames: string[];
   };
   echos: Echo[];
 }

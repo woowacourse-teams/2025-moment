@@ -11,6 +11,7 @@ import { WriterInfo } from '@/widgets/writerInfo';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
+import Tag from '@/shared/ui/tag/Tag';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -63,6 +64,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
+        <S.MyMomentsTagWrapper>
+          {myMoment.tagNames.map((tag: string) => (
+            <Tag key={tag} tag={tag} />
+          ))}
+        </S.MyMomentsTagWrapper>
       </S.MyMomentsCard>
       {isOpen && (
         <Modal

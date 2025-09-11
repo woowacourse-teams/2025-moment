@@ -11,6 +11,7 @@ import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -18,7 +19,9 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
+import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -53,6 +56,12 @@ class MomentControllerTest {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private RewardRepository rewardRepository;
+
+    @Autowired
+    private MomentImageRepository momentImageRepository;
 
     @BeforeEach
     void setUp() {
@@ -100,6 +109,72 @@ class MomentControllerTest {
         List<String> tagNames = List.of("일상/여가");
 
         MomentCreateRequest request = new MomentCreateRequest(content, tagNames, null, null);
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreateResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("/api/v1/moments/extra")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+
+    @Test
+    void 이미지를_첨부한_기본_모멘트를_등록한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
+        String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
+        String imageName = "abcde.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        // when
+        MomentCreateResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("/api/v1/moments")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MomentCreateResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
+                () -> assertThat(response.content()).isEqualTo(content)
+        );
+    }
+
+    @Test
+    void 이미지를_첨부한_추가_모멘트를_등록한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+        String content = "재미있는 내용이네요~~?";
+        List<String> tagNames = List.of("일상/여가");
+        String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
+        String imageName = "abcde.jpg";
+
+        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -371,6 +446,42 @@ class MomentControllerTest {
                 () -> assertThat(response.nickname()).isEqualTo(savedMomenter.getNickname()),
                 () -> assertThat(response.level()).isEqualTo(savedMomenter.getLevel()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
+        );
+    }
+
+    @Test
+    void 코멘트를_작성할_수_있는_이미지를_포함한_모멘트를_조회한다() {
+        // given
+        User user = new User("mimi@gmail.com", "mimi1234!", "mimi", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        User momenter = new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
+        String imageName = "abcde.jpg";
+        MomentImage momentImage = new MomentImage(savedMoment, imageUrl, imageName);
+        momentImageRepository.save(momentImage);
+
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+
+        // when
+        CommentableMomentResponse response = RestAssured.given().log().all()
+                .cookie("accessToken", token)
+                .when().get("api/v1/moments/commentable")
+                .jsonPath()
+                .getObject("data", CommentableMomentResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
+                () -> assertThat(response.nickname()).isEqualTo(savedMomenter.getNickname()),
+                () -> assertThat(response.level()).isEqualTo(savedMomenter.getLevel()),
+                () -> assertThat(response.content()).isEqualTo(savedMoment.getContent()),
+                () -> assertThat(response.imageUrl()).isEqualTo(imageUrl)
         );
     }
 
