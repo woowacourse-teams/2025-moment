@@ -1,11 +1,11 @@
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
-import * as S from './TodayCommentForm.styles';
-import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
+import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
 import { GetCommentableMoments } from '../types/comments';
+import * as S from './TodayCommentForm.styles';
+import { TodayCommentWriteContent } from './TodayCommentWriteContent';
 
 export function TodayCommentForm({
   momentData,
@@ -88,6 +88,11 @@ export function TodayCommentForm({
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
+      {momentData.imageUrl && (
+        <S.MomentImageContainer>
+          <S.MomentImage src={momentData.imageUrl} alt="모멘트 이미지" />
+        </S.MomentImageContainer>
+      )}
       <TodayCommentWriteContent
         momentId={momentData.id}
         isLoggedIn={isLoggedIn}
