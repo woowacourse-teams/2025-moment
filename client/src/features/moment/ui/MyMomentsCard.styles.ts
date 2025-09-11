@@ -196,3 +196,31 @@ export const CommentIndicator = styled.div`
   text-align: center;
   font-size: 0.9rem;
 `;
+
+export const CommentImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+`;
+
+export const CommentImage = styled.img`
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+`;
+
+export const MomentImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+`;
+
+export const MomentImage = styled.img`
+  max-width: 120px;
+  max-height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+`;
