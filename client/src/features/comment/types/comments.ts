@@ -64,3 +64,23 @@ export interface GetCommentableMoments {
 }
 
 export type FilterType = 'all' | 'unread';
+
+export interface UnreadCommentItem extends Omit<CommentItem, 'moment'> {
+  moment: CommentItem['moment'] & {
+    tagNames: string;
+  };
+}
+
+export interface UnreadCommentsResponse {
+  status: number;
+  data: {
+    items: UnreadCommentItem[];
+    nextCursor: string | null;
+    hasNextPage: boolean;
+    pageSize: number;
+  };
+}
+
+export interface GetUnreadComments {
+  pageParam?: string | null;
+}

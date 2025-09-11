@@ -6,32 +6,59 @@ import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotificati
 import * as S from './MyCommentsList.styles';
 import { useMemo } from 'react';
 import { FilterType } from '../types/comments';
+import { useUnreadCommentsQuery } from '../api/useUnreadCommentsQuery';
+import { CommentWithNotifications } from '../types/commentsWithNotifications';
 
 interface MyCommentsList {
   filterType: FilterType;
 }
 
 export const MyCommentsList = ({ filterType }: MyCommentsList) => {
+  const allCommentsQuery = useCommentsWithNotifications();
+  const unreadCommentsQuery = useUnreadCommentsQuery();
+
+  const isUnreadFilter = filterType === 'unread';
+
   const {
-    commentsWithNotifications,
-    isLoading,
-    isError,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useCommentsWithNotifications();
+    commentsWithNotifications: allComments,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+    error: errorAll,
+    fetchNextPage: fetchNextPageAll,
+    hasNextPage: hasNextPageAll,
+    isFetchingNextPage: isFetchingNextPageAll,
+  } = allCommentsQuery;
 
-  const filteredComments = useMemo(() => {
-    if (!commentsWithNotifications) return [];
+  const {
+    data: unreadCommentsData,
+    isLoading: isLoadingUnread,
+    isError: isErrorUnread,
+    error: errorUnread,
+    fetchNextPage: fetchNextPageUnread,
+    hasNextPage: hasNextPageUnread,
+    isFetchingNextPage: isFetchingNextPageUnread,
+  } = unreadCommentsQuery;
 
-    if (filterType === 'unread') {
-      return commentsWithNotifications.filter(comment => !comment.read);
-    }
-    return commentsWithNotifications;
-  }, [commentsWithNotifications, filterType]);
+  const unreadComments = useMemo(() => {
+    if (!unreadCommentsData) return [];
+    return unreadCommentsData.pages.flatMap(page =>
+      page.data.items.map(item => ({
+        ...item,
+        read: false as const,
+        notificationId: null,
+      })),
+    );
+  }, [unreadCommentsData]);
 
-  const hasComments = filteredComments?.length && filteredComments.length > 0;
+  const currentComments: CommentWithNotifications[] = isUnreadFilter ? unreadComments : allComments;
+  const isLoading = isUnreadFilter ? isLoadingUnread : isLoadingAll;
+  const isError = isUnreadFilter ? isErrorUnread : isErrorAll;
+  const error = isUnreadFilter ? errorUnread : errorAll;
+  const fetchNextPage = isUnreadFilter ? fetchNextPageUnread : fetchNextPageAll;
+  const hasNextPage = isUnreadFilter ? hasNextPageUnread : hasNextPageAll;
+  const isFetchingNextPage = isUnreadFilter ? isFetchingNextPageUnread : isFetchingNextPageAll;
+
+  const hasComments = currentComments?.length && currentComments.length > 0;
 
   if (isError) {
     console.error('Error fetching comments:', error);
@@ -68,7 +95,7 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
     <S.MyCommentsListContainer>
       {hasComments ? (
         <>
-          {filteredComments.map(myComment => (
+          {currentComments.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
