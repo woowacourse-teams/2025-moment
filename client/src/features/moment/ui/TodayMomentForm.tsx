@@ -6,6 +6,7 @@ import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayContent.styles';
+import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
 import { TagList } from '@/shared/ui/tag/TagList';
 import { TAGS } from '../const/tags';
 
@@ -29,12 +30,15 @@ export function TodayMomentForm({
   const { showError } = useToast();
 
   const handleNavigateToTodayMomentSuccess = () => {
-    if (tagNames.length === 0) {
-      showError('태그를 선택해주세요.');
-      return;
+    if (checkProfanityWord(content)) {
+      showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
+      if (tagNames.length === 0) {
+        showError('태그를 선택해주세요.');
+        return;
+      }
+      handleSendContent();
+      navigate(ROUTES.TODAY_MOMENT_SUCCESS);
     }
-    handleSendContent();
-    navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };
 
   const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {

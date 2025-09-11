@@ -194,7 +194,8 @@ class CommentRepositoryTest {
         commentRepository.save(new Comment("comment3", user, moment)); // This one is not unread
 
         // when
-        List<Comment> result = commentRepository.findUnreadCommentsFirstPage(Set.of(comment1.getId(), comment2.getId()), PageRequest.of(0, 5));
+        List<Comment> result = commentRepository.findUnreadCommentsFirstPage(Set.of(comment1.getId(), comment2.getId()),
+                PageRequest.of(0, 5));
 
         // then
         assertThat(result).hasSize(2)
@@ -224,4 +225,6 @@ class CommentRepositoryTest {
         assertThat(result).hasSize(1)
                 .containsExactly(comment2);
     }
+
+
 }
