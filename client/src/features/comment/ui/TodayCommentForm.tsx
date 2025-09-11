@@ -9,9 +9,9 @@ import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useModal } from '@/shared/hooks/useModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
-import { GetCommentableMoments } from '../types/comments';
 import { useEffect } from 'react';
 import { isComplainedMoment } from '@/features/complaint/utils/complainedMoments';
+import { GetCommentableMoments } from '../types/comments';
 
 export function TodayCommentForm({
   momentData,
@@ -116,6 +116,11 @@ export function TodayCommentForm({
           subtitle=""
         />
         <SimpleCard height="small" content={momentData.content} />
+        {momentData.imageUrl && (
+          <S.MomentImageContainer>
+            <S.MomentImage src={momentData.imageUrl} alt="모멘트 이미지" />
+          </S.MomentImageContainer>
+        )}
         <TodayCommentWriteContent
           momentId={momentData.id}
           isLoggedIn={isLoggedIn}

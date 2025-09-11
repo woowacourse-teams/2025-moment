@@ -64,6 +64,13 @@ export const MyMomentsContent = styled.p`
   word-break: break-all;
 `;
 
+export const MyMomentsTagWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+`;
+
 export const MyMomentsModalContent = styled.div`
   height: 100%;
   width: 100%;
@@ -202,4 +209,32 @@ export const CommentIndicator = styled.div`
   width: 40%;
   text-align: center;
   font-size: 0.9rem;
+`;
+
+export const CommentImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+`;
+
+export const CommentImage = styled.img`
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+`;
+
+export const MomentImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+`;
+
+export const MomentImage = styled.img`
+  max-width: 120px;
+  max-height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
 `;

@@ -49,6 +49,13 @@ export const ContentContainer = styled.div`
   margin-bottom: 10px;
 `;
 
+export const MyCommentsTagWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+`;
+
 export const EchoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -60,4 +67,18 @@ export const NoEchoContent = styled.p`
   text-align: center;
   font-size: 1rem;
   color: ${({ theme }) => theme.colors['gray-400']};
+`;
+
+export const CommentImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+`;
+
+export const CommentImage = styled.img`
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid ${({ theme }) => theme.colors['gray-600']};
 `;

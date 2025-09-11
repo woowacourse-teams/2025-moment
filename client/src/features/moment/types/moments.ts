@@ -20,7 +20,9 @@ export interface MyMomentsItem {
   momenterId: number;
   content: string;
   createdAt: string;
+  imageUrl?: string | null;
   comments: Comment[] | null;
+  tagNames: string[];
 }
 
 export interface Comment {
@@ -29,6 +31,7 @@ export interface Comment {
   nickname: string;
   level: string;
   createdAt: string;
+  imageUrl?: string | null;
   echos: Echos[];
 }
 
