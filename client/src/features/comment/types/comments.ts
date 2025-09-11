@@ -18,6 +18,7 @@ export interface CommentItem {
     id: number;
     level: string;
     nickName: string;
+    tagNames: string[];
   };
   echos: Echo[];
 }
@@ -31,6 +32,8 @@ export interface Echo {
 export interface SendCommentsData {
   content: string;
   momentId: number;
+  imageUrl?: string;
+  imageName?: string;
 }
 
 export interface SendCommentsResponse {

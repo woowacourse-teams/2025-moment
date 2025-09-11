@@ -1,5 +1,6 @@
 package moment.comment.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,5 +50,11 @@ public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {
                         MomentImage momentImage = momentImagesOfMoment.getOrDefault(momentOfComment, null);
                         return MyCommentResponse.from(comment, echoes, momentTags, commentImage, momentImage);
                     }).toList());
+
+    }
+
+    @JsonValue
+    public List<MyCommentResponse> getMyCommentsResponse() {
+        return myCommentsResponse;
     }
 }
