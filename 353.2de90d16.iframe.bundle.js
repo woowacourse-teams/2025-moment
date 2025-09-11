@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[300],{"./src/shared/ui/button/Button.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{$:()=>Button_Button});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const buttonStyles={primary:theme=>`\n    background-color: transparent;\n    color: #fff;\n    border: 1px solid ${theme.colors["slate-700"]};\n    border-radius: 50px;\n    padding: 10px 20px;\n    font-size: 16px;\n    font-weight: 600;\n    white-space: nowrap;\n\n    &:hover {\n        transform: scale(1.05);\n        transition: transform 0.3s ease;\n    }\n\n    @media (max-width: 768px) {\n        padding: 8px 16px;\n        font-size: 14px;\n    }\n    `,secondary:theme=>`\n    background-color: ${theme.colors["yellow-500"]};\n    color: black;\n    padding: 18px 30px;\n    border-radius: 50px;\n    font-size: 24px;\n    font-weight: bold;\n    transition: all 0.3s ease;\n\n    @media (max-width: 768px) {\n        padding: 16px 24px;\n        font-size: 20px;\n    }\n\n    @media (max-width: 480px) {\n        padding: 14px 20px;\n        font-size: 18px;\n    }\n\n    &:hover {\n        filter: brightness(1.1);\n        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);\n        transform: translateY(-2px);\n    }\n    `,tertiary:theme=>`\n    background-color: ${theme.colors["yellow-500"]};\n    color: black;\n    padding: 10px 20px;\n    border-radius: 5px;\n    font-size: 1.1rem;\n    font-weight: bold;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    transition: all 0.3s ease;\n\n    @media (max-width: 768px) {\n        padding: 16px 24px;\n    }\n\n    @media (max-width: 480px) {\n        padding: 14px 20px;\n        font-size: 1rem;\n    }\n\n    &:hover {\n        filter: brightness(1.1);\n        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);\n        transform: translateY(-2px);\n    }\n    `,quaternary:theme=>`\n    background-color: transparent;\n    color: ${theme.colors["gray-200"]};\n    border: 1px solid ${theme.colors["slate-700"]};\n    padding: 10px 20px;\n    border-radius: 50px;\n    font-size: 16px;\n\n    @media (max-width: 1024px) {\n      padding: 8px 16px;\n      font-size: 14px;\n    }\n\n    @media (max-width: 768px) {\n      padding: 4px 10px;\n      font-size: 12px;\n    }\n\n\n  `},Button=emotion_styled_browser_esm.A.button`
+"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[353],{"./src/shared/context/toast/ToastProvider.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{$:()=>ToastContext,t:()=>ToastProvider});var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),_shared_ui__WEBPACK_IMPORTED_MODULE_1__=__webpack_require__("./src/shared/ui/index.ts"),react__WEBPACK_IMPORTED_MODULE_2__=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/index.js"),react_dom__WEBPACK_IMPORTED_MODULE_3__=__webpack_require__("./node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js"),_ui_toast_Toast_styles__WEBPACK_IMPORTED_MODULE_4__=__webpack_require__("./src/shared/ui/toast/Toast.styles.ts");const ToastContext=(0,react__WEBPACK_IMPORTED_MODULE_2__.createContext)(void 0),ToastProvider=({children})=>{const[toast,setToast]=(0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(null),removeToast=()=>{setToast(null)},contextValue={addToast:toastParams=>{setToast(toastParams)},removeToast,toast};return(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(ToastContext.Provider,{value:contextValue,children:[children,toast&&(0,react_dom__WEBPACK_IMPORTED_MODULE_3__.createPortal)((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_ui_toast_Toast_styles__WEBPACK_IMPORTED_MODULE_4__.N9,{children:(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_shared_ui__WEBPACK_IMPORTED_MODULE_1__.y8,{message:toast.message,variant:toast.variant,duration:toast.duration,routeType:toast.routeType,onClose:removeToast},"toast")}),document.body)]})};ToastProvider.__docgenInfo={description:"",methods:[],displayName:"ToastProvider",props:{children:{required:!0,tsType:{name:"ReactNode"},description:""}}}},"./src/shared/hooks/useToast.ts":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{d:()=>useToast});var react=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/index.js"),ToastProvider=__webpack_require__("./src/shared/context/toast/ToastProvider.tsx");const useToast=()=>{const{addToast,removeToast,toast}=(()=>{const context=(0,react.useContext)(ToastProvider.$);if(!context)throw new Error("useToastContext must be used within a ToastProvider");return context})();return{showSuccess:(message,duration)=>{addToast({message,variant:"success",duration})},showError:(message,duration)=>{addToast({message,variant:"error",duration})},showMessage:(message,routeType,duration)=>{addToast({message,variant:"message",duration,routeType})},removeToast,toast}}},"./src/shared/ui/button/Button.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{$:()=>Button_Button});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const buttonStyles={primary:theme=>`\n    background-color: transparent;\n    color: #fff;\n    border: 1px solid ${theme.colors["slate-700"]};\n    border-radius: 50px;\n    padding: 10px 20px;\n    font-size: 16px;\n    font-weight: 600;\n    white-space: nowrap;\n\n    &:hover {\n        transform: scale(1.05);\n        transition: transform 0.3s ease;\n    }\n\n    @media (max-width: 768px) {\n        padding: 8px 16px;\n        font-size: 14px;\n    }\n    `,secondary:theme=>`\n    background-color: ${theme.colors["yellow-500"]};\n    color: black;\n    padding: 18px 30px;\n    border-radius: 50px;\n    font-size: 24px;\n    font-weight: bold;\n    transition: all 0.3s ease;\n\n    @media (max-width: 768px) {\n        padding: 16px 24px;\n        font-size: 20px;\n    }\n\n    @media (max-width: 480px) {\n        padding: 14px 20px;\n        font-size: 18px;\n    }\n\n    &:hover {\n        filter: brightness(1.1);\n        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);\n        transform: translateY(-2px);\n    }\n    `,tertiary:theme=>`\n    background-color: ${theme.colors["yellow-500"]};\n    color: black;\n    padding: 10px 20px;\n    border-radius: 5px;\n    font-size: 1.1rem;\n    font-weight: bold;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    transition: all 0.3s ease;\n\n    @media (max-width: 768px) {\n        padding: 16px 24px;\n    }\n\n    @media (max-width: 480px) {\n        padding: 14px 20px;\n        font-size: 1rem;\n    }\n\n    &:hover {\n        filter: brightness(1.1);\n        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);\n        transform: translateY(-2px);\n    }\n    `,quaternary:theme=>`\n    background-color: transparent;\n    color: ${theme.colors["gray-200"]};\n    border: 1px solid ${theme.colors["slate-700"]};\n    padding: 10px 20px;\n    border-radius: 50px;\n    font-size: 16px;\n\n    @media (max-width: 1024px) {\n      padding: 8px 16px;\n      font-size: 14px;\n    }\n\n    @media (max-width: 768px) {\n      padding: 4px 10px;\n      font-size: 12px;\n    }\n\n\n  `},Button=emotion_styled_browser_esm.A.button`
   ${({theme,variant})=>buttonStyles[variant](theme)};
   ${({theme,externalVariant})=>externalVariant&&externalVariant(theme)};
 
@@ -67,7 +67,103 @@
     filter: brightness(1.1);
     transform: translateY(-2px);
   }
-`,ErrorFallback=({error,resetError})=>(0,jsx_runtime.jsxs)(ErrorContainer,{children:[(0,jsx_runtime.jsx)(ErrorTitle,{children:"문제가 발생했습니다"}),(0,jsx_runtime.jsx)(ErrorMessage,{children:"일시적인 문제가 발생했습니다. 다시 시도해 주세요."}),!1,(0,jsx_runtime.jsx)(ErrorButton,{onClick:resetError,children:"다시 시도"})]});ErrorFallback.__docgenInfo={description:"",methods:[],displayName:"ErrorFallback",props:{error:{required:!0,tsType:{name:"Error"},description:""},resetError:{required:!0,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""}}};var esm_exports=__webpack_require__("./node_modules/.pnpm/@sentry+core@9.43.0/node_modules/@sentry/core/build/esm/exports.js");class ErrorBoundary extends react.Component{constructor(props){super(props),this.state={hasError:!1}}static getDerivedStateFromError(error){return{hasError:!0,error}}componentDidCatch(error,errorInfo){console.error("ErrorBoundary caught an error:",error,errorInfo),esm_exports.Cp(error,{contexts:{react:{componentStack:errorInfo.componentStack}},tags:{errorBoundary:!0}})}resetErrorBoundary=()=>{this.setState({hasError:!1,error:void 0})};render(){const{hasError,error}=this.state,{children,fallback:FallbackComponent}=this.props;return hasError&&error?FallbackComponent?(0,jsx_runtime.jsx)(FallbackComponent,{error,resetError:this.resetErrorBoundary}):(0,jsx_runtime.jsx)(ErrorFallback,{error,resetError:this.resetErrorBoundary}):children}}ErrorBoundary.__docgenInfo={description:"",methods:[],displayName:"ErrorBoundary",props:{children:{required:!0,tsType:{name:"ReactReactNode",raw:"React.ReactNode"},description:""},fallback:{required:!1,tsType:{name:"ReactComponentType",raw:"React.ComponentType<ErrorFallbackProps>",elements:[{name:"ErrorFallbackProps"}]},description:""}}};var chunk_QMGIS6GS=__webpack_require__("./node_modules/.pnpm/react-router@7.6.3_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/react-router/dist/development/chunk-QMGIS6GS.mjs");emotion_styled_browser_esm.A.button`
+`,ErrorFallback=({error,resetError})=>(0,jsx_runtime.jsxs)(ErrorContainer,{children:[(0,jsx_runtime.jsx)(ErrorTitle,{children:"문제가 발생했습니다"}),(0,jsx_runtime.jsx)(ErrorMessage,{children:"일시적인 문제가 발생했습니다. 다시 시도해 주세요."}),!1,(0,jsx_runtime.jsx)(ErrorButton,{onClick:resetError,children:"다시 시도"})]});ErrorFallback.__docgenInfo={description:"",methods:[],displayName:"ErrorFallback",props:{error:{required:!0,tsType:{name:"Error"},description:""},resetError:{required:!0,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""}}};var esm_exports=__webpack_require__("./node_modules/.pnpm/@sentry+core@9.43.0/node_modules/@sentry/core/build/esm/exports.js");class ErrorBoundary extends react.Component{constructor(props){super(props),this.state={hasError:!1}}static getDerivedStateFromError(error){return{hasError:!0,error}}componentDidCatch(error,errorInfo){console.error("ErrorBoundary caught an error:",error,errorInfo),esm_exports.Cp(error,{contexts:{react:{componentStack:errorInfo.componentStack}},tags:{errorBoundary:!0}})}resetErrorBoundary=()=>{this.setState({hasError:!1,error:void 0})};render(){const{hasError,error}=this.state,{children,fallback:FallbackComponent}=this.props;return hasError&&error?FallbackComponent?(0,jsx_runtime.jsx)(FallbackComponent,{error,resetError:this.resetErrorBoundary}):(0,jsx_runtime.jsx)(ErrorFallback,{error,resetError:this.resetErrorBoundary}):children}}ErrorBoundary.__docgenInfo={description:"",methods:[],displayName:"ErrorBoundary",props:{children:{required:!0,tsType:{name:"ReactReactNode",raw:"React.ReactNode"},description:""},fallback:{required:!1,tsType:{name:"ReactComponentType",raw:"React.ComponentType<ErrorFallbackProps>",elements:[{name:"ErrorFallbackProps"}]},description:""}}};var axios=__webpack_require__("./node_modules/.pnpm/axios@1.10.0/node_modules/axios/lib/axios.js");const BASE_URL=process.env.REACT_APP_BASE_URL||"http://localhost:8080/api/v1";let showErrorToast=null;const api=axios.A.create({baseURL:BASE_URL,headers:{"Content-Type":"application/json"},timeout:1e4,withCredentials:!0});let isRefreshing=!1,refreshPromise=null;const redirectToLogin=()=>{"undefined"==typeof window||window.location.pathname.includes("/login")||(window.location.href="/login")};api.interceptors.response.use(response=>response,async error=>{const originalRequest=error.config,status=error.response?.status,url=originalRequest?.url??"";if(esm_exports.Cp(error),url.includes("/auth/refresh")&&(401===status||403===status))return showErrorToast&&showErrorToast("로그인이 필요해요! 다시 로그인해 주세요."),redirectToLogin(),Promise.reject(error);if(401===status&&!originalRequest._retry){if(originalRequest._retry=!0,isRefreshing&&refreshPromise)try{return await refreshPromise,api(originalRequest)}catch{return showErrorToast&&showErrorToast("잠시 문제가 생겼어요. 다시 로그인해 주세요."),redirectToLogin(),Promise.reject(error)}isRefreshing=!0,refreshPromise=(async()=>{await api.post("/auth/refresh")})();try{return await refreshPromise,api(originalRequest)}catch(refreshError){return showErrorToast&&showErrorToast("로그인이 만료되었어요. 다시 로그인해 주세요."),redirectToLogin(),Promise.reject(refreshError)}finally{isRefreshing=!1,refreshPromise=null}}return Promise.reject(error)});__webpack_require__("./node_modules/.pnpm/@tanstack+react-query@5.83.0_react@19.1.0/node_modules/@tanstack/react-query/build/modern/useMutation.js");__webpack_require__("./src/shared/hooks/useToast.ts");__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/image-plus.js");var x=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/x.js");emotion_styled_browser_esm.A.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`,emotion_styled_browser_esm.A.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`,emotion_styled_browser_esm.A.input`
+  display: none;
+`,emotion_styled_browser_esm.A.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed ${({theme})=>theme.colors["gray-400"]};
+  border-radius: 6px;
+  background-color: transparent;
+  color: ${({theme})=>theme.colors["gray-400"]};
+  cursor: ${({disabled})=>disabled?"not-allowed":"pointer"};
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover:not(:disabled) {
+    border-color: ${({theme})=>theme.colors["yellow-500"]};
+    color: ${({theme})=>theme.colors["yellow-500"]};
+    background-color: ${({theme})=>theme.colors["yellow-300_10"]};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+`,emotion_styled_browser_esm.A.span`
+  white-space: nowrap;
+`,emotion_styled_browser_esm.A.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px 0;
+`,emotion_styled_browser_esm.A.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid ${({theme})=>theme.colors["gray-600"]};
+  border-radius: 6px;
+  background-color: ${({theme})=>theme.colors["gray-800_80"]};
+  width: 80px;
+`,emotion_styled_browser_esm.A.img`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+`,emotion_styled_browser_esm.A.button`
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background-color: ${({theme})=>theme.colors["red-500"]};
+  color: white;
+  cursor: ${({disabled})=>disabled?"not-allowed":"pointer"};
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: ${({theme})=>theme.colors["red-500"]};
+    transform: scale(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+`,emotion_styled_browser_esm.A.span`
+  font-size: 10px;
+  color: ${({theme})=>theme.colors["gray-400"]};
+  text-align: center;
+  word-break: break-all;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;var chunk_QMGIS6GS=__webpack_require__("./node_modules/.pnpm/react-router@7.6.3_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/react-router/dist/development/chunk-QMGIS6GS.mjs");emotion_styled_browser_esm.A.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -89,7 +185,7 @@
   font-size: 26px;
   color: white;
   font-weight: bold;
-`;__webpack_require__("./src/shared/ui/notFound/NotFound.tsx");var SimpleCard=__webpack_require__("./src/shared/ui/simpleCard/SimpleCard.tsx"),circle_check_big=(__webpack_require__("./src/shared/ui/skeleton/CommonSkeletonCard.tsx"),__webpack_require__("./src/shared/ui/textArea/TextArea.tsx"),__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/circle-check-big.js")),circle_x=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/circle-x.js"),mail=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/mail.js"),x=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/x.js"),Toast_styles=__webpack_require__("./src/shared/ui/toast/Toast.styles.ts");const Toast=({message,variant,duration=3e3,routeType,onClose})=>{const[isExiting,setIsExiting]=(0,react.useState)(!1),navigate=(0,chunk_QMGIS6GS.Zp)();(0,react.useEffect)(()=>{if(duration>0){const timer=setTimeout(()=>{handleClose()},duration);return()=>clearTimeout(timer)}},[duration]);const handleClose=e=>{e?.stopPropagation(),setIsExiting(!0),setTimeout(()=>{onClose()},300)};return(0,jsx_runtime.jsxs)(Toast_styles.z2,{variant,isExiting,onClick:()=>{if("message"===variant&&routeType){navigate("moment"===routeType?"/collection/my-moment":"/collection/my-comment"),handleClose()}},$isClickable:"message"===variant&&!!routeType,children:[(0,jsx_runtime.jsx)(Toast_styles.We,{children:(()=>{switch(variant){case"success":return(0,jsx_runtime.jsx)(circle_check_big.A,{size:20});case"error":return(0,jsx_runtime.jsx)(circle_x.A,{size:20});case"message":return(0,jsx_runtime.jsx)(mail.A,{size:20});default:return null}})()}),(0,jsx_runtime.jsx)(Toast_styles.FH,{children:message}),(0,jsx_runtime.jsx)(Toast_styles.Jn,{onClick:e=>handleClose(e),"aria-label":"토스트 닫기",children:(0,jsx_runtime.jsx)(x.A,{size:16})})]})};Toast.__docgenInfo={description:"",methods:[],displayName:"Toast",props:{message:{required:!0,tsType:{name:"string"},description:""},variant:{required:!0,tsType:{name:"union",raw:"'success' | 'error' | 'message'",elements:[{name:"literal",value:"'success'"},{name:"literal",value:"'error'"},{name:"literal",value:"'message'"}]},description:""},duration:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"3000",computed:!1}},routeType:{required:!1,tsType:{name:"union",raw:"'moment' | 'comment'",elements:[{name:"literal",value:"'moment'"},{name:"literal",value:"'comment'"}]},description:""},onClose:{required:!0,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""}}}},"./src/shared/ui/notFound/NotFound.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{M:()=>NotFound});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),eye=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/eye.js"),ui=__webpack_require__("./src/shared/ui/index.ts"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const NotFoundWrapper=emotion_styled_browser_esm.A.div`
+`;__webpack_require__("./src/shared/ui/notFound/NotFound.tsx");var SimpleCard=__webpack_require__("./src/shared/ui/simpleCard/SimpleCard.tsx"),circle_check_big=(__webpack_require__("./src/shared/ui/skeleton/CommonSkeletonCard.tsx"),__webpack_require__("./src/shared/ui/textArea/TextArea.tsx"),__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/circle-check-big.js")),circle_x=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/circle-x.js"),mail=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/mail.js"),Toast_styles=__webpack_require__("./src/shared/ui/toast/Toast.styles.ts");const Toast=({message,variant,duration=3e3,routeType,onClose})=>{const[isExiting,setIsExiting]=(0,react.useState)(!1),navigate=(0,chunk_QMGIS6GS.Zp)();(0,react.useEffect)(()=>{if(duration>0){const timer=setTimeout(()=>{handleClose()},duration);return()=>clearTimeout(timer)}},[duration]);const handleClose=e=>{e?.stopPropagation(),setIsExiting(!0),setTimeout(()=>{onClose()},300)};return(0,jsx_runtime.jsxs)(Toast_styles.z2,{variant,isExiting,onClick:()=>{if("message"===variant&&routeType){navigate("moment"===routeType?"/collection/my-moment":"/collection/my-comment"),handleClose()}},$isClickable:"message"===variant&&!!routeType,children:[(0,jsx_runtime.jsx)(Toast_styles.We,{children:(()=>{switch(variant){case"success":return(0,jsx_runtime.jsx)(circle_check_big.A,{size:20});case"error":return(0,jsx_runtime.jsx)(circle_x.A,{size:20});case"message":return(0,jsx_runtime.jsx)(mail.A,{size:20});default:return null}})()}),(0,jsx_runtime.jsx)(Toast_styles.FH,{children:message}),(0,jsx_runtime.jsx)(Toast_styles.Jn,{onClick:e=>handleClose(e),"aria-label":"토스트 닫기",children:(0,jsx_runtime.jsx)(x.A,{size:16})})]})};Toast.__docgenInfo={description:"",methods:[],displayName:"Toast",props:{message:{required:!0,tsType:{name:"string"},description:""},variant:{required:!0,tsType:{name:"union",raw:"'success' | 'error' | 'message'",elements:[{name:"literal",value:"'success'"},{name:"literal",value:"'error'"},{name:"literal",value:"'message'"}]},description:""},duration:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"3000",computed:!1}},routeType:{required:!1,tsType:{name:"union",raw:"'moment' | 'comment'",elements:[{name:"literal",value:"'moment'"},{name:"literal",value:"'comment'"}]},description:""},onClose:{required:!0,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""}}}},"./src/shared/ui/notFound/NotFound.tsx":(__unused_webpack_module,__webpack_exports__,__webpack_require__)=>{__webpack_require__.d(__webpack_exports__,{M:()=>NotFound});var jsx_runtime=__webpack_require__("./node_modules/.pnpm/react@19.1.0/node_modules/react/jsx-runtime.js"),eye=__webpack_require__("./node_modules/.pnpm/lucide-react@0.525.0_react@19.1.0/node_modules/lucide-react/dist/esm/icons/eye.js"),ui=__webpack_require__("./src/shared/ui/index.ts"),emotion_styled_browser_esm=__webpack_require__("./node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@19.1.8_react@19.1.0__@types+react@19.1.8_react@19.1.0/node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js");const NotFoundWrapper=emotion_styled_browser_esm.A.div`
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -335,4 +431,4 @@
     outline-offset: 2px;
   }
 `}}]);
-//# sourceMappingURL=300.27bf7de6.iframe.bundle.js.map
+//# sourceMappingURL=353.2de90d16.iframe.bundle.js.map
