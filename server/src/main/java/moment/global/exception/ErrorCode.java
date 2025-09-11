@@ -48,7 +48,7 @@ public enum ErrorCode {
     MOMENT_ALREADY_EXIST("M-003", "오늘 작성한 모멘트가 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     MOMENT_LENGTH_INVALID("M-004", "모멘트는 1자 이상, 100자 이하로만 작성 가능합니다.", HttpStatus.BAD_REQUEST),
     MOMENTS_LIMIT_INVALID("M-005", "유효하지 않은 페이지 사이즈입니다.", HttpStatus.BAD_REQUEST),
-    TAG_NAME_EMPTY("M-006", "태그 이름이 비어있습니다.", HttpStatus.BAD_REQUEST),
+    TAG_INVALID("M-006", "유효하지 않은 태그 형식입니다.", HttpStatus.BAD_REQUEST),
     TAG_NAME_INVALID_LENGTH("M-007", "태그 이름은 1자 이상, 30자 이하로만 작성 가능합니다.", HttpStatus.BAD_REQUEST),
 
     NOTIFICATION_NOT_FOUND("N-001", "존재하지 않는 알림입니다.", HttpStatus.NOT_FOUND),
@@ -56,7 +56,8 @@ public enum ErrorCode {
     EMAIL_VERIFY_FAILED("V-001", "이메일 인증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
-    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST),;
+    INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST),
+    ;
 
     private final String code;
     private final String message;
