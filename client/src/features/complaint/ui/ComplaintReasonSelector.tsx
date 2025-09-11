@@ -1,5 +1,5 @@
 import React from 'react';
-import { COMPLAINT_REASONS_LIST } from '../complaintReasons';
+import { COMPLAINT_REASONS_LIST } from '../data/complaintReasons';
 
 import * as S from './ComplaintReasonSelector.styles';
 import { ComplaintReason } from '@/features/complaint/types/complaintType';

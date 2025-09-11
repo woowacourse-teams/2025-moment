@@ -11,7 +11,7 @@ import { useModal } from '@/shared/hooks/useModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
 import { useEffect } from 'react';
-import { isComplainedMoment } from '@/features/complaint/complainedMoments';
+import { isComplainedMoment } from '@/features/complaint/utils/complainedMoments';
 
 export function TodayCommentForm({
   momentData,

@@ -1,8 +1,7 @@
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
 import { ComplaintFormData } from '../types/complaintType';
-import { momentComplaint } from './momentComplaint';
-import { commentComplaint } from './commentComplaint';
+import { api } from '@/app/lib/api';
 
 export const useComplaintMutation = () => {
   const { showSuccess, showError } = useToast();
@@ -22,4 +21,14 @@ export const useComplaintMutation = () => {
       showError('신고에 실패했습니다. 다시 시도해주세요.');
     },
   });
+};
+
+const commentComplaint = async ({ targetId, reason }: ComplaintFormData) => {
+  const response = await api.post(`/comments/${targetId}/reports`, { reason });
+  return response.data;
+};
+
+const momentComplaint = async ({ targetId, reason }: ComplaintFormData) => {
+  const response = await api.post(`/moments/${targetId}/reports`, { reason });
+  return response.data;
 };
