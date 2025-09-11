@@ -18,11 +18,12 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.moment.application.MomentImageService;
 import moment.moment.application.MomentQueryService;
 import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
-import moment.moment.dto.response.MyMomentPageResponse;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
@@ -58,6 +59,7 @@ public class CommentService {
     private final NotificationRepository notificationRepository;
     private final SseNotificationService sseNotificationService;
     private final CommentImageService commentImageService;
+    private final MomentImageService momentImageService;
     private final NotificationQueryService notificationQueryService;
     private final MomentTagService momentTagService;
 
@@ -116,16 +118,19 @@ public class CommentService {
         boolean hasNextPage = pageSize.hasNextPage(commentsWithinCursor.size());
 
         List<Comment> commentsWithoutCursor = removeCursor(commentsWithinCursor, pageSize);
+        Map<Comment, CommentImage> commentImages = commentImageService.getCommentImageByMoment(commentsWithoutCursor);
+
         List<Moment> momentsOfComment = commentsWithoutCursor.stream()
                 .map(Comment::getMoment)
                 .toList();
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsOfComment);
+        Map<Moment, MomentImage> momentImages = momentImageService.getMomentImageByMoment(momentsOfComment);
 
         List<Echo> allEchoes = echoQueryService.getAllByCommentIn(commentsWithoutCursor);
 
         if (allEchoes.isEmpty()) {
             return MyCommentPageResponse.of(
-                    MyCommentsResponse.of(commentsWithoutCursor, momentTagsByMoment),
+                    MyCommentsResponse.of(commentsWithoutCursor, momentTagsByMoment, momentImages, commentImages),
                     cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                     hasNextPage,
                     commentsWithoutCursor.size()
@@ -136,7 +141,7 @@ public class CommentService {
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         return MyCommentPageResponse.of(
-                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment),
+                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages, commentImages),
                 cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                 hasNextPage,
                 commentsWithoutCursor.size()

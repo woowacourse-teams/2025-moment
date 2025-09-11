@@ -7,7 +7,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
@@ -81,5 +83,41 @@ class MomentImageServiceTest {
                 () -> assertThat(createdImage).isEmpty(),
                 () -> then(momentImageRepository).should(times(0)).save(any(MomentImage.class))
         );
+    }
+
+    @Test
+    void 모멘트에_이미지를_첨부한다() {
+        // given
+        String momentContent1 = "재미있는 내용이네요.";
+        String momentContent2 = "재미없는 내용이네요.";
+        String momentContent3 = "하하 내용이네요.";
+
+        String imageUrl = "https://s3:tech-course/moment-dev/images/cat.jpg";
+        String imageName = "cat.jpg";
+
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+
+        Moment moment1 = new Moment(momentContent1, momenter, WriteType.BASIC);
+        Moment moment2 = new Moment(momentContent2, momenter, WriteType.BASIC);
+        Moment moment3 = new Moment(momentContent3, momenter, WriteType.BASIC);
+
+        MomentImage momentImage1 = new MomentImage(moment1, imageUrl, imageName);
+        MomentImage momentImage3 = new MomentImage(moment3, imageUrl, imageName);
+
+        List<Moment> moments = List.of(moment1, moment2, moment3);
+
+        given(momentImageRepository.findAllByMomentIn(any())).willReturn(List.of(momentImage1, momentImage3));
+
+        Map<Moment, MomentImage> expected = new HashMap<>();
+
+        expected.put(moment1, momentImage1);
+        expected.put(moment2, null);
+        expected.put(moment3, momentImage3);
+
+        // when
+        Map<Moment, MomentImage> results = momentImageService.getMomentImageByMoment(moments);
+
+        // then
+        assertThat(results).isEqualTo(expected);
     }
 }

@@ -10,8 +10,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.comment.application.CommentImageService;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
+import moment.comment.domain.CommentImage;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -56,8 +58,10 @@ public class MomentService {
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
     private final MomentImageService momentImageService;
+    private final CommentImageService commentImageService;
     private final TagService tagService;
     private final NotificationQueryService notificationQueryService;
+
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
@@ -134,12 +138,14 @@ public class MomentService {
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsWithoutCursor);
+        Map<Moment, MomentImage> momentImagesByMoment = momentImageService.getMomentImageByMoment(momentsWithinCursor);
 
         if (comments.isEmpty()) {
             return MyMomentPageResponse.of(
                     MyMomentsResponse.of(
                             momentsWithoutCursor,
-                            momentTagsByMoment
+                            momentTagsByMoment,
+                            momentImagesByMoment
                     ),
                     cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                     hasNextPage,
@@ -151,12 +157,16 @@ public class MomentService {
 
         Map<Comment, List<Echo>> echosByComment = echoQueryService.getEchosOfComments(comments);
 
+        Map<Comment, CommentImage> commentImagesByMoment = commentImageService.getCommentImageByMoment(comments);
+
         return MyMomentPageResponse.of(
                 MyMomentsResponse.of(
                         momentsWithoutCursor,
                         commentsByMoment,
                         echosByComment,
-                        momentTagsByMoment
+                        momentTagsByMoment,
+                        momentImagesByMoment,
+                        commentImagesByMoment
                 ),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,
@@ -221,12 +231,13 @@ public class MomentService {
 
         Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
 
-        return CommentableMomentResponse.from(moment);
+        Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
+
+        return CommentableMomentResponse.of(moment, momentImage.orElse(null));
     }
 
     public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
         User user = userQueryService.getUserById(momenterId);
-
 
         Cursor cursor = new Cursor(nextCursor);
         PageSize pageSize = new PageSize(size);
@@ -242,7 +253,7 @@ public class MomentService {
                 .map(Notification::getTargetId)
                 .collect(Collectors.toSet());
 
-        if(cursor.isFirstPage()) {
+        if (cursor.isFirstPage()) {
             return momentRepository.findMyUnreadMomentFirstPage(unreadMomentIds, pageSize.getPageRequest());
         }
         return momentRepository.findMyUnreadMomentNextPage(
