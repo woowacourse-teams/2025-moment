@@ -41,14 +41,21 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
 
   const unreadComments = useMemo(() => {
     if (!unreadCommentsData) return [];
+
     return unreadCommentsData.pages.flatMap(page =>
-      page.data.items.map(item => ({
-        ...item,
-        read: false as const,
-        notificationId: null,
-      })),
+      page.data.items.map(item => {
+        const relatedNotification = allCommentsQuery.commentsWithNotifications.find(
+          commentWithNotification => commentWithNotification.id === item.id,
+        );
+
+        return {
+          ...item,
+          notificationId: relatedNotification?.notificationId || null,
+          read: relatedNotification?.read ?? false,
+        };
+      }),
     );
-  }, [unreadCommentsData]);
+  }, [unreadCommentsData, allCommentsQuery.commentsWithNotifications]);
 
   const currentComments: CommentWithNotifications[] = isUnreadFilter ? unreadComments : allComments;
   const isLoading = isUnreadFilter ? isLoadingUnread : isLoadingAll;
