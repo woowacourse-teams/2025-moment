@@ -1,14 +1,14 @@
 import { ROUTES } from '@/app/routes/routes';
+import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { Card, FileUpload, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { TagList } from '@/shared/ui/tag/TagList';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import * as S from './TodayContent.styles';
-import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
-import { TagList } from '@/shared/ui/tag/TagList';
 import { TAGS } from '../const/tags';
+import * as S from './TodayContent.styles';
 
 export function TodayMomentForm({
   handleContentChange,
@@ -32,13 +32,16 @@ export function TodayMomentForm({
   const handleNavigateToTodayMomentSuccess = () => {
     if (checkProfanityWord(content)) {
       showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
-      if (tagNames.length === 0) {
-        showError('태그를 선택해주세요.');
-        return;
-      }
-      handleSendContent();
-      navigate(ROUTES.TODAY_MOMENT_SUCCESS);
+      return;
     }
+
+    if (tagNames.length === 0) {
+      showError('태그를 선택해주세요.');
+      return;
+    }
+
+    handleSendContent();
+    navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };
 
   const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
