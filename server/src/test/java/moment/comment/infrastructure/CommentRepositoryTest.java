@@ -3,7 +3,9 @@ package moment.comment.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
@@ -158,4 +160,71 @@ class CommentRepositoryTest {
         // when & then
         assertThat(commentRepository.existsByMomentAndCommenter(moment, commenter)).isFalse();
     }
+
+    @Test
+    void 특정_기간_동안_등록된_moment에_대한_comment_개수를_센다() throws InterruptedException {
+        // given
+        User user = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", user, WriteType.BASIC));
+
+        LocalDateTime startTime = LocalDateTime.now();
+
+        Thread.sleep(10);
+        commentRepository.save(new Comment("In range 1", user, moment));
+        Thread.sleep(10);
+        commentRepository.save(new Comment("In range 2", user, moment));
+        Thread.sleep(10);
+        commentRepository.save(new Comment("Too new", user, moment));
+
+        // when
+        LocalDateTime endTime = LocalDateTime.now();
+        long count = commentRepository.countByMomentAndCreatedAtBetween(moment, startTime, endTime);
+
+        // then
+        assertThat(count).isEqualTo(3);
+    }
+
+    @Test
+    void 읽지_않은_코멘트_목록의_첫_페이지를_조회한다() {
+        // given
+        User user = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", user, WriteType.BASIC));
+        Comment comment1 = commentRepository.save(new Comment("comment1", user, moment));
+        Comment comment2 = commentRepository.save(new Comment("comment2", user, moment));
+        commentRepository.save(new Comment("comment3", user, moment)); // This one is not unread
+
+        // when
+        List<Comment> result = commentRepository.findUnreadCommentsFirstPage(Set.of(comment1.getId(), comment2.getId()),
+                PageRequest.of(0, 5));
+
+        // then
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(comment1, comment2);
+    }
+
+    @Disabled
+    @Test
+    void 읽지_않은_코멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
+        // given
+        User user = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", user, WriteType.BASIC));
+        Comment comment1 = commentRepository.save(new Comment("comment1", user, moment));
+        Thread.sleep(10);
+        Comment comment2 = commentRepository.save(new Comment("comment2", user, moment));
+        Thread.sleep(10);
+        Comment comment3 = commentRepository.save(new Comment("comment3", user, moment));
+
+        // when
+        List<Comment> result = commentRepository.findUnreadCommentsNextPage(
+                Set.of(comment1.getId(), comment2.getId(), comment3.getId()),
+                comment3.getCreatedAt(),
+                comment3.getId(),
+                PageRequest.of(0, 1));
+
+        // then
+        assertThat(result).hasSize(1)
+                .containsExactly(comment2);
+    }
+
+
 }

@@ -10,10 +10,13 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"]
-    }
+    },
+    "types": ["node", "jest"]
   },
-  "include": ["src", ".storybook", "test"]
+  "include": ["src", ".storybook", "test", "src/types/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
