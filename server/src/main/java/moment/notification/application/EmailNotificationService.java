@@ -35,7 +35,7 @@ public class EmailNotificationService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
 
-    @Scheduled(cron = "0 35 10 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 45 16 * * ?", zone = "Asia/Seoul")
     public void schedule() {
         List<User> users = userQueryService.findAll();
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
@@ -118,15 +118,15 @@ public class EmailNotificationService {
 
     private String getMomentCountContent(long momentCount) {
         if (momentCount == 0) {
-            return "아직 오늘의 모멘트가 비어있어요. 하루의 순간을 기록해보세요!";
+            return "아직 오늘의 모멘트가 비어있어요.\n하루의 순간을 기록해보세요!";
         }
-        return "오늘 하루의 모멘트를 남기셨네요. 이제 달린 코멘트를 확인해보세요.";
+        return "오늘 하루의 모멘트를 남기셨네요.\n이제 달린 코멘트를 확인해보세요.";
     }
 
     private String getCommentCountContent(long commentCount) {
         if (commentCount == 0) {
-            return "오늘 새로 달린 코멘트가 아직 없네요. 조금만 기다리시면 곧 새로운 코멘트가 도착할 거예요!";
+            return "오늘 새로 달린 코멘트가 아직 없네요.\n조금만 기다리시면 곧 새로운 코멘트가 도착할 거예요!";
         }
-        return String.format("오늘 새로운 코멘트 %s개 도착했어요. 지금 바로 확인해보세요!", commentCount);
+        return String.format("오늘 새로운 코멘트 %s개 도착했어요.\n지금 바로 확인해보세요!", commentCount);
     }
 }
