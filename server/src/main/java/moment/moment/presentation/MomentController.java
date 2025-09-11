@@ -7,17 +7,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,32 +110,6 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "알림을 읽지 않은 내 모멘트 조회", description = "사용자가 알림을 읽지 않은 자신의 모멘트를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "내 모멘트 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    - [M-005] 유효하지 않은 페이지 사이즈입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/me/unread")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyUnreadMoment(
-            @RequestParam(required = false) String nextCursor,
-            @RequestParam(defaultValue = "10") int limit,
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        MyMomentPageResponse response = momentService.getMyUnreadMoments(nextCursor, limit, authentication.id());
-        HttpStatus status = HttpStatus.OK;
-
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
     @Operation(summary = "기본 모멘트 작성 여부 확인", description = "유저가 오늘 기본 모멘트를 더 보낼 수 있는지 확인입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "기본 모멘트 작성 여부 조회 성공"),
@@ -198,10 +171,9 @@ public class MomentController {
     })
     @GetMapping("/commentable")
     public ResponseEntity<SuccessResponse<CommentableMomentResponse>> readCommentableMoment(
-            @AuthenticationPrincipal Authentication authentication,
-            @RequestParam(required = false, defaultValue = "") List<String> tagName
+            @AuthenticationPrincipal Authentication authentication
     ) {
-        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id(), tagName);
+        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id());
 
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

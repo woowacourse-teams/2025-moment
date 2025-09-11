@@ -1,17 +1,10 @@
-import { useSendExtraMoments } from '@/features/moment/hook/useSendExtraMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './index.styles';
+import { useSendExtraMoments } from '@/features/moment/hook/useSendExtraMoments';
 
 export default function TodayMomentExtraPage() {
-  const {
-    handleExtraContentChange,
-    handleExtraImageChange,
-    handleTagNameClick,
-    handleSendExtraContent,
-    content,
-    tagNames,
-  } = useSendExtraMoments();
+  const { handleExtraContentChange, handleSendExtraContent, content } = useSendExtraMoments();
 
   return (
     <S.TodayPageWrapper>
@@ -21,11 +14,8 @@ export default function TodayMomentExtraPage() {
       />
       <TodayMomentForm
         handleContentChange={handleExtraContentChange}
-        handleImageChange={handleExtraImageChange}
-        handleTagNameClick={handleTagNameClick}
         handleSendContent={handleSendExtraContent}
         content={content}
-        tagNames={tagNames}
       />
     </S.TodayPageWrapper>
   );

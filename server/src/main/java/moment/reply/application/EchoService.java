@@ -91,7 +91,7 @@ public class EchoService {
 
     public List<EchoReadResponse> getEchosByCommentId(Long commentId) {
         Comment comment = commentQueryService.getCommentById(commentId);
-        List<Echo> echoes = echoQueryService.getEchosByComment(comment);
+        List<Echo> echoes = echoQueryService.getEmojisByComment(comment);
 
         return echoes.stream()
                 .map(EchoReadResponse::from)

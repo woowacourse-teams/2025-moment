@@ -1,27 +1,22 @@
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { WriteTime } from '@/shared/ui/writeTime';
-import { WriterInfo } from '@/widgets/writerInfo';
 import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
-import { GetCommentableMoments } from '../types/comments';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
+import { WriteTime } from '@/shared/ui/writeTime';
+import { WriterInfo } from '@/widgets/writerInfo';
 
-export function TodayCommentForm({
-  momentData,
-  isLoading,
-  isLoggedIn,
-  isLoggedInLoading,
-  error,
-  refetch,
-}: {
-  momentData?: GetCommentableMoments;
-  isLoading: boolean;
-  isLoggedIn?: boolean;
-  isLoggedInLoading: boolean;
-  error: Error | null;
-  refetch: () => void;
-}) {
+export function TodayCommentForm() {
+  const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
+  const {
+    data: momentData,
+    isLoading,
+    error,
+    refetch,
+  } = useCommentableMomentsQuery({ enabled: isLoggedIn === true });
+
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
@@ -88,11 +83,6 @@ export function TodayCommentForm({
         subtitle=""
       />
       <SimpleCard height="small" content={momentData.content} />
-      {momentData.imageUrl && (
-        <S.MomentImageContainer>
-          <S.MomentImage src={momentData.imageUrl} alt="모멘트 이미지" />
-        </S.MomentImageContainer>
-      )}
       <TodayCommentWriteContent
         momentId={momentData.id}
         isLoggedIn={isLoggedIn}

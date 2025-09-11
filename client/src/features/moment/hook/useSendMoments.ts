@@ -3,8 +3,6 @@ import { useMomentsMutation } from './useMomentsMutation';
 
 export const useSendMoments = () => {
   const [content, setContent] = useState('');
-  const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
-  const [tagNames, setTagNames] = useState<string[]>([]);
 
   const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation();
 
@@ -13,24 +11,9 @@ export const useSendMoments = () => {
     setContent(newContent);
   };
 
-  const handleImageChange = (newImageData: { imageUrl: string; imageName: string } | null) => {
-    setImageData(newImageData);
-  };
-  const handleTagNameClick = (tagName: string) => {
-    if (tagNames.includes(tagName)) {
-      setTagNames(tagNames.filter(tag => tag !== tagName));
-      return;
-    }
-    setTagNames([...tagNames, tagName]);
-  };
-
   const handleSendContent = async () => {
     try {
-      const payload = imageData
-        ? { content, tagNames, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
-        : { content, tagNames };
-
-      await sendMoments(payload);
+      await sendMoments(content);
     } catch (error) {
       console.error('Error sending moments:', error);
     }
@@ -38,12 +21,8 @@ export const useSendMoments = () => {
 
   return {
     handleContentChange,
-    handleImageChange,
     handleSendContent,
-    handleTagNameClick,
     content,
-    imageData,
-    tagNames,
     isSuccess,
   };
 };

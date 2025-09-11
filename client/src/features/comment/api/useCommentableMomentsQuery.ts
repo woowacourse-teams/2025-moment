@@ -5,18 +5,15 @@ import {
 } from '@/features/comment/types/comments';
 import { useQuery } from '@tanstack/react-query';
 
-export const useCommentableMomentsQuery = (options?: { enabled?: boolean }, tagName?: string) => {
+export const useCommentableMomentsQuery = (options?: { enabled?: boolean }) => {
   return useQuery({
-    queryKey: ['commentableMoments', tagName],
-    queryFn: () => getCommentableMoments(tagName),
+    queryKey: ['commentableMoments'],
+    queryFn: getCommentableMoments,
     enabled: options?.enabled ?? true,
   });
 };
 
-const getCommentableMoments = async (tagName?: string): Promise<GetCommentableMoments> => {
-  const response = await api.get<GetCommentableMomentsResponse>(
-    '/moments/commentable',
-    tagName ? { params: { tagName } } : {},
-  );
+const getCommentableMoments = async (): Promise<GetCommentableMoments> => {
+  const response = await api.get<GetCommentableMomentsResponse>('/moments/commentable');
   return response.data.data;
 };

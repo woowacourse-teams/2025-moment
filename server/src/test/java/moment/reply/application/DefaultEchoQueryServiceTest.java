@@ -44,7 +44,7 @@ class DefaultEchoQueryServiceTest {
                 .willReturn(Optional.of(echo));
 
         // when
-        defaultEmojiQueryService.getEchoById(1L);
+        defaultEmojiQueryService.getEmojiById(1L);
 
         // then
         then(echoRepository).should(times(1)).findById(any(Long.class));
