@@ -41,6 +41,13 @@ spring:
           starttls:
             enable: true
 
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      stack:
+        auto: false
+
 jwt:
   secret:
     access_key: test-access-key-for-jwt-token-generation
@@ -61,3 +68,7 @@ auth:
 
 logging:
   config: classpath:logback-test.xml
+
+s3:
+  bucket-name: test-bucket-1
+  bucket-path: test/images
