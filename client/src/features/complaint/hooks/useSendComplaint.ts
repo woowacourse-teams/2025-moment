@@ -2,7 +2,7 @@ import { useComplaintMutation } from '../api/useComplaintMutation';
 import { ComplaintFormData } from '../types/complaintType';
 import { addComplainedMoment } from '../utils/complainedMoments';
 
-export const useSendComplaint = (onSuccess?: () => void, onRefetch?: () => void) => {
+export const useSendComplaint = (onComplete?: () => void, onRefetch?: () => void) => {
   const { mutate: sendComplaint, isPending, error, isError } = useComplaintMutation();
 
   const handleComplaintSubmit = (data: ComplaintFormData) => {
@@ -12,7 +12,7 @@ export const useSendComplaint = (onSuccess?: () => void, onRefetch?: () => void)
           addComplainedMoment(data.targetId);
         }
         onRefetch?.();
-        onSuccess?.();
+        onComplete?.();
       },
     });
   };
