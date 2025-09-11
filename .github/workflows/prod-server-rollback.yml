@@ -24,7 +24,7 @@ jobs:
       - name: Pull specific image for rollback
         run: |
           echo "Pulling image with tag: ${{ github.event.inputs.tag }}"
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ github.event.inputs.tag }}
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment-prod-images:${{ github.event.inputs.tag }}
 
       - name: Stop and remove existing container
         run: |
