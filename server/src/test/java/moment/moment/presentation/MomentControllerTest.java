@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.persistence.EntityManager;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
+import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.MomentImage;
@@ -23,6 +26,9 @@ import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
+import moment.report.domain.Report;
+import moment.report.domain.ReportReason;
+import moment.report.infrastructure.ReportRepository;
 import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -44,26 +50,24 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class MomentControllerTest {
 
+    @Autowired
+    EntityManager entityManager;
     @LocalServerPort
     private int port;
-
     @Autowired
     private DatabaseCleaner databaseCleaner;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private MomentRepository momentRepository;
-
     @Autowired
     private TokenManager tokenManager;
-
     @Autowired
     private RewardRepository rewardRepository;
-
     @Autowired
     private MomentImageRepository momentImageRepository;
+    @Autowired
+    private ReportRepository reportRepository;
 
     @BeforeEach
     void setUp() {
@@ -131,7 +135,6 @@ class MomentControllerTest {
                 () -> assertThat(response.content()).isEqualTo(content)
         );
     }
-
 
     @Test
     void 이미지를_첨부한_기본_모멘트를_등록한다() {
@@ -561,5 +564,45 @@ class MomentControllerTest {
 
         // then
         assertThat(momentReportCreateResponse.id()).isEqualTo(1L);
+    }
+
+    @Test
+    void 정해진_신고_횟수_넘긴_모멘트를_삭제한다() {
+        // given
+        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(9);
+        User savedMomenter = userRepository.save(momenter);
+
+        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        User reporter1 = new User("ddd@gmail.com", "1234!", "드라고", ProviderType.EMAIL);
+        User reporter2 = new User("hhh@gmail.com", "1234!", "히포", ProviderType.EMAIL);
+        User savedReporter1 = userRepository.save(reporter1);
+        User savedReporter2 = userRepository.save(reporter2);
+
+        TargetType targetType = TargetType.MOMENT;
+        Report report1 = new Report(savedReporter1, targetType, savedMoment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
+        Report report2 = new Report(savedReporter2, targetType, savedMoment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
+
+        reportRepository.save(report1);
+        reportRepository.save(report2);
+
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");
+
+        // when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", token)
+                .body(request)
+                .when().post("api/v1/moments/" + savedMoment.getId() + "/reports")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        // then
+        Optional<Moment> result = momentRepository.findById(savedMoment.getId());
+        assertThat(result).isEmpty();
     }
 }

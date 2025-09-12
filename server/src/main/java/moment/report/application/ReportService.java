@@ -7,6 +7,7 @@ import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -16,6 +17,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Report createReport(TargetType targetType,
                                User reporter,
                                Long targetId,
@@ -27,6 +29,13 @@ public class ReportService {
                 targetId,
                 ReportReason.valueOf(reason)
         );
+
+        // 모멘트나 코멘트
         return reportRepository.save(report);
+    }
+
+    @Transactional(readOnly = true)
+    public long countReportsByTarget(TargetType targetType, Long targetId) {
+        return reportRepository.countByTargetTypeAndTargetId(targetType, targetId);
     }
 }

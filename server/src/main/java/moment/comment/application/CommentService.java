@@ -35,7 +35,6 @@ import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.reward.application.RewardService;
@@ -50,10 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
-
-    private static final String CURSOR_PART_DELIMITER = "_";
-    private static final int CURSOR_TIME_INDEX = 0;
-    private static final int CURSOR_ID_INDEX = 1;
 
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
@@ -147,7 +142,8 @@ public class CommentService {
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         return MyCommentPageResponse.of(
-                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages, commentImages),
+                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages,
+                        commentImages),
                 cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                 hasNextPage,
                 commentsWithoutCursor.size()
@@ -189,7 +185,7 @@ public class CommentService {
                 .map(Notification::getTargetId)
                 .collect(Collectors.toSet());
 
-        if(cursor.isFirstPage()) {
+        if (cursor.isFirstPage()) {
             return commentRepository.findUnreadCommentsFirstPage(unreadCommentIds, pageSize.getPageRequest());
         }
         return commentRepository.findUnreadCommentsNextPage(

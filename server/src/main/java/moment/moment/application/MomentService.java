@@ -13,9 +13,8 @@ import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentImageService;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
-import moment.global.domain.TargetType;
 import moment.comment.domain.CommentImage;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -38,10 +37,8 @@ import moment.moment.dto.response.MyMomentsResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
-import moment.notification.domain.TargetType;
 import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.reward.application.RewardService;
@@ -57,6 +54,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentService {
 
+    private static final int MOMENT_DELETE_THRESHOLD = 3;
+    
     private final MomentRepository momentRepository;
     private final CommentQueryService commentQueryService;
     private final EchoQueryService echoQueryService;
@@ -223,7 +222,7 @@ public class MomentService {
     public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
         User user = userQueryService.getUserById(id);
 
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(MOMENT_DELETE_THRESHOLD);
 
         List<Moment> commentableMoments = Collections.emptyList();
 
@@ -278,6 +277,13 @@ public class MomentService {
         Moment moment = momentQueryService.getMomentById(momentId);
 
         Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
+
+        long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
+
+        if (reportCount >= MOMENT_DELETE_THRESHOLD) {
+            momentRepository.delete(moment);
+        }
+
         return MomentReportCreateResponse.from(report);
     }
 }

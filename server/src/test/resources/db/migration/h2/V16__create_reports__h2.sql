@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS reports
     target_type VARCHAR(20) NOT NULL,
     report_reason VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,
     CONSTRAINT fk_reports_users
     FOREIGN KEY (user_id)
     REFERENCES users (id)
