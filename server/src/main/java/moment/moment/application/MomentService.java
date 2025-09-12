@@ -274,7 +274,7 @@ public class MomentService {
     @Transactional
     public MomentReportCreateResponse reportMoment(Long momentId, Long reporterId, MomentReportCreateRequest request) {
         User user = userQueryService.getUserById(reporterId);
-        Moment moment = momentQueryService.getMomentById(momentId);
+        Moment moment = momentQueryService.getMomentWithMomenterById(momentId);
 
         Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
 
@@ -282,6 +282,8 @@ public class MomentService {
 
         if (reportCount >= MOMENT_DELETE_THRESHOLD) {
             momentRepository.delete(moment);
+            momentImageService.deleteByMoment(moment);
+            momentTagService.deleteByMoment(moment);
         }
 
         return MomentReportCreateResponse.from(report);

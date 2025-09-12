@@ -2,7 +2,6 @@ package moment.moment.application;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.infrastructure.TagRepository;
 import org.springframework.stereotype.Service;

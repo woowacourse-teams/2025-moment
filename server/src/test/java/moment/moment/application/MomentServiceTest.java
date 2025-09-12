@@ -527,7 +527,7 @@ class MomentServiceTest {
         MomentReportCreateRequest request = new MomentReportCreateRequest("ABUSE_OR_HARASSMENT");
 
         given(userQueryService.getUserById(any())).willReturn(reporter1);
-        given(momentQueryService.getMomentById(any())).willReturn(moment);
+        given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
         given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
 
         given(reportService.countReportsByTarget(any(), any())).willReturn(3L);
@@ -537,6 +537,8 @@ class MomentServiceTest {
 
         // then
         then(momentRepository).should(times(1)).delete(any());
+        then(momentImageService).should(times(1)).deleteByMoment(any());
+        then(momentTagService).should(times(1)).deleteByMoment(any());
     }
 
     @Test
@@ -554,7 +556,7 @@ class MomentServiceTest {
         MomentReportCreateRequest request = new MomentReportCreateRequest("ABUSE_OR_HARASSMENT");
 
         given(userQueryService.getUserById(any())).willReturn(reporter1);
-        given(momentQueryService.getMomentById(any())).willReturn(moment);
+        given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
         given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
 
         given(reportService.countReportsByTarget(any(), any())).willReturn(2L);
