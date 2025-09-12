@@ -1,92 +1,104 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>오늘의 모멘트 리마인더</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Moment 일일 리포트</title>
     <style>
-        body {
-            font-family: 'Apple SD Gothic Neo', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .content {
-            padding: 20px;
-            color: #333333;
-            line-height: 1.5;
-        }
-
-        .content p {
-            margin: 12px 0;
-        }
-
-        .highlight {
-            background-color: #f0f8ff;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .button {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 12px;
-            background-color: #4a90e2;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-        }
-
-        .footer {
-            font-size: 12px;
-            color: #888888;
-            text-align: center;
-            padding: 15px;
+        @media screen and (max-width: 600px) {
+            .main-table {
+                width: 100%% !important;
+            }
+            .header-h1 {
+                font-size: 40px !important;
+            }
+            .header-p {
+                font-size: 20px !important;
+            }
+            .content-padding {
+                padding: 20px !important;
+            }
+            .content-title {
+                font-size: 22px !important;
+            }
+            .content-body {
+                font-size: 18px !important;
+            }
+            .cta-p {
+                font-size: 20px !important;
+            }
+            .cta-a {
+                font-size: 18px !important;
+                padding: 14px 28px !important;
+            }
+            .inner-content-td {
+                padding: 0 15px 25px 15px !important;
+            }
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <!-- 헤더 -->
-    <div class="header">
-        오늘의 모멘트 리마인더
-    </div>
-
-    <!-- 본문 -->
-    <div class="content">
-        <p>안녕하세요, <strong>%s</strong>!</p>
-        <p>오늘 하루 모멘트 작성 여부: <span class="highlight">%s</span></p>
-        <p>오늘 달린 코멘트 개수: <span class="highlight">%s</span></p>
-        <p>오늘 하루를 돌아보시고, 친구들의 반응도 확인해보세요!</p>
-        <a class="button" href="https://your-page-link.com">우리 페이지 바로가기</a>
-    </div>
-
-    <!-- 푸터 -->
-    <div class="footer">
-        본 메일은 자동 발송된 메일입니다. 수신을 원하지 않으시면 설정에서 알림을 변경해주세요.
-    </div>
-</div>
+<body style="margin: 0; padding: 0; background-color: #ffffff; font-family: Arial, sans-serif, '맑은 고딕', 'Malgun Gothic';">
+<table class="main-table" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+       style="margin: 0 auto; max-width: 600px; width: 100%%; background-color: #0f172a; background-image: radial-gradient(circle at 15%% 20%%, rgba(255,255,255,0.9) 1px, transparent 1.1px), radial-gradient(circle at 85%% 10%%, rgba(255,255,255,1) 1.2px, transparent 1.3px), radial-gradient(circle at 50%% 65%%, rgba(255,255,255,0.8) 0.8px, transparent 1px), radial-gradient(circle at 90%% 95%%, rgba(255,255,255,0.6) 0.5px, transparent 0.7px), radial-gradient(circle at 5%% 80%%, rgba(255,255,255,0.7) 0.7px, transparent 1px), radial-gradient(circle at 30%% 55%%, rgba(255,255,255,0.6) 0.5px, transparent 0.7px), radial-gradient(circle at 70%% 80%%, rgba(255,255,255,0.8) 0.8px, transparent 1px), radial-gradient(circle at 40%% 5%%, rgba(255,255,255,0.9) 1px, transparent 1.1px), radial-gradient(circle at 5%% 5%%, rgba(255,255,255,0.7) 0.7px, transparent 1px), radial-gradient(circle at 60%% 30%%, rgba(255,255,255,0.9) 1px, transparent 1.1px), radial-gradient(circle at 95%% 45%%, rgba(255,255,255,0.7) 0.6px, transparent 0.8px), linear-gradient(135deg, #0f172a 0%%, #1a1f36 50%%, #2c1a4d 100%%);">
+    <tr>
+        <td style="padding: 20px 40px;">
+            <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                    <td style="vertical-align: middle; padding-right: 8px;">
+                        <img alt="Moment" src="https://connectingmoment.com/images/logo.webp" style="width: 30px; height: 30px; border-radius: 50%%; vertical-align: middle;">
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span style="font-size: 22px; font-weight: 600; color: #ffffff;">Moment</span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="color: #ffffff; padding: 60px 40px; text-align: center;">
+            <h1 class="header-h1" style="font-size: 52px; font-weight: 700; margin: 0 0 20px 0; color: #F1C40F;">%s님!</h1>
+            <p class="header-p" style="font-size: 24px; font-weight: 400; margin: 0; opacity: 0.9;">오늘 하루의 기록을 전해드립니다</p>
+        </td>
+    </tr>
+    <tr>
+        <td class="content-padding" style="padding: 40px;">
+            <table border="0" cellpadding="0" cellspacing="0" role="presentation"
+                   style="width: 100%%; background-color: rgba(30, 41, 59, 0.6); border-radius: 8px; backdrop-filter: blur(10px);">
+                <tr>
+                    <td style="padding: 30px 0;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%%;">
+                            <tr>
+                                <td class="inner-content-td" style="padding: 0 30px 25px 30px; text-align: center;">
+                                    <p class="content-title" style="font-size: 26px; color: #F1C40F; margin: 0 0 10px 0; font-weight: 600;">✏️ 오늘의 모멘트 기록</p>
+                                    <p class="content-body" style="font-size: 22px; color: #ffffff; margin: 0; line-height: 1.7; white-space: pre-wrap;">%s</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="inner-content-td" style="padding: 0 30px; text-align: center;">
+                                    <p class="content-title" style="font-size: 26px; color: #F1C40F; margin: 0 0 10px 0; font-weight: 600;">💌 도착한 코멘트</p>
+                                    <p class="content-body" style="font-size: 22px; color: #ffffff; margin: 0; line-height: 1.7; white-space: pre-wrap;">%s</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center; padding: 40px;">
+            <p class="cta-p" style="font-size: 22px; color: #F1C40F; margin: 0 0 24px 0; font-weight: 500;">지금 바로 확인하러 가볼까요?</p>
+            <a href="https://connectingmoment.com" class="cta-a"
+               style="display: inline-block; background-color: #F1C40F; color: #0F172A; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-size: 20px; font-weight: 600;">Moment
+                바로가기</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center; padding: 20px; color: #ffffff; font-size: 16px; opacity: 0.8;">
+            <p style="margin: 0 0 5px 0;">이 메일은 매일 저녁 9시에 발송됩니다.</p>
+            <p style="margin: 0;">© 2025 Moment. All rights reserved.</p>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
-

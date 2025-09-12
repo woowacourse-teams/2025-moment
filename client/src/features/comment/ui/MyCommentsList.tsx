@@ -4,19 +4,74 @@ import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { AlertCircle } from 'lucide-react';
 import { useCommentsWithNotifications } from '../hooks/useCommentsWithNotifications';
 import * as S from './MyCommentsList.styles';
+import { useMemo } from 'react';
+import { FilterType } from '../types/comments';
+import { useUnreadCommentsQuery } from '../api/useUnreadCommentsQuery';
+import { CommentWithNotifications } from '../types/commentsWithNotifications';
 
-export const MyCommentsList = () => {
+interface MyCommentsList {
+  filterType: FilterType;
+}
+
+export const MyCommentsList = ({ filterType }: MyCommentsList) => {
+  const allCommentsQuery = useCommentsWithNotifications();
+  const unreadCommentsQuery = useUnreadCommentsQuery();
+
+  const isUnreadFilter = filterType === 'unread';
+
   const {
-    commentsWithNotifications,
-    isLoading,
-    isError,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useCommentsWithNotifications();
+    commentsWithNotifications: allComments,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+    error: errorAll,
+    fetchNextPage: fetchNextPageAll,
+    hasNextPage: hasNextPageAll,
+    isFetchingNextPage: isFetchingNextPageAll,
+  } = allCommentsQuery;
 
-  const hasComments = commentsWithNotifications?.length && commentsWithNotifications.length > 0;
+  const {
+    data: unreadCommentsData,
+    isLoading: isLoadingUnread,
+    isError: isErrorUnread,
+    error: errorUnread,
+    fetchNextPage: fetchNextPageUnread,
+    hasNextPage: hasNextPageUnread,
+    isFetchingNextPage: isFetchingNextPageUnread,
+  } = unreadCommentsQuery;
+
+  const unreadComments = useMemo(() => {
+    if (!unreadCommentsData) return [];
+    return unreadCommentsData.pages.flatMap(page =>
+      page.data.items.map(item => ({
+        ...item,
+        read: false as const,
+        notificationId: null,
+      })),
+    );
+  }, [unreadCommentsData]);
+
+  const currentComments: CommentWithNotifications[] = isUnreadFilter ? unreadComments : allComments;
+  const isLoading = isUnreadFilter ? isLoadingUnread : isLoadingAll;
+  const isError = isUnreadFilter ? isErrorUnread : isErrorAll;
+  const error = isUnreadFilter ? errorUnread : errorAll;
+  const fetchNextPage = isUnreadFilter ? fetchNextPageUnread : fetchNextPageAll;
+  const hasNextPage = isUnreadFilter ? hasNextPageUnread : hasNextPageAll;
+  const isFetchingNextPage = isUnreadFilter ? isFetchingNextPageUnread : isFetchingNextPageAll;
+
+  const sortedComments = useMemo(() => {
+    if (!currentComments) return [];
+
+    if (filterType === 'all') {
+      const unreadComments = currentComments.filter(comment => !comment.read);
+      const readComments = currentComments.filter(comment => comment.read);
+
+      return [...unreadComments, ...readComments];
+    }
+
+    return currentComments;
+  }, [currentComments, filterType]);
+
+  const hasComments = sortedComments?.length && sortedComments.length > 0;
 
   if (isError) {
     console.error('Error fetching comments:', error);
@@ -53,7 +108,7 @@ export const MyCommentsList = () => {
     <S.MyCommentsListContainer>
       {hasComments ? (
         <>
-          {commentsWithNotifications.map(myComment => (
+          {sortedComments.map(myComment => (
             <MyCommentsCard key={myComment.id} myComment={myComment} />
           ))}
 
@@ -69,8 +124,12 @@ export const MyCommentsList = () => {
         </>
       ) : (
         <NotFound
-          title="아직 작성한 코멘트가 없어요"
-          subtitle="다른 사용자의 모멘트에 따뜻한 공감을 보내보세요"
+          title={
+            filterType === 'unread' ? '모든 알림을 확인했습니다' : '아직 작성한 코멘트가 없어요'
+          }
+          subtitle={
+            filterType === 'unread' ? '' : '다른 사용자의 모멘트에 따뜻한 공감을 보내보세요'
+          }
         />
       )}
     </S.MyCommentsListContainer>

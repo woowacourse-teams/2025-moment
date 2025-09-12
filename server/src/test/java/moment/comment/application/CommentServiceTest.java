@@ -24,9 +24,12 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.moment.application.MomentImageService;
 import moment.moment.application.MomentQueryService;
+import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
+import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -35,6 +38,7 @@ import moment.reply.infrastructure.EchoRepository;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
+import moment.reply.application.EchoQueryService;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -64,7 +68,7 @@ class CommentServiceTest {
     private UserQueryService userQueryService;
 
     @Mock
-    private EchoRepository echoRepository;
+    private EchoQueryService echoQueryService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -83,6 +87,15 @@ class CommentServiceTest {
 
     @Mock
     private CommentImageService commentImageService;
+
+    @Mock
+    private NotificationQueryService notificationQueryService;
+
+    @Mock
+    private MomentTagService momentTagService;
+
+    @Mock
+    private MomentImageService momentImageService;
 
     @Mock
     private ReportService reportService;
@@ -171,14 +184,14 @@ class CommentServiceTest {
         given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
                 .willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
-        given(echoRepository.findAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+        given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
         // when
         MyCommentPageResponse actualComments = commentService.getCommentsByUserIdWithCursor(null, 1, 1L);
 
         // then
         assertAll(
-                () -> assertThat(actualComments.items()).hasSize(1),
+                () -> assertThat(actualComments.items().myCommentsResponse()).hasSize(1),
                 () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now2, 2)),
                 () -> assertThat(actualComments.hasNextPage()).isTrue(),
                 () -> assertThat(actualComments.pageSize()).isEqualTo(1)
@@ -279,6 +292,39 @@ class CommentServiceTest {
 
         // then
         then(commentRepository).should(times(1)).save(any(Comment.class));
+    }
+
+    @Test
+    void 읽지_않은_코멘트를_조회한다() {
+        // given
+        Long commenterId = 1L;
+        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        Moment moment = new Moment("안녕", commenter, WriteType.BASIC);
+        Comment comment1 = new Comment("안녕1", commenter, moment);
+        ReflectionTestUtils.setField(comment1, "id", 1L);
+        Comment comment2 = new Comment("안녕2", commenter, moment);
+        ReflectionTestUtils.setField(comment2, "id", 2L);
+
+        Notification notification1 = new Notification(commenter, null, TargetType.COMMENT, 1L);
+        Notification notification2 = new Notification(commenter, null, TargetType.COMMENT, 2L);
+
+        given(userQueryService.getUserById(commenterId)).willReturn(commenter);
+        given(notificationQueryService.getUnreadContentsNotifications(commenter, TargetType.COMMENT))
+                .willReturn(List.of(notification1, notification2));
+        given(commentRepository.findUnreadCommentsFirstPage(any(), any()))
+                .willReturn(List.of(comment1, comment2));
+        given(echoQueryService.getAllByCommentIn(any())).willReturn(Collections.emptyList());
+
+        // when
+        MyCommentPageResponse response = commentService.getMyUnreadComments(null, 10, commenterId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.items().myCommentsResponse()).hasSize(2),
+                () -> assertThat(response.hasNextPage()).isFalse(),
+                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(commenter, TargetType.COMMENT),
+                () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
+        );
     }
 
     @Test

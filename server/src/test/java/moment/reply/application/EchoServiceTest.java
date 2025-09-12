@@ -181,6 +181,6 @@ class EchoServiceTest {
         echoService.getEchosByCommentId(1L);
 
         // then
-        then(echoQueryService).should(times(1)).getEmojisByComment(any(Comment.class));
+        then(echoQueryService).should(times(1)).getEchosByComment(any(Comment.class));
     }
 }

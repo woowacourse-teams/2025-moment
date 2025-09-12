@@ -1,12 +1,17 @@
 package moment.reply.application;
 
 import java.util.List;
+import java.util.Map;
 import moment.comment.domain.Comment;
 import moment.reply.domain.Echo;
 
 public interface EchoQueryService {
 
-    List<Echo> getEmojisByComment(Comment comment);
+    List<Echo> getEchosByComment(Comment comment);
 
-    Echo getEmojiById(Long emojiId);
+    Echo getEchoById(Long emojiId);
+
+    Map<Comment, List<Echo>> getEchosOfComments(List<Comment> comments);
+
+    List<Echo> getAllByCommentIn(List<Comment> comments);
 }

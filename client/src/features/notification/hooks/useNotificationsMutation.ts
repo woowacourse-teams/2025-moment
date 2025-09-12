@@ -10,6 +10,8 @@ export const useNotificationsMutation = () => {
     mutationFn: patchNotifications,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['comments', 'unread'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
     onError: error => {
       console.error('알림 읽음 처리 실패:', error);

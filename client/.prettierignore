@@ -24,4 +24,6 @@ Thumbs.db
 # Environment files
 .env*
 
+# Preview email
+server-template.html
     

@@ -6,6 +6,7 @@ import moment.global.domain.TargetType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -86,5 +87,34 @@ class NotificationRepositoryTest {
         assertThat(notifications.stream()
                 .allMatch(Notification::isRead))
                 .isTrue();
+    }
+
+    @Test
+    void 읽지_않은_알림을_타겟_타입과_함께_조회한다() {
+        // given
+        Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                1L);
+        Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                2L);
+        Notification notification3 = new Notification(user, NotificationType.NEW_REPLY_ON_COMMENT, TargetType.COMMENT,
+                1L);
+
+        notification2.checkNotification();
+
+        notificationRepository.save(notification1);
+        notificationRepository.save(notification2);
+        notificationRepository.save(notification3);
+
+        // when
+        List<Notification> notifications = notificationRepository.findAllByUserAndIsReadAndTargetType(user, false,
+                TargetType.MOMENT);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(notifications).hasSize(1),
+                () -> assertThat(notifications.stream()
+                        .allMatch(notification -> !notification.isRead() && notification.getTargetType() == TargetType.MOMENT))
+                        .isTrue()
+        );
     }
 }

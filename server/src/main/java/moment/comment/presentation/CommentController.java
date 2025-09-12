@@ -117,4 +117,30 @@ public class CommentController {
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
+
+    @Operation(summary = "알림을 확인하지 않은 나의 Comment 목록 조회", description = "내가 등록한 Comment 목록 중 알림을 확인하지 않은 것을 생성 시간 내림차순으로 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나의 Comment 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [C-006] 유효하지 않은 페이지 사이즈입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/me/unread")
+    public ResponseEntity<SuccessResponse<MyCommentPageResponse>> readMyUnreadComments(
+            @RequestParam(required = false) String nextCursor,
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal Authentication authentication) {
+
+        Long userId = authentication.id();
+        MyCommentPageResponse response = commentService.getMyUnreadComments(nextCursor, limit, userId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
 }

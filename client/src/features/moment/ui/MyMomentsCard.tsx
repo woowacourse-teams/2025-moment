@@ -1,16 +1,17 @@
-import { useMemo } from 'react';
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
+import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
+import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
+import Tag from '@/shared/ui/tag/Tag';
+import { WriteTime } from '@/shared/ui/writeTime';
+import { WriterInfo } from '@/widgets/writerInfo';
 import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
+import { useMemo } from 'react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
-import { WriterInfo } from '@/widgets/writerInfo';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
-import { WriteTime } from '@/shared/ui/writeTime';
-import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -63,6 +64,16 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
+        {myMoment.imageUrl && (
+          <S.MomentImageContainer>
+            <S.MomentImage src={myMoment.imageUrl} alt="모멘트 이미지" />
+          </S.MomentImageContainer>
+        )}
+        <S.MyMomentsTagWrapper>
+          {myMoment.tagNames.map((tag: string) => (
+            <Tag key={tag} tag={tag} />
+          ))}
+        </S.MyMomentsTagWrapper>
       </S.MyMomentsCard>
       {isOpen && (
         <Modal
@@ -98,6 +109,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
 
                       <S.CommentContent>
                         <div>{currentComment.content}</div>
+                        {currentComment.imageUrl && (
+                          <S.CommentImageContainer>
+                            <S.CommentImage src={currentComment.imageUrl} alt="코멘트 이미지" />
+                          </S.CommentImageContainer>
+                        )}
                       </S.CommentContent>
 
                       {navigation.hasNext && (

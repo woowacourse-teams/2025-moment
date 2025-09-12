@@ -150,7 +150,7 @@ class CommentControllerTest {
                 .getObject("data", MyCommentPageResponse.class);
 
         // then
-        List<MyCommentResponse> myComments = response.items();
+        List<MyCommentResponse> myComments = response.items().myCommentsResponse();
         MyCommentResponse firstResponse = myComments.getFirst();
 
         String cursor = savedComment2.getCreatedAt().toString() + "_" + savedComment2.getId();
