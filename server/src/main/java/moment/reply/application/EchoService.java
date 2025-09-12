@@ -97,4 +97,8 @@ public class EchoService {
                 .map(EchoReadResponse::from)
                 .toList();
     }
+
+    public void deleteByComment(Comment comment) {
+        echoRepository.deleteByComment(comment);
+    }
 }

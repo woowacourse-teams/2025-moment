@@ -34,11 +34,11 @@ import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.infrastructure.EchoRepository;
+import moment.reply.application.EchoQueryService;
+import moment.reply.application.EchoService;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
-import moment.reply.application.EchoQueryService;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -99,6 +99,9 @@ class CommentServiceTest {
 
     @Mock
     private ReportService reportService;
+
+    @Mock
+    private EchoService echoService;
 
     @Test
     void Comment를_등록한다() {
@@ -347,7 +350,7 @@ class CommentServiceTest {
         CommentReportCreateRequest request = new CommentReportCreateRequest("SEXUAL_CONTENT");
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(commentQueryService.getCommentById(any(Long.class))).willReturn(comment);
+        given(commentQueryService.getCommentWithCommenterById(any(Long.class))).willReturn(comment);
         given(reportService.createReport(TargetType.COMMENT, momenter, comment.getId(), request.reason()))
                 .willReturn(report);
 
@@ -359,6 +362,12 @@ class CommentServiceTest {
         );
 
         // then
+        then(commentRepository).should(times(1))
+                .delete(any());
+        then(echoService).should(times(1))
+                .deleteByComment(any());
+        then(commentImageService).should(times(1))
+                .deleteByComment(any());
         then(reportService).should(times(1))
                 .createReport(TargetType.COMMENT, momenter, comment.getId(), request.reason());
     }

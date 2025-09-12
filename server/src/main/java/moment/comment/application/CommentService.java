@@ -34,6 +34,7 @@ import moment.notification.domain.NotificationType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
+import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
@@ -63,6 +64,7 @@ public class CommentService {
     private final NotificationQueryService notificationQueryService;
     private final MomentTagService momentTagService;
     private final ReportService reportService;
+    private final EchoService echoService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -195,15 +197,20 @@ public class CommentService {
                 pageSize.getPageRequest());
     }
 
+    @Transactional
     public CommentReportCreateResponse reportComment(Long commentId, Long id, CommentReportCreateRequest request) {
         User reporter = userQueryService.getUserById(id);
-        Comment comment = commentQueryService.getCommentById(commentId);
+        Comment comment = commentQueryService.getCommentWithCommenterById(commentId);
 
         Report savedReport = reportService.createReport(
                 TargetType.COMMENT,
                 reporter,
                 comment.getId(),
                 request.reason());
+
+        commentRepository.delete(comment);
+        echoService.deleteByComment(comment);
+        commentImageService.deleteByComment(comment);
 
         return CommentReportCreateResponse.from(savedReport);
     }
