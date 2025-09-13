@@ -1,5 +1,6 @@
 package moment.report.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
 import moment.report.domain.Report;
@@ -37,5 +38,9 @@ public class ReportService {
     @Transactional(readOnly = true)
     public long countReportsByTarget(TargetType targetType, Long targetId) {
         return reportRepository.countByTargetTypeAndTargetId(targetType, targetId);
+    }
+
+    public List<Report> findMomentReportByUser(User user) {
+        return reportRepository.findAllByUserAndTargetType(user, TargetType.MOMENT);
     }
 }

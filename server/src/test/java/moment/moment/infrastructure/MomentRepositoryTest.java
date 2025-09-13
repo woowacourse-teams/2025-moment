@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -133,13 +132,16 @@ class MomentRepositoryTest {
 
         Moment recentMoment = momentRepository.save(new Moment("다른 사람 모멘트", other, WriteType.BASIC));
 
+        Moment reportedMoment = momentRepository.save(new Moment("신고한 모멘트", other, WriteType.BASIC));
+        List<Long> reportedMomentIds = List.of(reportedMoment.getId());
+
         // TODO : 시간을 DB에서 처리하고 있어서 컨트롤 불가능
 
         Moment commentedMoment = momentRepository.save(new Moment("이미 코멘트를 단 모멘트", other, WriteType.BASIC));
         commentRepository.save(new Comment("희희", user, commentedMoment));
 
         // when
-        List<Moment> results = momentRepository.findCommentableMoments(user, LocalDateTime.now().minusDays(3));
+        List<Moment> results = momentRepository.findCommentableMoments(user, LocalDateTime.now().minusDays(3), reportedMomentIds);
 
         // then
         assertThat(results).containsExactly(recentMoment);

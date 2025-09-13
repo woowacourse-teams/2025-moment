@@ -347,7 +347,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
 
         // when
         CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
@@ -370,7 +370,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
         given(momentImageService.findMomentImage(any(Moment.class))).willReturn(Optional.of(momentImage));
 
         // when
@@ -392,7 +392,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(
                 Collections.emptyList());
 
         // when

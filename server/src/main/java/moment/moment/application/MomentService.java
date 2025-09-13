@@ -226,11 +226,16 @@ public class MomentService {
 
         List<Moment> commentableMoments = Collections.emptyList();
 
+        List<Report> reports = reportService.findMomentReportByUser(user);
+        List<Long> reportedMomentIds = reports.stream()
+                .map(Report::getTargetId)
+                .toList();
+
         if (tagNames.isEmpty()) {
-            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo, reportedMomentIds);
         }
         if (!tagNames.isEmpty()) {
-            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames, reportedMomentIds);
         }
 
         if (commentableMoments.isEmpty()) {
