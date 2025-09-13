@@ -22,7 +22,6 @@ import moment.user.domain.User;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,7 +34,10 @@ public class EmailNotificationService {
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
 
-    @Scheduled(cron = "0 45 16 * * ?", zone = "Asia/Seoul")
+    /*
+    이메일 수신 여부 변경 기능 추가 시 주석 해제
+    @Scheduled(cron = "0 0 21 * * ?", zone = "Asia/Seoul")
+    */
     public void schedule() {
         List<User> users = userQueryService.findAll();
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
