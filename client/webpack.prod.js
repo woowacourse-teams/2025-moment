@@ -31,11 +31,11 @@ export default merge(common, {
           compress: {
             drop_console: true,
             drop_debugger: true,
-            pure_funcs: ['console.log']
+            pure_funcs: ['console.log'],
           },
           mangle: true,
-          format: { comments: false }
-        }
+          format: { comments: false },
+        },
       }),
       new CssMinimizerPlugin(),
     ],
