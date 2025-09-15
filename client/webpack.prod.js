@@ -25,11 +25,17 @@ export default merge(common, {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        parallel: true,
+        extractComments: false,
         terserOptions: {
           compress: {
             drop_console: true,
+            drop_debugger: true,
+            pure_funcs: ['console.log']
           },
-        },
+          mangle: true,
+          format: { comments: false }
+        }
       }),
       new CssMinimizerPlugin(),
     ],
