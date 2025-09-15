@@ -21,7 +21,7 @@ const globalStyles = css`
 
   @font-face {
     font-family: 'IanSui';
-    src: url('/fonts/온글잎 박다현체.ttf') format('woff2');
+    src: url('/fonts/온글잎 박다현체.woff2') format('woff2');
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
