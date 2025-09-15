@@ -38,8 +38,8 @@ const config = {
         test: /\.(woff2|woff|ttf)$/,
         type: 'asset/resource',
         generator: {
-          filename: 'fonts/[name][ext]'
-        }
+          filename: 'fonts/[name][ext]',
+        },
       },
     ],
   },
