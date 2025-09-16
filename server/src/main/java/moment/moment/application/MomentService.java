@@ -284,7 +284,6 @@ public class MomentService {
         Moment moment = momentQueryService.getMomentWithMomenterById(momentId);
 
         Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
-        reportRepository.flush();
 
         long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
 
