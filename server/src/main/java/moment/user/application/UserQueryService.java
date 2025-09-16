@@ -11,8 +11,6 @@ public interface UserQueryService {
 
     boolean existsByNickname(String nickname);
 
-    List<User> findNotMatchedUsersTodayByMomenter(User momenter);
-
     Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType);
 
     List<User> findAll();
