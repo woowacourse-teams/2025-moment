@@ -8,7 +8,6 @@ import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -18,7 +17,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Report createReport(TargetType targetType,
                                User reporter,
                                Long targetId,

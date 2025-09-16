@@ -41,6 +41,7 @@ import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
+import moment.report.infrastructure.ReportRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -73,6 +74,7 @@ public class MomentService {
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
     private final MomentQueryService momentQueryService;
+    private final ReportRepository reportRepository;
 
 
     @Transactional
@@ -282,6 +284,7 @@ public class MomentService {
         Moment moment = momentQueryService.getMomentWithMomenterById(momentId);
 
         Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
+        reportRepository.flush();
 
         long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
 
