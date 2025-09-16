@@ -46,4 +46,8 @@ public class CommentImageService {
 
         return results;
     }
+
+    public void deleteByComment(Comment comment) {
+        commentImageRepository.deleteByComment(comment);
+    }
 }

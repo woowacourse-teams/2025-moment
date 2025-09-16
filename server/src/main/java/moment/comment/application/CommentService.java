@@ -10,10 +10,13 @@ import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentsResponse;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -28,11 +31,13 @@ import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
+import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -46,10 +51,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentService {
 
-    private static final String CURSOR_PART_DELIMITER = "_";
-    private static final int CURSOR_TIME_INDEX = 0;
-    private static final int CURSOR_ID_INDEX = 1;
-
     private final UserQueryService userQueryService;
     private final MomentQueryService momentQueryService;
     private final CommentRepository commentRepository;
@@ -62,6 +63,8 @@ public class CommentService {
     private final MomentImageService momentImageService;
     private final NotificationQueryService notificationQueryService;
     private final MomentTagService momentTagService;
+    private final ReportService reportService;
+    private final EchoService echoService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -141,7 +144,8 @@ public class CommentService {
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         return MyCommentPageResponse.of(
-                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages, commentImages),
+                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages,
+                        commentImages),
                 cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                 hasNextPage,
                 commentsWithoutCursor.size()
@@ -183,7 +187,7 @@ public class CommentService {
                 .map(Notification::getTargetId)
                 .collect(Collectors.toSet());
 
-        if(cursor.isFirstPage()) {
+        if (cursor.isFirstPage()) {
             return commentRepository.findUnreadCommentsFirstPage(unreadCommentIds, pageSize.getPageRequest());
         }
         return commentRepository.findUnreadCommentsNextPage(
@@ -193,4 +197,21 @@ public class CommentService {
                 pageSize.getPageRequest());
     }
 
+    @Transactional
+    public CommentReportCreateResponse reportComment(Long commentId, Long id, CommentReportCreateRequest request) {
+        User reporter = userQueryService.getUserById(id);
+        Comment comment = commentQueryService.getCommentWithCommenterById(commentId);
+
+        Report savedReport = reportService.createReport(
+                TargetType.COMMENT,
+                reporter,
+                comment.getId(),
+                request.reason());
+
+        commentRepository.delete(comment);
+        echoService.deleteByComment(comment);
+        commentImageService.deleteByComment(comment);
+
+        return CommentReportCreateResponse.from(savedReport);
+    }
 }

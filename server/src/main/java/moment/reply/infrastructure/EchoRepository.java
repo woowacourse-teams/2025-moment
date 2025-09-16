@@ -2,6 +2,7 @@ package moment.reply.infrastructure;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.reply.domain.Echo;
@@ -18,4 +19,8 @@ public interface EchoRepository extends JpaRepository<Echo, Long> {
     List<Echo> findAllByCommentIn(List<Comment> comments);
 
     List<Echo> findByCommentAndUserAndEchoTypeIn(Comment comment, User user, Collection<String> echoTypes);
+
+    void deleteByComment(Comment comment);
+
+    Optional<Echo> findByComment(Comment savedComment);
 }

@@ -3,7 +3,7 @@ package moment.notification.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
+import moment.global.domain.TargetType;
 
 @Schema(description = "알림 응답")
 public record NotificationResponse(
