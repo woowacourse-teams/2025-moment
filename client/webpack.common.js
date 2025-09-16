@@ -62,7 +62,6 @@ const config = {
   },
   optimization: {
     usedExports: true,
-    sideEffects: false,
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),
