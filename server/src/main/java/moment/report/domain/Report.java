@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -45,6 +46,8 @@ public class Report extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     ReportReason reportReason;
+
+    private LocalDateTime deletedAt;
 
     public Report(User user, TargetType targetType, Long targetId, ReportReason reportReason) {
         this.user = user;
