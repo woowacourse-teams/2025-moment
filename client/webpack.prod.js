@@ -82,4 +82,9 @@ export default merge(common, {
       minRatio: 0.8,
     }),
   ],
+  externals: {
+    msw: 'undefined',
+    'msw/browser': 'undefined',
+    'msw/node': 'undefined',
+  },
 });
