@@ -6,6 +6,7 @@ import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
 import { GetCommentableMoments } from '../types/comments';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
+import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 
 export function TodayCommentForm({
   momentData,
@@ -22,6 +23,8 @@ export function TodayCommentForm({
   error: Error | null;
   refetch: () => void;
 }) {
+  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
+
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
@@ -72,32 +75,54 @@ export function TodayCommentForm({
   }
 
   return (
-    <Card width="medium">
-      <Card.TitleContainer
-        title={
-          <S.TitleWrapper>
-            <WriterInfo writer={momentData.nickname} level={momentData.level} />
-            <S.ActionWrapper>
-              <WriteTime date={momentData.createdAt} />
-              <S.RefreshButton onClick={() => refetch()}>
-                <RotateCcw size={28} />
-              </S.RefreshButton>
-            </S.ActionWrapper>
-          </S.TitleWrapper>
-        }
-        subtitle=""
-      />
-      <SimpleCard height="small" content={momentData.content} />
-      {momentData.imageUrl && (
-        <S.MomentImageContainer>
-          <S.MomentImage src={momentData.imageUrl} alt="모멘트 이미지" />
-        </S.MomentImageContainer>
+    <>
+      <Card width="medium">
+        <Card.TitleContainer
+          title={
+            <S.TitleWrapper>
+              <WriterInfo writer={momentData.nickname} level={momentData.level} />
+              <S.ActionWrapper>
+                <WriteTime date={momentData.createdAt} />
+                <S.RefreshButton onClick={() => refetch()}>
+                  <RotateCcw size={28} />
+                </S.RefreshButton>
+              </S.ActionWrapper>
+            </S.TitleWrapper>
+          }
+          subtitle=""
+        />
+        <SimpleCard
+          height="small"
+          content={
+            <S.MyCommentsContentWrapper>
+              <p>{momentData.content}</p>
+              {momentData.imageUrl && (
+                <S.MomentImageContainer>
+                  <S.MomentImage
+                    src={momentData.imageUrl}
+                    alt="코멘트 이미지"
+                    onClick={e => handleImageClick(momentData.imageUrl!, e)}
+                  />
+                </S.MomentImageContainer>
+              )}
+            </S.MyCommentsContentWrapper>
+          }
+        />
+
+        <TodayCommentWriteContent
+          momentId={momentData.id}
+          isLoggedIn={isLoggedIn}
+          key={momentData.id}
+        />
+      </Card>
+
+      {fullImageSrc && (
+        <ImageOverlayPortal>
+          <S.ImageOverlay onClick={closeFullImage}>
+            <S.FullscreenImage src={fullImageSrc} alt="전체 이미지" />
+          </S.ImageOverlay>
+        </ImageOverlayPortal>
       )}
-      <TodayCommentWriteContent
-        momentId={momentData.id}
-        isLoggedIn={isLoggedIn}
-        key={momentData.id}
-      />
-    </Card>
+    </>
   );
 }
