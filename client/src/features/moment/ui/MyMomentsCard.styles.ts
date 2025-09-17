@@ -212,11 +212,17 @@ export const CommentImageContainer = styled.div`
 `;
 
 export const CommentImage = styled.img`
-  max-width: 150px;
-  max-height: 150px;
+  width: 80px;
+  height: 80px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+  cursor: pointer !important;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const MomentImageContainer = styled.div`

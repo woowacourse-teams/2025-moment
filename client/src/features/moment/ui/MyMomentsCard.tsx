@@ -121,7 +121,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                         <div>{currentComment.content}</div>
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
-                            <S.CommentImage src={currentComment.imageUrl} alt="코멘트 이미지" />
+                            <S.CommentImage
+                              src={currentComment.imageUrl}
+                              alt="코멘트 이미지"
+                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
+                            />
                           </S.CommentImageContainer>
                         )}
                       </S.CommentContent>
