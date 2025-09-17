@@ -26,6 +26,7 @@ spring:
     locations: classpath:db/migration/mysql
     user: ${FLYWAY_DB_USER}
     password: ${FLYWAY_DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
 
   sql:
     init:

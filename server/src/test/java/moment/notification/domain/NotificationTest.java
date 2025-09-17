@@ -2,6 +2,7 @@ package moment.notification.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import moment.global.domain.TargetType;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
