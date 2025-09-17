@@ -12,12 +12,14 @@ import { useReadNotifications } from '../../notification/hooks/useReadNotificati
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
+import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
+  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
   const sortedComments = useMemo(() => {
     return myMoment.comments?.slice().reverse() || [];
   }, [myMoment.comments]);
@@ -67,7 +69,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         <S.MyMomentsBottomWrapper>
           {myMoment.imageUrl ? (
             <S.MomentImageContainer>
-              <S.MomentImage src={myMoment.imageUrl} alt="모멘트 이미지" />
+              <S.MomentImage
+                src={myMoment.imageUrl}
+                alt="모멘트 이미지"
+                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
+              />
             </S.MomentImageContainer>
           ) : (
             <div />
@@ -136,6 +142,13 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             )}
           </Modal.Content>
         </Modal>
+      )}
+      {fullImageSrc && (
+        <ImageOverlayPortal>
+          <S.ImageOverlay onClick={closeFullImage}>
+            <S.FullscreenImage src={fullImageSrc} alt="전체 이미지" />
+          </S.ImageOverlay>
+        </ImageOverlayPortal>
       )}
     </>
   );

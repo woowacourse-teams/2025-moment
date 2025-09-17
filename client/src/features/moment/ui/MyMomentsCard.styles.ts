@@ -226,9 +226,35 @@ export const MomentImageContainer = styled.div`
 `;
 
 export const MomentImage = styled.img`
-  max-width: 120px;
-  max-height: 80px;
+  width: 80px;
+  height: 80px;
   border-radius: 6px;
   object-fit: cover;
   border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const ImageOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+`;
+
+export const FullscreenImage = styled.img`
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
 `;
