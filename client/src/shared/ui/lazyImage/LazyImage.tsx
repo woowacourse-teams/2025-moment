@@ -37,14 +37,16 @@ export const LazyImage: React.FC<LazyImageProps> = ({
 
   return (
     <S.LazyImageContainer>
-      <S.PlaceholderWrapper $isVisible={!isLoaded && !hasError}>
-        <Skeleton
-          width={width}
-          height={height}
-          borderRadius={borderRadius}
-          className={skeletonClassName}
-        />
-      </S.PlaceholderWrapper>
+      {variant !== 'blackHole' && (
+        <S.PlaceholderWrapper $isVisible={!isLoaded && !hasError}>
+          <Skeleton
+            width={width}
+            height={height}
+            borderRadius={borderRadius}
+            className={skeletonClassName}
+          />
+        </S.PlaceholderWrapper>
+      )}
 
       <S.ErrorWrapper $isVisible={hasError}>
         <S.ErrorFallback
