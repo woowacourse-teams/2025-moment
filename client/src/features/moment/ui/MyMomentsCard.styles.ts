@@ -63,11 +63,19 @@ export const MyMomentsContent = styled.p`
   word-break: break-all;
 `;
 
+export const MyMomentsBottomWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
 export const MyMomentsTagWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
+  flex-wrap: wrap;
 `;
 
 export const MyMomentsModalContent = styled.div`

@@ -64,16 +64,20 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
-        {myMoment.imageUrl && (
-          <S.MomentImageContainer>
-            <S.MomentImage src={myMoment.imageUrl} alt="모멘트 이미지" />
-          </S.MomentImageContainer>
-        )}
-        <S.MyMomentsTagWrapper>
-          {myMoment.tagNames.map((tag: string) => (
-            <Tag key={tag} tag={tag} />
-          ))}
-        </S.MyMomentsTagWrapper>
+        <S.MyMomentsBottomWrapper>
+          {myMoment.imageUrl ? (
+            <S.MomentImageContainer>
+              <S.MomentImage src={myMoment.imageUrl} alt="모멘트 이미지" />
+            </S.MomentImageContainer>
+          ) : (
+            <div />
+          )}
+          <S.MyMomentsTagWrapper>
+            {myMoment.tagNames.map((tag: string) => (
+              <Tag key={tag} tag={tag} />
+            ))}
+          </S.MyMomentsTagWrapper>
+        </S.MyMomentsBottomWrapper>
       </S.MyMomentsCard>
       {isOpen && (
         <Modal
