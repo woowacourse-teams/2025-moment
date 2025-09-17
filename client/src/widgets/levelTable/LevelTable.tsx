@@ -1,3 +1,4 @@
+import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
 import { levelTableData } from './data/levelTableData';
 import * as S from './LevelTable.styles';
 
@@ -18,7 +19,14 @@ export const LevelTable = () => {
           return (
             <tr key={item.id} className={item.name.includes('3단계') ? 'last-stage' : ''}>
               <td>
-                <S.LevelImage src={item.level} alt={item.name} />
+                <LazyImage
+                  src={item.level}
+                  alt={item.name}
+                  variant="levelIcon"
+                  width="50px"
+                  height="50px"
+                  borderRadius="4px"
+                />
               </td>
               <td>{item.name}</td>
               <td>{item.condition}</td>
