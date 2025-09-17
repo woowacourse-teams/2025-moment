@@ -65,7 +65,9 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   ...props
 }) => {
   if (eager) {
-    return <ImageComponent {...props} width={width} height={height} borderRadius={borderRadius} eager />;
+    return (
+      <ImageComponent {...props} width={width} height={height} borderRadius={borderRadius} eager />
+    );
   }
 
   return (
