@@ -9,11 +9,6 @@ export const LazyImageContainer = styled.div`
 const blackHoleStyles = css`
   width: 150px;
   height: 150px;
-
-  @media (max-width: 1200px) {
-    width: 100px;
-    height: 100px;
-  }
 `;
 
 const iconStyles = css`
@@ -77,14 +72,34 @@ export const ErrorIcon = styled.span`
   opacity: 0.5;
 `;
 
-export const Image = styled.img<{
-  $isLoading: boolean;
-  $hasError: boolean;
-  $variant: string;
+export const PlaceholderWrapper = styled.div<{
+  $isVisible: boolean;
 }>`
-  display: ${({ $isLoading, $hasError }) => ($isLoading || $hasError ? 'none' : 'block')};
-  transition: opacity 0.3s ease-in-out;
-  opacity: ${({ $isLoading }) => ($isLoading ? 0 : 1)};
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+`;
+
+export const ErrorWrapper = styled.div<{
+  $isVisible: boolean;
+}>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease;
+  pointer-events: ${({ $isVisible }) => ($isVisible ? 'auto' : 'none')};
+`;
+
+export const Image = styled.img<{
+  $variant: string;
+  $isVisible: boolean;
+}>`
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease;
 
   ${({ $variant }) => {
     switch ($variant) {
