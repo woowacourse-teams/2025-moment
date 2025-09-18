@@ -19,6 +19,8 @@ import javax.crypto.spec.SecretKeySpec;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.application.TokenManager;
 import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
+import static org.mockito.BDDMockito.given;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
@@ -173,7 +175,15 @@ class AuthControllerTest {
 
     @Test
     void 구글로부터_인증_코드를_받으면_토큰을_발급하고_메인페이지로_리디렉션한다() {
-        //given & when
+        // given
+        User user = userRepository.save(new User("test@google.com", "password", "nickname", ProviderType.GOOGLE));
+        RefreshToken refreshToken = new RefreshToken("refresh-token-value", user, new Date(),
+            new Date(System.currentTimeMillis() + 100000));
+        Tokens tokens = new Tokens("access-token-value", refreshToken);
+
+        given(googleAuthService.loginOrSignUp("testAuthorizationCode")).willReturn(tokens);
+
+        //when
         Response response = given()
                 .when()
                 .redirects().follow(false)
