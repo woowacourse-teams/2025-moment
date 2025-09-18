@@ -20,6 +20,14 @@ export const useToast = (): UseToastReturn => {
     });
   };
 
+  const showWarning = (message: string, duration?: number) => {
+    addToast({
+      message,
+      variant: 'warning',
+      duration,
+    });
+  };
+
   const showMessage = (message: string, routeType?: ToastRouteType, duration?: number) => {
     addToast({
       message,
@@ -32,6 +40,7 @@ export const useToast = (): UseToastReturn => {
   return {
     showSuccess,
     showError,
+    showWarning,
     showMessage,
     removeToast,
     toast,
