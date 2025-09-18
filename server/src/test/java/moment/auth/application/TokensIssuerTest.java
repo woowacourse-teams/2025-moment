@@ -11,8 +11,8 @@ import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.Map;
 import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -63,7 +63,7 @@ class TokensIssuerTest {
         given(tokenManager.getExpirationTimeFromToken(refreshTokenValue)).willReturn(expiry);
 
         // when
-        Map<String, String> tokens = tokensIssuer.issueTokens(user);
+        Tokens tokens = tokensIssuer.issueTokens(user);
 
         // then
         then(refreshTokenRepository).should(times(1)).save(any(RefreshToken.class));
@@ -86,7 +86,7 @@ class TokensIssuerTest {
         given(tokenManager.getExpirationTimeFromToken(newRefreshTokenValue)).willReturn(expiry);
 
         // when
-        Map<String, String> tokens = tokensIssuer.renewTokens(oldRefreshToken);
+        Tokens tokens = tokensIssuer.renewTokens(oldRefreshToken);
 
         // then
         verify(refreshTokenRepository, never()).save(any(RefreshToken.class));
