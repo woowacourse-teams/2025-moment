@@ -40,6 +40,11 @@ export function TodayMomentForm({
       return;
     }
 
+    if (tagNames.length > 3) {
+      showError('태그는 최대 3개까지 선택할 수 있습니다.');
+      return;
+    }
+
     handleSendContent();
     navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };

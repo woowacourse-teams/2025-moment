@@ -12,12 +12,14 @@ import { useReadNotifications } from '../../notification/hooks/useReadNotificati
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
+import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
+  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
   const sortedComments = useMemo(() => {
     return myMoment.comments?.slice().reverse() || [];
   }, [myMoment.comments]);
@@ -64,16 +66,24 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
-        {myMoment.imageUrl && (
-          <S.MomentImageContainer>
-            <S.MomentImage src={myMoment.imageUrl} alt="모멘트 이미지" />
-          </S.MomentImageContainer>
-        )}
-        <S.MyMomentsTagWrapper>
-          {myMoment.tagNames.map((tag: string) => (
-            <Tag key={tag} tag={tag} />
-          ))}
-        </S.MyMomentsTagWrapper>
+        <S.MyMomentsBottomWrapper>
+          {myMoment.imageUrl ? (
+            <S.MomentImageContainer>
+              <S.MomentImage
+                src={myMoment.imageUrl}
+                alt="모멘트 이미지"
+                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
+              />
+            </S.MomentImageContainer>
+          ) : (
+            <div />
+          )}
+          <S.MyMomentsTagWrapper>
+            {myMoment.tagNames.map((tag: string) => (
+              <Tag key={tag} tag={tag} />
+            ))}
+          </S.MyMomentsTagWrapper>
+        </S.MyMomentsBottomWrapper>
       </S.MyMomentsCard>
       {isOpen && (
         <Modal
@@ -111,7 +121,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                         <div>{currentComment.content}</div>
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
-                            <S.CommentImage src={currentComment.imageUrl} alt="코멘트 이미지" />
+                            <S.CommentImage
+                              src={currentComment.imageUrl}
+                              alt="코멘트 이미지"
+                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
+                            />
                           </S.CommentImageContainer>
                         )}
                       </S.CommentContent>
@@ -132,6 +146,13 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
             )}
           </Modal.Content>
         </Modal>
+      )}
+      {fullImageSrc && (
+        <ImageOverlayPortal>
+          <S.ImageOverlay onClick={closeFullImage}>
+            <S.FullscreenImage src={fullImageSrc} alt="전체 이미지" />
+          </S.ImageOverlay>
+        </ImageOverlayPortal>
       )}
     </>
   );
