@@ -45,7 +45,7 @@
         <appender-ref ref="CUSTOM_FILE"/>
     </logger>
 
-    <logger name="com.p6spy" level="INFO" additivity="false">
+    <logger name="p6spy" level="INFO" additivity="false">
         <appender-ref ref="P6SPY_FILE"/>
     </logger>
 
