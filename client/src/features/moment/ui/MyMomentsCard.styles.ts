@@ -63,11 +63,19 @@ export const MyMomentsContent = styled.p`
   word-break: break-all;
 `;
 
+export const MyMomentsBottomWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
 export const MyMomentsTagWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
+  flex-wrap: wrap;
 `;
 
 export const MyMomentsModalContent = styled.div`
@@ -77,6 +85,28 @@ export const MyMomentsModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  scrollbar-width: auto;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 `;
 
 export const CommentContainer = styled.div`
@@ -204,11 +234,17 @@ export const CommentImageContainer = styled.div`
 `;
 
 export const CommentImage = styled.img`
-  max-width: 150px;
-  max-height: 150px;
+  width: 80px;
+  height: 80px;
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+  cursor: pointer !important;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const MomentImageContainer = styled.div`
@@ -218,9 +254,35 @@ export const MomentImageContainer = styled.div`
 `;
 
 export const MomentImage = styled.img`
-  max-width: 120px;
-  max-height: 80px;
+  width: 80px;
+  height: 80px;
   border-radius: 6px;
   object-fit: cover;
   border: 1px solid ${({ theme }) => theme.colors['gray-600']};
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const ImageOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+`;
+
+export const FullscreenImage = styled.img`
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
 `;

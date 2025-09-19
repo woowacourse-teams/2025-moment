@@ -2,7 +2,7 @@ import { CustomTheme } from '@/app/styles/theme';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
-export type ToastVariant = 'success' | 'error' | 'message';
+export type ToastVariant = 'success' | 'error' | 'warning' | 'message';
 
 const slideIn = keyframes`
   from {
@@ -36,6 +36,11 @@ const toastVariants = {
     background-color: color-mix(in srgb, ${theme.colors['red-500']} 10%, transparent);
     border-left: 4px solid ${theme.colors['red-500']};
     color: ${theme.colors['red-500']};
+  `,
+  warning: (theme: CustomTheme) => `
+    background-color: color-mix(in srgb, ${theme.colors['orange-500_80']} 10%, transparent);
+    border-left: 4px solid ${theme.colors['orange-500_80']};
+    color: ${theme.colors['orange-500_80']};
   `,
   message: (theme: CustomTheme) => `
     background-color: color-mix(in srgb, ${theme.colors['yellow-300_80']} 10%, transparent);

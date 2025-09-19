@@ -15,7 +15,7 @@ export const TodayCommentWriteContent = ({
   momentId: number;
 }) => {
   const MAX_LENGTH = 200;
-  const { showError } = useToast();
+  const { showWarning } = useToast();
   const { comment, handleChange, handleImageChange, handleSubmit, isPending } =
     useSendComments(momentId);
 
@@ -28,7 +28,7 @@ export const TodayCommentWriteContent = ({
     if (!isLoggedIn) {
       e.preventDefault();
       e.target.blur();
-      showError('로그인 후 이용해주세요');
+      showWarning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫');
       navigate(ROUTES.LOGIN);
       return;
     }

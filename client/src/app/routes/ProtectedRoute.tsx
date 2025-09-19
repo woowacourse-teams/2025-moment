@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 
 export const ProtectedRoute: React.FC = () => {
   const location = useLocation();
-  const { showError } = useToast();
+  const { showWarning } = useToast();
   const { data: isLoggedIn, isLoading, isError, error } = useCheckIfLoggedInQuery();
 
   if (isLoading) {
@@ -15,7 +15,7 @@ export const ProtectedRoute: React.FC = () => {
   }
 
   if (isLoggedIn === false || (isError && (error as AxiosError)?.response?.status === 401)) {
-    showError('로그인 후 이용해주세요.', 3000);
+    showWarning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫', 3000);
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
