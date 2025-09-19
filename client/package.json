@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm exec webpack serve --config webpack.dev.js",
+    "dev:analyze": "ANALYZE_BUNDLE=true pnpm exec webpack serve --config webpack.dev.js",
     "build": "pnpm exec webpack --config webpack.prod.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
