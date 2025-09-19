@@ -1,5 +1,5 @@
 import { ToastProps } from '@/shared/types/toast';
-import { CheckCircle, Mail, X, XCircle } from 'lucide-react';
+import { KeyRound, CheckCircle, Mail, X, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './Toast.styles';
@@ -46,6 +46,8 @@ export const Toast: React.FC<ToastProps> = ({
         return <CheckCircle size={20} />;
       case 'error':
         return <XCircle size={20} />;
+      case 'warning':
+        return <KeyRound size={20} />;
       case 'message':
         return <Mail size={20} />;
       default:
