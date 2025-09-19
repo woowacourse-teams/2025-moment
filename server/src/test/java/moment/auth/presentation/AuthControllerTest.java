@@ -20,7 +20,6 @@ import moment.auth.application.GoogleAuthService;
 import moment.auth.application.TokenManager;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
-import static org.mockito.BDDMockito.given;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
@@ -178,10 +177,10 @@ class AuthControllerTest {
         // given
         User user = userRepository.save(new User("test@google.com", "password", "nickname", ProviderType.GOOGLE));
         RefreshToken refreshToken = new RefreshToken("refresh-token-value", user, new Date(),
-            new Date(System.currentTimeMillis() + 100000));
+                new Date(System.currentTimeMillis() + 100000));
         Tokens tokens = new Tokens("access-token-value", refreshToken);
 
-        given(googleAuthService.loginOrSignUp("testAuthorizationCode")).willReturn(tokens);
+        org.mockito.BDDMockito.given(googleAuthService.loginOrSignUp("testAuthorizationCode")).willReturn(tokens);
 
         //when
         Response response = given()
