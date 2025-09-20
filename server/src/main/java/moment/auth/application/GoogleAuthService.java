@@ -1,8 +1,8 @@
 package moment.auth.application;
 
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
@@ -26,7 +26,7 @@ public class GoogleAuthService {
     private final TokensIssuer tokensIssuer;
 
     @Transactional
-    public Map<String, String> loginOrSignUp(String authorizationCode) {
+    public Tokens loginOrSignUp(String authorizationCode) {
         GoogleAccessToken googleAccessToken = googleAuthClient.getAccessToken(authorizationCode);
 
         GoogleUserInfo googleUserInfo = googleAuthClient.getUserInfo(googleAccessToken.getAccessToken());
