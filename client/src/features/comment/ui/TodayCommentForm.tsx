@@ -9,8 +9,6 @@ import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useModal } from '@/shared/hooks/useModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
-import { useEffect } from 'react';
-import { isComplainedMoment } from '@/features/complaint/utils/complainedMoments';
 import { GetCommentableMoments } from '../types/comments';
 
 export function TodayCommentForm({
@@ -38,13 +36,7 @@ export function TodayCommentForm({
     isOpen: isComplaintOpen,
   } = useModal();
 
-  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose, refetch);
-
-  useEffect(() => {
-    if (momentData && isComplainedMoment(momentData.id)) {
-      refetch();
-    }
-  }, [momentData, refetch]);
+  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
 
   if (!isLoggedIn) {
     return (
@@ -89,10 +81,6 @@ export function TodayCommentForm({
         size="large"
       />
     );
-  }
-
-  if (isComplainedMoment(momentData.id)) {
-    return <CommonSkeletonCard variant="comment" />;
   }
 
   return (

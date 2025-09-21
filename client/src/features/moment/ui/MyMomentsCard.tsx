@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import Tag from '@/shared/ui/tag/Tag';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import type { MomentWithNotifications } from '../types/momentsWithNotifications';
@@ -15,7 +15,6 @@ import * as S from './MyMomentsCard.styles';
 import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
-import { useState } from 'react';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
@@ -29,12 +28,15 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   } = useModal();
   useEchoSelection();
   const { data: notifications } = useNotificationsQuery();
+
   const filteredComments = useMemo(() => {
     return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
   }, [myMoment.comments, complainedCommentId]);
+
   const sortedComments = useMemo(() => {
     return filteredComments?.slice().reverse() || [];
   }, [filteredComments]);
+
   const navigation = useCommentNavigation(sortedComments?.length || 0);
   const currentComment = sortedComments?.[navigation.currentIndex];
 
