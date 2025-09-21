@@ -30,8 +30,8 @@ public class NotificationFacade {
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 savedNotification.getId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
+                notificationType,
+                targetType,
                 momentId);
 
         sseNotificationService.sendToClient(momenter.getId(), "notification", response);
