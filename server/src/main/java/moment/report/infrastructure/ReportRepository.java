@@ -1,0 +1,13 @@
+package moment.report.infrastructure;
+
+import java.util.List;
+import moment.global.domain.TargetType;
+import moment.report.domain.Report;
+import moment.user.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReportRepository extends JpaRepository<Report, Long> {
+    long countByTargetTypeAndTargetId(TargetType targetType, Long targetId);
+
+    List<Report> findAllByUserAndTargetType(User user, TargetType targetType);
+}

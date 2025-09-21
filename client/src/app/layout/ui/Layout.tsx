@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/shared/ui';
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import * as S from './Layout.styles';
+import { Footer } from './Footer';
 
 const GATracker = () => {
   const location = useLocation();
@@ -43,6 +44,7 @@ const LayoutContent: React.FC = () => {
           <Outlet />
         </ErrorBoundary>
       </S.Main>
+      <Footer />
     </S.Wrapper>
   );
 };

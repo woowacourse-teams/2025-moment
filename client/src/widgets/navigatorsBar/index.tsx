@@ -32,14 +32,14 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
     <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayMomentActive}>
-          <S.IconImage src="/images/bluePlanet.png" alt="오늘의 모멘트 페이지로 이동 버튼" />
+          <S.IconImage src="/images/bluePlanet.webp" alt="오늘의 모멘트 페이지로 이동 버튼" />
           <S.IconText $isActive={isTodayMomentActive}>오늘의 모멘트</S.IconText>
         </S.LinkContainer>
       </Link>
 
       <Link to={ROUTES.TODAY_COMMENT} onClick={handleTodayCommentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayCommentActive}>
-          <S.IconImage src="/images/orangePlanet.png" alt="오늘의 코멘트 페이지로 이동 버튼" />
+          <S.IconImage src="/images/orangePlanet.webp" alt="오늘의 코멘트 페이지로 이동 버튼" />
           <S.IconText $isActive={isTodayCommentActive}>오늘의 코멘트</S.IconText>
         </S.LinkContainer>
       </Link>
@@ -50,7 +50,7 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
           $isActive={isCollectionActive}
           $shadow={isNotificationExisting}
         >
-          <S.IconImage src="/images/starPlanet.png" alt="나만의 모음집 페이지로 이동 버튼" />
+          <S.IconImage src="/images/starPlanet.webp" alt="나만의 모음집 페이지로 이동 버튼" />
           <S.IconText $isActive={isCollectionActive}>나만의 모음집</S.IconText>
         </S.LinkContainer>
       </Link>

@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,6 +41,8 @@ public class CommentImage extends BaseEntity {
 
     @Column(nullable = false, name = "original_name")
     private String imageName;
+
+    private LocalDateTime deletedAt;
 
     public CommentImage(Comment comment, String imageUrl, String imageName) {
         this.comment = comment;

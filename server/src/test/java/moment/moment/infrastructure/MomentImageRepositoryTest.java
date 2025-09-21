@@ -91,4 +91,26 @@ public class MomentImageRepositoryTest {
         // then
         assertThat(results).isEqualTo(expected);
     }
+
+    @Test
+    void 모멘트_이미지를_모멘트로_삭제한다() {
+        // given
+        String momentContent = "재미있는 내용이네요.";
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+        Moment moment = new Moment(momentContent, savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        String imageUrl = "https://s3:tech-course/moment-dev/images/cat.jpg";
+        String imageName = "cat.jpg";
+        MomentImage momentImage = new MomentImage(savedMoment, imageUrl, imageName);
+        MomentImage savedMomentImage = momentImageRepository.save(momentImage);
+
+        // when
+        momentImageRepository.deleteByMoment(savedMoment);
+
+        // then
+        Optional<MomentImage> result = momentImageRepository.findById(savedMomentImage.getId());
+        assertThat(result).isEmpty();
+    }
 }

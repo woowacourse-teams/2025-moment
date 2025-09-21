@@ -32,13 +32,6 @@ public class DefaultUserQueryService implements UserQueryService {
     }
 
     @Override
-    public List<User> findNotMatchedUsersTodayByMomenter(User momenter) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
-        return userRepository.findNotMatchedUsersToday(startOfDay, endOfDay, momenter);
-    }
-
-    @Override
     public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
         return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
     }

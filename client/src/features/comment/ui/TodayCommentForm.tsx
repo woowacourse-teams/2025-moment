@@ -10,6 +10,7 @@ import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useModal } from '@/shared/hooks/useModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
+import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 
 export function TodayCommentForm({
   momentData,
@@ -26,6 +27,8 @@ export function TodayCommentForm({
   error: Error | null;
   refetch: () => void;
 }) {
+  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
+
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
@@ -103,12 +106,24 @@ export function TodayCommentForm({
           }
           subtitle=""
         />
-        <SimpleCard height="small" content={momentData.content} />
-        {momentData.imageUrl && (
-          <S.MomentImageContainer>
-            <S.MomentImage src={momentData.imageUrl} alt="모멘트 이미지" />
-          </S.MomentImageContainer>
-        )}
+        <SimpleCard
+          height="small"
+          content={
+            <S.MyCommentsContentWrapper>
+              <p>{momentData.content}</p>
+              {momentData.imageUrl && (
+                <S.MomentImageContainer>
+                  <S.MomentImage
+                    src={momentData.imageUrl}
+                    alt="코멘트 이미지"
+                    onClick={e => handleImageClick(momentData.imageUrl!, e)}
+                  />
+                </S.MomentImageContainer>
+              )}
+            </S.MyCommentsContentWrapper>
+          }
+        />
+
         <TodayCommentWriteContent
           momentId={momentData.id}
           isLoggedIn={isLoggedIn}
@@ -123,6 +138,13 @@ export function TodayCommentForm({
           targetType="MOMENT"
           onSubmit={handleComplaintSubmit}
         />
+      )}
+      {fullImageSrc && (
+        <ImageOverlayPortal>
+          <S.ImageOverlay onClick={closeFullImage}>
+            <S.FullscreenImage src={fullImageSrc} alt="전체 이미지" />
+          </S.ImageOverlay>
+        </ImageOverlayPortal>
       )}
     </>
   );

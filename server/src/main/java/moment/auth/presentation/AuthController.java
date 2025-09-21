@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
 import moment.auth.application.GoogleAuthService;
+import moment.auth.domain.Tokens;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
@@ -81,9 +81,9 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<SuccessResponse<Void>> login(@Valid @RequestBody LoginRequest request) {
-        Map<String, String> tokens = authService.login(request);
-        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
-        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
+        Tokens tokens = authService.login(request);
+        String accessToken = tokens.getAccessToken();
+        String refreshToken = tokens.getRefreshToken().getTokenValue();
 
         ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("none")
@@ -159,9 +159,9 @@ public class AuthController {
 
     @GetMapping("/callback/google")
     public ResponseEntity<Void> googleCallback(@RequestParam String code) {
-        Map<String, String> tokens = googleAuthService.loginOrSignUp(code);
-        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
-        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
+        Tokens tokens = googleAuthService.loginOrSignUp(code);
+        String accessToken = tokens.getAccessToken();
+        String refreshToken = tokens.getRefreshToken().getTokenValue();
 
         ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("None")
@@ -216,11 +216,11 @@ public class AuthController {
     })
     @PostMapping("/refresh")
     public ResponseEntity<SuccessResponse<Void>> refresh(HttpServletRequest request) {
-        
-        Map<String, String> tokens = authService.refresh(request);
 
-        String accessToken = tokens.get(ACCESS_TOKEN_HEADER);
-        String refreshToken = tokens.get(REFRESH_TOKEN_HEADER);
+        Tokens tokens = authService.refresh(request);
+
+        String accessToken = tokens.getAccessToken();
+        String refreshToken = tokens.getRefreshToken().getTokenValue();
 
         ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
                 .sameSite("none")

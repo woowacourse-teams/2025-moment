@@ -17,6 +17,7 @@ import java.util.Optional;
 import moment.comment.application.CommentImageService;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.moment.domain.BasicMomentCreatePolicy;
 import moment.moment.domain.ExtraMomentCreatePolicy;
@@ -27,15 +28,18 @@ import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
-import moment.notification.domain.TargetType;
 import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
+import moment.report.domain.ReportReason;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -97,6 +101,12 @@ class MomentServiceTest {
 
     @Mock
     private CommentImageService commentImageService;
+
+    @Mock
+    private MomentQueryService momentQueryService;
+
+    @Mock
+    private ReportService reportService;
 
     @Test
     void 기본_모멘트_생성에_성공한다() {
@@ -337,7 +347,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
 
         // when
         CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
@@ -360,7 +370,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
         given(momentImageService.findMomentImage(any(Moment.class))).willReturn(Optional.of(momentImage));
 
         // when
@@ -382,7 +392,7 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any())).willReturn(
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(
                 Collections.emptyList());
 
         // when
@@ -500,5 +510,61 @@ class MomentServiceTest {
                         .getUnreadContentsNotifications(momenter, TargetType.MOMENT),
                 () -> then(momentRepository).should(times(1)).findMyUnreadMomentFirstPage(any(), any())
         );
+    }
+
+    @Test
+    void 정해진_신고_횟수_넘긴_모멘트를_삭제한다() {
+        // given
+        TargetType targetType = TargetType.MOMENT;
+        User user = new User("eee@gmail.com", "1234!", "아마", ProviderType.EMAIL);
+
+        Moment moment = new Moment("내용", user, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment, "id", 1L);
+
+        User reporter1 = new User("ddd@gmail.com", "1234!", "드라고", ProviderType.EMAIL);
+        Report report1 = new Report(reporter1, targetType, moment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
+
+        MomentReportCreateRequest request = new MomentReportCreateRequest("ABUSE_OR_HARASSMENT");
+
+        given(userQueryService.getUserById(any())).willReturn(reporter1);
+        given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
+        given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
+
+        given(reportService.countReportsByTarget(any(), any())).willReturn(3L);
+
+        // when
+        momentService.reportMoment(moment.getId(), 1L, request);
+
+        // then
+        then(momentRepository).should(times(1)).delete(any());
+        then(momentImageService).should(times(1)).deleteByMoment(any());
+        then(momentTagService).should(times(1)).deleteByMoment(any());
+    }
+
+    @Test
+    void 정해진_신고_횟수_넘지_않은_모멘트는_삭제하지_않는다() {
+        // given
+        TargetType targetType = TargetType.MOMENT;
+        User user = new User("eee@gmail.com", "1234!", "아마", ProviderType.EMAIL);
+
+        Moment moment = new Moment("내용", user, WriteType.BASIC);
+        ReflectionTestUtils.setField(moment, "id", 1L);
+
+        User reporter1 = new User("ddd@gmail.com", "1234!", "드라고", ProviderType.EMAIL);
+        Report report1 = new Report(reporter1, targetType, moment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
+
+        MomentReportCreateRequest request = new MomentReportCreateRequest("ABUSE_OR_HARASSMENT");
+
+        given(userQueryService.getUserById(any())).willReturn(reporter1);
+        given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
+        given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
+
+        given(reportService.countReportsByTarget(any(), any())).willReturn(2L);
+
+        // when
+        momentService.reportMoment(moment.getId(), 1L, request);
+
+        // then
+        then(momentRepository).should(times(0)).delete(any());
     }
 }

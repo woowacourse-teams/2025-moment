@@ -2,6 +2,7 @@ package moment.comment.infrastructure;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
@@ -58,4 +59,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     boolean existsByMomentAndCommenter(Moment moment, User commenter);
 
     long countByMomentAndCreatedAtBetween(Moment moment, LocalDateTime start, LocalDateTime end);
+
+    @EntityGraph(attributePaths = {"commenter"})
+    Optional<Comment> findWithCommenterById(Long id);
 }

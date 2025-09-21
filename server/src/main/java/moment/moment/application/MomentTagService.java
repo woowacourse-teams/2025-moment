@@ -31,4 +31,9 @@ public class MomentTagService {
         return momentTags.stream()
                 .collect(Collectors.groupingBy(MomentTag::getMoment));
     }
+
+    @Transactional
+    public void deleteByMoment(Moment moment) {
+        momentTagRepository.deleteAllByMoment(moment);
+    }
 }

@@ -5,8 +5,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import java.util.Map;
+import java.util.Date;
 import java.util.Optional;
+import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
@@ -57,12 +59,15 @@ class GoogleAuthServiceTest {
         GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
         User existingUser = new User(email, "password", "mimi", ProviderType.GOOGLE);
 
+        Tokens tokens = new Tokens(
+                expectedAccessToken,
+                new RefreshToken(expectedRefreshToken, existingUser, new Date(), new Date()));
+
         given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
         given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
         given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(
                 Optional.of(existingUser));
-        given(tokensIssuer.issueTokens(existingUser))
-                .willReturn(Map.of("accessToken", expectedAccessToken, "refreshToken", expectedRefreshToken));
+        given(tokensIssuer.issueTokens(existingUser)).willReturn(tokens);
 
         // when
         googleAuthService.loginOrSignUp("authorizationCode");
@@ -82,14 +87,17 @@ class GoogleAuthServiceTest {
         GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
         User newUser = new User(email, "encodedPassword", "mimi", ProviderType.GOOGLE);
 
+        Tokens tokens = new Tokens(
+                expectedAccessToken,
+                new RefreshToken(expectedRefreshToken, newUser, new Date(), new Date()));
+
         given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
         given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
         given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(Optional.empty());
         given(passwordEncoder.encode(any(String.class))).willReturn("encodedPassword");
         given(nicknameGenerateService.createRandomNickname()).willReturn("반짝이는 우주의 퀘이사");
         given(userRepository.save(any(User.class))).willReturn(newUser);
-        given(tokensIssuer.issueTokens(newUser))
-                .willReturn(Map.of("accessToken", expectedAccessToken, "refreshToken", expectedRefreshToken));
+        given(tokensIssuer.issueTokens(newUser)).willReturn(tokens);
 
         // when
         googleAuthService.loginOrSignUp("authorizationCode");
