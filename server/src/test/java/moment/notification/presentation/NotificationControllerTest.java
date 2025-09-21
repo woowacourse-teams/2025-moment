@@ -220,12 +220,38 @@ public class NotificationControllerTest {
         EchoCreateRequest request3 = new EchoCreateRequest(Set.of("STAR"), comment.getId());
         EchoCreateRequest request4 = new EchoCreateRequest(Set.of("KING"), comment.getId());
 
-        Authentication authentication = new Authentication(momenter.getId());
+        // when
+        RestAssured.given().log().all()
+            .cookie("accessToken", momenterToken)
+            .contentType(io.restassured.http.ContentType.JSON)
+            .body(request1)
+            .when().post("/api/v1/echos")
+            .then().log().all()
+            .statusCode(201);
 
-        echoService.addEchos(request1, authentication);
-        echoService.addEchos(request2, authentication);
-        echoService.addEchos(request3, authentication);
-        echoService.addEchos(request4, authentication);
+        RestAssured.given().log().all()
+            .cookie("accessToken", momenterToken)
+            .contentType(io.restassured.http.ContentType.JSON)
+            .body(request2)
+            .when().post("/api/v1/echos")
+            .then().log().all()
+            .statusCode(201);
+
+        RestAssured.given().log().all()
+            .cookie("accessToken", momenterToken)
+            .contentType(io.restassured.http.ContentType.JSON)
+            .body(request3)
+            .when().post("/api/v1/echos")
+            .then().log().all()
+            .statusCode(201);
+
+        RestAssured.given().log().all()
+            .cookie("accessToken", momenterToken)
+            .contentType(io.restassured.http.ContentType.JSON)
+            .body(request4)
+            .when().post("/api/v1/echos")
+            .then().log().all()
+            .statusCode(201);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)

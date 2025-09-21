@@ -18,13 +18,13 @@ public class NotificationFacade {
     private final SseNotificationService sseNotificationService;
 
     @Transactional
-    public void sendSseNotificationAndNotification(User momenter,
-                                                   Long momentId,
+    public void sendSseNotificationAndNotification(User user,
+                                                   Long targetId,
                                                    NotificationType notificationType,
                                                    TargetType targetType) {
         Notification savedNotification = notificationService.saveNotification(
-                momenter,
-                momentId,
+                user,
+                targetId,
                 notificationType,
                 targetType);
 
@@ -32,8 +32,8 @@ public class NotificationFacade {
                 savedNotification.getId(),
                 notificationType,
                 targetType,
-                momentId);
+                targetId);
 
-        sseNotificationService.sendToClient(momenter.getId(), "notification", response);
+        sseNotificationService.sendToClient(user.getId(), "notification", response);
     }
 }

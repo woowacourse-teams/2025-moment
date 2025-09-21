@@ -48,7 +48,6 @@ public class Emitters {
                         .name("heartbeat")
                         .comment("keeping connection alive")
                         .data("heartbeat"));
-                log.info("Sent heartbeat to user {}", userId);
             } catch (IOException e) {
                 log.info("User {} connection lost. Removing emitter.", userId);
                 emitters.remove(userId);
