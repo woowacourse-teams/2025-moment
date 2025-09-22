@@ -44,7 +44,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
                   <S.CommentImage
                     src={changeToCloudfrontUrlFromS3(myComment.moment.imageUrl)}
                     alt="모멘트 이미지"
-                    onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(myComment.moment.imageUrl!), e)}
+                    onClick={e =>
+                      handleImageClick(changeToCloudfrontUrlFromS3(myComment.moment.imageUrl!), e)
+                    }
                   />
                 </S.CommentImageContainer>
               )}
@@ -65,7 +67,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
                       <S.CommentImage
                         src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
                         alt="코멘트 이미지"
-                        onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)}
+                        onClick={e =>
+                          handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
+                        }
                       />
                     </S.CommentImageContainer>
                   )}

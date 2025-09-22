@@ -125,7 +125,12 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                             <S.CommentImage
                               src={changeToCloudfrontUrlFromS3(currentComment.imageUrl)}
                               alt="코멘트 이미지"
-                              onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(currentComment.imageUrl!), e)}
+                              onClick={e =>
+                                handleImageClick(
+                                  changeToCloudfrontUrlFromS3(currentComment.imageUrl!),
+                                  e,
+                                )
+                              }
                             />
                           </S.CommentImageContainer>
                         )}
