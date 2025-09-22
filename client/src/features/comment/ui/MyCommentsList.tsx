@@ -66,17 +66,8 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
   const isFetchingNextPage = isUnreadFilter ? isFetchingNextPageUnread : isFetchingNextPageAll;
 
   const sortedComments = useMemo(() => {
-    if (!currentComments) return [];
-
-    if (filterType === 'all') {
-      const unreadComments = currentComments.filter(comment => !comment.read);
-      const readComments = currentComments.filter(comment => comment.read);
-
-      return [...unreadComments, ...readComments];
-    }
-
-    return currentComments;
-  }, [currentComments, filterType]);
+    return currentComments || [];
+  }, [currentComments]);
 
   const hasComments = sortedComments?.length && sortedComments.length > 0;
 
