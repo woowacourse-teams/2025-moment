@@ -4,6 +4,7 @@ import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
 import { sendEvent } from '@/shared/lib/ga';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { Button } from '@/shared/ui/button/Button';
+import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
 import { Hero } from '@/widgets/hero';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useRef, useState } from 'react';
@@ -51,7 +52,14 @@ export default function HomePage() {
           <S.BlackHoleContainer ref={ClickMeRef}>
             <S.BlackHoleText>click me</S.BlackHoleText>
             <button onClick={handleWidgetClick}>
-              <S.BlackHoleImage src="/images/blackHole.png" alt="네비게이션 `메뉴 열기" />
+              <LazyImage
+                src="/images/blackHole.webp"
+                alt="네비게이션 `메뉴 열기"
+                variant="blackHole"
+                width="150px"
+                height="150px"
+                borderRadius="50%"
+              />
             </button>
           </S.BlackHoleContainer>
           <S.ClickMeContainer ref={BlackHoleRef} isWidgetOpen={isWidgetOpen}>

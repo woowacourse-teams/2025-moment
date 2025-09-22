@@ -9,10 +9,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 import jakarta.servlet.http.Cookie;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.infrastructure.RefreshTokenRepository;
@@ -83,16 +85,25 @@ class AuthServiceTest {
         String accessToken = "accessToken";
         String refreshToken = "refreshToken";
 
+        LocalDate todayLocalDate = LocalDate.now();
+        LocalDate futureLocalDate = todayLocalDate.plusDays(30);
+
+        Date todayDate = Date.from(todayLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date futureDate = Date.from(futureLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Tokens tokens = new Tokens(accessToken,
+                new RefreshToken(refreshToken, user, todayDate, futureDate));
+
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(tokensIssuer.issueTokens(any()))
-                .willReturn(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
+                .willReturn(tokens);
 
         // when
-        Map<String, String> tokens = authService.login(request);
+        Tokens result = authService.login(request);
 
         // then
-        assertThat(tokens.get("accessToken")).isEqualTo(accessToken);
-        assertThat(tokens.get("refreshToken")).isEqualTo(refreshToken);
+        assertThat(result.getAccessToken()).isEqualTo(accessToken);
+        assertThat(result.getRefreshToken().getTokenValue()).isEqualTo(refreshToken);
     }
 
     @Test
@@ -225,16 +236,23 @@ class AuthServiceTest {
         given(refreshTokenRepository.findByTokenValue(refreshTokenValue)).willReturn(Optional.of(refreshToken));
 
         String newAccessToken = "newAccessToken";
-        String newRefreshToken = "newRefreshToken";
-        given(tokensIssuer.renewTokens(refreshToken))
-                .willReturn(Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken));
+        String newRefreshTokenValue = "newRefreshToken";
+        RefreshToken newRefreshToken = new RefreshToken(
+                newRefreshTokenValue,
+                user,
+                new Date(System.currentTimeMillis()),
+                new Date(System.currentTimeMillis() + 60000));
+
+        Tokens tokens = new Tokens(newAccessToken, newRefreshToken);
+
+        given(tokensIssuer.renewTokens(refreshToken)).willReturn(tokens);
 
         // when
-        Map<String, String> tokens = authService.refresh(request);
+        Tokens result = authService.refresh(request);
 
         // then
-        assertThat(tokens.get("accessToken")).isEqualTo(newAccessToken);
-        assertThat(tokens.get("refreshToken")).isEqualTo(newRefreshToken);
+        assertThat(result.getAccessToken()).isEqualTo(newAccessToken);
+        assertThat(result.getRefreshToken().getTokenValue()).isEqualTo(newRefreshTokenValue);
         then(refreshTokenRepository).should(times(1)).findByTokenValue("existingRefreshToken");
         then(tokensIssuer).should(times(1)).renewTokens(refreshToken);
     }

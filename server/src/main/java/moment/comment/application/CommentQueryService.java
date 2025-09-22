@@ -12,4 +12,6 @@ public interface CommentQueryService {
     boolean existsByMomentAndCommenter(Moment moment, User commenter);
 
     List<Comment> getAllByMomentIn(List<Moment> moments);
+
+    Comment getCommentWithCommenterById(Long id);
 }

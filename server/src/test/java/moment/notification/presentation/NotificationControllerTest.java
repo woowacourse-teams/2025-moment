@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import java.util.List;
 import java.util.Set;
 import moment.auth.application.TokenManager;
@@ -22,7 +21,7 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
+import moment.global.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
@@ -110,7 +109,7 @@ public class NotificationControllerTest {
         CommentCreateRequest request = new CommentCreateRequest("굿~", moment.getId(), null, null);
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -141,7 +140,7 @@ public class NotificationControllerTest {
         EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
         RestAssured.given().log().all()
                 .cookie("accessToken", momenterToken) // 모멘트 작성자가 에코를 달음
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/echos")
                 .then().log().all()
@@ -174,7 +173,7 @@ public class NotificationControllerTest {
         // when
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request1)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -182,7 +181,7 @@ public class NotificationControllerTest {
 
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request2)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -190,7 +189,7 @@ public class NotificationControllerTest {
 
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request3)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -252,7 +251,7 @@ public class NotificationControllerTest {
         // when
         RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .body(request)
                 .when().post("/api/v1/comments")
                 .then().log().all()
@@ -262,7 +261,7 @@ public class NotificationControllerTest {
 
         RestAssured.given().log().all()
                 .cookie("accessToken", momenterToken)
-                .contentType(ContentType.JSON)
+                .contentType(io.restassured.http.ContentType.JSON)
                 .when().patch("/api/v1/notifications/" + notification.getId() + "/read")
                 .then().log().all()
                 .statusCode(204);

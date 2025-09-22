@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
+import moment.global.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;

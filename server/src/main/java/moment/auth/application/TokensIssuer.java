@@ -1,9 +1,8 @@
 package moment.auth.application;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,7 @@ public class TokensIssuer {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public Map<String, String> issueTokens(User user) {
+    public Tokens issueTokens(User user) {
         String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
         String refreshTokenValue = tokenManager.createRefreshToken(user.getId(), user.getEmail());
 
@@ -29,16 +28,11 @@ public class TokensIssuer {
         );
         refreshTokenRepository.save(refreshToken);
 
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshTokenValue);
-
-        return tokens;
+        return new Tokens(accessToken, refreshToken);
     }
 
     @Transactional
-    public Map<String, String> renewTokens(RefreshToken refreshToken) {
-        Map<String, String> tokens = new HashMap<>();
+    public Tokens renewTokens(RefreshToken refreshToken) {
         User user = refreshToken.getUser();
 
         String newAccessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
@@ -49,9 +43,6 @@ public class TokensIssuer {
                 tokenManager.getIssuedAtFromToken(newRefreshTokenValue),
                 tokenManager.getExpirationTimeFromToken(newRefreshTokenValue));
 
-        tokens.put("accessToken", newAccessToken);
-        tokens.put("refreshToken", newRefreshTokenValue);
-
-        return tokens;
+        return new Tokens(newAccessToken, refreshToken);
     }
 }

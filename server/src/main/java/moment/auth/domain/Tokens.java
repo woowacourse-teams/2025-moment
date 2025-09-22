@@ -1,7 +1,5 @@
 package moment.auth.domain;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,12 +7,11 @@ import lombok.ToString;
 @ToString
 public class Tokens {
 
-    private final Map<String, Object> tokens = new HashMap<>();
+    private final String accessToken;
+    private final RefreshToken refreshToken;
 
-    public Tokens(String accessToken, RefreshToken refreshToken) {
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
+    public Tokens(final String accessToken, final RefreshToken refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
-
-
 }

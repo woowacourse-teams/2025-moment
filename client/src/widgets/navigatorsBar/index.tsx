@@ -2,6 +2,7 @@ import { ROUTES } from '@/app/routes/routes';
 import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { sendEvent } from '@/shared/lib/ga';
 import { NavigatorsBarAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
 import { Link, useLocation } from 'react-router';
 import * as S from './index.styles';
 
@@ -32,14 +33,28 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
     <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayMomentActive}>
-          <S.IconImage src="/images/bluePlanet.png" alt="오늘의 모멘트 페이지로 이동 버튼" />
+          <LazyImage
+            src="/images/bluePlanet.webp"
+            alt="오늘의 모멘트 페이지로 이동 버튼"
+            variant="icon"
+            width="40px"
+            height="40px"
+            borderRadius="50%"
+          />
           <S.IconText $isActive={isTodayMomentActive}>오늘의 모멘트</S.IconText>
         </S.LinkContainer>
       </Link>
 
       <Link to={ROUTES.TODAY_COMMENT} onClick={handleTodayCommentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayCommentActive}>
-          <S.IconImage src="/images/orangePlanet.png" alt="오늘의 코멘트 페이지로 이동 버튼" />
+          <LazyImage
+            src="/images/orangePlanet.webp"
+            alt="오늘의 코멘트 페이지로 이동 버튼"
+            variant="icon"
+            width="40px"
+            height="40px"
+            borderRadius="50%"
+          />
           <S.IconText $isActive={isTodayCommentActive}>오늘의 코멘트</S.IconText>
         </S.LinkContainer>
       </Link>
@@ -50,7 +65,14 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
           $isActive={isCollectionActive}
           $shadow={isNotificationExisting}
         >
-          <S.IconImage src="/images/starPlanet.png" alt="나만의 모음집 페이지로 이동 버튼" />
+          <LazyImage
+            src="/images/starPlanet.webp"
+            alt="나만의 모음집 페이지로 이동 버튼"
+            variant="icon"
+            width="40px"
+            height="40px"
+            borderRadius="50%"
+          />
           <S.IconText $isActive={isCollectionActive}>나만의 모음집</S.IconText>
         </S.LinkContainer>
       </Link>
