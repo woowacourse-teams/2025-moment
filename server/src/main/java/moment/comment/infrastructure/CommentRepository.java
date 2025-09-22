@@ -15,13 +15,25 @@ import org.springframework.data.repository.query.Param;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @EntityGraph(attributePaths = {"moment.momenter"})
-    @Query("""
-            SELECT c FROM comments c
-            WHERE c.commenter = :commenter
-            ORDER BY c.createdAt DESC, c.id DESC
-            """)
-    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, Pageable pageable);
+    @Query(value = """
+            SELECT
+                c1_0.id, c1_0.commenter_id, c1_0.content, c1_0.created_at, c1_0.deleted_at, c1_0.moment_id,
+                m1_0.id, m1_0.content, m1_0.created_at, m1_0.deleted_at, m1_0.is_matched, m1_0.momenter_id,
+                m2_0.id, m2_0.available_star, m2_0.created_at, m2_0.deleted_at, m2_0.email, m2_0.exp_star, m2_0.level, m2_0.nickname, m2_0.password, m2_0.provider_type, m1_0.write_type
+            FROM
+                (SELECT *
+                 FROM comments
+                 WHERE commenter_id = :#{#commenter.id} AND deleted_at IS NULL
+                 ORDER BY created_at DESC, id DESC
+                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c1_0
+            JOIN
+                moments m1_0 ON m1_0.id = c1_0.moment_id AND m1_0.deleted_at IS NULL
+            JOIN
+                users m2_0 ON m2_0.id = m1_0.momenter_id AND m2_0.deleted_at IS NULL
+            ORDER BY
+                c1_0.created_at DESC, c1_0.id DESC;
+            """, nativeQuery = true)
+    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, @Param("pageable") Pageable pageable);
 
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
