@@ -17,21 +17,41 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(value = """
             SELECT
-                c1_0.id, c1_0.commenter_id, c1_0.content, c1_0.created_at, c1_0.deleted_at, c1_0.moment_id,
-                m1_0.id, m1_0.content, m1_0.created_at, m1_0.deleted_at, m1_0.is_matched, m1_0.momenter_id,
-                m2_0.id, m2_0.available_star, m2_0.created_at, m2_0.deleted_at, m2_0.email, m2_0.exp_star, m2_0.level, m2_0.nickname, m2_0.password, m2_0.provider_type, m1_0.write_type
+                c.id AS c_id,
+                c.commenter_id AS c_commenter_id,
+                c.content AS c_content,
+                c.created_at AS c_created_at,
+                c.deleted_at AS c_deleted_at,
+                c.moment_id AS c_moment_id,
+                m.id AS m_id,
+                m.content AS m_content,
+                m.created_at AS m_created_at,
+                m.deleted_at AS m_deleted_at,
+                m.is_matched AS m_is_matched,
+                m.momenter_id AS m_momenter_id,
+                m.write_type AS m_write_type,
+                u.id AS u_id,
+                u.available_star AS u_available_star,
+                u.created_at AS u_created_at,
+                u.deleted_at AS u_deleted_at,
+                u.email AS u_email,
+                u.exp_star AS u_exp_star,
+                u.level AS u_level,
+                u.nickname AS u_nickname,
+                u.password AS u_password,
+                u.provider_type AS u_provider_type
             FROM
                 (SELECT *
                  FROM comments
                  WHERE commenter_id = :#{#commenter.id} AND deleted_at IS NULL
                  ORDER BY created_at DESC, id DESC
-                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c1_0
+                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c
             JOIN
-                moments m1_0 ON m1_0.id = c1_0.moment_id AND m1_0.deleted_at IS NULL
+                moments m ON m.id = c.moment_id AND m.deleted_at IS NULL
             JOIN
-                users m2_0 ON m2_0.id = m1_0.momenter_id AND m2_0.deleted_at IS NULL
+                users u ON u.id = m.momenter_id AND u.deleted_at IS NULL
             ORDER BY
-                c1_0.created_at DESC, c1_0.id DESC;
+                c.created_at DESC, c.id DESC;
             """, nativeQuery = true)
     List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, @Param("pageable") Pageable pageable);
 
