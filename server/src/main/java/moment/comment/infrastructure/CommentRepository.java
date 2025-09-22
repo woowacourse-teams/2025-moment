@@ -25,7 +25,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                  FROM comments
                  WHERE commenter_id = :#{#commenter.id} AND deleted_at IS NULL
                  ORDER BY created_at DESC, id DESC
-                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c1_0) AS c1_0
+                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c1_0
             JOIN
                 moments m1_0 ON m1_0.id = c1_0.moment_id AND m1_0.deleted_at IS NULL
             JOIN
@@ -33,7 +33,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             ORDER BY
                 c1_0.created_at DESC, c1_0.id DESC;
             """, nativeQuery = true)
-    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, Pageable pageable);
+    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, @Param("pageable") Pageable pageable);
 
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
