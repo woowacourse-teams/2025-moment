@@ -15,45 +15,22 @@ import org.springframework.data.repository.query.Param;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query(value = """
-            SELECT
-                c.id AS c_id,
-                c.commenter_id AS c_commenter_id,
-                c.content AS c_content,
-                c.created_at AS c_created_at,
-                c.deleted_at AS c_deleted_at,
-                c.moment_id AS c_moment_id,
-                m.id AS m_id,
-                m.content AS m_content,
-                m.created_at AS m_created_at,
-                m.deleted_at AS m_deleted_at,
-                m.is_matched AS m_is_matched,
-                m.momenter_id AS m_momenter_id,
-                m.write_type AS m_write_type,
-                u.id AS u_id,
-                u.available_star AS u_available_star,
-                u.created_at AS u_created_at,
-                u.deleted_at AS u_deleted_at,
-                u.email AS u_email,
-                u.exp_star AS u_exp_star,
-                u.level AS u_level,
-                u.nickname AS u_nickname,
-                u.password AS u_password,
-                u.provider_type AS u_provider_type
-            FROM
-                (SELECT *
-                 FROM comments
-                 WHERE commenter_id = :#{#commenter.id} AND deleted_at IS NULL
-                 ORDER BY created_at DESC, id DESC
-                 LIMIT :#{#pageable.pageSize} OFFSET :#{#pageable.offset}) AS c
-            JOIN
-                moments m ON m.id = c.moment_id AND m.deleted_at IS NULL
-            JOIN
-                users u ON u.id = m.momenter_id AND u.deleted_at IS NULL
-            ORDER BY
-                c.created_at DESC, c.id DESC;
-            """, nativeQuery = true)
-    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, @Param("pageable") Pageable pageable);
+    @Query("""
+        SELECT c.id
+        FROM comments c
+        WHERE c.commenter = :commenter
+        ORDER BY c.createdAt DESC, c.id DESC
+    """)
+    List<Long> findCommentIdsByCommenter(@Param("commenter") User commenter, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"moment.momenter"})
+    @Query("""
+        SELECT c
+        FROM comments c
+        WHERE c.id IN :ids
+        ORDER BY c.createdAt DESC, c.id DESC
+    """)
+    List<Comment> findCommentsWithDetailsByIds(@Param("ids") List<Long> ids);
 
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
