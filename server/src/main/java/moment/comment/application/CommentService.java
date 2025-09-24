@@ -154,15 +154,19 @@ public class CommentService {
 
     private List<Comment> getRawComments(Cursor cursor, User commenter, PageSize pageSize) {
         if (cursor.isFirstPage()) {
-            List<Long> commentIds = commentRepository.findCommentIdsByCommenter(commenter, pageSize.getPageRequest());
+            List<Long> commentIds = commentRepository.findFirstPageCommentIdsByCommenter(
+                    commenter,
+                    pageSize.getPageRequest());
 
             return commentRepository.findCommentsWithDetailsByIds(commentIds);
         }
-        return commentRepository.findCommentsNextPage(
+        List<Long> nextCommentIds = commentRepository.findNextPageCommentIdsByCommenter(
                 commenter,
                 cursor.dateTime(),
                 cursor.id(),
                 pageSize.getPageRequest());
+
+        return commentRepository.findCommentsWithDetailsByIds(nextCommentIds);
     }
 
     private List<Comment> removeCursor(List<Comment> commentsWithinCursor, PageSize pageSize) {

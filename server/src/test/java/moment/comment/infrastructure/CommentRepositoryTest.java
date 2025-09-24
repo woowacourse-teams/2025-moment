@@ -62,7 +62,8 @@ class CommentRepositoryTest {
         Comment savedComment2 = commentRepository.save(comment2);
 
         // when
-        List<Long> commentsIds = commentRepository.findCommentIdsByCommenter(savedCommenter, PageRequest.of(0, 2));
+        List<Long> commentsIds = commentRepository.findFirstPageCommentIdsByCommenter(savedCommenter,
+                PageRequest.of(0, 2));
         List<Comment> comments = commentRepository.findCommentsWithDetailsByIds(commentsIds);
 
         // then
@@ -114,10 +115,12 @@ class CommentRepositoryTest {
         Comment savedComment4 = commentRepository.save(comment4);
 
         // when
-        List<Comment> comments = commentRepository.findCommentsNextPage(savedCommenter,
+        List<Long> commentIds = commentRepository.findNextPageCommentIdsByCommenter(savedCommenter,
                 savedComment4.getCreatedAt(),
                 savedComment4.getId(),
                 PageRequest.of(0, 3));
+        
+        List<Comment> comments = commentRepository.findCommentsWithDetailsByIds(commentIds);
 
         // then
         assertAll(
