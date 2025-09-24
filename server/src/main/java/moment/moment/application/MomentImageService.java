@@ -50,4 +50,9 @@ public class MomentImageService {
 
         return results;
     }
+
+    @Transactional
+    public void deleteByMoment(Moment moment) {
+        momentImageRepository.deleteByMoment(moment);
+    }
 }

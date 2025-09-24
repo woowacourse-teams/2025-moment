@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { queryClient } from './queryClient';
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
 
@@ -54,6 +55,8 @@ api.interceptors.response.use(
       if (isRefreshing && refreshPromise) {
         try {
           await refreshPromise;
+          queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
+          queryClient.invalidateQueries({ queryKey: ['profile'] });
           return api(originalRequest);
         } catch {
           if (showErrorToast) {
@@ -69,6 +72,8 @@ api.interceptors.response.use(
 
       try {
         await refreshPromise;
+        queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
+        queryClient.invalidateQueries({ queryKey: ['profile'] });
         return api(originalRequest);
       } catch (refreshError) {
         if (showErrorToast) {

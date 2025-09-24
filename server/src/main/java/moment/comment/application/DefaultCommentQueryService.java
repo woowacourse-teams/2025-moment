@@ -33,4 +33,10 @@ public class DefaultCommentQueryService implements CommentQueryService {
     public List<Comment> getAllByMomentIn(List<Moment> moments) {
         return commentRepository.findAllByMomentIn(moments);
     }
+
+    @Override
+    public Comment getCommentWithCommenterById(Long id) {
+        return commentRepository.findWithCommenterById(id)
+                .orElseThrow(() -> new MomentException(ErrorCode.COMMENT_NOT_FOUND));
+    }
 }

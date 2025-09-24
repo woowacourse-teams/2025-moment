@@ -62,7 +62,9 @@ class CommentRepositoryTest {
         Comment savedComment2 = commentRepository.save(comment2);
 
         // when
-        List<Comment> comments = commentRepository.findCommentsFirstPage(savedCommenter, PageRequest.of(0, 2));
+        List<Long> commentsIds = commentRepository.findCommentIdsByCommenter(savedCommenter, PageRequest.of(0, 2));
+        List<Comment> comments = commentRepository.findCommentsWithDetailsByIds(commentsIds);
+
         // then
         assertAll(
                 () -> assertThat(comments).hasSize(2),

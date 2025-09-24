@@ -14,6 +14,7 @@ import moment.comment.application.CommentImageService;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -26,17 +27,21 @@ import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentsResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
-import moment.notification.domain.TargetType;
 import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
+import moment.report.infrastructure.ReportRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -50,6 +55,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentService {
 
+    private static final int MOMENT_DELETE_THRESHOLD = 3;
+
     private final MomentRepository momentRepository;
     private final CommentQueryService commentQueryService;
     private final EchoQueryService echoQueryService;
@@ -62,9 +69,12 @@ public class MomentService {
     private final TagService tagService;
     private final NotificationQueryService notificationQueryService;
 
+    private final ReportService reportService;
 
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
+    private final MomentQueryService momentQueryService;
+    private final ReportRepository reportRepository;
 
 
     @Transactional
@@ -214,15 +224,21 @@ public class MomentService {
     public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
         User user = userQueryService.getUserById(id);
 
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(MOMENT_DELETE_THRESHOLD);
 
         List<Moment> commentableMoments = Collections.emptyList();
 
+        List<Report> reports = reportService.findMomentReportByUser(user);
+        List<Long> reportedMomentIds = reports.stream()
+                .map(Report::getTargetId)
+                .toList();
+
         if (tagNames.isEmpty()) {
-            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo);
+            commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo, reportedMomentIds);
         }
         if (!tagNames.isEmpty()) {
-            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames);
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames,
+                    reportedMomentIds);
         }
 
         if (commentableMoments.isEmpty()) {
@@ -261,5 +277,23 @@ public class MomentService {
                 cursor.dateTime(),
                 cursor.id(),
                 pageSize.getPageRequest());
+    }
+
+    @Transactional
+    public MomentReportCreateResponse reportMoment(Long momentId, Long reporterId, MomentReportCreateRequest request) {
+        User user = userQueryService.getUserById(reporterId);
+        Moment moment = momentQueryService.getMomentWithMomenterById(momentId);
+
+        Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
+
+        long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
+
+        if (reportCount >= MOMENT_DELETE_THRESHOLD) {
+            momentImageService.deleteByMoment(moment);
+            momentTagService.deleteByMoment(moment);
+            momentRepository.delete(moment);
+        }
+
+        return MomentReportCreateResponse.from(report);
     }
 }

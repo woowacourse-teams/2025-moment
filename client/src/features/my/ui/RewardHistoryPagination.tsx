@@ -59,7 +59,7 @@ export const RewardHistoryPagination = ({
         title=">"
         onClick={handleNext}
         variant="quaternary"
-        disabled={currentPage === totalPages}
+        disabled={currentPage >= totalPages - 1}
       />
       <Button
         title=">>"

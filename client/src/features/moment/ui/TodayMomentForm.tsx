@@ -27,7 +27,7 @@ export function TodayMomentForm({
 }) {
   const navigate = useNavigate();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
-  const { showError } = useToast();
+  const { showError, showWarning } = useToast();
 
   const handleNavigateToTodayMomentSuccess = () => {
     if (checkProfanityWord(content)) {
@@ -40,6 +40,11 @@ export function TodayMomentForm({
       return;
     }
 
+    if (tagNames.length > 3) {
+      showError('태그는 최대 3개까지 선택할 수 있습니다.');
+      return;
+    }
+
     handleSendContent();
     navigate(ROUTES.TODAY_MOMENT_SUCCESS);
   };
@@ -48,7 +53,7 @@ export function TodayMomentForm({
     if (!isLoggedIn) {
       e.preventDefault();
       e.target.blur();
-      showError('로그인 후 이용해주세요');
+      showWarning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫');
       navigate(ROUTES.LOGIN);
       return;
     }

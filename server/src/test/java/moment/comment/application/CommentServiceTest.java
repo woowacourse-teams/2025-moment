@@ -17,8 +17,11 @@ import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.request.CommentReportCreateRequest;
+import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.application.MomentImageService;
@@ -30,9 +33,12 @@ import moment.notification.application.NotificationQueryService;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.domain.TargetType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
+import moment.reply.application.EchoService;
+import moment.report.application.ReportService;
+import moment.report.domain.Report;
+import moment.report.domain.ReportReason;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -90,6 +96,12 @@ class CommentServiceTest {
 
     @Mock
     private MomentImageService momentImageService;
+
+    @Mock
+    private ReportService reportService;
+
+    @Mock
+    private EchoService echoService;
 
     @Test
     void Comment를_등록한다() {
@@ -172,8 +184,8 @@ class CommentServiceTest {
 
         List<Comment> expectedComments = List.of(comment2, comment1);
 
-        given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
-                .willReturn(expectedComments);
+        given(commentRepository.findCommentIdsByCommenter(any(), any())).willReturn(List.of());
+        given(commentRepository.findCommentsWithDetailsByIds(any(List.class))).willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
@@ -316,5 +328,47 @@ class CommentServiceTest {
                 () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(commenter, TargetType.COMMENT),
                 () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
         );
+    }
+
+    @Test
+    void 코멘트를_신고한다() {
+        // given
+        Long momenterId = 2L;
+
+        Long commentId = 4L;
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        ReflectionTestUtils.setField(momenter, "id", momenterId);
+
+        Moment moment = new Moment("잘자요", momenter, WriteType.BASIC);
+        Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
+        ReflectionTestUtils.setField(comment, "id", commentId);
+
+        Report report = new Report(momenter, TargetType.COMMENT, commentId, ReportReason.SEXUAL_CONTENT);
+
+        CommentReportCreateRequest request = new CommentReportCreateRequest("SEXUAL_CONTENT");
+
+        given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
+        given(commentQueryService.getCommentWithCommenterById(any(Long.class))).willReturn(comment);
+        given(reportService.createReport(TargetType.COMMENT, momenter, comment.getId(), request.reason()))
+                .willReturn(report);
+
+        // when
+        CommentReportCreateResponse commentReportCreateResponse = commentService.reportComment(
+                comment.getId(),
+                momenter.getId(),
+                request
+        );
+
+        // then
+        then(commentRepository).should(times(1))
+                .delete(any());
+        then(echoService).should(times(1))
+                .deleteByComment(any());
+        then(commentImageService).should(times(1))
+                .deleteByComment(any());
+        then(reportService).should(times(1))
+                .createReport(TargetType.COMMENT, momenter, comment.getId(), request.reason());
     }
 }

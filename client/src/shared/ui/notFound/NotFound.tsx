@@ -1,5 +1,6 @@
 import { Eye, LucideIcon } from 'lucide-react';
 import { Card } from '../';
+import { LazyImage } from '../lazyImage/LazyImage';
 import * as S from './NotFound.styles';
 
 interface NotFoundProps {
@@ -27,7 +28,13 @@ export const NotFound = ({
       <S.NotFoundContainer $size={size}>
         <S.NotFoundTitle $size={size}>{title}</S.NotFoundTitle>
         <S.NotFoundSubtitle $size={size}>{subtitle}</S.NotFoundSubtitle>
-        <S.NotFoundImage src={'/images/character.png'} alt="notFound" />
+        <LazyImage
+          src={'/images/character.webp'}
+          alt="notFound"
+          variant="character"
+          width="250px"
+          height="auto"
+        />
       </S.NotFoundContainer>
     </S.NotFoundWrapper>
   );

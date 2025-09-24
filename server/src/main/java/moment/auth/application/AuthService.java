@@ -4,9 +4,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
+import moment.auth.domain.Tokens;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.response.LoginCheckResponse;
@@ -36,7 +36,7 @@ public class AuthService {
     private final TokensIssuer tokensIssuer;
 
     @Transactional
-    public Map<String, String> login(LoginRequest request) {
+    public Tokens login(LoginRequest request) {
         User user = userRepository.findByEmailAndProviderType(request.email(), ProviderType.EMAIL)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_LOGIN_FAILED));
 
@@ -69,7 +69,7 @@ public class AuthService {
     }
 
     @Transactional
-    public Map<String, String> refresh(HttpServletRequest request) {
+    public Tokens refresh(HttpServletRequest request) {
         String refreshTokenValue = extractRefreshTokenValue(request);
         RefreshToken refreshToken = refreshTokenRepository.findByTokenValue(refreshTokenValue)
                 .orElseThrow(() -> new MomentException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));

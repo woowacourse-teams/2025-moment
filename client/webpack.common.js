@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import webpack from 'webpack';
@@ -32,9 +33,34 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.(woff2|woff|ttf)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name].[contenthash][ext]',
+        },
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+        generator: {
+          filename: 'images/[name].[contenthash][ext]',
+        },
       },
     ],
+  },
+  optimization: {
+    usedExports: true,
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),

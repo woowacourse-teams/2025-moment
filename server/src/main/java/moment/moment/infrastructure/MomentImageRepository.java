@@ -13,4 +13,6 @@ public interface MomentImageRepository extends JpaRepository<MomentImage, Long> 
 
     @EntityGraph(attributePaths = {"moment"})
     List<MomentImage> findAllByMomentIn(List<Moment> moments);
+
+    void deleteByMoment(Moment moment);
 }

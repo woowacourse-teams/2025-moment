@@ -110,3 +110,15 @@ export const Description = styled.p`
     font-size: 1.2rem;
   }
 `;
+
+export const FilterWrapper = styled.div`
+  display: flex;
+  width: 60%;
+  justify-content: flex-end;
+  margin: 0 auto;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
+`;
