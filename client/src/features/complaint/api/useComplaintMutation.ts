@@ -10,7 +10,7 @@ export const useComplaintMutation = () => {
     mutationFn: async (data: ComplaintFormData) => {
       if (data.targetType === 'MOMENT') {
         return await momentComplaint(data);
-      } else {
+      } else if (data.targetType === 'COMMENT') {
         return await commentComplaint(data);
       }
     },
