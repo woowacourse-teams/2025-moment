@@ -1,11 +1,15 @@
 import { Card, NotFound, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
-import { WriteTime } from '@/shared/ui/writeTime';
-import { WriterInfo } from '@/widgets/writerInfo';
-import { AlertCircle, Loader, RotateCcw } from 'lucide-react';
-import { GetCommentableMoments } from '../types/comments';
+import { AlertCircle, Loader, RotateCcw, Siren } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
+import { WriteTime } from '@/shared/ui/writeTime';
+import { WriterInfo } from '@/widgets/writerInfo';
+import { theme } from '@/app/styles/theme';
+import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
+import { useModal } from '@/shared/hooks/useModal';
+import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
+import { GetCommentableMoments } from '../types/comments';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 
 export function TodayCommentForm({
@@ -28,6 +32,14 @@ export function TodayCommentForm({
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
+
+  const {
+    handleOpen: handleComplaintOpen,
+    handleClose: handleComplaintClose,
+    isOpen: isComplaintOpen,
+  } = useModal();
+
+  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
 
   if (!isLoggedIn) {
     return (
@@ -83,6 +95,9 @@ export function TodayCommentForm({
               <WriterInfo writer={momentData.nickname} level={momentData.level} />
               <S.ActionWrapper>
                 <WriteTime date={momentData.createdAt} />
+                <S.ComplaintButton onClick={handleComplaintOpen}>
+                  <Siren size={28} color={theme.colors['red-500']} />
+                </S.ComplaintButton>
                 <S.RefreshButton onClick={() => refetch()}>
                   <RotateCcw size={28} />
                 </S.RefreshButton>
@@ -115,7 +130,15 @@ export function TodayCommentForm({
           key={momentData.id}
         />
       </Card>
-
+      {isComplaintOpen && (
+        <ComplaintModal
+          isOpen={isComplaintOpen}
+          onClose={handleComplaintClose}
+          targetId={momentData.id}
+          targetType="MOMENT"
+          onSubmit={handleComplaintSubmit}
+        />
+      )}
       {fullImageSrc && (
         <ImageOverlayPortal>
           <S.ImageOverlay onClick={closeFullImage}>
