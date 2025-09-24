@@ -10,7 +10,6 @@ export const ProtectedRoute: React.FC = () => {
   const { showWarning } = useToast();
   const { data: isLoggedIn, isLoading, isError, error } = useCheckIfLoggedInQuery();
 
-
   if (isLoading) {
     return <div>로딩 중...</div>;
   }
