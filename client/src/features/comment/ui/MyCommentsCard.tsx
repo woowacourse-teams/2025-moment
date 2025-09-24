@@ -10,6 +10,7 @@ import { Heart, Send } from 'lucide-react';
 import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import * as S from './MyCommentsCard.styles';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
+import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -41,9 +42,11 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               {myComment.moment.imageUrl && (
                 <S.CommentImageContainer>
                   <S.CommentImage
-                    src={myComment.moment.imageUrl}
+                    src={changeToCloudfrontUrlFromS3(myComment.moment.imageUrl)}
                     alt="모멘트 이미지"
-                    onClick={e => handleImageClick(myComment.moment.imageUrl!, e)}
+                    onClick={e =>
+                      handleImageClick(changeToCloudfrontUrlFromS3(myComment.moment.imageUrl!), e)
+                    }
                   />
                 </S.CommentImageContainer>
               )}
@@ -62,9 +65,11 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
-                        src={myComment.imageUrl}
+                        src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
                         alt="코멘트 이미지"
-                        onClick={e => handleImageClick(myComment.imageUrl!, e)}
+                        onClick={e =>
+                          handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
+                        }
                       />
                     </S.CommentImageContainer>
                   )}

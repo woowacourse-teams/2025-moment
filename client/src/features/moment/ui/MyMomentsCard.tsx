@@ -16,6 +16,7 @@ import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
+import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
@@ -100,9 +101,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
           {myMoment.imageUrl ? (
             <S.MomentImageContainer>
               <S.MomentImage
-                src={myMoment.imageUrl}
+                src={changeToCloudfrontUrlFromS3(myMoment.imageUrl)}
                 alt="모멘트 이미지"
-                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
+                onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(myMoment.imageUrl!), e)}
               />
             </S.MomentImageContainer>
           ) : (
@@ -155,9 +156,14 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
                             <S.CommentImage
-                              src={currentComment.imageUrl}
+                              src={changeToCloudfrontUrlFromS3(currentComment.imageUrl)}
                               alt="코멘트 이미지"
-                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
+                              onClick={e =>
+                                handleImageClick(
+                                  changeToCloudfrontUrlFromS3(currentComment.imageUrl!),
+                                  e,
+                                )
+                              }
                             />
                           </S.CommentImageContainer>
                         )}
