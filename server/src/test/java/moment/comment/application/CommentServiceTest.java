@@ -51,7 +51,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -184,7 +183,7 @@ class CommentServiceTest {
 
         List<Comment> expectedComments = List.of(comment2, comment1);
 
-        given(commentRepository.findCommentIdsByCommenter(any(), any())).willReturn(List.of());
+        given(commentRepository.findFirstPageCommentIdsByCommenter(any(), any())).willReturn(List.of());
         given(commentRepository.findCommentsWithDetailsByIds(any(List.class))).willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
@@ -325,7 +324,8 @@ class CommentServiceTest {
         assertAll(
                 () -> assertThat(response.items().myCommentsResponse()).hasSize(2),
                 () -> assertThat(response.hasNextPage()).isFalse(),
-                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(commenter, TargetType.COMMENT),
+                () -> then(notificationQueryService).should(times(1))
+                        .getUnreadContentsNotifications(commenter, TargetType.COMMENT),
                 () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
         );
     }
