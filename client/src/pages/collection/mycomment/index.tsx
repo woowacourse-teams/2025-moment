@@ -16,10 +16,13 @@ export default function MyCommentCollectionPage() {
     <S.CollectionContainer>
       <CollectionHeader />
       <S.Description>내가 작성한 코멘트와 받은 에코를 확인해보세요</S.Description>
-      <TodayCommentFilter
-        activeFilter={activeFilter}
-        onActiveFilterChange={handleActiveFilterChange}
-      />
+      <S.FilterWrapper>
+        <TodayCommentFilter
+          activeFilter={activeFilter}
+          onActiveFilterChange={handleActiveFilterChange}
+        />
+      </S.FilterWrapper>
+
       <MyCommentsList filterType={activeFilter} />
     </S.CollectionContainer>
   );

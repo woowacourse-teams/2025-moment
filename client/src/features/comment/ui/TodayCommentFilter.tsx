@@ -12,12 +12,12 @@ export const TodayCommentFilter = ({ activeFilter, onActiveFilterChange }: Today
     <FilterContainer>
       <Button
         title="전체"
-        variant={activeFilter === 'all' ? 'quaternary' : 'primary'}
+        variant={activeFilter === 'all' ? 'quinary' : 'quaternary'}
         onClick={() => onActiveFilterChange('all')}
       />
       <Button
         title="미확인 알림"
-        variant={activeFilter === 'unread' ? 'quaternary' : 'primary'}
+        variant={activeFilter === 'unread' ? 'quinary' : 'quaternary'}
         onClick={() => onActiveFilterChange('unread')}
       />
     </FilterContainer>
