@@ -36,16 +36,19 @@ export const StarField: React.FC<StarFieldProps> = ({ starCount = 80 }) => {
   const animationRef = useRef<number | null>(null);
   const starsRef = useRef<Star[]>([]);
 
-  const initializeStars = useCallback((width: number, height: number) => {
-    starsRef.current = Array.from({ length: starCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      radius: Math.random() * 1.5 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-      fadeDirection: Math.random() > 0.5 ? 1 : -1,
-      fadeSpeed: Math.random() * 0.02 + 0.005,
-    }));
-  }, [starCount]);
+  const initializeStars = useCallback(
+    (width: number, height: number) => {
+      starsRef.current = Array.from({ length: starCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.8 + 0.2,
+        fadeDirection: Math.random() > 0.5 ? 1 : -1,
+        fadeSpeed: Math.random() * 0.02 + 0.005,
+      }));
+    },
+    [starCount],
+  );
 
   const animate = useCallback(() => {
     const canvas = canvasRef.current;
@@ -56,7 +59,7 @@ export const StarField: React.FC<StarFieldProps> = ({ starCount = 80 }) => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    starsRef.current.forEach((star) => {
+    starsRef.current.forEach(star => {
       star.opacity += star.fadeDirection * star.fadeSpeed;
 
       if (star.opacity >= 1) {
