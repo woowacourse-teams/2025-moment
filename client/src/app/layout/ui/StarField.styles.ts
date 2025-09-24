@@ -3,11 +3,28 @@ import styled from '@emotion/styled';
 
 const twinkle = keyframes`
   0%, 100% { 
-    opacity: 0.5;
+    opacity: 0.3;
+    transform: scale(1);
   }
   50% { 
     opacity: 1;
+    transform: scale(1.1);
   }
+`;
+
+const twinkleGroup1 = keyframes`
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+`;
+
+const twinkleGroup2 = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+`;
+
+const twinkleGroup3 = keyframes`
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.3); }
 `;
 
 export const StarFieldWrapper = styled.div`
@@ -19,9 +36,16 @@ export const StarFieldWrapper = styled.div`
   pointer-events: none;
   z-index: -1;
   overflow: hidden;
+  will-change: transform;
 `;
 
-export const Star = styled.div<{ size: number; left: number; top: number; animationDelay: number }>`
+export const Star = styled.div<{
+  size: number;
+  left: number;
+  top: number;
+  animationDelay: number;
+  group: number;
+}>`
   position: absolute;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
@@ -29,7 +53,26 @@ export const Star = styled.div<{ size: number; left: number; top: number; animat
   border-radius: 50%;
   left: ${props => props.left}%;
   top: ${props => props.top}%;
-  animation: ${twinkle} 3s ease-in-out infinite;
+
+  animation: ${props => {
+      switch (props.group) {
+        case 1:
+          return twinkleGroup1;
+        case 2:
+          return twinkleGroup2;
+        case 3:
+          return twinkleGroup3;
+        default:
+          return twinkle;
+      }
+    }}
+    ${props => 4 + props.group}s ease-in-out infinite;
+
   animation-delay: ${props => props.animationDelay}s;
-  box-shadow: 0 0 4px ${({ theme }) => theme.colors.white};
+
+  will-change: transform, opacity;
+  transform-origin: center;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
