@@ -56,7 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MomentService {
 
     private static final int MOMENT_DELETE_THRESHOLD = 3;
-    
+
     private final MomentRepository momentRepository;
     private final CommentQueryService commentQueryService;
     private final EchoQueryService echoQueryService;
@@ -237,7 +237,8 @@ public class MomentService {
             commentableMoments = momentRepository.findCommentableMoments(user, threeDaysAgo, reportedMomentIds);
         }
         if (!tagNames.isEmpty()) {
-            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames, reportedMomentIds);
+            commentableMoments = momentRepository.findCommentableMomentsByTagNames(user, threeDaysAgo, tagNames,
+                    reportedMomentIds);
         }
 
         if (commentableMoments.isEmpty()) {
@@ -288,9 +289,9 @@ public class MomentService {
         long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
 
         if (reportCount >= MOMENT_DELETE_THRESHOLD) {
-            momentRepository.delete(moment);
             momentImageService.deleteByMoment(moment);
             momentTagService.deleteByMoment(moment);
+            momentRepository.delete(moment);
         }
 
         return MomentReportCreateResponse.from(report);

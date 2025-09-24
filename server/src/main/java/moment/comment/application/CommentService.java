@@ -210,9 +210,9 @@ public class CommentService {
                 comment.getId(),
                 request.reason());
 
-        commentRepository.delete(comment);
         echoService.deleteByComment(comment);
         commentImageService.deleteByComment(comment);
+        commentRepository.delete(comment);
 
         return CommentReportCreateResponse.from(savedReport);
     }
