@@ -29,15 +29,15 @@ export function TodayCommentForm({
 }) {
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
-  if (isLoggedInLoading) {
-    return <CommonSkeletonCard variant="comment" />;
-  }
-
   const {
     handleOpen: handleComplaintOpen,
     handleClose: handleComplaintClose,
     isOpen: isComplaintOpen,
   } = useModal();
+
+  if (isLoggedInLoading) {
+    return <CommonSkeletonCard variant="comment" />;
+  }
 
   const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
 
