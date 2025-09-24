@@ -210,10 +210,15 @@ public class CommentService {
                 comment.getId(),
                 request.reason());
 
-        commentRepository.delete(comment);
-        echoService.deleteByComment(comment);
-        commentImageService.deleteByComment(comment);
+        deleteComment(comment);
 
         return CommentReportCreateResponse.from(savedReport);
+    }
+
+    @Transactional
+    public void deleteComment(Comment comment) {
+        echoService.deleteByComment(comment);
+        commentImageService.deleteByComment(comment);
+        commentRepository.delete(comment);
     }
 }
