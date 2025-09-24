@@ -15,13 +15,22 @@ import org.springframework.data.repository.query.Param;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+    @Query("""
+        SELECT c.id
+        FROM comments c
+        WHERE c.commenter = :commenter
+        ORDER BY c.createdAt DESC, c.id DESC
+    """)
+    List<Long> findCommentIdsByCommenter(@Param("commenter") User commenter, Pageable pageable);
+
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
-            SELECT c FROM comments c
-            WHERE c.commenter = :commenter
-            ORDER BY c.createdAt DESC, c.id DESC
-            """)
-    List<Comment> findCommentsFirstPage(@Param("commenter") User commenter, Pageable pageable);
+        SELECT c
+        FROM comments c
+        WHERE c.id IN :ids
+        ORDER BY c.createdAt DESC, c.id DESC
+    """)
+    List<Comment> findCommentsWithDetailsByIds(@Param("ids") List<Long> ids);
 
     @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""

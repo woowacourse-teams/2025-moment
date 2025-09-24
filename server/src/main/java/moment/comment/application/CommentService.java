@@ -154,7 +154,9 @@ public class CommentService {
 
     private List<Comment> getRawComments(Cursor cursor, User commenter, PageSize pageSize) {
         if (cursor.isFirstPage()) {
-            return commentRepository.findCommentsFirstPage(commenter, pageSize.getPageRequest());
+            List<Long> commentIds = commentRepository.findCommentIdsByCommenter(commenter, pageSize.getPageRequest());
+
+            return commentRepository.findCommentsWithDetailsByIds(commentIds);
         }
         return commentRepository.findCommentsNextPage(
                 commenter,
@@ -208,9 +210,9 @@ public class CommentService {
                 comment.getId(),
                 request.reason());
 
-        commentRepository.delete(comment);
         echoService.deleteByComment(comment);
         commentImageService.deleteByComment(comment);
+        commentRepository.delete(comment);
 
         return CommentReportCreateResponse.from(savedReport);
     }

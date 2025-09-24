@@ -184,8 +184,8 @@ class CommentServiceTest {
 
         List<Comment> expectedComments = List.of(comment2, comment1);
 
-        given(commentRepository.findCommentsFirstPage(any(User.class), any(Pageable.class)))
-                .willReturn(expectedComments);
+        given(commentRepository.findCommentIdsByCommenter(any(), any())).willReturn(List.of());
+        given(commentRepository.findCommentsWithDetailsByIds(any(List.class))).willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
 
