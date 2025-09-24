@@ -289,15 +289,11 @@ public class MomentService {
         long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
 
         if (reportCount >= MOMENT_DELETE_THRESHOLD) {
-            deleteMoment(moment);
+            momentImageService.deleteByMoment(moment);
+            momentTagService.deleteByMoment(moment);
+            momentRepository.delete(moment);
         }
 
         return MomentReportCreateResponse.from(report);
-    }
-
-    public void deleteMoment(Moment moment) {
-        momentImageService.deleteByMoment(moment);
-        momentTagService.deleteByMoment(moment);
-        momentRepository.delete(moment);
     }
 }
