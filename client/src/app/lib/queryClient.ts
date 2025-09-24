@@ -1,14 +1,17 @@
 import { QueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5분간 fresh 유지
       gcTime: 10 * 60 * 1000, // 10분간 캐시 유지 (구 cacheTime)
-      retry: (failureCount, error: any) => {
-        // 401, 403은 재시도하지 않음 (인증 오류)
-        if (error?.response?.status === 401 || error?.response?.status === 403) {
-          return false;
+      retry: (failureCount, error: unknown) => {
+        if (
+          (error as AxiosError)?.response?.status === 401 ||
+          (error as AxiosError)?.response?.status === 403
+        ) {
+          return failureCount < 1;
         }
         return failureCount < 3;
       },
