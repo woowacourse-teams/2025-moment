@@ -16,7 +16,9 @@ import moment.global.dto.response.SuccessResponse;
 import moment.user.application.MyPageService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.ChangePasswordRequest;
+import moment.user.dto.request.EmailSubscriptionChangeRequest;
 import moment.user.dto.request.NicknameChangeRequest;
+import moment.user.dto.response.EmailSubscriptionChangeResponse;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
@@ -161,5 +163,24 @@ public class MyPageController {
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(SuccessResponse.of(status, null));
+    }
+
+    @Operation(summary = "마이페이지 이메일 구독 설정", description = "유저의 이메일 구독 설정을 변경합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "이메일 구독 설정 변경 성공"),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-013] "유효하지 않은 이메일 구독 설정 정보입니다."
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/nickname")
+    public ResponseEntity<SuccessResponse<EmailSubscriptionChangeResponse>> changeEmailSubscription(
+            @Valid @RequestBody EmailSubscriptionChangeRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        EmailSubscriptionChangeResponse response = myPageService.changeEmailSubscription(request, authentication.id());
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }
