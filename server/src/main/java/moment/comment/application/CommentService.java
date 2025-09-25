@@ -3,6 +3,7 @@ package moment.comment.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,12 +28,10 @@ import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.notification.application.NotificationFacade;
 import moment.notification.application.NotificationQueryService;
-import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.dto.response.NotificationSseResponse;
-import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
@@ -57,8 +56,7 @@ public class CommentService {
     private final EchoQueryService echoQueryService;
     private final CommentQueryService commentQueryService;
     private final RewardService rewardService;
-    private final NotificationRepository notificationRepository;
-    private final SseNotificationService sseNotificationService;
+    private final NotificationFacade notificationFacade;
     private final CommentImageService commentImageService;
     private final MomentImageService momentImageService;
     private final NotificationQueryService notificationQueryService;
@@ -80,22 +78,11 @@ public class CommentService {
 
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
 
-        Notification notificationWithoutId = new Notification(
+        notificationFacade.sendSseNotificationAndNotification(
                 moment.getMomenter(),
+                moment.getId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                moment.getId());
-
-        Notification savedNotification = notificationRepository.save(notificationWithoutId);
-
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                savedNotification.getId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                moment.getId()
-        );
-
-        sseNotificationService.sendToClient(moment.getMomenterId(), "notification", response);
+                TargetType.MOMENT);
 
         rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
 
@@ -125,7 +112,9 @@ public class CommentService {
 
         List<Moment> momentsOfComment = commentsWithoutCursor.stream()
                 .map(Comment::getMoment)
+                .filter(Objects::nonNull)
                 .toList();
+
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsOfComment);
         Map<Moment, MomentImage> momentImages = momentImageService.getMomentImageByMoment(momentsOfComment);
 
@@ -154,15 +143,19 @@ public class CommentService {
 
     private List<Comment> getRawComments(Cursor cursor, User commenter, PageSize pageSize) {
         if (cursor.isFirstPage()) {
-            List<Long> commentIds = commentRepository.findCommentIdsByCommenter(commenter, pageSize.getPageRequest());
+            List<Long> commentIds = commentRepository.findFirstPageCommentIdsByCommenter(
+                    commenter,
+                    pageSize.getPageRequest());
 
             return commentRepository.findCommentsWithDetailsByIds(commentIds);
         }
-        return commentRepository.findCommentsNextPage(
+        List<Long> nextCommentIds = commentRepository.findNextPageCommentIdsByCommenter(
                 commenter,
                 cursor.dateTime(),
                 cursor.id(),
                 pageSize.getPageRequest());
+
+        return commentRepository.findCommentsWithDetailsByIds(nextCommentIds);
     }
 
     private List<Comment> removeCursor(List<Comment> commentsWithinCursor, PageSize pageSize) {

@@ -29,11 +29,9 @@ import moment.moment.application.MomentQueryService;
 import moment.moment.application.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
+import moment.notification.application.NotificationFacade;
 import moment.notification.application.NotificationQueryService;
-import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
-import moment.notification.domain.NotificationType;
-import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.report.application.ReportService;
@@ -51,7 +49,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,10 +74,7 @@ class CommentServiceTest {
     private CommentQueryService commentQueryService;
 
     @Mock
-    private SseNotificationService SseNotificationService;
-
-    @Mock
-    private NotificationRepository notificationRepository;
+    private NotificationFacade notificationFacade;
 
     @Mock
     private RewardService rewardService;
@@ -112,16 +106,10 @@ class CommentServiceTest {
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
-        Notification notification = new Notification(
-                momenter,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                1L);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
 
         // when
@@ -184,7 +172,7 @@ class CommentServiceTest {
 
         List<Comment> expectedComments = List.of(comment2, comment1);
 
-        given(commentRepository.findCommentIdsByCommenter(any(), any())).willReturn(List.of());
+        given(commentRepository.findFirstPageCommentIdsByCommenter(any(), any())).willReturn(List.of());
         given(commentRepository.findCommentsWithDetailsByIds(any(List.class))).willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
@@ -243,17 +231,10 @@ class CommentServiceTest {
         Comment newComment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         ReflectionTestUtils.setField(newComment, "id", 1L);
 
-        Notification notification = new Notification(
-                momenter,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                1L);
-
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentQueryService.existsByMomentAndCommenter(moment, commenter)).willReturn(false);
         given(commentRepository.save(any(Comment.class))).willReturn(newComment);
-        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForComment(any(), any(), any());
 
         // when & then
@@ -276,16 +257,9 @@ class CommentServiceTest {
 
         CommentImage commentImage = new CommentImage(comment, imageUrl, imageName);
 
-        Notification notification = new Notification(
-                momenter,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                1L);
-
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(momentQueryService.getMomentById(any(Long.class))).willReturn(moment);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         given(commentImageService.create(any(CommentCreateRequest.class), any(Comment.class)))
                 .willReturn(Optional.of(commentImage));
         doNothing().when(rewardService).rewardForComment(commenter, Reason.COMMENT_CREATION, comment.getId());
@@ -325,7 +299,8 @@ class CommentServiceTest {
         assertAll(
                 () -> assertThat(response.items().myCommentsResponse()).hasSize(2),
                 () -> assertThat(response.hasNextPage()).isFalse(),
-                () -> then(notificationQueryService).should(times(1)).getUnreadContentsNotifications(commenter, TargetType.COMMENT),
+                () -> then(notificationQueryService).should(times(1))
+                        .getUnreadContentsNotifications(commenter, TargetType.COMMENT),
                 () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
         );
     }

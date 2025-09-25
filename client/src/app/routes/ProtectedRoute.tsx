@@ -11,7 +11,7 @@ export const ProtectedRoute: React.FC = () => {
   const { data: isLoggedIn, isLoading, isError, error } = useCheckIfLoggedInQuery();
 
   if (isLoading) {
-    return null;
+    return <div>로딩 중...</div>;
   }
 
   if (isLoggedIn === false || (isError && (error as AxiosError)?.response?.status === 401)) {
