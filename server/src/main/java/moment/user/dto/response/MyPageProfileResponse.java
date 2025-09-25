@@ -26,7 +26,10 @@ public record MyPageProfileResponse(
         Integer nextStepExp,
 
         @Schema(description = "사용자 가입 유형", example = "EMAIL")
-        ProviderType loginType
+        ProviderType loginType,
+
+        @Schema(description = "이메일 구독 여부", example = "false")
+        Boolean emailSubscription
 ) {
     public static MyPageProfileResponse from(User user) {
         return new MyPageProfileResponse(
@@ -36,7 +39,8 @@ public record MyPageProfileResponse(
                 user.getAvailableStar(),
                 user.getExpStar(),
                 user.getLevel().getNextLevelRequiredStars(),
-                user.getProviderType()
+                user.getProviderType(),
+                user.getEmailSubscription()
         );
     }
 }
