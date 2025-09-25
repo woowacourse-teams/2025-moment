@@ -146,4 +146,9 @@ public class User extends BaseEntity {
     public boolean checkProviderType(ProviderType providerType) {
         return this.providerType == providerType;
     }
+
+    public boolean updateEmailSubscription(Boolean emailSubscription) {
+        this.emailSubscription = emailSubscription;
+        return emailSubscription;
+    }
 }
