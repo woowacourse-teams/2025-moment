@@ -35,11 +35,11 @@ export function TodayCommentForm({
     isOpen: isComplaintOpen,
   } = useModal();
 
+  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
+
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
   }
-
-  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
 
   if (!isLoggedIn) {
     return (
