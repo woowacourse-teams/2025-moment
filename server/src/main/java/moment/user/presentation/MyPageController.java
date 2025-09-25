@@ -174,7 +174,7 @@ public class MyPageController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping("/nickname")
+    @PostMapping("/email-subscription")
     public ResponseEntity<SuccessResponse<EmailSubscriptionChangeResponse>> changeEmailSubscription(
             @Valid @RequestBody EmailSubscriptionChangeRequest request,
             @AuthenticationPrincipal Authentication authentication
