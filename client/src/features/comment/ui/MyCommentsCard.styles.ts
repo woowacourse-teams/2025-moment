@@ -18,6 +18,7 @@ export const DeletedMomentText = styled.p`
   font-size: 1rem;
   color: ${({ theme }) => theme.colors['gray-400']};
   font-style: italic;
+  text-align: left;
 `;
 
 export const TitleContainer = styled.div`

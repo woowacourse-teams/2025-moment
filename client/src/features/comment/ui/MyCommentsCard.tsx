@@ -26,118 +26,89 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
   return (
     <>
       <Card width="medium" key={`card-${myComment.id}`} shadow={!myComment.read}>
-        <Card.TitleContainer
-          title={
-            <S.TitleWrapper>
-              {myComment.moment ? (
-                <>
-                  <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
-                  <WriteTime date={myComment.createdAt} />
-                </>
-              ) : (
-                <S.DeletedMomentText>삭제된 모멘트입니다</S.DeletedMomentText>
-              )}
-            </S.TitleWrapper>
-          }
-          subtitle={''}
-        />
+        {myComment.moment && (
+          <Card.TitleContainer
+            title={
+              <S.TitleWrapper>
+                <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
+                <WriteTime date={myComment.createdAt} />
+              </S.TitleWrapper>
+            }
+            subtitle={''}
+          />
+        )}
         <Card.Content>
-          {myComment.moment ? (
-            <>
-              <S.ContentContainer>
-                <S.MomentContentWrapper>
-                  <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
-                  {myComment.moment?.imageUrl && (
+          <S.ContentContainer>
+            {myComment.moment ? (
+              <S.MomentContentWrapper>
+                <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
+                {myComment.moment?.imageUrl && (
+                  <S.CommentImageContainer>
+                    <S.CommentImage
+                      src={changeToCloudfrontUrlFromS3(myComment.moment.imageUrl)}
+                      alt="모멘트 이미지"
+                      onClick={e => {
+                        handleImageClick(
+                          changeToCloudfrontUrlFromS3(myComment.moment!.imageUrl!),
+                          e,
+                        );
+                      }}
+                    />
+                  </S.CommentImageContainer>
+                )}
+              </S.MomentContentWrapper>
+            ) : (
+              <S.DeletedMomentText>삭제된 모멘트입니다</S.DeletedMomentText>
+            )}
+          </S.ContentContainer>
+          <S.ContentContainer>
+            <S.TitleContainer>
+              <Send size={20} color={theme.colors['yellow-500']} />
+              <p>보낸 코멘트</p>
+            </S.TitleContainer>
+            <SimpleCard
+              height="small"
+              content={
+                <S.MyCommentsContentWrapper>
+                  <p>{myComment.content}</p>
+                  {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
-                        src={changeToCloudfrontUrlFromS3(myComment.moment.imageUrl)}
-                        alt="모멘트 이미지"
-                        onClick={e => {
-                          handleImageClick(
-                            changeToCloudfrontUrlFromS3(myComment.moment!.imageUrl!),
-                            e,
-                          );
-                        }}
+                        src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
+                        alt="코멘트 이미지"
+                        onClick={e =>
+                          handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
+                        }
                       />
                     </S.CommentImageContainer>
                   )}
-                </S.MomentContentWrapper>
-              </S.ContentContainer>
-              <S.ContentContainer>
-                <S.TitleContainer>
-                  <Send size={20} color={theme.colors['yellow-500']} />
-                  <p>보낸 코멘트</p>
-                </S.TitleContainer>
-                <SimpleCard
-                  height="small"
-                  content={
-                    <S.MyCommentsContentWrapper>
-                      <p>{myComment.content}</p>
-                      {myComment.imageUrl && (
-                        <S.CommentImageContainer>
-                          <S.CommentImage
-                            src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
-                            alt="코멘트 이미지"
-                            onClick={e =>
-                              handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
-                            }
-                          />
-                        </S.CommentImageContainer>
-                      )}
-                    </S.MyCommentsContentWrapper>
-                  }
-                />
-              </S.ContentContainer>
-              <S.ContentContainer>
-                <S.TitleContainer>
-                  <Heart size={20} color={theme.colors['yellow-500']} />
-                  <p>받은 에코</p>
-                </S.TitleContainer>
-                <S.EchoContainer>
-                  {myComment.echos && myComment.echos.length > 0 ? (
-                    myComment.echos.map(echo => (
-                      <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
-                    ))
-                  ) : (
-                    <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
-                  )}
-                </S.EchoContainer>
-                <S.MyCommentsTagWrapper>
-                  {myComment.moment.tagNames.map((tag: string) => (
-                    <Tag key={tag} tag={tag} />
-                  ))}
-                </S.MyCommentsTagWrapper>
-                {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
-              </S.ContentContainer>
-            </>
-          ) : (
+                </S.MyCommentsContentWrapper>
+              }
+            />
+          </S.ContentContainer>
+          {myComment.moment && (
             <S.ContentContainer>
               <S.TitleContainer>
-                <Send size={20} color={theme.colors['yellow-500']} />
-                <p>보낸 코멘트</p>
+                <Heart size={20} color={theme.colors['yellow-500']} />
+                <p>받은 에코</p>
               </S.TitleContainer>
-              <SimpleCard
-                height="small"
-                content={
-                  <S.MyCommentsContentWrapper>
-                    <p>{myComment.content}</p>
-                    {myComment.imageUrl && (
-                      <S.CommentImageContainer>
-                        <S.CommentImage
-                          src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
-                          alt="코멘트 이미지"
-                          onClick={e =>
-                            handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
-                          }
-                        />
-                      </S.CommentImageContainer>
-                    )}
-                  </S.MyCommentsContentWrapper>
-                }
-              />
-              {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
+              <S.EchoContainer>
+                {myComment.echos && myComment.echos.length > 0 ? (
+                  myComment.echos.map(echo => (
+                    <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
+                  ))
+                ) : (
+                  <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
+                )}
+              </S.EchoContainer>
+              <S.MyCommentsTagWrapper>
+                {myComment.moment.tagNames.map((tag: string) => (
+                  <Tag key={tag} tag={tag} />
+                ))}
+              </S.MyCommentsTagWrapper>
             </S.ContentContainer>
           )}
+          {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
         </Card.Content>
       </Card>
       {fullImageSrc && (
