@@ -21,7 +21,7 @@ export interface CommentItem {
     nickName: string;
     imageUrl?: string | null;
     tagNames: string[];
-  };
+  } | null;
   echos: Echo[];
 }
 
