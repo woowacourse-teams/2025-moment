@@ -17,7 +17,9 @@ import moment.user.domain.Level;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
+import moment.user.dto.request.EmailSubscriptionChangeRequest;
 import moment.user.dto.request.NicknameChangeRequest;
+import moment.user.dto.response.EmailSubscriptionChangeResponse;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
@@ -290,6 +292,40 @@ class MyPageControllerTest {
         assertAll(
                 () -> assertThat(retryBody.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(retryNewNicknameUser.getNickname()).isEqualTo(retryRequest.newNickname())
+        );
+    }
+
+    @Test
+    void 이메일_구독_설정_변경_요청_시_사용자의_이메일_구독_설정_정보가_변경된다() {
+        // given
+        String nickname = "신비로운 우주의 지구";
+        String encodePassword = passwordEncoder.encode("test123!@#");
+        User user = new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), "test123!@#");
+        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), "test123!@#");
+
+        EmailSubscriptionChangeRequest request = new EmailSubscriptionChangeRequest(true);
+
+        SuccessResponse<EmailSubscriptionChangeResponse> response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .cookie("accessToken", accessToken)
+                .cookie("refreshToken", refreshToken)
+                .when().post("/api/v1/me/email-subscription")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
+        Boolean updatedEmailSubscription = response.data().emailSubscription();
+
+        // then
+        assertAll(
+                () -> assertThat(updatedEmailSubscription).isTrue(),
+                () -> assertThat(updatedUser.getEmailSubscription()).isTrue()
         );
     }
 }
