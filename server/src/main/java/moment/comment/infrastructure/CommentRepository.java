@@ -23,12 +23,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             """)
     List<Long> findFirstPageCommentIdsByCommenter(@Param("commenter") User commenter, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
-                SELECT c
-                FROM comments c
-                WHERE c.id IN :ids
-                ORDER BY c.createdAt DESC, c.id DESC
+            SELECT c
+            FROM comments c
+            LEFT JOIN FETCH c.moment m
+            LEFT JOIN FETCH m.momenter
+            WHERE c.id IN :ids
+            ORDER BY c.createdAt DESC, c.id DESC
             """)
     List<Comment> findCommentsWithDetailsByIds(@Param("ids") List<Long> ids);
 

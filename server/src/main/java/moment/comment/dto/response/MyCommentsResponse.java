@@ -22,14 +22,22 @@ public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {
 
         return new MyCommentsResponse(
                 comments.stream()
-                    .map(comment -> {
-                        List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(comment.getMoment(), Collections.emptyList());
-                        CommentImage commentImage = commentImagesOfComment.getOrDefault(comment, null);
-                        Moment momentOfComment = comment.getMoment();
-                        MomentImage momentImage = momentImagesOfMoment.getOrDefault(momentOfComment, null);
-                        return MyCommentResponse.from(comment, momentTags,commentImage, momentImage);
-                    })
-                    .toList());
+                        .map(comment -> {
+                            CommentImage commentImage = commentImagesOfComment.getOrDefault(comment, null);
+                            Moment momentOfComment = comment.getMoment();
+                            if (momentOfComment == null) {
+                                return MyCommentResponse.from(comment, Collections.emptyList(), commentImage, null);
+
+                            }
+
+                            List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(
+                                    momentOfComment,
+                                    Collections.emptyList()
+                            );
+                            MomentImage momentImage = momentImagesOfMoment.getOrDefault(momentOfComment, null);
+                            return MyCommentResponse.from(comment, momentTags, commentImage, momentImage);
+                        })
+                        .toList());
     }
 
     public static MyCommentsResponse of(
@@ -42,14 +50,21 @@ public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {
 
         return new MyCommentsResponse(
                 comments.stream()
-                    .map(comment -> {
-                        List<Echo> echoes = commentAndEchos.getOrDefault(comment, Collections.emptyList());
-                        List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(comment.getMoment(), Collections.emptyList());
-                        CommentImage commentImage = commentImagesOfComment.getOrDefault(comment, null);
-                        Moment momentOfComment = comment.getMoment();
-                        MomentImage momentImage = momentImagesOfMoment.getOrDefault(momentOfComment, null);
-                        return MyCommentResponse.from(comment, echoes, momentTags, commentImage, momentImage);
-                    }).toList());
+                        .map(comment -> {
+                            CommentImage commentImage = commentImagesOfComment.getOrDefault(comment, null);
+                            List<Echo> echoes = commentAndEchos.getOrDefault(comment, Collections.emptyList());
+                            Moment momentOfComment = comment.getMoment();
+                            if (momentOfComment == null) {
+                                return MyCommentResponse.from(comment, echoes, Collections.emptyList(), commentImage,
+                                        null);
+                            }
+
+                            List<MomentTag> momentTags = momentTagsOfMoment.getOrDefault(momentOfComment,
+                                    Collections.emptyList());
+
+                            MomentImage momentImage = momentImagesOfMoment.getOrDefault(momentOfComment, null);
+                            return MyCommentResponse.from(comment, echoes, momentTags, commentImage, momentImage);
+                        }).toList());
 
     }
 

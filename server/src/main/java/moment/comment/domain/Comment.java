@@ -45,7 +45,7 @@ public class Comment extends BaseEntity implements Cursorable {
     private User commenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "moment_id")
+    @JoinColumn(name = "moment_id")
     private Moment moment;
 
     private LocalDateTime deletedAt;
