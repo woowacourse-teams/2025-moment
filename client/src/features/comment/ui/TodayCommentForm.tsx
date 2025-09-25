@@ -41,7 +41,6 @@ export function TodayCommentForm({
     return <CommonSkeletonCard variant="comment" />;
   }
 
-
   if (!isLoggedIn) {
     return (
       <Card width="medium">
