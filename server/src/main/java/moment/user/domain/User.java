@@ -59,6 +59,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Level level = Level.ASTEROID_WHITE;
 
+    @Column(nullable = false)
+    private Boolean emailSubscription;
+
     private LocalDateTime deletedAt;
 
     public User(String email, String password, String nickname, ProviderType providerType) {
@@ -67,6 +70,16 @@ public class User extends BaseEntity {
         this.password = password;
         this.nickname = nickname;
         this.providerType = providerType;
+        this.emailSubscription = false;
+    }
+
+    public User(String email, String password, String nickname, ProviderType providerType, Boolean emailSubscription) {
+        validate(email, password, nickname);
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.providerType = providerType;
+        this.emailSubscription = emailSubscription;
     }
 
     private void validate(String email, String password, String nickname) {
