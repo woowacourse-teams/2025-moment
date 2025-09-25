@@ -4,18 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
 import moment.notification.dto.response.NotificationResponse;
-import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
@@ -27,14 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class NotificationServiceTest {
-
-    private final SseNotificationService SseNotificationService = new SseNotificationService();
 
     @InjectMocks
     private NotificationService notificationService;
@@ -47,40 +37,6 @@ class NotificationServiceTest {
 
     @Mock
     private NotificationQueryService notificationQueryService;
-
-    @Test
-    void 사용자가_구독하면_emitter가_생성된다() {
-        // given
-        SseEmitter emitter = SseNotificationService.subscribe(1L);
-
-        // when & then
-        assertThat(emitter).isNotNull();
-    }
-
-    @Test
-    void 클라이언트에게_알림을_전송한다() throws IOException {
-        // given
-        Long userId = 1L;
-        SseEmitter mockEmitter = mock(SseEmitter.class);
-
-        Map<Long, SseEmitter> emitters =
-                (Map<Long, SseEmitter>) ReflectionTestUtils.getField(SseNotificationService, "emitters");
-        emitters.put(userId, mockEmitter);
-
-        String eventName = "notification";
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                1L,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT,
-                1L
-        );
-
-        // when
-        SseNotificationService.sendToClient(userId, eventName, response);
-
-        // then
-        verify(mockEmitter, times(1)).send(any(SseEmitter.SseEventBuilder.class));
-    }
 
     @Test
     void 사용자가_읽지_않은_알림을_조회한다() {

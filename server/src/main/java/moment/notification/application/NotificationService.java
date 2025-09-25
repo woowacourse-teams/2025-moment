@@ -2,7 +2,9 @@ package moment.notification.application;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
@@ -26,6 +28,17 @@ public class NotificationService {
         return notifications.stream()
                 .map(NotificationResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public Notification saveNotification(User momenter,
+                                         Long momentId,
+                                         NotificationType notificationType,
+                                         TargetType targetType
+    ) {
+        Notification notificationWithoutId = new Notification(momenter, notificationType, targetType, momentId);
+
+        return notificationRepository.save(notificationWithoutId);
     }
 
     @Transactional

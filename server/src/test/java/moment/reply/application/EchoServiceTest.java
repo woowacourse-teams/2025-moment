@@ -21,11 +21,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
-import moment.notification.application.SseNotificationService;
-import moment.notification.domain.Notification;
-import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
-import moment.notification.infrastructure.NotificationRepository;
+import moment.notification.application.NotificationFacade;
 import moment.reply.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
 import moment.reply.infrastructure.EchoRepository;
@@ -64,10 +60,7 @@ class EchoServiceTest {
     private EchoQueryService echoQueryService;
 
     @Mock
-    private SseNotificationService SseNotificationService;
-
-    @Mock
-    private NotificationRepository notificationRepository;
+    private NotificationFacade notificationFacade;
 
     @Mock
     private RewardService rewardService;
@@ -83,19 +76,12 @@ class EchoServiceTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, momenter, WriteType.BASIC);
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
 
-        Notification notification = new Notification(
-                commenter,
-                NotificationType.NEW_REPLY_ON_COMMENT,
-                TargetType.COMMENT,
-                1L);
-
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
         given(userQueryService.getUserById(any(Long.class)))
                 .willReturn(momenter);
         given(echoRepository.findByCommentAndUserAndEchoTypeIn(comment, momenter, Set.of("THANKS")))
                 .willReturn(Collections.emptyList());
-        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
 
         // when
@@ -117,12 +103,6 @@ class EchoServiceTest {
         Comment comment = new Comment("정말 안타깝게 됐네요!", commenter, moment);
         Echo alreadyExistEcho = new Echo("THANKS", momenter, comment);
 
-        Notification notification = new Notification(
-                commenter,
-                NotificationType.NEW_REPLY_ON_COMMENT,
-                TargetType.COMMENT,
-                1L);
-
         given(commentQueryService.getCommentById(any(Long.class)))
                 .willReturn(comment);
         given(userQueryService.getUserById(any(Long.class)))
@@ -130,7 +110,6 @@ class EchoServiceTest {
         given(echoRepository.findByCommentAndUserAndEchoTypeIn(any(), any(), anySet()))
                 .willReturn(List.of(alreadyExistEcho));
         doNothing().when(rewardService).rewardForEcho(commenter, Reason.ECHO_RECEIVED, comment.getId());
-        given(notificationRepository.save(any(Notification.class))).willReturn(notification);
 
         ArgumentCaptor<List<Echo>> echoCaptor = ArgumentCaptor.forClass(List.class);
 

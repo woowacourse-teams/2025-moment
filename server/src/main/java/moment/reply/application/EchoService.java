@@ -6,15 +6,12 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.application.CommentQueryService;
 import moment.comment.domain.Comment;
+import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.notification.application.SseNotificationService;
-import moment.notification.domain.Notification;
+import moment.notification.application.NotificationFacade;
 import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
-import moment.notification.dto.response.NotificationSseResponse;
-import moment.notification.infrastructure.NotificationRepository;
 import moment.reply.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
 import moment.reply.dto.response.EchoReadResponse;
@@ -36,8 +33,7 @@ public class EchoService {
     private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
     private final EchoQueryService echoQueryService;
-    private final SseNotificationService sseNotificationService;
-    private final NotificationRepository notificationRepository;
+    private final NotificationFacade notificationFacade;
     private final RewardService rewardService;
 
     @Transactional
@@ -61,25 +57,14 @@ public class EchoService {
             echoRepository.saveAll(newEchos);
         }
 
+        notificationFacade.sendSseNotificationAndNotification(
+                comment.getCommenter(),
+                comment.getId(),
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT);
+
         // TODO : 논의 필요
         rewardService.rewardForEcho(comment.getCommenter(), Reason.ECHO_RECEIVED, comment.getId());
-
-        Notification notificationWithoutId = new Notification(
-                comment.getCommenter(),
-                NotificationType.NEW_REPLY_ON_COMMENT,
-                TargetType.COMMENT,
-                comment.getId());
-
-        Notification savedNotification = notificationRepository.save(notificationWithoutId);
-
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                savedNotification.getId(),
-                NotificationType.NEW_REPLY_ON_COMMENT,
-                TargetType.COMMENT,
-                comment.getId()
-        );
-
-        sseNotificationService.sendToClient(comment.getCommenter().getId(), "notification", response);
     }
 
     private void validateMomenter(Comment comment, User user) {
