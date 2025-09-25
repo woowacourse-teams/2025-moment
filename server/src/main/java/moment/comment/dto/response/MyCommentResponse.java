@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
+import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.reply.domain.Echo;
@@ -62,12 +63,24 @@ public record MyCommentResponse(
         String imageUrl = Optional.ofNullable(commentImage)
                 .map(CommentImage::getImageUrl)
                 .orElse(null);
-
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment(), momentTags, momentImage);
         List<EchoDetailResponse> echosResponse = echoes.stream()
                 .map(EchoDetailResponse::from)
                 .toList();
 
+        Moment momentOfComment = comment.getMoment();
+
+        if (momentOfComment == null) {
+            return new MyCommentResponse(
+                    comment.getId(),
+                    comment.getContent(),
+                    imageUrl,
+                    comment.getCreatedAt(),
+                    null,
+                    echosResponse
+            );
+        }
+
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(momentOfComment, momentTags, momentImage);
         return new MyCommentResponse(
                 comment.getId(),
                 comment.getContent(),

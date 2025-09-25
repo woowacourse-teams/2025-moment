@@ -3,6 +3,7 @@ package moment.comment.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -125,7 +126,9 @@ public class CommentService {
 
         List<Moment> momentsOfComment = commentsWithoutCursor.stream()
                 .map(Comment::getMoment)
+                .filter(Objects::nonNull)
                 .toList();
+
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsOfComment);
         Map<Moment, MomentImage> momentImages = momentImageService.getMomentImageByMoment(momentsOfComment);
 

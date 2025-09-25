@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
@@ -174,6 +175,46 @@ class CommentControllerTest {
     }
 
     @Test
+    void 나의_Comment_목록을_조회시_삭제된_모멘트는_비어있다() {
+        // given
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User savedMomenter = userRepository.saveAndFlush(momenter);
+
+        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User savedCommenter = userRepository.saveAndFlush(commenter);
+
+        String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
+
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.saveAndFlush(moment);
+
+        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
+        Comment savedComment = commentRepository.saveAndFlush(comment);
+
+        // when
+        momentRepository.delete(savedMoment);
+
+        MyCommentPageResponse response = RestAssured.given().log().all()
+                .cookie("accessToken", token)
+                .param("limit", 1)
+                .when().get("/api/v1/comments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyCommentPageResponse.class);
+
+        // then
+        List<MyCommentResponse> myComments = response.items().myCommentsResponse();
+        MyCommentResponse commentOfDeletedMomentResponse = myComments.stream()
+                .filter(myCommentResponse -> Objects.equals(myCommentResponse.id(), savedComment.getId()))
+                .findFirst()
+                .get();
+
+        assertThat(commentOfDeletedMomentResponse.moment()).isNull();
+    }
+
+    @Test
     void 코멘트를_신고한다() {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
@@ -238,7 +279,7 @@ class CommentControllerTest {
         Optional<Comment> findComment = commentRepository.findById(savedComment.getId());
         Optional<Echo> findEcho = echoRepository.findByComment(savedComment);
         Optional<CommentImage> findCommentImage = commentImageRepository.findByComment(savedComment);
-        
+
         assertThat(findComment).isEmpty();
         assertThat(findEcho).isEmpty();
         assertThat(findCommentImage).isEmpty();
