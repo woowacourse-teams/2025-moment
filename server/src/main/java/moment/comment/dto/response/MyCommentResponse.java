@@ -40,9 +40,22 @@ public record MyCommentResponse(
         String imageUrl = Optional.ofNullable(commentImage)
                 .map(CommentImage::getImageUrl)
                 .orElse(null);
-
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(comment.getMoment(), momentTags, momentImage);
         List<EchoDetailResponse> echosResponse = null;
+        Moment momentOfComment = comment.getMoment();
+
+        if (momentOfComment == null) {
+            return new MyCommentResponse(
+                    comment.getId(),
+                    comment.getContent(),
+                    imageUrl,
+                    comment.getCreatedAt(),
+                    null,
+                    echosResponse
+            );
+        }
+
+        MomentDetailResponse momentResponse = MomentDetailResponse.from(momentOfComment, momentTags, momentImage);
+
         return new MyCommentResponse(
                 comment.getId(),
                 comment.getContent(),
