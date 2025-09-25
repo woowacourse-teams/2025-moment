@@ -23,7 +23,22 @@ let isRefreshing = false;
 let refreshPromise: Promise<void> | null = null;
 
 const refreshToken = async (): Promise<void> => {
-  await api.post('/auth/refresh');
+  const refreshApi = axios.create({
+    baseURL: BASE_URL,
+    headers: { 'Content-Type': 'application/json' },
+    timeout: 10000,
+    withCredentials: true,
+  });
+
+  try {
+    await refreshApi.post('/auth/refresh');
+  } catch (error) {
+    console.log('Refresh token error:', error);
+    if (error instanceof AxiosError && error.response) {
+      console.log('Refresh token error response:', error.response.status, error.response.data);
+    }
+    throw error;
+  }
 };
 
 const redirectToLogin = (): void => {
@@ -42,8 +57,9 @@ api.interceptors.response.use(
     Sentry.captureException(error);
 
     if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
+      queryClient.setQueryData(['checkIfLoggedIn'], false);
       if (showErrorToast) {
-        showErrorToast('로그인이 필요해요! 다시 로그인해 주세요.');
+        showErrorToast('로그인이 만료되었어요! 다시 로그인해 주세요.');
       }
       redirectToLogin();
       return Promise.reject(error);
@@ -59,6 +75,7 @@ api.interceptors.response.use(
           queryClient.invalidateQueries({ queryKey: ['profile'] });
           return api(originalRequest);
         } catch {
+          queryClient.setQueryData(['checkIfLoggedIn'], false);
           if (showErrorToast) {
             showErrorToast('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
           }
@@ -76,6 +93,7 @@ api.interceptors.response.use(
         queryClient.invalidateQueries({ queryKey: ['profile'] });
         return api(originalRequest);
       } catch (refreshError) {
+        queryClient.setQueryData(['checkIfLoggedIn'], false);
         if (showErrorToast) {
           showErrorToast('로그인이 만료되었어요. 다시 로그인해 주세요.');
         }
