@@ -13,7 +13,6 @@ const meta: Meta = {
 export default meta;
 
 const ToastExample: React.FC = () => {
-
   return (
     <>
       <Toast />
