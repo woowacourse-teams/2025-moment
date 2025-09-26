@@ -2,6 +2,7 @@ package moment.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Schema(description = "회원가입 요청")
@@ -24,6 +25,9 @@ public record UserCreateRequest(
         @Schema(description = "사용자 닉네임", example = "mimi")
         @Pattern(regexp = "^.{1,15}$", message = "NICKNAME_INVALID")
         @NotBlank(message = "NICKNAME_INVALID")
-        String nickname
+        String nickname,
+
+        @NotNull(message = "EMAIL_SUBSCRIPTION_INVALID")
+        Boolean emailSubscription
 ) {
 }
