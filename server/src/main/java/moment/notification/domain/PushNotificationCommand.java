@@ -1,4 +1,4 @@
-package moment.notification.application;
+package moment.notification.domain;
 
 import moment.user.domain.User;
 

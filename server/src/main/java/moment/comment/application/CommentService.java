@@ -33,7 +33,7 @@ import moment.notification.application.NotificationQueryService;
 import moment.notification.application.PushNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.application.PushNotificationCommand;
+import moment.notification.domain.PushNotificationCommand;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;

@@ -7,7 +7,7 @@ import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import java.util.Optional;
-import moment.notification.application.PushNotificationCommand;
+import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotification;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
