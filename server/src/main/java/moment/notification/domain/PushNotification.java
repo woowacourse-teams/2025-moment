@@ -35,7 +35,7 @@ public class PushNotification extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = true, name = "device_endpoint")
+    @Column(nullable = false, name = "device_endpoint")
     private String deviceEndpoint;
 
     private LocalDateTime deletedAt;
