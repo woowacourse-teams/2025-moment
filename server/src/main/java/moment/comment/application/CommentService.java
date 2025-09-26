@@ -33,7 +33,7 @@ import moment.notification.application.NotificationQueryService;
 import moment.notification.application.PushNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.notification.dto.PushNotificationRequest;
+import moment.notification.application.PushNotificationCommand;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
@@ -82,7 +82,10 @@ public class CommentService {
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
 
         pushNotificationService.send(
-                PushNotificationRequest.createAddedCommentAlarm(moment.getMomenter()));
+            new PushNotificationCommand(
+                    moment.getMomenter(),
+                    "[moment]",
+                    "당신의 모멘트에 누군가 코멘트를 달았어요:)"));
 
         notificationFacade.sendSseNotificationAndNotification(
                 moment.getMomenter(),

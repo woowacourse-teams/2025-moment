@@ -31,6 +31,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.NotificationFacade;
 import moment.notification.application.NotificationQueryService;
+import moment.notification.application.PushNotificationService;
 import moment.notification.domain.Notification;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
@@ -96,6 +97,9 @@ class CommentServiceTest {
 
     @Mock
     private EchoService echoService;
+
+    @Mock
+    private PushNotificationService pushNotificationService;
 
     @Test
     void Comment를_등록한다() {

@@ -9,7 +9,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.extern.slf4j.Slf4j;
 import moment.notification.application.PushNotificationService;
-import moment.notification.dto.PushNotificationRequest;
+import moment.notification.application.PushNotificationCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,17 +29,17 @@ public class PushNotificationSender implements PushNotificationService {
     }
 
     @Override
-    public void send(PushNotificationRequest request) {
+    public void send(PushNotificationCommand pushNotificationCommand) {
         if (firebaseMessaging == null) {
             log.warn("FirebaseMessaging is not configured. Skipping push notification sending.");
             return;
         }
-        Long userId = request.user().getId();
+        Long userId = pushNotificationCommand.user().getId();
 
         pushNotificationRepository.findByUserId(userId)
             .ifPresentOrElse(
                 pushNotification -> {
-                    Message message = buildMessage(request, pushNotification.getDeviceEndpoint());
+                    Message message = buildMessage(pushNotificationCommand, pushNotification.getDeviceEndpoint());
                     ApiFuture<String> future = firebaseMessaging.sendAsync(message);
                     addSendCallback(future, userId);
                     log.info("Push notification sent successfully.");
@@ -48,10 +48,10 @@ public class PushNotificationSender implements PushNotificationService {
             );
     }
 
-    private Message buildMessage(PushNotificationRequest request, String deviceEndpoint) {
+    private Message buildMessage(PushNotificationCommand pushNotificationCommand, String deviceEndpoint) {
         Notification notification = Notification.builder()
-            .setTitle(request.title())
-            .setBody(request.body())
+            .setTitle(pushNotificationCommand.title())
+            .setBody(pushNotificationCommand.body())
             .build();
 
         return Message.builder()
