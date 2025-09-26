@@ -63,7 +63,6 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
   );
 };
 
-
 export const Toast: React.FC = () => {
   const { toasts: activeToasts } = useToasts();
 
