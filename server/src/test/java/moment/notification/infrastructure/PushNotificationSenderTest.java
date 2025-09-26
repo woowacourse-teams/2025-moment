@@ -7,8 +7,8 @@ import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import java.util.Optional;
+import moment.notification.application.PushNotificationCommand;
 import moment.notification.domain.PushNotification;
-import moment.notification.dto.PushNotificationRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,14 +45,14 @@ class PushNotificationSenderTest {
     @Test
     void 푸시_알림을_성공적으로_전송한다() {
         // given
-        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
+        PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, "title", "body");
         PushNotification pushNotification = new PushNotification(user, "device-token");
 
         when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.of(pushNotification));
         when(firebaseMessaging.sendAsync(any(Message.class))).thenReturn(mockApiFuture);
 
         // when
-        pushNotificationSender.send(request);
+        pushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(firebaseMessaging).sendAsync(any(Message.class));
@@ -62,10 +62,10 @@ class PushNotificationSenderTest {
     void FirebaseMessaging_빈이_설정되지_않았으면_알림을_보내지_않는다() {
         // given
         PushNotificationSender senderWithNoFcm = new PushNotificationSender(pushNotificationRepository, null);
-        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
+        PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, "title", "body");
 
         // when
-        senderWithNoFcm.send(request);
+        senderWithNoFcm.send(pushNotificationCommand);
 
         // then
         verify(pushNotificationRepository, never()).findByUserId(anyLong());
@@ -75,11 +75,11 @@ class PushNotificationSenderTest {
     @Test
     void 사용자의_디바이스_토큰_정보가_저장되어_있지_않으면_알림을_보내지_않는다() {
         // given
-        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
+        PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, "title", "body");
         when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
 
         // when
-        pushNotificationSender.send(request);
+        pushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(pushNotificationRepository).findByUserId(user.getId());
