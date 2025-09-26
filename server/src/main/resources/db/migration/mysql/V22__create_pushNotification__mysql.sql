@@ -1,7 +1,7 @@
 CREATE TABLE push_notification_tokens (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    device_endpoint VARCHAR(255),
+    device_endpoint VARCHAR(255) NOT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
     created_at TIMESTAMP NOT NULL,
 
