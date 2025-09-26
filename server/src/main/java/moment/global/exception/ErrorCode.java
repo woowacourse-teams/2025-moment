@@ -23,6 +23,7 @@ public enum ErrorCode {
     USER_NOT_ENOUGH_STAR("U-011", "사용 가능한 별조각을 확인해주세요.", HttpStatus.BAD_REQUEST),
     PASSWORD_SAME_AS_OLD("U-012", "새 비밀번호가 기존의 비밀번호와 동일합니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_CHANGE_UNSUPPORTED_PROVIDER("U-013", "일반 회원가입 사용자가 아닌 경우 비밀번호를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_SUBSCRIPTION_INVALID("U-013", "유효하지 않은 이메일 구독 설정 정보입니다.", HttpStatus.BAD_REQUEST),
 
     TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),

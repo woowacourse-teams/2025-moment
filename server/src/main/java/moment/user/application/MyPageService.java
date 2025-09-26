@@ -9,7 +9,9 @@ import moment.reward.domain.RewardHistory;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
+import moment.user.dto.request.EmailSubscriptionChangeRequest;
 import moment.user.dto.request.NicknameChangeRequest;
+import moment.user.dto.response.EmailSubscriptionChangeResponse;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
@@ -100,5 +102,12 @@ public class MyPageService {
         if (!user.checkProviderType(ProviderType.EMAIL)) {
             throw new MomentException(ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
         }
+    }
+
+    @Transactional
+    public EmailSubscriptionChangeResponse changeEmailSubscription(EmailSubscriptionChangeRequest request, Long id) {
+        User user = userQueryService.getUserById(id);
+        boolean updatedEmailSubscription = user.updateEmailSubscription(request.emailSubscription());
+        return new EmailSubscriptionChangeResponse(updatedEmailSubscription);
     }
 }
