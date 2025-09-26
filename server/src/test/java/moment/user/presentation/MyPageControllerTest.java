@@ -313,7 +313,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/email-subscription")
+                .when().patch("/api/v1/me/email-subscription")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
