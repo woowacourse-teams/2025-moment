@@ -34,15 +34,17 @@ public class PushNotificationSender implements PushNotificationService {
             log.warn("FirebaseMessaging is not configured. Skipping push notification sending.");
             return;
         }
+        Long userId = request.user().getId();
 
-        pushNotificationRepository.findByUserId(request.userId())
+        pushNotificationRepository.findByUserId(userId)
             .ifPresentOrElse(
                 pushNotification -> {
                     Message message = buildMessage(request, pushNotification.getDeviceEndpoint());
                     ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-                    addSendCallback(future, request.userId());
+                    addSendCallback(future, userId);
+                    log.info("Push notification sent successfully.");
                 },
-                () -> log.warn("Push notification token not found for user: {}", request.userId())
+                () -> log.warn("Push notification token not found for user: {}", userId)
             );
     }
 

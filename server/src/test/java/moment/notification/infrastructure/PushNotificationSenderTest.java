@@ -12,8 +12,6 @@ import moment.notification.dto.PushNotificationRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,7 +45,7 @@ class PushNotificationSenderTest {
     @Test
     void 푸시_알림을_성공적으로_전송한다() {
         // given
-        PushNotificationRequest request = new PushNotificationRequest(user.getId(), "title", "body");
+        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
         PushNotification pushNotification = new PushNotification(user, "device-token");
 
         when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.of(pushNotification));
@@ -64,7 +62,7 @@ class PushNotificationSenderTest {
     void FirebaseMessaging_빈이_설정되지_않았으면_알림을_보내지_않는다() {
         // given
         PushNotificationSender senderWithNoFcm = new PushNotificationSender(pushNotificationRepository, null);
-        PushNotificationRequest request = new PushNotificationRequest(user.getId(), "title", "body");
+        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
 
         // when
         senderWithNoFcm.send(request);
@@ -77,7 +75,7 @@ class PushNotificationSenderTest {
     @Test
     void 사용자의_디바이스_토큰_정보가_저장되어_있지_않으면_알림을_보내지_않는다() {
         // given
-        PushNotificationRequest request = new PushNotificationRequest(user.getId(), "title", "body");
+        PushNotificationRequest request = new PushNotificationRequest(user, "title", "body");
         when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
 
         // when

@@ -30,8 +30,10 @@ import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.notification.application.NotificationFacade;
 import moment.notification.application.NotificationQueryService;
+import moment.notification.application.PushNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
+import moment.notification.dto.PushNotificationRequest;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.reply.domain.Echo;
@@ -63,6 +65,7 @@ public class CommentService {
     private final MomentTagService momentTagService;
     private final ReportService reportService;
     private final EchoService echoService;
+    private final PushNotificationService pushNotificationService;
 
     @Transactional
     public CommentCreateResponse addComment(CommentCreateRequest request, Long commenterId) {
@@ -77,6 +80,9 @@ public class CommentService {
         Comment savedComment = commentRepository.save(commentWithoutId);
 
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
+
+        pushNotificationService.send(
+                PushNotificationRequest.createAddedCommentAlarm(moment.getMomenter()));
 
         notificationFacade.sendSseNotificationAndNotification(
                 moment.getMomenter(),
