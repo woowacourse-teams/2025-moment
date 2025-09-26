@@ -1,14 +1,9 @@
 import * as Sentry from '@sentry/react';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { queryClient } from './queryClient';
+import { toasts } from '@/shared/store/toast';
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
-
-type ShowToastFn = (message: string, duration?: number) => void;
-let showErrorToast: ShowToastFn | null = null;
-export const setToastFunctions = (errorFn: ShowToastFn) => {
-  showErrorToast = errorFn;
-};
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -58,9 +53,7 @@ api.interceptors.response.use(
 
     if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
       queryClient.setQueryData(['checkIfLoggedIn'], false);
-      if (showErrorToast) {
-        showErrorToast('로그인이 만료되었어요! 다시 로그인해 주세요.');
-      }
+      toasts.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
       redirectToLogin();
       return Promise.reject(error);
     }
@@ -76,9 +69,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch {
           queryClient.setQueryData(['checkIfLoggedIn'], false);
-          if (showErrorToast) {
-            showErrorToast('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
-          }
+          toasts.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
           redirectToLogin();
           return Promise.reject(error);
         }
@@ -94,9 +85,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         queryClient.setQueryData(['checkIfLoggedIn'], false);
-        if (showErrorToast) {
-          showErrorToast('로그인이 만료되었어요. 다시 로그인해 주세요.');
-        }
+        toasts.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
         redirectToLogin();
         return Promise.reject(refreshError);
       } finally {

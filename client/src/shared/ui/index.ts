@@ -7,4 +7,4 @@ export { NotFound } from './notFound/NotFound';
 export { SimpleCard } from './simpleCard/SimpleCard';
 export { CommonSkeletonCard } from './skeleton';
 export { TextArea } from './textArea/TextArea';
-export { Toast } from './toast/Toast';
+export { Toast } from './toast';
