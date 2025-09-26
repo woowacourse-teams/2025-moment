@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -174,7 +175,7 @@ public class MyPageController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping("/email-subscription")
+    @PatchMapping("/email-subscription")
     public ResponseEntity<SuccessResponse<EmailSubscriptionChangeResponse>> changeEmailSubscription(
             @Valid @RequestBody EmailSubscriptionChangeRequest request,
             @AuthenticationPrincipal Authentication authentication
