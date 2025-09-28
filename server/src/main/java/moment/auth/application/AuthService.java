@@ -4,12 +4,16 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
+import moment.auth.dto.google.GoogleAccessToken;
+import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.response.LoginCheckResponse;
+import moment.auth.infrastructure.GoogleAuthClient;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -25,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthService {
+public class
+
+AuthService {
 
     private final UserRepository userRepository;
     private final UserQueryService userQueryService;
@@ -34,6 +40,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokensIssuer tokensIssuer;
+    private final GoogleAuthClient googleAuthClient;
 
     @Transactional
     public Tokens login(LoginRequest request) {
@@ -45,6 +52,33 @@ public class AuthService {
         }
 
         return tokensIssuer.issueTokens(user);
+    }
+
+    @Transactional
+    public Tokens googleLogin(String authorizationCode) {
+        GoogleUserInfo googleUserInfo = getGoogleUserInfo(authorizationCode);
+        String email = googleUserInfo.getEmail();
+
+        Optional<User> findUser = userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE);
+        if (findUser.isPresent()) {
+            User user = findUser.get();
+            return tokensIssuer.issueTokens(user);
+        }
+
+        throw new MomentException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    public GoogleUserInfo getGoogleUserInfo(String authorizationCode) {
+        GoogleAccessToken googleAccessToken = googleAuthClient.getAccessToken(authorizationCode);
+        return googleAuthClient.getUserInfo(googleAccessToken.getAccessToken());
+    }
+
+    public String getPendingToken(GoogleUserInfo googleUserInfo) {
+        return tokenManager.createPendingToken(googleUserInfo.getEmail());
+    }
+
+    public String getPendingAuthenticationByToken(String token) {
+        return tokenManager.extractPendingAuthentication(token);
     }
 
     public Authentication getAuthenticationByToken(String token) {

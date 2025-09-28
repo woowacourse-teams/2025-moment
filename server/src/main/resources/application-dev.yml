@@ -55,10 +55,12 @@ jwt:
   secret:
     access_key: ${JWT_ACCESS_SECRET_KEY}
     refresh_key: ${JWT_REFRESH_SECRET_KEY}
+    pending_key: ${JWT_PENDING_SECRET_KEY}
 
 expiration:
   access-token-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
   refresh-token-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
+  pending-token-time: ${PENDING_TOKEN_EXPIRATION_TIME}
 
 auth:
   google:

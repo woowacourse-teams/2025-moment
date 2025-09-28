@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 
 import io.jsonwebtoken.Jwts;
 import io.restassured.RestAssured;
@@ -16,15 +17,17 @@ import io.restassured.response.Response;
 import java.util.Date;
 import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
-import moment.auth.application.GoogleAuthService;
+import moment.auth.application.AuthService;
 import moment.auth.application.TokenManager;
 import moment.auth.domain.RefreshToken;
-import moment.auth.domain.Tokens;
+import moment.auth.dto.google.GoogleAccessToken;
+import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
+import moment.auth.infrastructure.GoogleAuthClient;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.common.DatabaseCleaner;
@@ -66,8 +69,10 @@ class AuthControllerTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private AuthService authService;
     @MockitoBean
-    private GoogleAuthService googleAuthService;
+    private GoogleAuthClient googleAuthClient;
     @Autowired
     private TokenManager tokenManager;
 
@@ -176,11 +181,18 @@ class AuthControllerTest {
     void 구글로부터_인증_코드를_받으면_토큰을_발급하고_메인페이지로_리디렉션한다() {
         // given
         User user = userRepository.save(new User("test@google.com", "password", "nickname", ProviderType.GOOGLE));
-        RefreshToken refreshToken = new RefreshToken("refresh-token-value", user, new Date(),
-                new Date(System.currentTimeMillis() + 100000));
-        Tokens tokens = new Tokens("access-token-value", refreshToken);
 
-        org.mockito.BDDMockito.given(googleAuthService.loginOrSignUp("testAuthorizationCode")).willReturn(tokens);
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
+
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", user.getEmail(),
+                true);
+
+        org.mockito.BDDMockito.given(googleAuthClient.getAccessToken("testAuthorizationCode"))
+                .willReturn(googleAccessToken);
+
+        org.mockito.BDDMockito.given(googleAuthClient.getUserInfo(any()))
+                .willReturn(googleUserInfo);
 
         //when
         Response response = given()
@@ -192,7 +204,7 @@ class AuthControllerTest {
         // then
         response.then()
                 .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
-                .header(HttpHeaders.LOCATION, equalTo("test-client-uri/auth/callback?success=true"));
+                .header(HttpHeaders.LOCATION, equalTo("test-client-uri/auth/callback?state=exists&success=true"));
 
         Headers headers = response.getHeaders();
 
@@ -202,6 +214,43 @@ class AuthControllerTest {
         assertThat(setCookieHeaders).hasSize(2);
         assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("accessToken="));
         assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("refreshToken="));
+    }
+
+    @Test
+    void 구글로부터_받은_인증_정보를_이용해_로그인시_회원정보가_없으면_대기_토큰을_발급한다() {
+        // given
+
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
+
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", "test@test.com",
+                true);
+
+        org.mockito.BDDMockito.given(googleAuthClient.getAccessToken("testAuthorizationCode"))
+                .willReturn(googleAccessToken);
+
+        org.mockito.BDDMockito.given(googleAuthClient.getUserInfo(any()))
+                .willReturn(googleUserInfo);
+
+        //when
+        Response response = given()
+                .when()
+                .redirects().follow(false)
+                .queryParam("code", "testAuthorizationCode")
+                .get("/api/v1/auth/callback/google");
+
+        // then
+        response.then()
+                .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
+                .header(HttpHeaders.LOCATION, equalTo("test-client-uri/auth/callback?state=pending"));
+
+        Headers headers = response.getHeaders();
+
+        List<String> setCookieHeaders = headers.getValues(HttpHeaders.SET_COOKIE);
+
+        // 3. AssertJ를 사용해 리스트를 검증합니다.
+        assertThat(setCookieHeaders).hasSize(1);
+        assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("pendingToken="));
     }
 
     @Test

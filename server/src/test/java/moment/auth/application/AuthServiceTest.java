@@ -2,6 +2,7 @@ package moment.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -15,11 +16,15 @@ import java.util.Date;
 import java.util.Optional;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
+import moment.auth.dto.google.GoogleAccessToken;
+import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordResetRequest;
+import moment.auth.infrastructure.GoogleAuthClient;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.application.NicknameGenerateService;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -66,6 +71,12 @@ class AuthServiceTest {
 
     @Mock
     private TokensIssuer tokensIssuer;
+
+    @Mock
+    private GoogleAuthClient googleAuthClient;
+
+    @Mock
+    private NicknameGenerateService nicknameGenerateService;
 
     private User user;
 
@@ -297,5 +308,65 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.refresh(request))
                 .isInstanceOf(MomentException.class)
                 .hasMessage(ErrorCode.TOKEN_EXPIRED.getMessage());
+    }
+
+    @Test
+    void 기존에_가입된_유저가_구글_로그인을_하면_토큰을_반환한다() {
+        // given
+        String email = "mimi@icloud.com";
+        String expectedAccessToken = "testAccessToken";
+        String expectedRefreshToken = "testRefreshToken";
+
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
+        User existingUser = new User(email, "password", "mimi", ProviderType.GOOGLE);
+
+        Tokens tokens = new Tokens(
+                expectedAccessToken,
+                new RefreshToken(expectedRefreshToken, existingUser, new Date(), new Date()));
+
+        given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
+        given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
+        given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(
+                Optional.of(existingUser));
+        given(tokensIssuer.issueTokens(existingUser)).willReturn(tokens);
+
+        // when
+        authService.googleLogin("authorizationCode");
+
+        // then
+        then(userRepository).should(times(0)).save(any(User.class));
+    }
+
+    @Test
+    void 유저가_구글_로그인을_하면_토큰을_반환한다() {
+        // given
+        String expectedAccessToken = "testAccessToken";
+        String expectedRefreshToken = "testRefreshToken";
+        String email = "mimi@icloud.com";
+        GoogleAccessToken googleAccessToken = new GoogleAccessToken("accessToken", 1800, "scope", "tokenType",
+                "idToken");
+        GoogleUserInfo googleUserInfo = new GoogleUserInfo("sub", "name", "givenName", "picture", email, true);
+
+        User user = new User(email, "encodedPassword", "mimi", ProviderType.GOOGLE);
+
+        Tokens tokens = new Tokens(
+                expectedAccessToken,
+                new RefreshToken(expectedRefreshToken, user, new Date(), new Date()));
+
+        given(googleAuthClient.getAccessToken(any(String.class))).willReturn(googleAccessToken);
+        given(googleAuthClient.getUserInfo(googleAccessToken.getAccessToken())).willReturn(googleUserInfo);
+        given(userRepository.findByEmailAndProviderType(email, ProviderType.GOOGLE)).willReturn(Optional.of(user));
+        given(tokensIssuer.issueTokens(user)).willReturn(tokens);
+
+        // when
+        Tokens actualTokens = authService.googleLogin("authorizationCode");
+
+        // then
+        assertAll(
+                () -> assertThat(actualTokens.getAccessToken()).isEqualTo(expectedAccessToken),
+                () -> assertThat(actualTokens.getRefreshToken().getTokenValue()).isEqualTo(expectedRefreshToken)
+        );
     }
 }
