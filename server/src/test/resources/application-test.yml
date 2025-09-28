@@ -67,7 +67,7 @@ auth:
     uri: test-mail-uri
 
 logging:
-  config: classpath:logback-test.xml
+  config: classpath:logback-spring.xml
 
 s3:
   bucket-name: test-bucket-1

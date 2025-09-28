@@ -70,7 +70,7 @@ auth:
     uri: http://dev.connectingmoment.com/passwordUpdate?token=
 
 logging:
-  config: classpath:logback-dev.xml
+  config: classpath:logback-spring.xml
 
 management:
   metrics:
