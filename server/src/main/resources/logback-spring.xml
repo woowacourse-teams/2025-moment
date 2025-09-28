@@ -25,18 +25,6 @@
         </encoder>
     </appender>
 
-    <springProfile name="local">
-        <root level="INFO">
-            <appender-ref ref="TEXT_CONSOLE"/>
-        </root>
-        <logger name="moment" level="DEBUG" additivity="false">
-            <appender-ref ref="TEXT_CONSOLE"/>
-        </logger>
-        <logger name="p6spy" level="INFO" additivity="false">
-            <appender-ref ref="TEXT_CONSOLE"/>
-        </logger>
-    </springProfile>
-
     <springProfile name="dev, prod">
         <root level="INFO">
             <appender-ref ref="JSON_CONSOLE"/>
@@ -59,15 +47,19 @@
     <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
         </root>
         <logger name="moment" level="DEBUG" additivity="false">
             <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
         </logger>
         <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
             <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
         </logger>
         <logger name="p6spy" level="TRACE" additivity="false">
             <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
         </logger>
     </springProfile>
 </configuration>
