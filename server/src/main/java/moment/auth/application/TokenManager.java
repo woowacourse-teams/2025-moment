@@ -12,6 +12,10 @@ public interface TokenManager {
     Date getExpirationTimeFromToken(String token);
 
     Date getIssuedAtFromToken(String token);
-    
+
     Authentication extractAuthentication(String token);
+
+    String createPendingToken(String email);
+
+    String extractPendingAuthentication(String token);
 }

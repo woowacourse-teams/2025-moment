@@ -13,8 +13,8 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
-import moment.auth.application.GoogleAuthService;
 import moment.auth.domain.Tokens;
+import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
@@ -23,7 +23,10 @@ import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
+import moment.global.exception.MomentException;
+import moment.user.application.UserService;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.response.PendingUserResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,12 +49,14 @@ public class AuthController {
 
     private static final int ACCESS_TOKEN_TIME = 30 * 60;
     private static final int REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60;
+    private static final int PENDING_TOKEN_TIME = 5 * 60;
 
     private static final String ACCESS_TOKEN_HEADER = "accessToken";
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
+    private static final String PENDING_TOKEN_HEADER = "pendingToken";
 
+    private final UserService userService;
     private final AuthService authService;
-    private final GoogleAuthService googleAuthService;
     private final EmailService emailService;
 
     @Value("${auth.google.client-id}")
@@ -158,38 +163,70 @@ public class AuthController {
     }
 
     @GetMapping("/callback/google")
-    public ResponseEntity<Void> googleCallback(@RequestParam String code) {
-        Tokens tokens = googleAuthService.loginOrSignUp(code);
-        String accessToken = tokens.getAccessToken();
-        String refreshToken = tokens.getRefreshToken().getTokenValue();
+    public ResponseEntity<?> googleCallback(@RequestParam String code) {
 
-        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
-                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(ACCESS_TOKEN_TIME)
-                .build();
+        HttpStatus status = HttpStatus.MOVED_PERMANENTLY;
 
-        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
-                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(REFRESH_TOKEN_TIME)
-                .build();
+        try {
+            Tokens tokens = authService.googleLogin(code);
 
-        String redirectUrl = UriComponentsBuilder.fromUriString(clientUri)
-                .path("/auth/callback")
-                .queryParam("success", "true")
-                .build()
-                .toUriString();
+            String accessToken = tokens.getAccessToken();
+            String refreshToken = tokens.getRefreshToken().getTokenValue();
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .header(HttpHeaders.LOCATION, redirectUrl)
-                .build();
+            String redirectUrl = UriComponentsBuilder.fromUriString(clientUri)
+                    .path("/auth/callback")
+                    .queryParam("state", "exists")
+                    .queryParam("success", "true")
+                    .build()
+                    .toUriString();
+
+            ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(ACCESS_TOKEN_TIME)
+                    .build();
+
+            ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(REFRESH_TOKEN_TIME)
+                    .build();
+
+            return ResponseEntity.status(status)
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .header(HttpHeaders.LOCATION, redirectUrl)
+                    .build();
+        } catch (MomentException exception) {
+
+            GoogleUserInfo googleUserInfo = authService.getGoogleUserInfo(code);
+            String pendingToken = authService.getPendingToken(googleUserInfo);
+
+            PendingUserResponse pendingUserResponse = userService.registerPendingUser(googleUserInfo);
+
+            String redirectUrl = UriComponentsBuilder.fromUriString(clientUri)
+                    .path("/auth/callback")
+                    .queryParam("state", "pending")
+                    .build()
+                    .toUriString();
+
+            ResponseCookie pendingCookie = ResponseCookie.from(PENDING_TOKEN_HEADER, pendingToken)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(PENDING_TOKEN_TIME)
+                    .build();
+
+            return ResponseEntity.status(status)
+                    .header(HttpHeaders.LOCATION, redirectUrl)
+                    .header(HttpHeaders.SET_COOKIE, pendingCookie.toString())
+                    .body(SuccessResponse.of(status, pendingUserResponse));
+        }
     }
 
     @Operation(summary = "로그인 상태 확인", description = "사용자가 로그인 상태인지 확인합니다.")

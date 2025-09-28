@@ -24,19 +24,26 @@ public class JwtTokenManager implements TokenManager {
 
     private final int accessTokenExpirationTime;
     private final int refreshTokenExpirationTime;
+    private final int pendingTokenExpirationTime;
+
     private final String accessSecretKey;
     private final String refreshSecretKey;
+    private final String pendingSecretKey;
 
     public JwtTokenManager(
             @Value("${expiration.access-token-time}") int ACCESS_TOKEN_EXPIRATION_TIME,
             @Value("${expiration.refresh-token-time}") int REFRESH_TOKEN_EXPIRATION_TIME,
+            @Value("${expiration.pending-token-time}") int PENDING_TOKEN_EXPIRATION_TIME,
             @Value("${jwt.secret.access_key}") String ACCESS_SECRET_KEY,
-            @Value("${jwt.secret.refresh_key}") String REFRESH_SECRET_KEY
+            @Value("${jwt.secret.refresh_key}") String REFRESH_SECRET_KEY,
+            @Value("${jwt.secret.pending_key}") String PENDING_SECRET_KEY
     ) {
         this.accessTokenExpirationTime = ACCESS_TOKEN_EXPIRATION_TIME;
         this.refreshTokenExpirationTime = REFRESH_TOKEN_EXPIRATION_TIME;
+        this.pendingTokenExpirationTime = PENDING_TOKEN_EXPIRATION_TIME;
         this.accessSecretKey = ACCESS_SECRET_KEY;
         this.refreshSecretKey = REFRESH_SECRET_KEY;
+        this.pendingSecretKey = PENDING_SECRET_KEY;
     }
 
     @Override
@@ -60,6 +67,18 @@ public class JwtTokenManager implements TokenManager {
                 .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
                 .subject(id.toString())
                 .claim("email", email)
+                .issuedAt(new Date())
+                .signWith(key, HS256)
+                .compact();
+    }
+
+    @Override
+    public String createPendingToken(String email) {
+        SecretKeySpec key = new SecretKeySpec(pendingSecretKey.getBytes(), "HmacSHA256");
+
+        return Jwts.builder()
+                .expiration(new Date(System.currentTimeMillis() + pendingTokenExpirationTime))
+                .subject(email)
                 .issuedAt(new Date())
                 .signWith(key, HS256)
                 .compact();
@@ -90,6 +109,29 @@ public class JwtTokenManager implements TokenManager {
         return Authentication.from(id);
     }
 
+    private Long extractIdFromToken(String token) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(accessSecretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return Long.valueOf(verifiedJwt.getPayload().getSubject());
+    }
+
+    @Override
+    public String extractPendingAuthentication(String token) {
+        return handleTokenException(token, value -> extractSubjectFromToken(value, pendingSecretKey));
+    }
+
+    private String extractSubjectFromToken(String token, String secretKey) {
+        Jws<Claims> verifiedJwt = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getBytes(), "HmacSHA256"))
+                .build()
+                .parseSignedClaims(token);
+
+        return verifiedJwt.getPayload().getSubject();
+    }
+
     private <T> T handleTokenException(String token, Function<String, T> function) {
         try {
             return function.apply(token);
@@ -104,14 +146,5 @@ public class JwtTokenManager implements TokenManager {
         } catch (JwtException jwtException) {
             throw new MomentException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private Long extractIdFromToken(String token) {
-        Jws<Claims> verifiedJwt = Jwts.parser()
-                .verifyWith(new SecretKeySpec(accessSecretKey.getBytes(), "HmacSHA256"))
-                .build()
-                .parseSignedClaims(token);
-
-        return Long.valueOf(verifiedJwt.getPayload().getSubject());
     }
 }

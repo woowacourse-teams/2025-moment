@@ -13,8 +13,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.BasicUserCreateRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
-import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -31,7 +31,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class UserServiceTest {
 
     private final String email = "mimi@icloud.com";
-    private final UserCreateRequest request = new UserCreateRequest(email, "mimi1234", "mimi1234", "미미");
+    private final BasicUserCreateRequest request = new BasicUserCreateRequest(email, "mimi1234", "mimi1234", "미미",
+            false);
 
     @InjectMocks
     private UserService userService;
@@ -56,7 +57,7 @@ class UserServiceTest {
         given(passwordEncoder.encode(expect.getPassword())).willReturn("aoijwofkdl");
 
         // when
-        userService.addUser(request);
+        userService.registerUser(request);
 
         // then
         then(userRepository).should(times(1)).save(any(User.class));
@@ -70,7 +71,7 @@ class UserServiceTest {
         given(userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> userService.addUser(request))
+        assertThatThrownBy(() -> userService.registerUser(request))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_CONFLICT);
     }
@@ -81,17 +82,18 @@ class UserServiceTest {
         given(userRepository.existsByNickname(any(String.class))).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> userService.addUser(request))
+        assertThatThrownBy(() -> userService.registerUser(request))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NICKNAME_CONFLICT);
     }
 
     @Test
     void 일반_회원가입시_비밀번호와_비밀번호_확인_값이_일치하지_않는_경우_예외가_발생한다() {
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234", "mimi5678", "미미");
+        BasicUserCreateRequest request = new BasicUserCreateRequest("mimi@icloud.com", "mimi1234", "mimi5678", "미미",
+                false);
 
         // when & then
-        assertThatThrownBy(() -> userService.addUser(request))
+        assertThatThrownBy(() -> userService.registerUser(request))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_MISMATCHED);
     }
@@ -140,7 +142,8 @@ class UserServiceTest {
     @Test
     void 랜덤으로_생성한_닉네임이_존재하는_경우_임계치_이후_예외가_발생한다() {
         // given
-        given(nicknameGenerateService.createRandomNickname()).willThrow(new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED));
+        given(nicknameGenerateService.createRandomNickname()).willThrow(
+                new MomentException(ErrorCode.USER_NICKNAME_GENERATION_FAILED));
 
         // when & then
         assertThatThrownBy(() -> userService.createRandomNickname())

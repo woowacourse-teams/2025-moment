@@ -6,13 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import moment.auth.application.TokenManager;
+import moment.auth.dto.google.GoogleUserInfo;
 import moment.common.DatabaseCleaner;
 import moment.global.dto.response.SuccessResponse;
+import moment.user.application.PendingUserCacheService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.dto.request.BasicUserCreateRequest;
+import moment.user.dto.request.GoogleOAuthUserCreateRequest;
 import moment.user.dto.request.NicknameConflictCheckRequest;
-import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
@@ -47,6 +51,9 @@ class UserControllerTest {
     @Autowired
     private TokenManager tokenManager;
 
+    @Autowired
+    private PendingUserCacheService pendingUserCacheService;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
@@ -56,7 +63,8 @@ class UserControllerTest {
     @Test
     void 일반_회원가입시_유저_생성에_성공한다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!", "mimi");
+        BasicUserCreateRequest request = new BasicUserCreateRequest("mimi@icloud.com", "mimi1234!", "mimi1234!",
+                "mimi", false);
 
         // when
         SuccessResponse response = RestAssured.given().log().all()
@@ -72,6 +80,40 @@ class UserControllerTest {
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(
                         userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.EMAIL)).isTrue()
+        );
+    }
+
+    @Test
+    void 구글_회원가입시_유저_생성_및_로그인에_성공하고_토큰을_반환한다() {
+        // given
+        GoogleOAuthUserCreateRequest request = new GoogleOAuthUserCreateRequest("mimi@icloud.com", "mimi1234!",
+                "mimi1234!",
+                "mimi", false);
+
+        pendingUserCacheService.register(
+                new GoogleUserInfo("sub", "name", "giveName", "picture", "mimi@icloud.com", false));
+
+        String pendingToken = tokenManager.createPendingToken("mimi@icloud.com");
+
+        // when
+        Response response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("pendingToken", pendingToken)
+                .body(request)
+                .when().post("/api/v1/users/signup/google")
+                .then().log().all()
+                .statusCode(HttpStatus.MOVED_PERMANENTLY.value())
+                .extract().response();
+
+        // then
+        String accessToken = response.getCookie("accessToken");
+        String refreshToken = response.getCookie("refreshToken");
+
+        assertAll(
+                () -> assertThat(
+                        userRepository.existsByEmailAndProviderType("mimi@icloud.com", ProviderType.GOOGLE)).isTrue(),
+                () -> assertThat(accessToken).isNotBlank(),
+                () -> assertThat(refreshToken).isNotBlank()
         );
     }
 

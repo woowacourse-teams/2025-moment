@@ -14,14 +14,22 @@ class JwtTokenManagerTest {
 
     private final String testAccessSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-project";
     private final String testRefreshSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-prolong";
+    private final String testPendingSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-prolong";
     private final int testExpirationTime = 3600000;
     private final int testRefreshExpirationTime = 604800000;
+    private final int testPendingExpirationTime = 3000000;
     private JwtTokenManager jwtTokenManager;
 
     @BeforeEach
     void setUp() {
-        jwtTokenManager = new JwtTokenManager(testExpirationTime, testRefreshExpirationTime, testAccessSecretKey,
-                testRefreshSecretKey);
+        jwtTokenManager = new JwtTokenManager(
+                testExpirationTime,
+                testRefreshExpirationTime,
+                testPendingExpirationTime,
+                testAccessSecretKey,
+                testRefreshSecretKey,
+                testPendingSecretKey
+        );
     }
 
     @Test
