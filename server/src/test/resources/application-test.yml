@@ -52,10 +52,12 @@ jwt:
   secret:
     access_key: test-access-key-for-jwt-token-generation
     refresh_key: test-refresh-key-for-jwt-token-generation
+    pending_key: test-pending-key-for-jwt-token-generation
 
 expiration:
   access-token-time: 1800000
   refresh-token-time: 604800000
+  pending-token-time: 300000
 
 auth:
   google:
