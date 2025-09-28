@@ -66,7 +66,7 @@ public class ApiLogFilter implements Filter {
                 kv("method",request.getMethod()),
                 kv("uri",request.getRequestURI()),
                 kv("status",response.getStatus()),
-                kv("durattion_ms",duration),
+                kv("duration_ms",duration),
                 kv("tag", "API_RESPONSE_TIME")
         );
     }
