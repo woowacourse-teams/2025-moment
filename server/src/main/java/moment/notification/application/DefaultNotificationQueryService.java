@@ -30,6 +30,7 @@ public class DefaultNotificationQueryService implements NotificationQueryService
         return notificationRepository.findAllById(ids);
     }
 
+    @Override
     public List<Notification> getUnreadContentsNotifications(User user, TargetType targetType) {
 
         return notificationRepository.findAllByUserAndIsReadAndTargetType(user, false, targetType);
