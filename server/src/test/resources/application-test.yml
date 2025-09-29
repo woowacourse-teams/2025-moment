@@ -66,9 +66,6 @@ auth:
   password_update:
     uri: test-mail-uri
 
-logging:
-  config: classpath:logback-test.xml
-
 s3:
   bucket-name: test-bucket-1
   bucket-path: test/images

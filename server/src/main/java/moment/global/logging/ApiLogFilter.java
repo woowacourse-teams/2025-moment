@@ -1,5 +1,7 @@
 package moment.global.logging;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -51,22 +53,21 @@ public class ApiLogFilter implements Filter {
     }
 
     private void startApiLogging(HttpServletRequest request) {
-        log.info(DELIMITER);
-
-        log.info("ip: [{}], method: [{}], uri: [{}]",
-                request.getRemoteAddr(),
-                request.getMethod(),
-                request.getRequestURI());
+        log.info("API Request Start",
+                kv("ip",request.getRemoteAddr()),
+                kv("method",request.getMethod()),
+                kv("uri", request.getRequestURI())
+        );
     }
 
     private void endApiLogging(HttpServletRequest request, HttpServletResponse response, long duration) {
-        log.info("ip: [{}], method: [{}], uri: [{}], status: [{}], duration:[{}ms], tag: [API_RESPONSE_TIME]",
-                request.getRemoteAddr(),
-                request.getMethod(),
-                request.getRequestURI(),
-                response.getStatus(),
-                duration);
-
-        log.info(DELIMITER);
+        log.info("API Request End",
+                kv("ip",request.getRemoteAddr()),
+                kv("method",request.getMethod()),
+                kv("uri",request.getRequestURI()),
+                kv("status",response.getStatus()),
+                kv("duration_ms",duration),
+                kv("tag", "API_RESPONSE_TIME")
+        );
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <timestamp>
+                <fieldName>event_time</fieldName>
+                <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</pattern>
+                <timeZone>UTC</timeZone>
+            </timestamp>
+            <loggerName>
+                <fieldName>logger</fieldName>
+            </loggerName>
+            <logLevel/>
+            <threadName/>
+            <mdc/>
+            <message/>
+            <stackTrace/>
+        </encoder>
+    </appender>
+
+    <appender name="TEXT_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev, prod">
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+        <springProfile name="dev">
+            <logger name="moment" level="DEBUG" additivity="false">
+                <appender-ref ref="JSON_CONSOLE"/>
+            </logger>
+        </springProfile>
+        <springProfile name="prod">
+            <logger name="moment" level="INFO" additivity="false">
+                <appender-ref ref="JSON_CONSOLE"/>
+            </logger>
+        </springProfile>
+        <logger name="p6spy" level="INFO" additivity="false">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
+        </root>
+        <logger name="moment" level="DEBUG" additivity="false">
+            <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
+        </logger>
+        <logger name="p6spy" level="TRACE" additivity="false">
+            <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="TEXT_CONSOLE"/>
+        </logger>
+    </springProfile>
+</configuration>
