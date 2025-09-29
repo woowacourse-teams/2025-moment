@@ -5,19 +5,19 @@
         <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
 
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <timestamp>
-                <fieldName>event_time</fieldName>
-                <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</pattern>
-                <timeZone>UTC</timeZone>
-            </timestamp>
+            <message/><excludeVersion/>
             <loggerName>
                 <fieldName>logger</fieldName>
             </loggerName>
             <logLevel/>
             <threadName/>
             <mdc/>
-            <message/>
             <stackTrace/>
+            <timestamp>
+                <fieldName>event_time</fieldName>
+                <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</pattern>
+                <timeZone>UTC</timeZone>
+            </timestamp>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
