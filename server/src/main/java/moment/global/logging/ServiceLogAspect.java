@@ -36,6 +36,11 @@ public class ServiceLogAspect {
                         kv("method", joinPoint.getSignature().toShortString()),
                         kv("duration_ms",totalTimeMillis)
                 );
+            } else if (log.isDebugEnabled()) {
+                log.debug("Service duration",
+                        kv("method", joinPoint.getSignature().toShortString()),
+                        kv("duration_ms", totalTimeMillis)
+                );
             }
         }
     }
