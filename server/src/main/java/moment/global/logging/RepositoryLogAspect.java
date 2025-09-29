@@ -26,9 +26,11 @@ public class RepositoryLogAspect {
         stopWatch.stop();
         long totalTimeMillis = stopWatch.getTotalTimeMillis();
         String methodName = joinPoint.getSignature().getName();
+        String repositoryName = joinPoint.getSignature().getDeclaringTypeName();
 
         if (totalTimeMillis > SLOW_QUERY_THRESHOLD_MS) {
             log.warn("Slow Repository",
+                    kv("repository", repositoryName),
                     kv("method", methodName),
                     kv("duration_ms", totalTimeMillis)
             );
@@ -36,6 +38,7 @@ public class RepositoryLogAspect {
         }
 
         log.debug("Repository Executed",
+                kv("repository", repositoryName),
                 kv("method", methodName),
                 kv("duration_ms", totalTimeMillis)
         );
