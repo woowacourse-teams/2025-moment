@@ -15,13 +15,14 @@ import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
+import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
+import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
@@ -29,7 +30,6 @@ import moment.reply.application.EchoService;
 import moment.reply.dto.request.EchoCreateRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -222,36 +222,36 @@ public class NotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-            .cookie("accessToken", momenterToken)
-            .contentType(io.restassured.http.ContentType.JSON)
-            .body(request1)
-            .when().post("/api/v1/echos")
-            .then().log().all()
-            .statusCode(201);
+                .cookie("accessToken", momenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request1)
+                .when().post("/api/v1/echos")
+                .then().log().all()
+                .statusCode(201);
 
         RestAssured.given().log().all()
-            .cookie("accessToken", momenterToken)
-            .contentType(io.restassured.http.ContentType.JSON)
-            .body(request2)
-            .when().post("/api/v1/echos")
-            .then().log().all()
-            .statusCode(201);
+                .cookie("accessToken", momenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request2)
+                .when().post("/api/v1/echos")
+                .then().log().all()
+                .statusCode(201);
 
         RestAssured.given().log().all()
-            .cookie("accessToken", momenterToken)
-            .contentType(io.restassured.http.ContentType.JSON)
-            .body(request3)
-            .when().post("/api/v1/echos")
-            .then().log().all()
-            .statusCode(201);
+                .cookie("accessToken", momenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request3)
+                .when().post("/api/v1/echos")
+                .then().log().all()
+                .statusCode(201);
 
         RestAssured.given().log().all()
-            .cookie("accessToken", momenterToken)
-            .contentType(io.restassured.http.ContentType.JSON)
-            .body(request4)
-            .when().post("/api/v1/echos")
-            .then().log().all()
-            .statusCode(201);
+                .cookie("accessToken", momenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request4)
+                .when().post("/api/v1/echos")
+                .then().log().all()
+                .statusCode(201);
 
         List<NotificationResponse> responses = RestAssured.given().log().all()
                 .cookie("accessToken", commenterToken)
@@ -297,5 +297,51 @@ public class NotificationControllerTest {
 
         // then
         assertThat(readNotification.isRead()).isTrue();
+    }
+
+    @Test
+    void 사용자가_알림들을_확인한다() {
+        // given
+        CommentCreateRequest request1 = new CommentCreateRequest("굿~", moment.getId(), null, null);
+        CommentCreateRequest request2 = new CommentCreateRequest("굿~", moment2.getId(), null, null);
+
+        RestAssured.given().log().all()
+                .cookie("accessToken", commenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request1)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        RestAssured.given().log().all()
+                .cookie("accessToken", commenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(request2)
+                .when().post("/api/v1/comments")
+                .then().log().all()
+                .statusCode(201);
+
+        List<Notification> unReadNotifications = notificationRepository.findAllByUserAndIsReadAndTargetType(
+                momenter, false, TargetType.MOMENT);
+
+        List<Long> unReadNotificationsIds = unReadNotifications.stream()
+                .map(Notification::getId)
+                .toList();
+
+        NotificationReadRequest notificationReadRequest = new NotificationReadRequest(unReadNotificationsIds);
+
+        // when
+        RestAssured.given().log().all()
+                .cookie("accessToken", momenterToken)
+                .contentType(io.restassured.http.ContentType.JSON)
+                .body(notificationReadRequest)
+                .when().patch("/api/v1/notifications/read-all")
+                .then().log().all()
+                .statusCode(204);
+
+        List<Notification> results = notificationRepository.findAllById(unReadNotificationsIds);
+        
+        // then
+        assertThat(results.stream().allMatch(Notification::isRead)).isTrue();
     }
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
+import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
@@ -45,5 +46,13 @@ public class NotificationService {
     public void markAsRead(Long id) {
         Notification notification = notificationQueryService.getNotificationById(id);
         notification.checkNotification();
+    }
+
+    @Transactional
+    public void readNotifications(NotificationReadRequest notificationReadRequest) {
+        List<Long> notificationIds = notificationReadRequest.notificationIds();
+        List<Notification> notifications = notificationQueryService.getNotificationsByIds(notificationIds);
+
+        notifications.forEach(Notification::checkNotification);
     }
 }
