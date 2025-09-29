@@ -5,10 +5,11 @@
         <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
 
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <message/><excludeVersion/>
-            <loggerName>
-                <fieldName>logger</fieldName>
-            </loggerName>
+            <message/>
+            <fieldNames>
+                <version>[ignore]</version>
+                <loggerName>logger</loggerName>
+            </fieldNames>
             <logLevel/>
             <threadName/>
             <mdc/>
