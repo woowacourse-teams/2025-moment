@@ -19,8 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiLogFilter implements Filter {
 
-    private static final String TRACE_ID_KEY = "traceId";
-    private static final String DELIMITER = "=".repeat(70);
+    private static final String TRACE_ID_KEY = "trace_id";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)

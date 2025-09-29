@@ -4,21 +4,22 @@
     <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <message/>
-            <fieldNames>
-                <version>[ignore]</version>
-                <loggerName>logger</loggerName>
-            </fieldNames>
-            <logLevel/>
-            <threadName/>
-            <mdc/>
-            <stackTrace/>
-            <timestamp>
-                <fieldName>event_time</fieldName>
-                <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</pattern>
-                <timeZone>UTC</timeZone>
-            </timestamp>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <mdc/>
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+                <message>
+                    <fieldName>msg</fieldName>
+                </message>
+                <arguments/>
+                <stackTrace/>
+                <timestamp>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</pattern>
+                    <timeZone>Asia/Seoul</timeZone>
+                </timestamp>
+            </providers>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
