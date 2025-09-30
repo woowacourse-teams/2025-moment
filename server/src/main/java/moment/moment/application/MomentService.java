@@ -3,6 +3,7 @@ package moment.moment.application;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,6 @@ import moment.reply.application.EchoQueryService;
 import moment.reply.domain.Echo;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
-import moment.report.infrastructure.ReportRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -74,8 +74,6 @@ public class MomentService {
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
     private final MomentQueryService momentQueryService;
-    private final ReportRepository reportRepository;
-
 
     @Transactional
     public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -135,10 +133,18 @@ public class MomentService {
 
         List<Moment> momentsWithinCursor = getRawMoments(cursor, momenter, pageSize.getPageRequest());
 
-        return getMyMomentPageResponse(momentsWithinCursor, pageSize, cursor);
+        List<Notification> notifications = notificationQueryService.getUnreadContentsNotifications(momenter,
+                TargetType.MOMENT);
+
+        Map<Moment, List<Notification>> notificationsForMoments = mapNotificationForMoment(
+                momentsWithinCursor,
+                notifications);
+
+        return getMyMomentPageResponse(momentsWithinCursor, notificationsForMoments, pageSize, cursor);
     }
 
     private MyMomentPageResponse getMyMomentPageResponse(List<Moment> momentsWithinCursor,
+                                                         Map<Moment, List<Notification>> notificationsForMoments,
                                                          PageSize pageSize,
                                                          Cursor cursor) {
 
@@ -155,7 +161,8 @@ public class MomentService {
                     MyMomentsResponse.of(
                             momentsWithoutCursor,
                             momentTagsByMoment,
-                            momentImagesByMoment
+                            momentImagesByMoment,
+                            notificationsForMoments
                     ),
                     cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                     hasNextPage,
@@ -176,7 +183,8 @@ public class MomentService {
                         echosByComment,
                         momentTagsByMoment,
                         momentImagesByMoment,
-                        commentImagesByMoment
+                        commentImagesByMoment,
+                        notificationsForMoments
                 ),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,
@@ -254,17 +262,22 @@ public class MomentService {
 
     public MyMomentPageResponse getMyUnreadMoments(String nextCursor, int size, Long momenterId) {
         User user = userQueryService.getUserById(momenterId);
+        List<Notification> allNotifications = notificationQueryService.getUnreadContentsNotifications(
+                user,
+                TargetType.MOMENT);
 
         Cursor cursor = new Cursor(nextCursor);
         PageSize pageSize = new PageSize(size);
 
-        List<Moment> unreadRawMoments = getUnreadRawMoments(cursor, user, pageSize);
+        List<Moment> unreadRawMoments = getUnreadRawMoments(cursor, pageSize, allNotifications);
+        Map<Moment, List<Notification>> notificationsForMoments = mapNotificationForMoment(unreadRawMoments,
+                allNotifications);
 
-        return getMyMomentPageResponse(unreadRawMoments, pageSize, cursor);
+        return getMyMomentPageResponse(unreadRawMoments, notificationsForMoments, pageSize, cursor);
     }
 
-    private List<Moment> getUnreadRawMoments(Cursor cursor, User user, PageSize pageSize) {
-        Set<Long> unreadMomentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.MOMENT)
+    private List<Moment> getUnreadRawMoments(Cursor cursor, PageSize pageSize, List<Notification> notifications) {
+        Set<Long> unreadMomentIds = notifications
                 .stream()
                 .map(Notification::getTargetId)
                 .collect(Collectors.toSet());
@@ -295,5 +308,19 @@ public class MomentService {
         }
 
         return MomentReportCreateResponse.from(report);
+    }
+
+    private Map<Moment, List<Notification>> mapNotificationForMoment(List<Moment> moments,
+                                                                     List<Notification> allNotifications) {
+        Map<Moment, List<Notification>> notificationForMoment = new HashMap<>();
+
+        for (Moment moment : moments) {
+            List<Notification> notifications = allNotifications.stream()
+                    .filter(notification -> notification.getTargetId().equals(moment.getId()))
+                    .toList();
+            notificationForMoment.put(moment, notifications);
+        }
+
+        return notificationForMoment;
     }
 }

@@ -9,5 +9,7 @@ public interface NotificationQueryService {
 
     Notification getNotificationById(Long id);
 
+    List<Notification> getNotificationsByIds(List<Long> ids);
+
     List<Notification> getUnreadContentsNotifications(User user, TargetType targetType);
 }
