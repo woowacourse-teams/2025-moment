@@ -1,6 +1,5 @@
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
@@ -8,7 +7,7 @@ import Tag from '@/shared/ui/tag/Tag';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { useMemo, useState } from 'react';
-import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
+import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import * as S from './MyMomentsCard.styles';
 import { theme } from '@/app/styles/theme';
@@ -21,7 +20,8 @@ import { MyMomentsItem } from '../types/moments';
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
 
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+  const { handleReadAllNotifications, isLoading: isReadingNotification } =
+    useReadAllNotifications();
   const { handleOpen, handleClose, isOpen } = useModal();
   const {
     handleOpen: handleComplaintOpen,
@@ -29,7 +29,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     isOpen: isComplaintOpen,
   } = useModal();
   useEchoSelection();
-  const { data: notifications } = useNotificationsQuery();
 
   const filteredComments = useMemo(() => {
     return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
@@ -67,16 +66,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     navigation.reset();
     if (myMoment.momentNotification.isRead || isReadingNotification) return;
 
-    const unreadMomentNotifications =
-      notifications?.data.filter(
-        notification => notification.targetId === myMoment.id && !notification.isRead,
-      ) || [];
-
-    unreadMomentNotifications.forEach(notification => {
-      if (notification.id) {
-        handleReadNotifications(notification.id);
-      }
-    });
+    handleReadAllNotifications(myMoment.momentNotification.notificationIds);
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
