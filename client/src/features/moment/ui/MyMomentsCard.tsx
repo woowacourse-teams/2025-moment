@@ -10,15 +10,15 @@ import { WriterInfo } from '@/widgets/writerInfo';
 import { useMemo, useState } from 'react';
 import { useReadNotifications } from '../../notification/hooks/useReadNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
 import * as S from './MyMomentsCard.styles';
 import { theme } from '@/app/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
+import { MyMomentsItem } from '../types/moments';
 
-export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications }) => {
+export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
 
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -65,7 +65,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
   const handleMomentClick = () => {
     handleOpen();
     navigation.reset();
-    if (myMoment.read || isReadingNotification) return;
+    if (myMoment.momentNotification.isRead || isReadingNotification) return;
 
     const unreadMomentNotifications =
       notifications?.data.filter(
@@ -87,7 +87,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MomentWithNotifications 
         key={myMoment.id}
         $hasComment={hasComments}
         onClick={hasComments ? handleMomentClick : undefined}
-        $shadow={!myMoment.read}
+        $shadow={!myMoment.momentNotification.isRead}
       >
         <S.MyMomentsTitleWrapper>
           <S.CommentCountWrapper>
