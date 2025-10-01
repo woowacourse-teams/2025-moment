@@ -9,12 +9,14 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.CommentNotificationResponse;
 import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
@@ -27,6 +29,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.reply.domain.Echo;
+import moment.reply.dto.request.EchoCreateRequest;
 import moment.reply.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -212,6 +215,59 @@ class CommentControllerTest {
                 .get();
 
         assertThat(commentOfDeletedMomentResponse.moment()).isNull();
+    }
+
+    @Test
+    void 내_코멘트_조회_시_읽음_상태를_함께_반환한다() {
+        // given
+        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+
+        User commenter = new User("commenter@gmail.com", "1234", "commenter", ProviderType.EMAIL);
+        User savedCommenter = userRepository.save(commenter);
+
+        String momenterToken = jwtTokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String commenterToken = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
+
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
+        Moment savedMoment = momentRepository.save(moment);
+
+        Comment comment = new Comment("첫 번째 코멘트", savedCommenter, savedMoment);
+        Comment savedComment = commentRepository.save(comment);
+
+        EchoCreateRequest echoCreateRequest = new EchoCreateRequest(Set.of("HEART"), savedComment.getId());
+
+        // when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", momenterToken)
+                .body(echoCreateRequest)
+                .when().post("api/v1/echos")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        MyCommentPageResponse response = RestAssured.given().log().all()
+                .cookie("accessToken", commenterToken)
+                .param("limit", 10)
+                .when().get("/api/v1/comments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyCommentPageResponse.class);
+
+        // then
+        List<MyCommentResponse> myComments = response.items().myCommentsResponse();
+
+        MyCommentResponse commentResponse = myComments.getFirst();
+
+        CommentNotificationResponse recentCommentNotification = commentResponse.commentNotificationResponse();
+
+        assertAll(
+                () -> assertThat(myComments).hasSize(1),
+                () -> assertThat(recentCommentNotification.isRead()).isFalse(),
+                () -> assertThat(recentCommentNotification.notificationIds()).isNotEmpty()
+        );
     }
 
     @Test

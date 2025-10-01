@@ -1,6 +1,7 @@
 package moment.comment.application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -97,13 +98,17 @@ public class CommentService {
         PageSize pageSize = new PageSize(size);
 
         List<Comment> commentsWithinCursor = getRawComments(cursor, commenter, pageSize);
+        List<Notification> allNotifications = notificationQueryService.getUnreadContentsNotifications(
+                commenter,
+                TargetType.COMMENT);
 
-        return getMyCommentPageResponse(pageSize, commentsWithinCursor, cursor);
+        return getMyCommentPageResponse(pageSize, commentsWithinCursor, cursor, allNotifications);
     }
 
     private MyCommentPageResponse getMyCommentPageResponse(PageSize pageSize,
                                                            List<Comment> commentsWithinCursor,
-                                                           Cursor cursor) {
+                                                           Cursor cursor,
+                                                           List<Notification> allNotifications) {
 
         boolean hasNextPage = pageSize.hasNextPage(commentsWithinCursor.size());
 
@@ -119,10 +124,18 @@ public class CommentService {
         Map<Moment, MomentImage> momentImages = momentImageService.getMomentImageByMoment(momentsOfComment);
 
         List<Echo> allEchoes = echoQueryService.getAllByCommentIn(commentsWithoutCursor);
+        Map<Comment, List<Notification>> notificationsForComments = mapNotificationsForComment(
+                commentsWithoutCursor,
+                allNotifications);
 
         if (allEchoes.isEmpty()) {
             return MyCommentPageResponse.of(
-                    MyCommentsResponse.of(commentsWithoutCursor, momentTagsByMoment, momentImages, commentImages),
+                    MyCommentsResponse.of(
+                            commentsWithoutCursor,
+                            momentTagsByMoment,
+                            momentImages,
+                            commentImages,
+                            notificationsForComments),
                     cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                     hasNextPage,
                     commentsWithoutCursor.size()
@@ -133,8 +146,13 @@ public class CommentService {
                 .collect(Collectors.groupingBy(Echo::getComment));
 
         return MyCommentPageResponse.of(
-                MyCommentsResponse.of(commentsWithoutCursor, commentAndEchos, momentTagsByMoment, momentImages,
-                        commentImages),
+                MyCommentsResponse.of(
+                        commentsWithoutCursor,
+                        commentAndEchos,
+                        momentTagsByMoment,
+                        momentImages,
+                        commentImages,
+                        notificationsForComments),
                 cursor.extract(new ArrayList<>(commentsWithinCursor), hasNextPage),
                 hasNextPage,
                 commentsWithoutCursor.size()
@@ -166,19 +184,24 @@ public class CommentService {
     }
 
     public MyCommentPageResponse getMyUnreadComments(String nextCursor, int size, Long commenterId) {
-        User user = userQueryService.getUserById(commenterId);
+        User commenter = userQueryService.getUserById(commenterId);
 
         Cursor cursor = new Cursor(nextCursor);
         PageSize pageSize = new PageSize(size);
 
-        List<Comment> unreadRawComments = getUnreadRawComments(user, cursor, pageSize);
+        List<Notification> allNotifications = notificationQueryService.getUnreadContentsNotifications(
+                commenter,
+                TargetType.COMMENT);
 
-        return getMyCommentPageResponse(pageSize, unreadRawComments, cursor);
+        List<Comment> unreadRawComments = getUnreadRawComments(cursor, pageSize, allNotifications);
+
+        return getMyCommentPageResponse(pageSize, unreadRawComments, cursor, allNotifications);
     }
 
-    private List<Comment> getUnreadRawComments(User user, Cursor cursor, PageSize pageSize) {
-        Set<Long> unreadCommentIds = notificationQueryService.getUnreadContentsNotifications(user, TargetType.COMMENT)
-                .stream()
+    private List<Comment> getUnreadRawComments(Cursor cursor,
+                                               PageSize pageSize,
+                                               List<Notification> allNotifications) {
+        Set<Long> unreadCommentIds = allNotifications.stream()
                 .map(Notification::getTargetId)
                 .collect(Collectors.toSet());
 
@@ -208,5 +231,19 @@ public class CommentService {
         commentRepository.delete(comment);
 
         return CommentReportCreateResponse.from(savedReport);
+    }
+
+    private Map<Comment, List<Notification>> mapNotificationsForComment(List<Comment> comments,
+                                                                        List<Notification> notifications) {
+        Map<Comment, List<Notification>> notificationsForComments = new HashMap<>();
+        for (Comment comment : comments) {
+            List<Notification> notificationsForComment = notifications.stream()
+                    .filter(notification -> notification.getTargetId().equals(comment.getId()))
+                    .toList();
+
+            notificationsForComments.put(comment, notificationsForComment);
+        }
+
+        return notificationsForComments;
     }
 }

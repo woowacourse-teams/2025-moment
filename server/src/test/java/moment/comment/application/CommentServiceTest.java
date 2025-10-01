@@ -32,6 +32,7 @@ import moment.moment.domain.WriteType;
 import moment.notification.application.NotificationFacade;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
 import moment.reply.application.EchoQueryService;
 import moment.reply.application.EchoService;
 import moment.report.application.ReportService;
@@ -171,11 +172,17 @@ class CommentServiceTest {
         // given
 
         List<Comment> expectedComments = List.of(comment2, comment1);
+        List<Notification> notifications = List.of(
+                new Notification(momenter1,
+                        NotificationType.NEW_REPLY_ON_COMMENT,
+                        TargetType.COMMENT,
+                        2L));
 
         given(commentRepository.findFirstPageCommentIdsByCommenter(any(), any())).willReturn(List.of());
         given(commentRepository.findCommentsWithDetailsByIds(any(List.class))).willReturn(expectedComments);
         given(userQueryService.getUserById(any(Long.class))).willReturn(commenter);
         given(echoQueryService.getAllByCommentIn(any(List.class))).willReturn(Collections.emptyList());
+        given(notificationQueryService.getUnreadContentsNotifications(any(), any())).willReturn(notifications);
 
         // when
         MyCommentPageResponse actualComments = commentService.getCommentsByUserIdWithCursor(null, 1, 1L);
@@ -185,7 +192,9 @@ class CommentServiceTest {
                 () -> assertThat(actualComments.items().myCommentsResponse()).hasSize(1),
                 () -> assertThat(actualComments.nextCursor()).isEqualTo(String.format("%s_%s", now2, 2)),
                 () -> assertThat(actualComments.hasNextPage()).isTrue(),
-                () -> assertThat(actualComments.pageSize()).isEqualTo(1)
+                () -> assertThat(actualComments.pageSize()).isEqualTo(1),
+                () -> assertThat(actualComments.items().getMyCommentsResponse().getFirst()
+                        .commentNotificationResponse().isRead()).isFalse()
         );
     }
 
@@ -301,7 +310,10 @@ class CommentServiceTest {
                 () -> assertThat(response.hasNextPage()).isFalse(),
                 () -> then(notificationQueryService).should(times(1))
                         .getUnreadContentsNotifications(commenter, TargetType.COMMENT),
-                () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any())
+                () -> then(commentRepository).should(times(1)).findUnreadCommentsFirstPage(any(), any()),
+                () -> assertThat(
+                        response.items().myCommentsResponse().getFirst().commentNotificationResponse()
+                                .isRead()).isFalse()
         );
     }
 

@@ -9,6 +9,7 @@ import moment.comment.domain.CommentImage;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.notification.domain.Notification;
 import moment.reply.domain.Echo;
 
 @Schema(description = "나의 Comment 목록 조회 응답")
@@ -29,17 +30,21 @@ public record MyCommentResponse(
         MomentDetailResponse moment,
 
         @Schema(description = "Comment에 등록된 에코 목록")
-        List<EchoDetailResponse> echos
+        List<EchoDetailResponse> echos,
+
+        CommentNotificationResponse commentNotificationResponse
 ) {
     public static MyCommentResponse from(
             Comment comment,
             List<MomentTag> momentTags,
             CommentImage commentImage,
-            MomentImage momentImage
+            MomentImage momentImage,
+            List<Notification> notifications
     ) {
         String imageUrl = Optional.ofNullable(commentImage)
                 .map(CommentImage::getImageUrl)
                 .orElse(null);
+
         List<EchoDetailResponse> echosResponse = null;
         Moment momentOfComment = comment.getMoment();
 
@@ -50,7 +55,8 @@ public record MyCommentResponse(
                     imageUrl,
                     comment.getCreatedAt(),
                     null,
-                    echosResponse
+                    echosResponse,
+                    CommentNotificationResponse.of(notifications)
             );
         }
 
@@ -62,7 +68,8 @@ public record MyCommentResponse(
                 imageUrl,
                 comment.getCreatedAt(),
                 momentResponse,
-                echosResponse
+                echosResponse,
+                CommentNotificationResponse.of(notifications)
         );
     }
 
@@ -71,7 +78,8 @@ public record MyCommentResponse(
             List<Echo> echoes,
             List<MomentTag> momentTags,
             CommentImage commentImage,
-            MomentImage momentImage
+            MomentImage momentImage,
+            List<Notification> notifications
     ) {
         String imageUrl = Optional.ofNullable(commentImage)
                 .map(CommentImage::getImageUrl)
@@ -89,7 +97,8 @@ public record MyCommentResponse(
                     imageUrl,
                     comment.getCreatedAt(),
                     null,
-                    echosResponse
+                    echosResponse,
+                    CommentNotificationResponse.of(notifications)
             );
         }
 
@@ -100,7 +109,8 @@ public record MyCommentResponse(
                 imageUrl,
                 comment.getCreatedAt(),
                 momentResponse,
-                echosResponse
+                echosResponse,
+                CommentNotificationResponse.of(notifications)
         );
     }
 }
