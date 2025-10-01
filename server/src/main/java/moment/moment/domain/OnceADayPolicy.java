@@ -3,6 +3,8 @@ package moment.moment.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import org.springframework.context.annotation.Primary;
@@ -16,7 +18,7 @@ public class OnceADayPolicy implements BasicMomentCreatePolicy {
     private final MomentRepository momentRepository;
 
     @Override
-    public boolean canCreate(User user) {
+    public void validate(User user) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
@@ -26,6 +28,10 @@ public class OnceADayPolicy implements BasicMomentCreatePolicy {
                 startOfDay,
                 endOfDay);
 
-        return todayMomentCount < 1;
+        boolean canCreate = todayMomentCount < 1;
+
+        if (!canCreate) {
+            throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
+        }
     }
 }

@@ -171,7 +171,7 @@ class MomentServiceTest {
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(extraMomentCreatePolicy.validate(any(User.class))).willReturn(true);
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());
         given(tagService.getOrRegister(any(String.class))).willReturn(new Tag("일상/여가"));
         given(momentTagService.save(any(Moment.class), any(Tag.class))).willReturn(momentTag);
@@ -203,7 +203,7 @@ class MomentServiceTest {
         ReflectionTestUtils.setField(expect, "id", 1L);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+        given(extraMomentCreatePolicy.validate(any(User.class))).willReturn(false);
 
         // when & then
         assertThatThrownBy(() -> momentService.addExtraMoment(request, 1L))
@@ -283,7 +283,7 @@ class MomentServiceTest {
         User momenter = new User("mimi@icloud.com", "mimi1234", "미미", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(extraMomentCreatePolicy.validate(any(User.class))).willReturn(true);
 
         MomentCreationStatusResponse expect = new MomentCreationStatusResponse(MomentCreationStatus.ALLOWED);
 
@@ -300,7 +300,7 @@ class MomentServiceTest {
         User momenter = new User("mimi@icloud.com", "mimi1234", "미미", ProviderType.EMAIL);
 
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(false);
+        given(extraMomentCreatePolicy.validate(any(User.class))).willReturn(false);
 
         MomentCreationStatusResponse expect = new MomentCreationStatusResponse(MomentCreationStatus.DENIED);
 
@@ -457,7 +457,7 @@ class MomentServiceTest {
 
         given(momentRepository.save(any(Moment.class))).willReturn(expect);
         given(userQueryService.getUserById(any(Long.class))).willReturn(momenter);
-        given(extraMomentCreatePolicy.canCreate(any(User.class))).willReturn(true);
+        given(extraMomentCreatePolicy.validate(any(User.class))).willReturn(true);
         given(momentImageService.create(any(MomentCreateRequest.class), any(Moment.class)))
                 .willReturn(Optional.of(momentImage));
         doNothing().when(rewardService).useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, expect.getId());

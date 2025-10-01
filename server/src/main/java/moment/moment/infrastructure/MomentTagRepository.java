@@ -14,4 +14,8 @@ public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
     List<MomentTag> findAllByMoment(Moment savedMoment);
 
     void deleteAllByMoment(Moment moment);
+
+    List<MomentTag> findAllByMomentId(Long momentId);
+
+    List<MomentTag> findAllByMomentIdIn(List<Long> momentIds);
 }

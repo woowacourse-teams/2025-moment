@@ -79,9 +79,7 @@ public class MomentService {
     public MomentCreateResponse addBasicMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        if (!basicMomentCreatePolicy.canCreate(momenter)) {
-            throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
-        }
+        basicMomentCreatePolicy.
 
         Moment momentWithoutId = new Moment(request.content(), momenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(momentWithoutId);
@@ -104,7 +102,7 @@ public class MomentService {
     public MomentCreateResponse addExtraMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userQueryService.getUserById(momenterId);
 
-        if (!extraMomentCreatePolicy.canCreate(momenter)) {
+        if (!extraMomentCreatePolicy.validate(momenter)) {
             throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
         }
 
@@ -222,7 +220,7 @@ public class MomentService {
     public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
         User user = userQueryService.getUserById(id);
 
-        if (extraMomentCreatePolicy.canCreate(user)) {
+        if (extraMomentCreatePolicy.validate(user)) {
             return MomentCreationStatusResponse.createAllowedStatus();
         }
 

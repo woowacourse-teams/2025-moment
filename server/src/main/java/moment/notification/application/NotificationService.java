@@ -8,7 +8,7 @@ import moment.notification.domain.NotificationType;
 import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.user.application.UserQueryService;
+import moment.user.application.tobe.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class NotificationService {
 
-    private final UserQueryService userQueryService;
+    private final UserService userService;
     private final NotificationRepository notificationRepository;
     private final NotificationQueryService notificationQueryService;
 
     public List<NotificationResponse> getNotificationByUser(Long id, Boolean read) {
-        User user = userQueryService.getUserById(id);
+        User user = userService.getUserById(id);
         List<Notification> notifications = notificationRepository.findAllByUserAndIsRead(user, read);
 
         return notifications.stream()
