@@ -79,6 +79,15 @@ export default [
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',
         alert: 'readonly',
+        // firebase
+        navigator: 'readonly',
+        clients: 'readonly',
+        self: 'readonly',
+        Notification: 'readonly',
+        fetch: 'readonly',
+        caches: 'readonly',
+        firebase: 'readonly',
+        importScripts: 'readonly',
       },
     },
     rules: {
