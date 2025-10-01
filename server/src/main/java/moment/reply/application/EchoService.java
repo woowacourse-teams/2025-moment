@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import moment.comment.application.CommentQueryService;
+import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;

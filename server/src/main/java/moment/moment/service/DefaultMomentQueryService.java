@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;

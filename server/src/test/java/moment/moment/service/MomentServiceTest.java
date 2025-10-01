@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import moment.comment.application.CommentImageService;
-import moment.comment.application.CommentQueryService;
+import moment.comment.service.CommentImageService;
+import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;

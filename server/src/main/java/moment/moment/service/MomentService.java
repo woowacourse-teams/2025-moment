@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import moment.comment.application.CommentImageService;
-import moment.comment.application.CommentQueryService;
+import moment.comment.service.CommentImageService;
+import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.global.domain.TargetType;

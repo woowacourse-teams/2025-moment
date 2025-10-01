@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import moment.comment.application.CommentQueryService;
+import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;

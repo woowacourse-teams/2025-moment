@@ -1,4 +1,4 @@
-package moment.comment.application;
+package moment.comment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -24,9 +24,9 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.moment.application.MomentImageService;
-import moment.moment.application.MomentQueryService;
-import moment.moment.application.MomentTagService;
+import moment.moment.service.MomentImageService;
+import moment.moment.service.MomentQueryService;
+import moment.moment.service.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.notification.application.NotificationFacade;

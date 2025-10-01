@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

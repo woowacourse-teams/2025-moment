@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

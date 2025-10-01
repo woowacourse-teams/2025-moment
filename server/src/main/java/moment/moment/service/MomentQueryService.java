@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import moment.moment.domain.Moment;
 

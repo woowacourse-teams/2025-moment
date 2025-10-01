@@ -1,4 +1,4 @@
-package moment.comment.application;
+package moment.comment.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.moment.application.MomentImageService;
-import moment.moment.application.MomentQueryService;
-import moment.moment.application.MomentTagService;
+import moment.moment.service.MomentImageService;
+import moment.moment.service.MomentQueryService;
+import moment.moment.service.MomentTagService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;

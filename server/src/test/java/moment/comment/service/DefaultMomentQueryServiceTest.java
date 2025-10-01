@@ -1,4 +1,4 @@
-package moment.comment.application;
+package moment.comment.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
