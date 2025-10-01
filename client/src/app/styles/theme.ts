@@ -57,10 +57,16 @@ export const theme = {
 
     subTitle: {
       fontSize: {
-        small: '12px',
+        small: '1px',
         medium: '18px',
         large: '24px',
       },
+    },
+
+    fontSize: {
+      small: '1.1rem',
+      medium: '1.3rem',
+      large: '1.5rem',
     },
 
     fontWeight: {

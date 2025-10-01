@@ -8,7 +8,7 @@ export const PostCommentsPageContainer = styled.section`
 `;
 
 export const MyMomentContent = styled.p`
-  font-size: 1.1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
   text-align: left;
   color: ${({ theme }) => theme.colors['gray-400']};
   word-break: break-all;

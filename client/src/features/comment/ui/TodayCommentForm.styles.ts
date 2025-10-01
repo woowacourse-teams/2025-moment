@@ -119,3 +119,9 @@ export const FullscreenImage = styled.img`
   max-height: 80vh;
   object-fit: contain;
 `;
+
+export const MomentContent = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  text-align: left;
+  word-break: break-all;
+`;
