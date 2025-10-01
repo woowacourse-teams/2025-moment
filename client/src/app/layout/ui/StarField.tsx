@@ -44,7 +44,7 @@ export const StarField: React.FC<StarFieldProps> = ({ starCount = 80 }) => {
         radius: Math.random() * 1.5 + 0.5,
         opacity: Math.random() * 0.8 + 0.2,
         fadeDirection: Math.random() > 0.5 ? 1 : -1,
-        fadeSpeed: Math.random() * 0.02 + 0.005,
+        fadeSpeed: Math.random() * 0.01 + 0.005,
       }));
     },
     [starCount],

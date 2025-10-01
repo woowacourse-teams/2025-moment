@@ -10,6 +10,7 @@ import moment.comment.domain.CommentImage;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.notification.domain.Notification;
 import moment.reply.domain.Echo;
 
 public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
@@ -19,19 +20,31 @@ public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
                                        Map<Comment, List<Echo>> echosByComment,
                                        Map<Moment, List<MomentTag>> momentTagsByMoment,
                                        Map<Moment, MomentImage> momentImages,
-                                       Map<Comment, CommentImage> commentImages) {
+                                       Map<Comment, CommentImage> commentImages,
+                                       Map<Moment, List<Notification>> notificationsForMoments) {
 
         List<MyMomentResponse> myMomentResponses = moments.stream()
                 .map(moment -> {
-                    List<Comment> momentComments = commentsByMoment.getOrDefault(moment, List.of());
+                    List<Comment> momentComments = commentsByMoment.getOrDefault(moment, Collections.emptyList());
 
                     Map<Long, List<Echo>> commentEchos = getEchosFromCommentsOfMoment(echosByComment, momentComments);
 
-                    List<MomentTag> momentTag = momentTagsByMoment.getOrDefault(moment, List.of());
+                    List<MomentTag> momentTag = momentTagsByMoment.getOrDefault(moment, Collections.emptyList());
 
                     MomentImage momentImage = momentImages.getOrDefault(moment, null);
 
-                    return MyMomentResponse.of(moment, momentComments, commentEchos, momentTag, momentImage, commentImages);
+                    List<Notification> notificationsForMoment = notificationsForMoments.getOrDefault(
+                            moment,
+                            Collections.emptyList());
+
+                    return MyMomentResponse.of(
+                            moment,
+                            momentComments,
+                            commentEchos,
+                            momentTag,
+                            momentImage,
+                            commentImages,
+                            notificationsForMoment);
                 })
                 .toList();
 
@@ -42,12 +55,13 @@ public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
                                                                       List<Comment> momentComments) {
         return momentComments.stream()
                 .collect(Collectors.toMap(Comment::getId,
-                        comment -> echosByComment.getOrDefault(comment, List.of())));
+                        comment -> echosByComment.getOrDefault(comment, Collections.emptyList())));
     }
 
     public static MyMomentsResponse of(List<Moment> moments,
                                        Map<Moment, List<MomentTag>> momentTagsByMoment,
-                                       Map<Moment, MomentImage> momentImages) {
+                                       Map<Moment, MomentImage> momentImages,
+                                       Map<Moment, List<Notification>> notificationsForMoments) {
 
         List<MyMomentResponse> myMomentResponses = moments.stream()
                 .map(moment -> MyMomentResponse.of(
@@ -56,7 +70,8 @@ public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
                         Collections.emptyMap(),
                         momentTagsByMoment.getOrDefault(moment, Collections.emptyList()),
                         momentImages.getOrDefault(moment, null),
-                        Collections.emptyMap()
+                        Collections.emptyMap(),
+                        notificationsForMoments.getOrDefault(moment, Collections.emptyList())
                 ))
                 .toList();
 

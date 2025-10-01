@@ -1,5 +1,8 @@
 package moment.global.exception;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.dto.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,19 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
 
         if (errorCode == ErrorCode.INTERNAL_SERVER_ERROR) {
-            log.error(exception.getMessage(), exception);
+            log.error("InternalServiceError Occurred",
+                    kv("errorCode", errorCode.name()),
+                    kv("status", exception.getStatus()),
+                    kv("errorMessage", exception.getMessage()),
+                    exception
+            );
         }
         if (errorCode != ErrorCode.INTERNAL_SERVER_ERROR) {
-            log.warn(exception.getMessage());
+            log.warn("Handled MomentException",
+                    kv("errorCode", errorCode.name()),
+                    kv("status", exception.getStatus()),
+                    kv("errorMessage", exception.getMessage())
+            );
         }
 
         ErrorResponse errorResponse = ErrorResponse.from(errorCode);
@@ -28,7 +40,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
-        log.warn(exception.getMessage());
+        String validationDetails = exception.getBindingResult().getFieldErrors().stream()
+                .map(error -> String.format("'%s': %s", error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.joining(", "));
+
+        log.warn("Validation Failed",
+                kv("exception", exception.getClass().getSimpleName()),
+                kv("errorMessage", exception.getMessage()),
+                kv("details", validationDetails)
+        );
 
         ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.REQUEST_INVALID);
         return ResponseEntity.badRequest().body(errorResponse);
@@ -36,7 +56,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
-        log.error(exception.getMessage(), exception);
+        log.error("Illegal Argument Exception",
+                kv("exception", exception.getClass().getSimpleName()),
+                kv("errorMessage", exception.getMessage()),
+                exception
+        );
 
         ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.internalServerError().body(errorResponse);
@@ -44,7 +68,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        log.error(exception.getMessage(), exception);
+        log.error("Unhandled Exception Occurred",
+                kv("exception", exception.getClass().getSimpleName()),
+                kv("errorMessage", exception.getMessage()),
+                exception
+        );
 
         ErrorResponse errorResponse = ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.internalServerError().body(errorResponse);

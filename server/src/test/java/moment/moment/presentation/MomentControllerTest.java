@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import jakarta.persistence.EntityManager;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import moment.auth.application.TokenManager;
+import moment.comment.dto.request.CommentCreateRequest;
 import moment.common.DatabaseCleaner;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
@@ -21,6 +21,7 @@ import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.MyMomentResponse;
@@ -50,8 +51,6 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class MomentControllerTest {
 
-    @Autowired
-    EntityManager entityManager;
     @LocalServerPort
     private int port;
     @Autowired
@@ -327,6 +326,69 @@ class MomentControllerTest {
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
                 () -> assertThat(response.pageSize()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 내_모멘트_조회_시_읽음_상태를_함께_반환한다() {
+        // given
+        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+
+        User commenter = userRepository.save(new User("commenter@gmail.com", "1234", "commenter", ProviderType.EMAIL));
+
+        String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
+
+        MomentCreateRequest createRequest1 = new MomentCreateRequest("첫 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateResponse momentResponse1 = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", momenterToken)
+                .body(createRequest1)
+                .when().post("/api/v1/moments")
+                .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
+        Long momentId1 = momentResponse1.id();
+
+        MomentCreateRequest createRequest2 = new MomentCreateRequest("두 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateResponse momentResponse2 = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", momenterToken)
+                .body(createRequest2)
+                .when().post("/api/v1/moments/extra")
+                .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
+
+        CommentCreateRequest commentRequest = new CommentCreateRequest("코멘트 내용", momentId1, null, null);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", commenterToken)
+                .body(commentRequest)
+                .when().post("/api/v1/comments")
+                .then().statusCode(HttpStatus.CREATED.value());
+
+        // when
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .param("limit", 5)
+                .cookie("accessToken", momenterToken)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyMomentPageResponse.class);
+
+        // then
+        List<MyMomentResponse> myMoments = response.items().myMomentsResponse();
+
+        MomentNotificationResponse recentMomentNotificationResponse = myMoments.get(0).momentNotification();
+        MomentNotificationResponse olderMomentNotificationResponse = myMoments.get(1).momentNotification();
+
+        assertAll(
+                () -> assertThat(recentMomentNotificationResponse.isRead()).isTrue(),
+                () -> assertThat(recentMomentNotificationResponse.notificationIds()).isEmpty(),
+                () -> assertThat(olderMomentNotificationResponse.isRead()).isFalse(),
+                () -> assertThat(olderMomentNotificationResponse.notificationIds()).isNotEmpty()
         );
     }
 

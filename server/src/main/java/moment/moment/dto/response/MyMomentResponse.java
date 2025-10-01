@@ -11,6 +11,7 @@ import moment.comment.domain.CommentImage;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.notification.domain.Notification;
 import moment.reply.domain.Echo;
 
 @Schema(description = "내 모멘트 조회 응답")
@@ -33,7 +34,10 @@ public record MyMomentResponse(
         @Schema(description = "내 모멘트 작성 시간,", example = "2025-07-14T16:24:34Z")
         LocalDateTime createdAt,
 
-        List<MyMomentCommentResponse> comments
+        List<MyMomentCommentResponse> comments,
+
+        @Schema(description = "내 모멘트 알림 정보")
+        MomentNotificationResponse momentNotification
 ) {
 
     public static MyMomentResponse of(
@@ -42,7 +46,8 @@ public record MyMomentResponse(
             Map<Long, List<Echo>> echoMap,
             List<MomentTag> momentTags,
             MomentImage momentImage,
-            Map<Comment, CommentImage> commentImages
+            Map<Comment, CommentImage> commentImages,
+            List<Notification> unreadNotifications
     ) {
         String imageUrl = Optional.ofNullable(momentImage)
                 .map(MomentImage::getImageUrl)
@@ -51,7 +56,8 @@ public record MyMomentResponse(
         if (!comments.isEmpty()) {
             List<MyMomentCommentResponse> myMomentCommentResponses = comments.stream()
                     .map(comment -> MyMomentCommentResponse.of(
-                            comment, echoMap.getOrDefault(comment.getId(), List.of()), commentImages.getOrDefault(comment, null)))
+                            comment, echoMap.getOrDefault(comment.getId(), List.of()),
+                            commentImages.getOrDefault(comment, null)))
                     .toList();
 
             return new MyMomentResponse(
@@ -61,7 +67,8 @@ public record MyMomentResponse(
                     TagNamesResponse.from(momentTags),
                     imageUrl,
                     moment.getCreatedAt(),
-                    myMomentCommentResponses
+                    myMomentCommentResponses,
+                    MomentNotificationResponse.from(unreadNotifications)
             );
         }
 
@@ -72,6 +79,8 @@ public record MyMomentResponse(
                 TagNamesResponse.from(momentTags),
                 imageUrl,
                 moment.getCreatedAt(),
-                Collections.emptyList());
+                Collections.emptyList(),
+                MomentNotificationResponse.from(unreadNotifications)
+        );
     }
 }
