@@ -63,6 +63,16 @@ export const theme = {
         medium: '1.3rem',
         large: '1.5rem',
       },
+      mobileTitle: {
+        small: '1.5rem',
+        medium: '2rem',
+        large: '2.5rem',
+      },
+      mobileSubTitle: {
+        small: '1rem',
+        medium: '1.2rem',
+        large: '1.4rem',
+      },
       mobileContent: {
         small: '1rem',
         medium: '1.2rem',
