@@ -12,8 +12,10 @@ import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/u
 
 const App = () => {
   useEffect(() => {
-    setupForegroundMessage((payload) => {
-      alert(`알림 도착!\n제목: ${payload.notification?.title}\n내용: ${payload.notification?.body}`);
+    setupForegroundMessage(payload => {
+      alert(
+        `알림 도착!\n제목: ${payload.notification?.title}\n내용: ${payload.notification?.body}`,
+      );
     });
 
     const initializeFCM = async () => {
