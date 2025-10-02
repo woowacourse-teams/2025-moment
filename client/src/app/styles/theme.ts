@@ -49,17 +49,17 @@ export const theme = {
   typography: {
     title: {
       fontSize: {
-        small: '32px',
-        medium: '40px',
-        large: '54px',
+        small: '2rem',
+        medium: '2.5rem',
+        large: '3.5rem',
       },
     },
 
     subTitle: {
       fontSize: {
-        small: '1px',
-        medium: '18px',
-        large: '24px',
+        small: '1.1rem',
+        medium: '1.3rem',
+        large: '1.5rem',
       },
     },
 
