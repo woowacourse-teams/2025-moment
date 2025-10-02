@@ -1,4 +1,4 @@
-CREATE TABLE push_notification_tokens (
+CREATE TABLE push_notifications (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     device_endpoint VARCHAR(255) NOT NULL,
