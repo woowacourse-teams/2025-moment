@@ -1,9 +1,12 @@
 package moment.moment.service.tobe.application;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.global.domain.TargetType;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.BasicMomentCreatePolicy;
@@ -20,6 +23,8 @@ import moment.moment.service.tobe.moment.MomentImageService;
 import moment.moment.service.tobe.moment.MomentService;
 import moment.moment.service.tobe.moment.MomentTagService;
 import moment.moment.service.tobe.moment.TagService;
+import moment.notification.application.tobe.NotificationService;
+import moment.notification.domain.Notification;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.tobe.user.UserService;
@@ -40,6 +45,7 @@ public class MomentApplicationService {
     private final MomentTagService momentTagService;
     private final TagService tagService;
     private final RewardService rewardService;
+    private final NotificationService notificationService;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -49,7 +55,8 @@ public class MomentApplicationService {
 
         Moment savedMoment = momentService.create(request.content(), momenter, WriteType.BASIC);
 
-        Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(), request.imageName());
+        Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(),
+                request.imageName());
 
         List<Tag> tags = tagService.getOrCreate(request.tagNames());
 
@@ -69,7 +76,8 @@ public class MomentApplicationService {
 
         Moment savedMoment = momentService.create(request.content(), momenter, WriteType.BASIC);
 
-        Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(), request.imageName());
+        Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(),
+                request.imageName());
 
         List<Tag> tags = tagService.getOrCreate(request.tagNames());
 
@@ -81,20 +89,37 @@ public class MomentApplicationService {
                 .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
 
-    public List<MomentComposition> getMyMoments(String nextCursor, int size, Long momenterId) {
+    public List<MomentComposition> getMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
         User momenter = userService.getUserById(momenterId);
-
-        Cursor cursor = new Cursor(nextCursor);
-        PageSize pageSize = new PageSize(size);
 
         List<Moment> momentsWithinCursor = momentService.getMyPage(momenter, cursor, pageSize);
 
-        return getMyMomentPageResponse(momentsWithinCursor, pageSize);
+        List<Notification> unreadNotifications =
+
+        return getMyMomentPageResponse(momentsWithinCursor, pageSize, unreadNotifications);
+    }
+
+    private Map<Moment, List<Notification>> mapNotificationForMoment(User momenter, List<Moment> moments) {
+
+        List<Notification> allNotifications = notificationService.getUnreadNotifications(
+                momenter,
+                TargetType.MOMENT);
+
+        Map<Long, List<Notification>> notificationsByMomentIds =
+                allNotifications.stream()
+                        .collect(Collectors.groupingBy(Notification::getTargetId));
+
+        return moments.stream()
+                .collect(Collectors.toMap(
+                        moment -> moment,
+                        moment -> notificationsByMomentIds.getOrDefault(moment.getId(), List.of())
+                ));
     }
 
     private List<MomentComposition> getMyMomentPageResponse(
             List<Moment> momentsWithinCursor,
-            PageSize pageSize
+            PageSize pageSize,
+            Map<Moment, List<Notification>> unreadNotificationsByMoments
     ) {
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
@@ -105,8 +130,9 @@ public class MomentApplicationService {
                 .map(moment ->
                         MomentComposition.of(
                                 moment, momentTagsByMoment.get(moment),
-                                momentImageByMoment.getOrDefault(moment, null)
-                        )
+                                momentImageByMoment.getOrDefault(moment, null),
+                                unreadNotificationsByMoments.get(moment)
+                                )
                 )
                 .toList();
     }

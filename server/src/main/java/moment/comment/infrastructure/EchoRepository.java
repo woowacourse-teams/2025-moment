@@ -1,11 +1,10 @@
-package moment.reply.infrastructure;
+package moment.comment.infrastructure;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import moment.comment.domain.Comment;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.user.domain.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

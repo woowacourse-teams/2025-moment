@@ -1,43 +1,45 @@
 package moment.moment.dto.response.tobe;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.notification.domain.Notification;
 
 public record MomentComposition(
-        @Schema(description = "모멘트 id", example = "1")
         Long id,
-
-        @Schema(description = "모멘트 작성자 id", example = "1")
         Long momenterId,
-
-        @Schema(description = "내 모멘트 내용", example = "야근 힘들어요 퓨ㅠㅠ")
         String content,
-
-        @Schema(description = "태그 이름 리스트", example = "[\"일상/여가\", \"운동\"]")
         List<String> tagNames,
-
-        @Schema(description = "모멘트 이미지", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
         String imageUrl,
-
-        @Schema(description = "내 모멘트 작성 시간,", example = "2025-07-14T16:24:34Z")
-        LocalDateTime createdAt
+        LocalDateTime momentCreatedAt,
+        List<Long> unreadNotificationsIds,
+        Boolean isRead
 ) {
 
-    public static MomentComposition of (Moment moment, List<MomentTag> momentTags, MomentImage momentImage) {
+    public static MomentComposition of (Moment moment,
+                                        List<MomentTag> momentTags,
+                                        MomentImage momentImage,
+                                        List<Notification> unreadNotifications) {
+
         List<String> tagNames = momentTags.stream()
                 .map(MomentTag::getTagName)
                 .toList();
+
+        List<Long> unreadNotificationIds = unreadNotifications.stream()
+                .map(Notification::getId)
+                .toList();
+
         return new MomentComposition(
                 moment.getId(),
                 moment.getMomenter().getId(),
                 moment.getContent(),
                 tagNames,
                 momentImage.getImageUrl(),
-                moment.getCreatedAt()
+                moment.getCreatedAt(),
+                unreadNotificationIds,
+                unreadNotifications.isEmpty()
         );
     }
 }

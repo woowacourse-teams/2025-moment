@@ -11,8 +11,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import moment.comment.service.CommentImageService;
-import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.global.domain.TargetType;
@@ -38,8 +36,7 @@ import moment.moment.dto.response.MyMomentsResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
-import moment.reply.application.EchoQueryService;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.reward.application.RewardService;
@@ -58,14 +55,14 @@ public class MomentService {
     private static final int MOMENT_DELETE_THRESHOLD = 3;
 
     private final MomentRepository momentRepository;
-    private final CommentQueryService commentQueryService;
-    private final EchoQueryService echoQueryService;
+//    private final CommentQueryService commentQueryService;
+//    private final EchoQueryService echoQueryService;
     private final MomentTagQueryService momentTagQueryService;
     private final MomentTagService momentTagService;
     private final UserQueryService userQueryService;
     private final RewardService rewardService;
     private final MomentImageService momentImageService;
-    private final CommentImageService commentImageService;
+//    private final CommentImageService commentImageService;
     private final TagService tagService;
     private final NotificationQueryService notificationQueryService;
 

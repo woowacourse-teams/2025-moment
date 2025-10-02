@@ -1,7 +1,7 @@
 package moment.comment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 
 @Schema(description = "Comment애 등록된 Echo 상세 내용")
 public record EchoDetailResponse(

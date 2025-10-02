@@ -1,4 +1,4 @@
-package moment.reply.domain;
+package moment.comment.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +14,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import moment.comment.domain.Comment;
 import moment.global.domain.BaseEntity;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;

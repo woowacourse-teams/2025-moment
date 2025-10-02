@@ -14,10 +14,10 @@ import moment.common.DatabaseCleaner;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
-import moment.reply.dto.response.EchoReadResponse;
-import moment.reply.infrastructure.EchoRepository;
+import moment.comment.dto.tobe.EchoDetail;
+import moment.comment.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -108,14 +108,14 @@ public class EchoControllerTest {
         Echo savedEcho = echoRepository.save(new Echo("HEART", momenter, comment));
 
         // when
-        List<EchoReadResponse> response = RestAssured.given().log().all()
+        List<EchoDetail> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", commenterToken)
                 .when().get("/api/v1/echos/" + comment.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath()
-                .getList("data", EchoReadResponse.class);
+                .getList("data", EchoDetail.class);
 
         // then
         assertAll(

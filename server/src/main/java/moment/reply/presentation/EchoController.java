@@ -14,7 +14,7 @@ import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.reply.application.EchoService;
 import moment.reply.dto.request.EchoCreateRequest;
-import moment.reply.dto.response.EchoReadResponse;
+import moment.comment.dto.tobe.EchoDetail;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,11 +69,11 @@ public class EchoController {
             @ApiResponse(responseCode = "200", description = "에코 조회 성공")
     })
     @GetMapping("/{commentId}")
-    public ResponseEntity<SuccessResponse<List<EchoReadResponse>>> readEchosByComment(
+    public ResponseEntity<SuccessResponse<List<EchoDetail>>> readEchosByComment(
             @PathVariable Long commentId,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        List<EchoReadResponse> response = echoService.getEchosByCommentId(commentId);
+        List<EchoDetail> response = echoService.getEchosByCommentId(commentId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

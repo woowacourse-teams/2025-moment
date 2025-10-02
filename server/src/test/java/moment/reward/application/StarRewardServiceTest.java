@@ -5,7 +5,7 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;

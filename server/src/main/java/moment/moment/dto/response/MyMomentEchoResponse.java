@@ -1,7 +1,7 @@
 package moment.moment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 
 @Schema(description = "내 모멘트의 코멘트의 에코 조회 응답")
 public record MyMomentEchoResponse(

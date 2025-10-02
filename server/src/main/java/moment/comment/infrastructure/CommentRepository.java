@@ -73,4 +73,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @EntityGraph(attributePaths = {"commenter"})
     Optional<Comment> findWithCommenterById(Long id);
+
+    List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 }

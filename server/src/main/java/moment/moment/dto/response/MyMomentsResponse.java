@@ -11,7 +11,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.notification.domain.Notification;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 
 public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
 

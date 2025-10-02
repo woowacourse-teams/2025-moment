@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.user.domain.Level;
 
 @Schema(description = "모멘트에 달린 코멘트 응답")

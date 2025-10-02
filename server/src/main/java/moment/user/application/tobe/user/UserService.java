@@ -1,5 +1,6 @@
 package moment.user.application.tobe.user;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -19,4 +20,9 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
     }
+
+    public List<User> getAllByIds(List<Long> ids) {
+        return userRepository.findAllByIdIn(ids);
+    }
+
 }

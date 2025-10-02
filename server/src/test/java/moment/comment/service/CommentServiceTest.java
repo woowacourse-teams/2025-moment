@@ -21,6 +21,7 @@ import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentReportCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.infrastructure.CommentRepository;
+import moment.comment.service.tobe.comment.CommentImageService;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -161,12 +162,12 @@ class CommentServiceTest {
         Comment comment1 = new Comment("moment1 comment", commenter, moment1);
         LocalDateTime now1 = LocalDateTime.now();
         ReflectionTestUtils.setField(comment1, "id", 1L);
-        ReflectionTestUtils.setField(comment1, "createdAt", now1);
+        ReflectionTestUtils.setField(comment1, "momentCreatedAt", now1);
 
         Comment comment2 = new Comment("moment2 comment", commenter, moment2);
         LocalDateTime now2 = LocalDateTime.now();
         ReflectionTestUtils.setField(comment2, "id", 2L);
-        ReflectionTestUtils.setField(comment2, "createdAt", now2);
+        ReflectionTestUtils.setField(comment2, "momentCreatedAt", now2);
 
         // given
 

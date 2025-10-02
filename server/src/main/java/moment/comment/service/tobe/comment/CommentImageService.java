@@ -1,4 +1,4 @@
-package moment.comment.service;
+package moment.comment.service.tobe.comment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +29,12 @@ public class CommentImageService {
         return Optional.of(commentImageRepository.save(commentImageWithoutId));
     }
 
+    public Map<Comment, CommentImage> getCommentImageByComment(List<Comment> comments) {
+        return commentImageRepository.findAllByCommentIn(comments).stream()
+                .collect(Collectors.toMap(CommentImage::getComment, commentImage -> commentImage));
+    }
+
+    // TODO: 이거 없어져야 함
     public Map<Comment, CommentImage> getCommentImageByMoment(List<Comment> comments) {
         List<CommentImage> momentImages = commentImageRepository.findAllByCommentIn(comments);
 
@@ -47,6 +53,7 @@ public class CommentImageService {
         return results;
     }
 
+    @Transactional
     public void deleteByComment(Comment comment) {
         commentImageRepository.deleteByComment(comment);
     }

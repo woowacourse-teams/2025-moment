@@ -12,10 +12,10 @@ import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.notification.application.NotificationFacade;
 import moment.notification.domain.NotificationType;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
-import moment.reply.dto.response.EchoReadResponse;
-import moment.reply.infrastructure.EchoRepository;
+import moment.comment.dto.tobe.EchoDetail;
+import moment.comment.infrastructure.EchoRepository;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
@@ -74,12 +74,12 @@ public class EchoService {
         }
     }
 
-    public List<EchoReadResponse> getEchosByCommentId(Long commentId) {
+    public List<EchoDetail> getEchosByCommentId(Long commentId) {
         Comment comment = commentQueryService.getCommentById(commentId);
         List<Echo> echoes = echoQueryService.getEchosByComment(comment);
 
         return echoes.stream()
-                .map(EchoReadResponse::from)
+                .map(EchoDetail::from)
                 .toList();
     }
 

@@ -3,7 +3,7 @@ package moment.reply.application;
 import java.util.List;
 import java.util.Map;
 import moment.comment.domain.Comment;
-import moment.reply.domain.Echo;
+import moment.comment.domain.Echo;
 
 public interface EchoQueryService {
 
