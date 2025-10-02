@@ -9,6 +9,7 @@ import java.util.List;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
+import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.application.UserQueryService;
@@ -98,5 +99,30 @@ class NotificationServiceTest {
 
         // then
         assertThat(notification.isRead()).isTrue();
+    }
+
+    @Test
+    void 사용자가_요청으로_들어온_알림을_읽는다() {
+        // given
+        User user = new User("lebron@james.com", "james1234!", "르브론", ProviderType.EMAIL);
+        Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                1L);
+        Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                2L);
+        Notification notification3 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                3L);
+        Notification notification4 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+                4L);
+        NotificationReadRequest request = new NotificationReadRequest(List.of(1L, 2L, 3L, 4L));
+        List<Notification> notifications = List.of(notification1, notification2, notification3, notification4);
+
+        given(notificationQueryService.getNotificationsByIds(any()))
+                .willReturn(notifications);
+
+        // when
+        notificationService.readNotifications(request);
+
+        // then
+        assertThat(notifications.stream().allMatch(Notification::isRead)).isTrue();
     }
 }

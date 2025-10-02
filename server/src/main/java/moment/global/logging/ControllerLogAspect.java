@@ -1,10 +1,13 @@
 package moment.global.logging;
 
 import static java.util.stream.Collectors.joining;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -44,11 +47,21 @@ public class ControllerLogAspect {
 
     private void getRequest(JoinPoint joinPoint) {
         HttpServletRequest request = getHttpServletRequest();
-        String queryParameters = getQueryParameters(request);
-        String body = getBody(joinPoint);
-        boolean hasToken = hasToken(request);
+        List<Object> logArgs = new ArrayList<>();
 
-        log.debug("request: [{}], parameters: [{}], hasToken: [{}]", body, queryParameters, hasToken);
+        String queryParameters = getQueryParameters(request);
+        if (queryParameters != null && !queryParameters.isEmpty()) {
+            logArgs.add(kv("queryParams", queryParameters));
+        }
+
+        Object body = getBody(joinPoint);
+        if (body != null) {
+            logArgs.add(kv("requestBody", body));
+        }
+
+        logArgs.add(kv("hasToken", hasToken(request)));
+
+        log.debug("Controller Request", logArgs.toArray());
     }
 
     private HttpServletRequest getHttpServletRequest() {
@@ -69,15 +82,13 @@ public class ControllerLogAspect {
         return queryParameters;
     }
 
-    private String getBody(JoinPoint joinPoint) {
+    private Object getBody(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Parameter[] parameters = methodSignature.getMethod().getParameters();
         Object[] args = joinPoint.getArgs();
         for (int i = 0; i < parameters.length; i++) {
-            Parameter param = parameters[i];
-            Object arg = args[i];
-            if (param.isAnnotationPresent(RequestBody.class)) {
-                return arg.toString();
+            if (parameters[i].isAnnotationPresent(RequestBody.class)) {
+                return args[i];
             }
         }
         return null;
@@ -97,6 +108,6 @@ public class ControllerLogAspect {
     }
 
     private void getResponse(Object responseBody) {
-        log.info("response: [{}]", responseBody);
+        log.debug("Controller Response", kv("responseBody",responseBody));
     }
 }
