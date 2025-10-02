@@ -21,10 +21,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-class PushNotificationSenderTest {
+class FcmPushNotificationSenderTest {
 
     @InjectMocks
-    private PushNotificationSender pushNotificationSender;
+    private FcmPushNotificationSender FCMPushNotificationSender;
 
     @Mock
     private PushNotificationRepository pushNotificationRepository;
@@ -53,7 +53,7 @@ class PushNotificationSenderTest {
         when(firebaseMessaging.sendAsync(any(Message.class))).thenReturn(mockApiFuture);
 
         // when
-        pushNotificationSender.send(pushNotificationCommand);
+        FCMPushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(firebaseMessaging).sendAsync(any(Message.class));
@@ -62,7 +62,7 @@ class PushNotificationSenderTest {
     @Test
     void FirebaseMessaging_빈이_설정되지_않았으면_알림을_보내지_않는다() {
         // given
-        PushNotificationSender senderWithNoFcm = new PushNotificationSender(pushNotificationRepository, null);
+        FcmPushNotificationSender senderWithNoFcm = new FcmPushNotificationSender(pushNotificationRepository, null);
         PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, PushNotificationMessage.REPLY_TO_MOMENT);
 
         // when
@@ -80,7 +80,7 @@ class PushNotificationSenderTest {
         when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
 
         // when
-        pushNotificationSender.send(pushNotificationCommand);
+        FCMPushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(pushNotificationRepository).findByUserId(user.getId());
