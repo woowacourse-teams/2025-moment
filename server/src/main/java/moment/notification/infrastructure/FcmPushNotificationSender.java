@@ -8,7 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.extern.slf4j.Slf4j;
-import moment.notification.application.PushNotificationService;
+import moment.notification.domain.PushNotificationSender;
 import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotificationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class PushNotificationSender implements PushNotificationService {
+public class FcmPushNotificationSender implements PushNotificationSender {
 
     private final PushNotificationRepository pushNotificationRepository;
     private final FirebaseMessaging firebaseMessaging;
 
-    public PushNotificationSender(
+    public FcmPushNotificationSender(
             PushNotificationRepository pushNotificationRepository,
             @Autowired(required = false) FirebaseMessaging firebaseMessaging
     ) {
