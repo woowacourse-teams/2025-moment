@@ -60,6 +60,7 @@ export const MyMomentsContent = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
   text-align: center;
   word-break: break-all;
 `;
@@ -128,6 +129,7 @@ export const CommentContent = styled.div`
 
   & > div {
     word-break: break-all;
+    font-size: ${({ theme }) => theme.typography.fontSize.medium};
   }
 `;
 
