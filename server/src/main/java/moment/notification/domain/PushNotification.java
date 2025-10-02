@@ -19,8 +19,8 @@ import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-@Entity(name = "push_notification_tokens")
-@SQLDelete(sql = "UPDATE push_notification_tokens SET deleted_at = NOW() WHERE id = ?")
+@Entity(name = "push_notifications")
+@SQLDelete(sql = "UPDATE push_notifications SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
