@@ -37,19 +37,16 @@ public class FcmPushNotificationSender implements PushNotificationSender {
         }
         Long userId = pushNotificationCommand.user().getId();
 
-        pushNotificationRepository.findByUserId(userId)
-                .ifPresentOrElse(
-                        pushNotification -> {
-                            Message message = buildMessage(
-                                    pushNotificationCommand.message(),
-                                    pushNotification.getDeviceEndpoint());
+        pushNotificationRepository.findByUserId(userId).forEach(
+                pushNotification -> {
+                    Message message = buildMessage(
+                            pushNotificationCommand.message(),
+                            pushNotification.getDeviceEndpoint());
 
-                            ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-                            addSendCallback(future, userId);
-                            log.info("Push notification sent successfully.");
-                        },
-                        () -> log.warn("Push notification token not found for user: {}", userId)
-                );
+                    ApiFuture<String> future = firebaseMessaging.sendAsync(message);
+                    addSendCallback(future, pushNotification.getDeviceEndpoint());
+                }
+        );
     }
 
     private Message buildMessage(PushNotificationMessage pushNotificationMessage, String deviceEndpoint) {
@@ -64,15 +61,17 @@ public class FcmPushNotificationSender implements PushNotificationSender {
                 .build();
     }
 
-    private void addSendCallback(ApiFuture<String> future, Long userId) {
+    private void addSendCallback(ApiFuture<String> future, String deviceEndpoint) {
         ApiFutures.addCallback(future, new ApiFutureCallback<>() {
             @Override
             public void onSuccess(String result) {
+                log.info("Successfully sent notification to endpoint: {}", deviceEndpoint);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                log.error("Failed to send push notification for user {}", userId, throwable);
+                log.warn("Failed to send notification to endpoint: {}. Deleting endpoint.", deviceEndpoint, throwable);
+                pushNotificationRepository.deleteByDeviceEndpoint(deviceEndpoint);
             }
         }, MoreExecutors.directExecutor());
     }
