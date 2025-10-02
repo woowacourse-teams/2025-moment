@@ -10,6 +10,7 @@ import com.google.firebase.messaging.Notification;
 import lombok.extern.slf4j.Slf4j;
 import moment.notification.application.PushNotificationService;
 import moment.notification.domain.PushNotificationCommand;
+import moment.notification.domain.PushNotificationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,8 @@ public class PushNotificationSender implements PushNotificationService {
     private final FirebaseMessaging firebaseMessaging;
 
     public PushNotificationSender(
-        PushNotificationRepository pushNotificationRepository,
-        @Autowired(required = false) FirebaseMessaging firebaseMessaging
+            PushNotificationRepository pushNotificationRepository,
+            @Autowired(required = false) FirebaseMessaging firebaseMessaging
     ) {
         this.pushNotificationRepository = pushNotificationRepository;
         this.firebaseMessaging = firebaseMessaging;
@@ -37,27 +38,30 @@ public class PushNotificationSender implements PushNotificationService {
         Long userId = pushNotificationCommand.user().getId();
 
         pushNotificationRepository.findByUserId(userId)
-            .ifPresentOrElse(
-                pushNotification -> {
-                    Message message = buildMessage(pushNotificationCommand, pushNotification.getDeviceEndpoint());
-                    ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-                    addSendCallback(future, userId);
-                    log.info("Push notification sent successfully.");
-                },
-                () -> log.warn("Push notification token not found for user: {}", userId)
-            );
+                .ifPresentOrElse(
+                        pushNotification -> {
+                            Message message = buildMessage(
+                                    pushNotificationCommand.message(),
+                                    pushNotification.getDeviceEndpoint());
+
+                            ApiFuture<String> future = firebaseMessaging.sendAsync(message);
+                            addSendCallback(future, userId);
+                            log.info("Push notification sent successfully.");
+                        },
+                        () -> log.warn("Push notification token not found for user: {}", userId)
+                );
     }
 
-    private Message buildMessage(PushNotificationCommand pushNotificationCommand, String deviceEndpoint) {
+    private Message buildMessage(PushNotificationMessage pushNotificationMessage, String deviceEndpoint) {
         Notification notification = Notification.builder()
-            .setTitle(pushNotificationCommand.title())
-            .setBody(pushNotificationCommand.body())
-            .build();
+                .setTitle(pushNotificationMessage.getTitle())
+                .setBody(pushNotificationMessage.getBody())
+                .build();
 
         return Message.builder()
-            .setToken(deviceEndpoint)
-            .setNotification(notification)
-            .build();
+                .setToken(deviceEndpoint)
+                .setNotification(notification)
+                .build();
     }
 
     private void addSendCallback(ApiFuture<String> future, Long userId) {
