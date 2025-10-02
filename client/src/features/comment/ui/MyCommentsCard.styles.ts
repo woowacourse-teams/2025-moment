@@ -8,14 +8,14 @@ export const PostCommentsPageContainer = styled.section`
 `;
 
 export const MyMomentContent = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
   text-align: left;
   color: ${({ theme }) => theme.colors['gray-400']};
   word-break: break-all;
 `;
 
 export const DeletedMomentText = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
   color: ${({ theme }) => theme.colors['gray-400']};
   font-style: italic;
   text-align: left;
@@ -37,7 +37,7 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Title = styled.span`
-  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
+  font-size: ${({ theme }) => theme.typography.fontSize.title.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};
   color: ${({ theme }) => theme.colors.white};
 `;
@@ -91,7 +91,7 @@ export const EchoContainer = styled.div`
 
 export const NoEchoContent = styled.p`
   text-align: center;
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
@@ -136,13 +136,13 @@ export const FullscreenImage = styled.img`
 `;
 
 export const CommentContent = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
   text-align: left;
   word-break: break-all;
 `;
 
 export const SubTitle = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.subTitle.medium};
   text-align: left;
   word-break: break-all;
 `;

@@ -47,26 +47,27 @@ export const theme = {
     'green-700_20': 'color-mix(in srgb, #99CC00 20%, transparent)',
   },
   typography: {
-    title: {
-      fontSize: {
+    fontSize: {
+      title: {
         small: '2rem',
         medium: '2.5rem',
         large: '3.5rem',
       },
-    },
-
-    subTitle: {
-      fontSize: {
+      subTitle: {
         small: '1.1rem',
         medium: '1.3rem',
         large: '1.5rem',
       },
-    },
-
-    fontSize: {
-      small: '1.1rem',
-      medium: '1.3rem',
-      large: '1.5rem',
+      content: {
+        small: '1.1rem',
+        medium: '1.3rem',
+        large: '1.5rem',
+      },
+      mobileContent: {
+        small: '1rem',
+        medium: '1.2rem',
+        large: '1.4rem',
+      },
     },
 
     fontWeight: {
