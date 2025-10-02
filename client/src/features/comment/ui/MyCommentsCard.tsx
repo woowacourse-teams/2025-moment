@@ -64,7 +64,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
           <S.ContentContainer>
             <S.TitleContainer>
               <Send size={20} color={theme.colors['yellow-500']} />
-              <p>보낸 코멘트</p>
+              <S.SubTitle>보낸 코멘트</S.SubTitle>
             </S.TitleContainer>
             <SimpleCard
               height="small"
@@ -90,7 +90,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <S.ContentContainer>
               <S.TitleContainer>
                 <Heart size={20} color={theme.colors['yellow-500']} />
-                <p>받은 에코</p>
+                <S.SubTitle>받은 에코</S.SubTitle>
               </S.TitleContainer>
               <S.EchoContainer>
                 {myComment.echos && myComment.echos.length > 0 ? (

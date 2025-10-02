@@ -15,7 +15,7 @@ export const MyMomentContent = styled.p`
 `;
 
 export const DeletedMomentText = styled.p`
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
   color: ${({ theme }) => theme.colors['gray-400']};
   font-style: italic;
   text-align: left;
@@ -91,7 +91,7 @@ export const EchoContainer = styled.div`
 
 export const NoEchoContent = styled.p`
   text-align: center;
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
@@ -136,6 +136,12 @@ export const FullscreenImage = styled.img`
 `;
 
 export const CommentContent = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  text-align: left;
+  word-break: break-all;
+`;
+
+export const SubTitle = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.medium};
   text-align: left;
   word-break: break-all;
