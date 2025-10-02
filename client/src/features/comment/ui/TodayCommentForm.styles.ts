@@ -121,7 +121,7 @@ export const FullscreenImage = styled.img`
 `;
 
 export const MomentContent = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
   text-align: left;
   word-break: break-all;
 `;

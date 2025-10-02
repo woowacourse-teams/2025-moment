@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 export const TitleStyles = {
   title: (theme: CustomTheme) => `
-    font-size: ${theme.typography.title.fontSize.large};
+    font-size: ${theme.typography.fontSize.title.large};
     font-weight: ${theme.typography.fontWeight.large};
     color: ${theme.colors.white};
     margin: 0;
@@ -12,7 +12,7 @@ export const TitleStyles = {
 
 export const SubtitleStyles = {
   subtitle: (theme: CustomTheme) => `
-      font-size: ${theme.typography.subTitle.fontSize.medium};
+      font-size: ${theme.typography.fontSize.subTitle.medium};
       color: ${theme.colors.white};
       margin: 0;
     `,
