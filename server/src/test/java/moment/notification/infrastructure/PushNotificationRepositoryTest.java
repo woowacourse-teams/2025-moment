@@ -3,6 +3,7 @@ package moment.notification.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 import moment.notification.domain.PushNotification;
 import moment.user.domain.ProviderType;
@@ -60,13 +61,12 @@ class PushNotificationRepositoryTest {
         pushNotificationRepository.save(pushNotification);
 
         // when
-        Optional<PushNotification> foundNotification = pushNotificationRepository.findByUserId(user.getId());
+        List<PushNotification> foundNotification = pushNotificationRepository.findByUserId(user.getId());
 
         // then
         assertAll(
-                () -> assertThat(foundNotification).isPresent(),
-                () -> assertThat(foundNotification.get().getUser()).isEqualTo(user),
-                () -> assertThat(foundNotification.get().getDeviceEndpoint()).isEqualTo(deviceToken)
+                () -> assertThat(foundNotification.getFirst().getUser()).isEqualTo(user),
+                () -> assertThat(foundNotification.getFirst().getDeviceEndpoint()).isEqualTo(deviceToken)
         );
     }
 
@@ -76,9 +76,9 @@ class PushNotificationRepositoryTest {
         Long nonExistentUserId = 999L;
 
         // when
-        Optional<PushNotification> foundNotification = pushNotificationRepository.findByUserId(nonExistentUserId);
+        List<PushNotification> foundNotification = pushNotificationRepository.findByUserId(nonExistentUserId);
 
         // then
-        assertThat(foundNotification).isNotPresent();
+        assertThat(foundNotification).isEmpty();
     }
 }

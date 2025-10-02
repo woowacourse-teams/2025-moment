@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
-import java.util.Optional;
+import java.util.List;
 import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotification;
 import moment.notification.domain.PushNotificationMessage;
@@ -24,7 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 class FcmPushNotificationSenderTest {
 
     @InjectMocks
-    private FcmPushNotificationSender FCMPushNotificationSender;
+    private FcmPushNotificationSender fcmPushNotificationSender;
 
     @Mock
     private PushNotificationRepository pushNotificationRepository;
@@ -49,11 +49,11 @@ class FcmPushNotificationSenderTest {
         PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, PushNotificationMessage.REPLY_TO_MOMENT);
         PushNotification pushNotification = new PushNotification(user, "device-token");
 
-        when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.of(pushNotification));
+        when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(List.of(pushNotification));
         when(firebaseMessaging.sendAsync(any(Message.class))).thenReturn(mockApiFuture);
 
         // when
-        FCMPushNotificationSender.send(pushNotificationCommand);
+        fcmPushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(firebaseMessaging).sendAsync(any(Message.class));
@@ -77,10 +77,10 @@ class FcmPushNotificationSenderTest {
     void 사용자의_디바이스_토큰_정보가_저장되어_있지_않으면_알림을_보내지_않는다() {
         // given
         PushNotificationCommand pushNotificationCommand = new PushNotificationCommand(user, PushNotificationMessage.REPLY_TO_MOMENT);
-        when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
+        when(pushNotificationRepository.findByUserId(user.getId())).thenReturn(List.of());
 
         // when
-        FCMPushNotificationSender.send(pushNotificationCommand);
+        fcmPushNotificationSender.send(pushNotificationCommand);
 
         // then
         verify(pushNotificationRepository).findByUserId(user.getId());
