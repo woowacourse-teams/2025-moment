@@ -9,6 +9,9 @@ export const PostCommentsPageContainer = styled.section`
 
 export const MyMomentContent = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   text-align: left;
   color: ${({ theme }) => theme.colors['gray-400']};
   word-break: break-all;
@@ -16,6 +19,9 @@ export const MyMomentContent = styled.p`
 
 export const DeletedMomentText = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   color: ${({ theme }) => theme.colors['gray-400']};
   font-style: italic;
   text-align: left;
@@ -92,6 +98,9 @@ export const EchoContainer = styled.div`
 export const NoEchoContent = styled.p`
   text-align: center;
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
@@ -137,12 +146,18 @@ export const FullscreenImage = styled.img`
 
 export const CommentContent = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   text-align: left;
   word-break: break-all;
 `;
 
 export const SubTitle = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.subTitle.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileSubTitle.medium};
+  }
   text-align: left;
   word-break: break-all;
 `;
