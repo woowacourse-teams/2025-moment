@@ -14,6 +14,17 @@ async function enableMocking() {
   });
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/firebase-messaging-sw.js')
+    .then(registration => {
+      console.log('[SW] 등록 성공:', registration.scope);
+    })
+    .catch(error => {
+      console.error('[SW] 등록 실패:', error);
+    });
+}
+
 async function startApp() {
   // await enableMocking();
   // cd
