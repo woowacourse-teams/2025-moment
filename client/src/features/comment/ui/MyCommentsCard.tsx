@@ -70,7 +70,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <p>{myComment.content}</p>
+                  <S.CommentContent>{myComment.content}</S.CommentContent>
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
