@@ -75,4 +75,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findWithCommenterById(Long id);
 
     List<Comment> findAllByMomentIdIn(List<Long> momentIds);
+
+    @Query("""
+            SELECT c.moment.id
+            FROM comments c
+            WHERE c.moment.id IN :momentIds
+            AND c.commenter.id <> :commenterId
+            """)
+    List<Long> findMomentIdsCommentedOnByOthers(@Param("momentIds") List<Long> momentIds,
+                                                @Param("commenterId") Long commenterId);
 }

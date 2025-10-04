@@ -30,4 +30,8 @@ public class MomentTagService {
         return momentTagRepository.findAllByMomentIn(moments).stream()
                 .collect(Collectors.groupingBy(MomentTag::getMoment));
     }
+
+    public List<Long> getMomentIdsByTags(List<Long> momentIds, List<String> tagNames) {
+        return momentTagRepository.findAllMomentIdByTagNamesIn(momentIds, tagNames);
+    }
 }

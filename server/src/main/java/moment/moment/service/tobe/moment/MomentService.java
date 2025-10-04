@@ -49,8 +49,11 @@ public class MomentService {
 
     public List<Moment> getCommentableMoments(User user, LocalDateTime threeDaysAgo,
                                               List<Long> reportedMomentIds) {
-        return momentRepository.findCommentableMoments(user, threeDaysAgo,
-                reportedMomentIds);
+        return momentRepository.findCommentableMoments(user, threeDaysAgo, reportedMomentIds);
 
+    }
+
+    public List<Moment> getMomentsBy(List<Long> momentIds) {
+        return momentRepository.findAllById(momentIds);
     }
 }

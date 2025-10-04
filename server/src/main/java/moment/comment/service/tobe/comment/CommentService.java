@@ -11,10 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
-    
+
     private final CommentRepository commentRepository;
-    
+
     public List<Comment> getAllByMomentIds(List<Long> momentIds) {
         return commentRepository.findAllByMomentIdIn(momentIds);
+    }
+
+    public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
+        return commentRepository.findMomentIdsCommentedOnByOthers(momentIds, commenterId);
     }
 }

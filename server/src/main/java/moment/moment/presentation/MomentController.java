@@ -20,6 +20,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
 import moment.moment.service.tobe.application.MomentApplicationService;
+import moment.moment.service.tobe.facade.CommentableMomentFacadeService;
 import moment.moment.service.tobe.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 public class MomentController {
 
-    //    private final MomentService momentService;
     private final MyMomentPageFacadeService myMomentPageFacadeService;
+    private final CommentableMomentFacadeService commentableMomentFacadeService;
     private final MomentApplicationService momentApplicationService;
 
     @Operation(summary = "기본 모멘트 등록", description = "사용자가 기본 모멘트를 등록합니다.")
@@ -209,7 +210,8 @@ public class MomentController {
             @AuthenticationPrincipal Authentication authentication,
             @RequestParam(required = false, defaultValue = "") List<String> tagName
     ) {
-        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id(), tagName);
+        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMoment(authentication.id(),
+                tagName);
 
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

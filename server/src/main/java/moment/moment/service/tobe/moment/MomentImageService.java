@@ -29,4 +29,8 @@ public class MomentImageService {
         return momentImageRepository.findAllByMomentIn(moments).stream()
                 .collect(Collectors.toMap(MomentImage::getMoment, momentImage -> momentImage));
     }
+
+    public Optional<MomentImage> findMomentImage(Moment moment) {
+        return momentImageRepository.findByMoment(moment);
+    }
 }

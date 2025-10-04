@@ -48,6 +48,10 @@ public class CommentApplicationService {
                 .toList();
     }
 
+    public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
+        return commentService.getMomentIdsNotCommentedByMe(momentIds, commenterId);
+    }
+
     private List<Long> extractCommenterIdsByComments(List<Comment> comments) {
         return comments.stream()
                 .map(comment -> comment.getCommenter().getId())

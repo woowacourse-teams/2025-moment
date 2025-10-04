@@ -43,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentApplicationService {
 
+    private final static Random RANDOM = new Random();
+
     private final UserService userService;
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
     private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
@@ -205,7 +207,7 @@ public class MomentApplicationService {
         return MomentCreationStatusResponse.createDeniedStatus();
     }
 
-    public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
+    public List<Long> getCommentableMoment(Long id) {
         User user = userService.getUserById(id);
 
         final int MOMENT_DELETE_THRESHOLD = 3;
@@ -216,19 +218,18 @@ public class MomentApplicationService {
 
         List<Moment> commentableMoments = momentService.getCommentableMoments(user, threeDaysAgo, reportedMomentIds);
 
-        // 검색 시 태그가 있는 경우 : 태그가 달린 Moment를 찾아내야 함
-        // momentTag에게 momentId List 넘겨서 MomentTag List를 가져온다.
-        // MomentTag List에서 Tag Id를 중복 제거 추출 해서 TagService에서 Tag 이름을 가져온다.
+        return commentableMoments.stream()
+                .map(Moment::getId)
+                .toList();
+    }
 
-        // 검색 시 태그가 없는 경우 : 그냥 바로 return
-
-        if (commentableMoments.isEmpty()) {
-            return CommentableMomentResponse.empty();
+    public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds, List<String> tagNames) {
+        if (!tagNames.isEmpty()) {
+            momentIds = momentTagService.getMomentIdsByTags(momentIds, tagNames);
         }
 
-        // 랜덤 객체 빼기
-        Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
-
+        List<Moment> commentableMoments = momentService.getMomentsBy(momentIds);
+        Moment moment = commentableMoments.get(RANDOM.nextInt(commentableMoments.size()));
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
 
         return CommentableMomentResponse.of(moment, momentImage.orElse(null));
