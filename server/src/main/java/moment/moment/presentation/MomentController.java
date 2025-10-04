@@ -19,6 +19,7 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
+import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
 import moment.moment.service.tobe.application.MomentApplicationService;
 import moment.moment.service.tobe.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
@@ -106,12 +107,13 @@ public class MomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyMoment(
+    public ResponseEntity<SuccessResponse<MyMomentPageResponseV2>> readMyMoment(
             @RequestParam(required = false) String nextCursor,
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyMomentPageResponse response = momentService.getMyMoments(nextCursor, limit, authentication.id());
+        MyMomentPageResponseV2 response = myMomentPageFacadeService.getMyMomentsPage(nextCursor, limit,
+                authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
