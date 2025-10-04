@@ -15,10 +15,13 @@ public class PointDeductionPolicy implements ExtraMomentCreatePolicy {
 
     @Override
     public void validate(User user) {
-        boolean canNotUse = user.canNotUseStars(Reason.MOMENT_ADDITIONAL_USE.getPointTo());
-
-        if (canNotUse) {
+        if (canCreate(user)) {
             throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
         }
+    }
+
+    @Override
+    public boolean canCreate(User user) {
+        return user.canNotUseStars(Reason.MOMENT_ADDITIONAL_USE.getPointTo());
     }
 }

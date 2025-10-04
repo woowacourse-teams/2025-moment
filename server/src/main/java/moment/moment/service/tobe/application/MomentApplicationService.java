@@ -150,4 +150,24 @@ public class MomentApplicationService {
         }
         return momentsWithinCursor;
     }
+
+    public MomentCreationStatusResponse canCreateMoment(Long id) {
+        User user = userService.getUserById(id);
+
+        if (basicMomentCreatePolicy.canCreate(user)) {
+            return MomentCreationStatusResponse.createAllowedStatus();
+        }
+
+        return MomentCreationStatusResponse.createDeniedStatus();
+    }
+
+    public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
+        User user = userService.getUserById(id);
+
+        if (extraMomentCreatePolicy.canCreate(user)) {
+            return MomentCreationStatusResponse.createAllowedStatus();
+        }
+
+        return MomentCreationStatusResponse.createDeniedStatus();
+    }
 }

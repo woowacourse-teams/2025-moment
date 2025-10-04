@@ -19,6 +19,13 @@ public class OnceADayPolicy implements BasicMomentCreatePolicy {
 
     @Override
     public void validate(User user) {
+        if (!canCreate(user)) {
+            throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
+        }
+    }
+
+    @Override
+    public boolean canCreate(User user) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atStartOfDay();
 
@@ -28,10 +35,6 @@ public class OnceADayPolicy implements BasicMomentCreatePolicy {
                 startOfDay,
                 endOfDay);
 
-        boolean canCreate = todayMomentCount < 1;
-
-        if (!canCreate) {
-            throw new MomentException(ErrorCode.MOMENT_ALREADY_EXIST);
-        }
+        return todayMomentCount < 1;
     }
 }

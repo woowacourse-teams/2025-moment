@@ -5,4 +5,6 @@ import moment.user.domain.User;
 public interface ExtraMomentCreatePolicy {
 
     void validate(User user);
+
+    boolean canCreate(User user);
 }

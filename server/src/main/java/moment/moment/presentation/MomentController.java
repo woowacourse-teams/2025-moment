@@ -162,7 +162,7 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getBasicMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreationStatusResponse response = momentService.canCreateMoment(authentication.id());
+        MomentCreationStatusResponse response = momentApplicationService.canCreateMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -185,7 +185,7 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getExtraMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreationStatusResponse response = momentService.canCreateExtraMoment(authentication.id());
+        MomentCreationStatusResponse response = momentApplicationService.canCreateExtraMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
