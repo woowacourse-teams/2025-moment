@@ -234,4 +234,22 @@ public class MomentApplicationService {
 
         return CommentableMomentResponse.of(moment, momentImage.orElse(null));
     }
+
+//    @Transactional
+//    public MomentReportCreateResponse reportMoment(Long momentId, Long reporterId, MomentReportCreateRequest request) {
+//        User user = userService.getUserById(reporterId);
+//        Moment moment = momentService.getMomentWithMomenterById(momentId);
+//
+//        Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
+//
+//        long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
+//
+//        if (reportCount >= MOMENT_DELETE_THRESHOLD) {
+//            momentImageService.deleteByMoment(moment);
+//            momentTagService.deleteByMoment(moment);
+//            momentRepository.delete(moment);
+//        }
+//
+//        return MomentReportCreateResponse.from(report);
+//    }
 }
