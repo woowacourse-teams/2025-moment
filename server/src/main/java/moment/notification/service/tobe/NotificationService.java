@@ -1,4 +1,4 @@
-package moment.notification.application.tobe;
+package moment.notification.service.tobe;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

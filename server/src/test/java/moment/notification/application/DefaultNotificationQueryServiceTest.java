@@ -11,6 +11,7 @@ import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
+import moment.notification.service.DefaultNotificationQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;

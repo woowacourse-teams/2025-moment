@@ -87,12 +87,13 @@ public class CommentApplicationService {
     }
 
     public void validateCreateComment(CommentCreateRequest request, Long commenterId) {
-        User commenter = userService.getUserById(commenterId);
-
         commentService.validateUniqueBy(request.momentId(), commenterId);
+    }
 
-        Comment commentWithoutId = request.toComment(commenter, moment);
-        Comment savedComment = commentRepository.save(commentWithoutId);
+    public void createComment(CommentCreateRequest request, Long commenterId) {
+        User commenter = userService.getUserById(commenterId);
+        Comment commentWithoutId = request.toComment(commenter, request.momentId());
+        Comment savedComment = commentService.create(commentWithoutId);
 
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
 

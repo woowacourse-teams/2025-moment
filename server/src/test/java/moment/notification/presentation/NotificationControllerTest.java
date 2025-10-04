@@ -19,7 +19,7 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.application.SseNotificationService;
+import moment.notification.service.tobe.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.dto.request.NotificationReadRequest;

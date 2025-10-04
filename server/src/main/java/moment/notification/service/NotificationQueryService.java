@@ -1,4 +1,4 @@
-package moment.notification.application;
+package moment.notification.service;
 
 import java.util.List;
 import moment.global.domain.TargetType;

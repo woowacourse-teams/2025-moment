@@ -35,4 +35,9 @@ public class CommentService {
             throw new MomentException(ErrorCode.COMMENT_CONFLICT);
         }
     }
+
+    @Transactional
+    public Comment create(Comment commentWithoutId) {
+        return commentRepository.save(commentWithoutId);
+    }
 }

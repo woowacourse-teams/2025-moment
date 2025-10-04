@@ -33,7 +33,7 @@ import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.application.NotificationQueryService;
+import moment.notification.service.NotificationQueryService;
 import moment.notification.domain.Notification;
 import moment.reply.application.EchoQueryService;
 import moment.report.application.ReportService;

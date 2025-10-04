@@ -10,7 +10,7 @@ import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.notification.application.NotificationFacade;
+import moment.notification.service.NotificationFacade;
 import moment.notification.domain.NotificationType;
 import moment.comment.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;

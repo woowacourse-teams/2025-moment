@@ -1,4 +1,4 @@
-package moment.notification.application;
+package moment.notification.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

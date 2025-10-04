@@ -58,7 +58,7 @@ public class MomentService {
     public List<Moment> getMomentsBy(List<Long> momentIds) {
         return momentRepository.findAllById(momentIds);
     }
-    
+
     public Moment getMomentById(Long id) {
         return momentRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
@@ -67,5 +67,9 @@ public class MomentService {
     @Transactional
     public void deleteBy(Long momentId) {
         momentRepository.deleteById(momentId);
+    }
+
+    public boolean existsMoment(Long momentId) {
+        return momentRepository.existsById(momentId);
     }
 }

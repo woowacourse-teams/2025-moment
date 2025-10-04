@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.BasicMomentCreatePolicy;
@@ -28,7 +30,7 @@ import moment.moment.service.tobe.moment.MomentImageService;
 import moment.moment.service.tobe.moment.MomentService;
 import moment.moment.service.tobe.moment.MomentTagService;
 import moment.moment.service.tobe.moment.TagService;
-import moment.notification.application.tobe.NotificationService;
+import moment.notification.service.tobe.NotificationService;
 import moment.notification.domain.Notification;
 import moment.report.application.ReportService;
 import moment.reward.application.RewardService;
@@ -242,6 +244,14 @@ public class MomentApplicationService {
             momentImageService.deleteBy(momentId);
             momentTagService.deleteBy(momentId);
             momentService.deleteBy(momentId);
+        }
+    }
+
+    public void validateExistMoment(Long momentId) {
+        boolean exsitsMoment = momentService.existsMoment(momentId);
+
+        if (!exsitsMoment) {
+            throw new MomentException(ErrorCode.MOMENT_NOT_FOUND);
         }
     }
 }

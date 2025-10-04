@@ -19,7 +19,8 @@ public class CommentCreateFacadeService {
 
     public CommentCreateResponse createComment(CommentCreateRequest request, Long userId) {
         commentApplicationService.validateCreateComment(request, userId);
-        Moment moment = momentApplicationService.getMomentBy(request.momentId());
+        momentApplicationService.validateExistMoment(request.momentId());
+        commentApplicationService.createComment(request, userId);
         // TODO
     }
 }

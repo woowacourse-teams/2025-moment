@@ -15,6 +15,7 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.notification.service.EmailNotificationService;
 import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
