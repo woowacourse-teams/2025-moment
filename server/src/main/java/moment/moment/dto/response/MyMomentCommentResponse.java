@@ -7,6 +7,7 @@ import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.domain.Echo;
+import moment.comment.dto.tobe.CommentComposition;
 import moment.user.domain.Level;
 
 @Schema(description = "모멘트에 달린 코멘트 응답")
@@ -32,7 +33,7 @@ public record MyMomentCommentResponse(
         List<MyMomentEchoResponse> echos
 ) {
 
-    public static MyMomentCommentResponse of(Comment comment, List<Echo> echoes, CommentImage commentImage) {
+    public static MyMomentCommentResponse from(Comment comment, List<Echo> echoes, CommentImage commentImage) {
         List<MyMomentEchoResponse> echoDetailResponse = echoes.stream()
                 .map(MyMomentEchoResponse::from)
                 .toList();
@@ -49,5 +50,22 @@ public record MyMomentCommentResponse(
                 imageUrl,
                 comment.getCreatedAt(),
                 echoDetailResponse);
+    }
+
+    public static MyMomentCommentResponse from(CommentComposition commentComposition) {
+
+        List<MyMomentEchoResponse> myMomentEchoResponses = commentComposition.echoDetails().stream()
+                .map(MyMomentEchoResponse::from)
+                .toList();
+
+        return new MyMomentCommentResponse(
+                commentComposition.id(),
+                commentComposition.content(),
+                commentComposition.nickname(),
+                commentComposition.level(),
+                commentComposition.imageUrl(),
+                commentComposition.commentCreatedAt(),
+                myMomentEchoResponses
+        );
     }
 }

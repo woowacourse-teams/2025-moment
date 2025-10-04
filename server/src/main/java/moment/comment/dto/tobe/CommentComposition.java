@@ -15,9 +15,13 @@ public record CommentComposition(
         Level level,
         String imageUrl,
         LocalDateTime commentCreatedAt,
-        List<EchoDetail> echoDetails
+        List<EchoDetail> echoDetails,
+        Long momentId
 ) {
-    public static CommentComposition of(Comment comment, User commenter, CommentImage commentImage, List<Echo> echos) {
+    public static CommentComposition of(Comment comment,
+                                        User commenter,
+                                        CommentImage commentImage,
+                                        List<Echo> echos) {
 
         return new CommentComposition(
                 comment.getId(),
@@ -28,7 +32,8 @@ public record CommentComposition(
                 comment.getCreatedAt(),
                 echos.stream()
                         .map(EchoDetail::from)
-                        .toList()
+                        .toList(),
+                comment.getMoment().getId()
         );
     }
 }

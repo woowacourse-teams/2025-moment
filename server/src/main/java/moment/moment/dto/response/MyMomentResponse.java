@@ -55,7 +55,7 @@ public record MyMomentResponse(
 
         if (!comments.isEmpty()) {
             List<MyMomentCommentResponse> myMomentCommentResponses = comments.stream()
-                    .map(comment -> MyMomentCommentResponse.of(
+                    .map(comment -> MyMomentCommentResponse.from(
                             comment, echoMap.getOrDefault(comment.getId(), List.of()),
                             commentImages.getOrDefault(comment, null)))
                     .toList();

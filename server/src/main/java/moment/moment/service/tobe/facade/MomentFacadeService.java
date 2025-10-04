@@ -8,6 +8,8 @@ import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
+import moment.moment.dto.response.tobe.MomentCompositions;
+import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
 import moment.moment.service.tobe.application.MomentApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,25 +20,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class MomentFacadeService {
 
     private final MomentApplicationService momentApplicationService;
-     private final CommentApplicationService commentApplicationService;
-    // private final NotificationService notificationService;
+    private final CommentApplicationService commentApplicationService;
 
-    public MyMomentPageResponse getMyMomentsPage(String nextCursor, int limit, Long momenterId) {
+    public MyMomentPageResponseV2 getMyMomentsPage(String nextCursor, int limit, Long momenterId) {
         Cursor cursor = new Cursor(nextCursor);
         PageSize pageSize = new PageSize(limit);
 
-        List<MomentComposition> myMomentCompositions = momentApplicationService.getMyMomentCompositions(
+        MomentCompositions momentCompositions = momentApplicationService.getMyMomentCompositions(
                 cursor, 
                 pageSize, 
                 momenterId);
 
-        List<Long> myMomentIds = myMomentCompositions.stream()
+        List<Long> myMomentIds = momentCompositions.momentCompositionInfo().stream()
                 .map(MomentComposition::id)
                 .toList();
 
-        List<CommentComposition> myCommentCompositions = commentApplicationService.getMyCommentCompositions(
+        List<CommentComposition> commentCompositions = commentApplicationService.getMyCommentCompositions(
                 myMomentIds);
 
-        return null;
+        return MyMomentPageResponseV2.of(momentCompositions, commentCompositions);
     }
 }
