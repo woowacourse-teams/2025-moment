@@ -1,9 +1,11 @@
 package moment.moment.service.tobe.application;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
@@ -17,6 +19,7 @@ import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
@@ -27,6 +30,7 @@ import moment.moment.service.tobe.moment.MomentTagService;
 import moment.moment.service.tobe.moment.TagService;
 import moment.notification.application.tobe.NotificationService;
 import moment.notification.domain.Notification;
+import moment.report.application.ReportService;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.tobe.user.UserService;
@@ -48,6 +52,7 @@ public class MomentApplicationService {
     private final TagService tagService;
     private final RewardService rewardService;
     private final NotificationService notificationService;
+    private final ReportService reportService;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -198,5 +203,34 @@ public class MomentApplicationService {
         }
 
         return MomentCreationStatusResponse.createDeniedStatus();
+    }
+
+    public CommentableMomentResponse getCommentableMoment(Long id, List<String> tagNames) {
+        User user = userService.getUserById(id);
+
+        final int MOMENT_DELETE_THRESHOLD = 3;
+
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(MOMENT_DELETE_THRESHOLD);
+
+        List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
+
+        List<Moment> commentableMoments = momentService.getCommentableMoments(user, threeDaysAgo, reportedMomentIds);
+
+        // 검색 시 태그가 있는 경우 : 태그가 달린 Moment를 찾아내야 함
+        // momentTag에게 momentId List 넘겨서 MomentTag List를 가져온다.
+        // MomentTag List에서 Tag Id를 중복 제거 추출 해서 TagService에서 Tag 이름을 가져온다.
+
+        // 검색 시 태그가 없는 경우 : 그냥 바로 return
+
+        if (commentableMoments.isEmpty()) {
+            return CommentableMomentResponse.empty();
+        }
+
+        // 랜덤 객체 빼기
+        Moment moment = commentableMoments.get(new Random().nextInt(commentableMoments.size()));
+
+        Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
+
+        return CommentableMomentResponse.of(moment, momentImage.orElse(null));
     }
 }

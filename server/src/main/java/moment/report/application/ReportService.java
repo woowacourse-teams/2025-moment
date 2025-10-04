@@ -22,15 +22,13 @@ public class ReportService {
                                User reporter,
                                Long targetId,
                                String reason) {
-
         Report report = new Report(
                 reporter,
                 targetType,
                 targetId,
                 ReportReason.valueOf(reason)
         );
-
-        // 모멘트나 코멘트
+        
         return reportRepository.save(report);
     }
 
@@ -39,7 +37,7 @@ public class ReportService {
         return reportRepository.countByTargetTypeAndTargetId(targetType, targetId);
     }
 
-    public List<Report> findMomentReportByUser(User user) {
-        return reportRepository.findAllByUserAndTargetType(user, TargetType.MOMENT);
+    public List<Long> getReportedMomentIdsBy(Long userId) {
+        return reportRepository.findAllTargetIdByUserIdAndTargetType(userId, TargetType.MOMENT);
     }
 }

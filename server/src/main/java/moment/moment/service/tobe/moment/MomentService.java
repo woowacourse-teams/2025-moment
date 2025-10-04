@@ -1,5 +1,6 @@
 package moment.moment.service.tobe.moment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.page.Cursor;
@@ -44,5 +45,12 @@ public class MomentService {
                 cursor.dateTime(),
                 cursor.id(),
                 pageable);
+    }
+
+    public List<Moment> getCommentableMoments(User user, LocalDateTime threeDaysAgo,
+                                              List<Long> reportedMomentIds) {
+        return momentRepository.findCommentableMoments(user, threeDaysAgo,
+                reportedMomentIds);
+
     }
 }
