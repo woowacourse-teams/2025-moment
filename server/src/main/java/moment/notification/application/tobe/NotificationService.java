@@ -20,4 +20,9 @@ public class NotificationService {
         boolean isRead = false;
         return notificationRepository.findAllByUserAndIsReadAndTargetType(user, isRead, targetType);
     }
+
+    public List<Long> getUnreadTargetIdsBy(Long userId, TargetType targetType) {
+        boolean isRead = false;
+        return notificationRepository.findAllByUserIdAndIsReadAndTargetType(userId, isRead, targetType);
+    }
 }

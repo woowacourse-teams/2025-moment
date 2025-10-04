@@ -29,7 +29,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             WHERE m.id IN :ids
             ORDER BY m.createdAt DESC, m.id DESC
             """)
-    List<Moment> findMyUnreadMomentFirstPage(@Param("ids") Set<Long> ids, Pageable pageable);
+    List<Moment> findMyUnreadMomentFirstPage(@Param("ids") List<Long> ids, Pageable pageable);
 
     @Query("""
             SELECT m FROM moments m
@@ -46,7 +46,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             WHERE m.id IN :ids AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
-    List<Moment> findMyUnreadMomentNextPage(@Param("ids") Set<Long> ids,
+    List<Moment> findMyUnreadMomentNextPage(@Param("ids") List<Long> ids,
                                             @Param("cursorTime") LocalDateTime cursorDateTime,
                                             @Param("cursorId") Long cursorId,
                                             Pageable pageable);

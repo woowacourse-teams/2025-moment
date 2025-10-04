@@ -18,6 +18,7 @@ import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MomentCreateResponse;
+import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.service.tobe.moment.MomentImageService;
@@ -93,31 +94,59 @@ public class MomentApplicationService {
     public MomentCompositions getMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
         User momenter = userService.getUserById(momenterId);
 
-        List<Moment> momentsWithinCursor = momentService.getMyPage(momenter, cursor, pageSize);
+        List<Moment> momentsWithinCursor = momentService.getMomentsBy(momenter, cursor, pageSize);
 
-        Map<Moment, List<Notification>> unreadNotifications = mapNotificationForMoment(momenter, momentsWithinCursor);
+        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(momenter,
+                TargetType.MOMENT);
+
+        Map<Moment, List<Notification>> unreadNotificationsByMomoent = mapNotificationForMoment(unreadNotifications,
+                momentsWithinCursor);
 
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
         boolean hasNextPage = pageSize.hasNextPage(momentsWithinCursor.size());
 
         return MomentCompositions.of(
-                mapMomentCompositionInfo(momentsWithoutCursor, unreadNotifications),
+                mapMomentCompositionInfo(momentsWithoutCursor, unreadNotificationsByMomoent),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,
                 momentsWithoutCursor.size()
         );
     }
 
-    private Map<Moment, List<Notification>> mapNotificationForMoment(User momenter, List<Moment> moments) {
+    public MomentCompositions getUnreadMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
+        User momenter = userService.getUserById(momenterId);
 
-        List<Notification> allNotifications = notificationService.getUnreadNotifications(
-                momenter,
+        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(momenter,
                 TargetType.MOMENT);
 
-        Map<Long, List<Notification>> notificationsByMomentIds =
-                allNotifications.stream()
-                        .collect(Collectors.groupingBy(Notification::getTargetId));
+        List<Long> unreadMomentIds = unreadNotifications.stream()
+                .map(Notification::getTargetId)
+                .distinct()
+                .toList();
+
+        List<Moment> momentsWithinCursor = momentService.getUnreadMomentsBy(unreadMomentIds, cursor, pageSize);
+
+        Map<Moment, List<Notification>> unreadNotificationsByMomoent = mapNotificationForMoment(unreadNotifications,
+                momentsWithinCursor);
+
+        List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
+
+        boolean hasNextPage = pageSize.hasNextPage(momentsWithinCursor.size());
+
+        return MomentCompositions.of(
+                mapMomentCompositionInfo(momentsWithoutCursor, unreadNotificationsByMomoent),
+                cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
+                hasNextPage,
+                momentsWithoutCursor.size()
+        );
+    }
+
+    private Map<Moment, List<Notification>> mapNotificationForMoment(List<Notification> unreadNotifications,
+                                                                     List<Moment> moments) {
+
+        Map<Long, List<Notification>> notificationsByMomentIds = unreadNotifications.stream()
+                .collect(Collectors.groupingBy(Notification::getTargetId));
 
         return moments.stream()
                 .collect(Collectors.toMap(

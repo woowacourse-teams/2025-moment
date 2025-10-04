@@ -18,18 +18,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class MomentService {
 
     private final MomentRepository momentRepository;
-    
+
     @Transactional
     public Moment create(String content, User momenter, WriteType writeType) {
         Moment moment = new Moment(content, momenter, writeType);
         return momentRepository.save(moment);
     }
-    
-    public List<Moment> getMyPage(User momenter, Cursor cursor, PageSize pageSize) {
+
+    public List<Moment> getMomentsBy(User momenter, Cursor cursor, PageSize pageSize) {
         PageRequest pageable = pageSize.getPageRequest();
         if (cursor.isFirstPage()) {
             return momentRepository.findMyMomentFirstPage(momenter, pageable);
         }
         return momentRepository.findMyMomentsNextPage(momenter, cursor.dateTime(), cursor.id(), pageable);
+    }
+
+    public List<Moment> getUnreadMomentsBy(List<Long> unreadMomentIds, Cursor cursor, PageSize pageSize) {
+        PageRequest pageable = pageSize.getPageRequest();
+        if (cursor.isFirstPage()) {
+            return momentRepository.findMyUnreadMomentFirstPage(unreadMomentIds, pageable);
+        }
+
+        return momentRepository.findMyUnreadMomentNextPage(
+                unreadMomentIds,
+                cursor.dateTime(),
+                cursor.id(),
+                pageable);
     }
 }
