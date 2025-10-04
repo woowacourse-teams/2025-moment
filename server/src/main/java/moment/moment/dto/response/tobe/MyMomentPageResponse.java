@@ -1,6 +1,8 @@
-package moment.moment.dto.response;
+package moment.moment.dto.response.tobe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import moment.comment.dto.tobe.CommentComposition;
 
 @Schema(description = "나의 Moment 페이지 조회 응답")
 public record MyMomentPageResponse(
@@ -16,12 +18,14 @@ public record MyMomentPageResponse(
         @Schema(description = "페이지 사이즈 (기본 10)", example = "10")
         int pageSize
 ) {
-    public static MyMomentPageResponse of(
-            MyMomentsResponse responses,
-            String nextCursor,
-            boolean hasNextPage,
-            int pageSize
-    ) {
-        return new MyMomentPageResponse(responses, nextCursor, hasNextPage, pageSize);
+
+    public static MyMomentPageResponse of(MomentCompositions momentCompositions,
+                                          List<CommentComposition> commentCompositionInfo) {
+
+        return new MyMomentPageResponse(
+                MyMomentsResponse.of(momentCompositions.momentCompositionInfo(), commentCompositionInfo),
+                momentCompositions.nextCursor(),
+                momentCompositions.hasNextPage(),
+                momentCompositions.pageSize());
     }
 }

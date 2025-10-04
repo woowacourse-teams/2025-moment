@@ -9,7 +9,7 @@ import moment.moment.dto.response.MyMomentCommentResponse;
 import moment.moment.dto.response.TagNamesResponse;
 
 @Schema(description = "내 모멘트 조회 응답")
-public record MyMomentResponseV2(
+public record MyMomentResponse(
         @Schema(description = "모멘트 id", example = "1")
         Long id,
 
@@ -34,14 +34,14 @@ public record MyMomentResponseV2(
         MomentNotificationResponse momentNotification
 ) {
 
-    public static MyMomentResponseV2 of(MomentComposition momentComposition,
-                                        List<CommentComposition> commentCompositions) {
+    public static MyMomentResponse of(MomentComposition momentComposition,
+                                      List<CommentComposition> commentCompositions) {
 
         List<MyMomentCommentResponse> myMomentCommentResponses = commentCompositions.stream()
                 .map(MyMomentCommentResponse::from)
                 .toList();
 
-        return new MyMomentResponseV2(
+        return new MyMomentResponse(
                 momentComposition.id(),
                 momentComposition.momenterId(),
                 momentComposition.content(),

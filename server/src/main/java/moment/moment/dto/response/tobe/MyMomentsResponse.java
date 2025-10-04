@@ -5,19 +5,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import moment.comment.dto.tobe.CommentComposition;
 
-public record MyMomentsResponseV2(List<MyMomentResponseV2> myMomentsResponse) {
+public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
 
-    public static MyMomentsResponseV2 of(List<MomentComposition> momentCompositionInfo,
-                                         List<CommentComposition> commentCompositionInfo) {
+    public static MyMomentsResponse of(List<MomentComposition> momentCompositionInfo,
+                                       List<CommentComposition> commentCompositionInfo) {
 
         Map<Long, List<CommentComposition>> commentCompositionsByMomentIds = commentCompositionInfo.stream()
                 .collect(Collectors.groupingBy(CommentComposition::momentId));
 
-        List<MyMomentResponseV2> myMomentsResponse = momentCompositionInfo.stream()
-                .map(momentComposition -> MyMomentResponseV2.of(
+        List<MyMomentResponse> myMomentsResponse = momentCompositionInfo.stream()
+                .map(momentComposition -> MyMomentResponse.of(
                         momentComposition, commentCompositionsByMomentIds.get(momentComposition.id())
                 )).toList();
 
-        return new MyMomentsResponseV2(myMomentsResponse);
+        return new MyMomentsResponse(myMomentsResponse);
     }
 }

@@ -18,7 +18,7 @@ import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
-import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
+import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.service.tobe.application.MomentApplicationService;
 import moment.moment.service.tobe.facade.CommentableMomentFacadeService;
 import moment.moment.service.tobe.facade.MyMomentPageFacadeService;
@@ -107,12 +107,12 @@ public class MomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponseV2>> readMyMoment(
+    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyMoment(
             @RequestParam(required = false) String nextCursor,
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyMomentPageResponseV2 response = myMomentPageFacadeService.getMyMomentsPage(nextCursor, limit,
+        MyMomentPageResponse response = myMomentPageFacadeService.getMyMomentsPage(nextCursor, limit,
                 authentication.id());
         HttpStatus status = HttpStatus.OK;
 
@@ -134,12 +134,12 @@ public class MomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/me/unread")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponseV2>> readMyUnreadMoment(
+    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyUnreadMoment(
             @RequestParam(required = false) String nextCursor,
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyMomentPageResponseV2 response = myMomentPageFacadeService.getUnreadMyMomentsPage(nextCursor, limit,
+        MyMomentPageResponse response = myMomentPageFacadeService.getUnreadMyMomentsPage(nextCursor, limit,
                 authentication.id());
         HttpStatus status = HttpStatus.OK;
 

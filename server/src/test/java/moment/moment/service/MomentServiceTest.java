@@ -14,9 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import moment.comment.service.tobe.comment.CommentImageService;
-import moment.comment.service.CommentQueryService;
 import moment.comment.domain.Comment;
+import moment.comment.domain.Echo;
+import moment.comment.service.CommentQueryService;
+import moment.comment.service.tobe.comment.CommentImageService;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.moment.domain.BasicMomentCreatePolicy;
@@ -31,12 +32,10 @@ import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
-import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.application.NotificationQueryService;
 import moment.notification.domain.Notification;
 import moment.reply.application.EchoQueryService;
-import moment.comment.domain.Echo;
 import moment.report.application.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
@@ -347,7 +346,8 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(
+                List.of(moment));
 
         // when
         CommentableMomentResponse response = momentService.getCommentableMoment(userId, tagNames);
@@ -370,7 +370,8 @@ class MomentServiceTest {
         List<String> tagNames = List.of("일상/여가");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
-        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(List.of(moment));
+        given(momentRepository.findCommentableMomentsByTagNames(any(), any(), any(), any())).willReturn(
+                List.of(moment));
         given(momentImageService.findMomentImage(any(Moment.class))).willReturn(Optional.of(momentImage));
 
         // when

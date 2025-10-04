@@ -23,8 +23,6 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
-import moment.moment.dto.response.MyMomentPageResponse;
-import moment.moment.dto.response.MyMomentResponse;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
 import moment.report.domain.Report;

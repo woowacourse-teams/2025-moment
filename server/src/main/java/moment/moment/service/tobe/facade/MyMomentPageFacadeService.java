@@ -7,9 +7,9 @@ import moment.comment.service.tobe.application.CommentApplicationService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.dto.response.tobe.MomentCompositions;
-import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
-import moment.moment.service.tobe.application.MomentComposition;
+import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.service.tobe.application.MomentApplicationService;
+import moment.moment.service.tobe.application.MomentComposition;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ public class MyMomentPageFacadeService {
     private final MomentApplicationService momentApplicationService;
     private final CommentApplicationService commentApplicationService;
 
-    public MyMomentPageResponseV2 getMyMomentsPage(String nextCursor, int limit, Long momenterId) {
+    public MyMomentPageResponse getMyMomentsPage(String nextCursor, int limit, Long momenterId) {
         return createMyMomentPage(
                 () -> momentApplicationService.getMyMomentCompositions(
                         new Cursor(nextCursor),
@@ -30,7 +30,7 @@ public class MyMomentPageFacadeService {
         );
     }
 
-    public MyMomentPageResponseV2 getUnreadMyMomentsPage(String nextCursor, int limit, Long momenterId) {
+    public MyMomentPageResponse getUnreadMyMomentsPage(String nextCursor, int limit, Long momenterId) {
         return createMyMomentPage(
                 () -> momentApplicationService.getUnreadMyMomentCompositions(
                         new Cursor(nextCursor),
@@ -39,7 +39,7 @@ public class MyMomentPageFacadeService {
         );
     }
 
-    private MyMomentPageResponseV2 createMyMomentPage(MomentComposition momentComposition) {
+    private MyMomentPageResponse createMyMomentPage(MomentComposition momentComposition) {
 
         MomentCompositions momentCompositions = momentComposition.generate();
 
@@ -50,6 +50,6 @@ public class MyMomentPageFacadeService {
         List<CommentComposition> commentCompositions = commentApplicationService.getMyCommentCompositions(
                 myMomentIds);
 
-        return MyMomentPageResponseV2.of(momentCompositions, commentCompositions);
+        return MyMomentPageResponse.of(momentCompositions, commentCompositions);
     }
 }
