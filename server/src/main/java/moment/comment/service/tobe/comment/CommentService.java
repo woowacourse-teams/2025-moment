@@ -4,6 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,5 +27,12 @@ public class CommentService {
     @Transactional
     public void deleteBy(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public void validateUniqueBy(Long momentId, Long commenterId) {
+        boolean isExists = commentRepository.existsByMomentIdAndCommenterId(momentId, commenterId);
+        if (isExists) {
+            throw new MomentException(ErrorCode.COMMENT_CONFLICT);
+        }
     }
 }

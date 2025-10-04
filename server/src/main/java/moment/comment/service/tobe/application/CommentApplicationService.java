@@ -2,15 +2,21 @@ package moment.comment.service.tobe.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.domain.Echo;
+import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.tobe.comment.CommentImageService;
 import moment.comment.service.tobe.comment.CommentService;
 import moment.comment.service.tobe.comment.EchoService;
+import moment.global.domain.TargetType;
+import moment.notification.domain.NotificationType;
+import moment.reward.domain.Reason;
 import moment.user.application.tobe.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -78,5 +84,27 @@ public class CommentApplicationService {
             commentImageService.deleteBy(commentId);
             commentService.deleteBy(commentId);
         }
+    }
+
+    public void validateCreateComment(CommentCreateRequest request, Long commenterId) {
+        User commenter = userService.getUserById(commenterId);
+
+        commentService.validateUniqueBy(request.momentId(), commenterId);
+
+        Comment commentWithoutId = request.toComment(commenter, moment);
+        Comment savedComment = commentRepository.save(commentWithoutId);
+
+        Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
+
+        notificationFacade.sendSseNotificationAndNotification(
+                moment.getMomenter(),
+                moment.getId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.MOMENT);
+
+        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
+
+        return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
+                .orElseGet(() -> CommentCreateResponse.from(savedComment));
     }
 }

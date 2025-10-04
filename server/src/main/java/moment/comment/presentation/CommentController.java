@@ -13,6 +13,8 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.service.CommentService;
+import moment.comment.service.facade.CommentCreateFacadeService;
+import moment.comment.service.tobe.application.CommentApplicationService;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.dto.request.Authentication;
@@ -31,7 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentCreateFacadeService commentCreateFacadeService;
+    private final CommentApplicationService commentApplicationService;
 
     @Operation(summary = "Comment 등록", description = "새로운 Comment를 등록합니다.")
     @ApiResponses({
@@ -60,7 +63,7 @@ public class CommentController {
     public ResponseEntity<SuccessResponse<CommentCreateResponse>> createComment(
             @Valid @RequestBody CommentCreateRequest request, @AuthenticationPrincipal Authentication authentication) {
         Long userId = authentication.id();
-        CommentCreateResponse response = commentService.addComment(request, userId);
+        CommentCreateResponse response = commentCreateFacadeService.createComment(request, userId);
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

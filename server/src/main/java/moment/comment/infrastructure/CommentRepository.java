@@ -84,4 +84,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             """)
     List<Long> findMomentIdsCommentedOnByOthers(@Param("momentIds") List<Long> momentIds,
                                                 @Param("commenterId") Long commenterId);
+
+    boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
 }
