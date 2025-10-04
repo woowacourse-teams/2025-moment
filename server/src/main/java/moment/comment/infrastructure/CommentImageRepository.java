@@ -15,4 +15,6 @@ public interface CommentImageRepository extends JpaRepository<CommentImage, Long
     void deleteByComment(Comment comment);
 
     Optional<CommentImage> findByComment(Comment savedComment);
+
+    void deleteByCommentId(Long commentId);
 }

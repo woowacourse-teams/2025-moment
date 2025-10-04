@@ -3,6 +3,8 @@ package moment.moment.service.tobe.moment;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
@@ -55,5 +57,15 @@ public class MomentService {
 
     public List<Moment> getMomentsBy(List<Long> momentIds) {
         return momentRepository.findAllById(momentIds);
+    }
+    
+    public Moment getMomentById(Long id) {
+        return momentRepository.findById(id)
+                .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+    }
+
+    @Transactional
+    public void deleteBy(Long momentId) {
+        momentRepository.deleteById(momentId);
     }
 }

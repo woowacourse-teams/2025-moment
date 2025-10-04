@@ -21,4 +21,9 @@ public class CommentService {
     public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
         return commentRepository.findMomentIdsCommentedOnByOthers(momentIds, commenterId);
     }
+
+    @Transactional
+    public void deleteBy(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
 }

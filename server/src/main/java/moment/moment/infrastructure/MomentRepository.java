@@ -90,4 +90,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @EntityGraph(attributePaths = {"momenter"})
     Optional<Moment> findWithMomenterByid(Long id);
+
+    void deleteById(Long momentId);
 }

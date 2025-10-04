@@ -22,4 +22,6 @@ public interface EchoRepository extends JpaRepository<Echo, Long> {
     void deleteByComment(Comment comment);
 
     Optional<Echo> findByComment(Comment savedComment);
+
+    void deleteByCommentId(Long commentId);
 }

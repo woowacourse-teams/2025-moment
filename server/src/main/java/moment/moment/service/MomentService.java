@@ -34,7 +34,7 @@ public class MomentService {
 
         Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
 
-        long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
+        long reportCount = reportService.countReportsBy(TargetType.MOMENT, moment.getId());
 
         if (reportCount >= MOMENT_DELETE_THRESHOLD) {
             momentImageService.deleteByMoment(moment);

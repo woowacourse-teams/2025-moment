@@ -21,4 +21,9 @@ public class EchoService {
         return echoRepository.findAllByCommentIn(comments).stream()
                 .collect(Collectors.groupingBy(Echo::getComment));
     }
+
+    @Transactional
+    public void deleteBy(Long commentId) {
+        echoRepository.deleteByCommentId(commentId);
+    }
 }

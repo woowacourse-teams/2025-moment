@@ -30,5 +30,6 @@ public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
             """)
     List<Long> findAllMomentIdByTagNamesIn(@Param("momentIds") List<Long> momentIds,
                                            @Param("tagNames") List<String> tagNames);
-    
+
+    void deleteByMomentId(Long momentId);
 }

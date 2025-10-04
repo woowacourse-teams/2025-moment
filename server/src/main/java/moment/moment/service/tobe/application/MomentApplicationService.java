@@ -44,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MomentApplicationService {
 
     private final static Random RANDOM = new Random();
+    private static final int MOMENT_DELETE_THRESHOLD = 3;
 
     private final UserService userService;
     private final BasicMomentCreatePolicy basicMomentCreatePolicy;
@@ -235,21 +236,12 @@ public class MomentApplicationService {
         return CommentableMomentResponse.of(moment, momentImage.orElse(null));
     }
 
-//    @Transactional
-//    public MomentReportCreateResponse reportMoment(Long momentId, Long reporterId, MomentReportCreateRequest request) {
-//        User user = userService.getUserById(reporterId);
-//        Moment moment = momentService.getMomentWithMomenterById(momentId);
-//
-//        Report report = reportService.createReport(TargetType.MOMENT, user, moment.getId(), request.reason());
-//
-//        long reportCount = reportService.countReportsByTarget(TargetType.MOMENT, moment.getId());
-//
-//        if (reportCount >= MOMENT_DELETE_THRESHOLD) {
-//            momentImageService.deleteByMoment(moment);
-//            momentTagService.deleteByMoment(moment);
-//            momentRepository.delete(moment);
-//        }
-//
-//        return MomentReportCreateResponse.from(report);
-//    }
+    @Transactional
+    public void deleteByReport(Long momentId, Long reportCount) {
+        if (reportCount >= MOMENT_DELETE_THRESHOLD) {
+            momentImageService.deleteBy(momentId);
+            momentTagService.deleteBy(momentId);
+            momentService.deleteBy(momentId);
+        }
+    }
 }

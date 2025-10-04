@@ -531,7 +531,7 @@ class MomentServiceTest {
         given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
         given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
 
-        given(reportService.countReportsByTarget(any(), any())).willReturn(3L);
+        given(reportService.countReportsBy(any(), any())).willReturn(3L);
 
         // when
         momentService.reportMoment(moment.getId(), 1L, request);
@@ -560,7 +560,7 @@ class MomentServiceTest {
         given(momentQueryService.getMomentWithMomenterById(any())).willReturn(moment);
         given(reportService.createReport(any(), any(), any(), any())).willReturn(report1);
 
-        given(reportService.countReportsByTarget(any(), any())).willReturn(2L);
+        given(reportService.countReportsBy(any(), any())).willReturn(2L);
 
         // when
         momentService.reportMoment(moment.getId(), 1L, request);

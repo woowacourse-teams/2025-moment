@@ -34,4 +34,9 @@ public class MomentTagService {
     public List<Long> getMomentIdsByTags(List<Long> momentIds, List<String> tagNames) {
         return momentTagRepository.findAllMomentIdByTagNamesIn(momentIds, tagNames);
     }
+
+    @Transactional
+    public void deleteBy(Long momentId) {
+        momentTagRepository.deleteByMomentId(momentId);
+    }
 }

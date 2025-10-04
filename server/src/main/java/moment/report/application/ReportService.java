@@ -33,7 +33,7 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public long countReportsByTarget(TargetType targetType, Long targetId) {
+    public long countReportsBy(TargetType targetType, Long targetId) {
         return reportRepository.countByTargetTypeAndTargetId(targetType, targetId);
     }
 

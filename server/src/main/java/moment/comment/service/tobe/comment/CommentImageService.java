@@ -57,4 +57,9 @@ public class CommentImageService {
     public void deleteByComment(Comment comment) {
         commentImageRepository.deleteByComment(comment);
     }
+
+    @Transactional
+    public void deleteBy(Long commentId) {
+        commentImageRepository.deleteByCommentId(commentId);
+    }
 }

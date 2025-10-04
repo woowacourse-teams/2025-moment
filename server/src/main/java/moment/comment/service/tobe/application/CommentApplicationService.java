@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentApplicationService {
 
+    private static final int COMMENT_DELETE_THRESHOLD = 1;
+
     private final UserService userService;
     private final CommentService commentService;
     private final CommentImageService commentImageService;
@@ -67,5 +69,14 @@ public class CommentApplicationService {
                         comment -> comment,
                         comment -> userById.get(comment.getCommenter().getId())
                 ));
+    }
+
+    @Transactional
+    public void deleteByReport(Long commentId, Long reportCount) {
+        if (reportCount >= COMMENT_DELETE_THRESHOLD) {
+            echoService.deleteBy(commentId);
+            commentImageService.deleteBy(commentId);
+            commentService.deleteBy(commentId);
+        }
     }
 }

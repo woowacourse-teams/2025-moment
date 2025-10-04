@@ -33,4 +33,9 @@ public class MomentImageService {
     public Optional<MomentImage> findMomentImage(Moment moment) {
         return momentImageRepository.findByMoment(moment);
     }
+
+    @Transactional
+    public void deleteBy(Long momentId) {
+        momentImageRepository.deleteByMomentId(momentId);
+    }
 }
