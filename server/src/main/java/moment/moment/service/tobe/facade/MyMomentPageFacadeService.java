@@ -6,7 +6,6 @@ import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.tobe.application.CommentApplicationService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.dto.response.tobe.MyMomentPageResponseV2;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MomentFacadeService {
+public class MyMomentPageFacadeService {
 
     private final MomentApplicationService momentApplicationService;
     private final CommentApplicationService commentApplicationService;
@@ -27,8 +26,8 @@ public class MomentFacadeService {
         PageSize pageSize = new PageSize(limit);
 
         MomentCompositions momentCompositions = momentApplicationService.getMyMomentCompositions(
-                cursor, 
-                pageSize, 
+                cursor,
+                pageSize,
                 momenterId);
 
         List<Long> myMomentIds = momentCompositions.momentCompositionInfo().stream()

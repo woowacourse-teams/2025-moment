@@ -70,7 +70,7 @@ public class MomentApplicationService {
     }
 
     @Transactional
-    public MomentCreateResponse addExtraMoment(MomentCreateRequest request, Long momenterId) {
+    public MomentCreateResponse createExtraMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userService.getUserById(momenterId);
 
         extraMomentCreatePolicy.validate(momenter);

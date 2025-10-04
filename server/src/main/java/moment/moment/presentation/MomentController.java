@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.moment.service.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -20,6 +19,8 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
+import moment.moment.service.tobe.application.MomentApplicationService;
+import moment.moment.service.tobe.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 public class MomentController {
 
-    private final MomentService momentService;
+    //    private final MomentService momentService;
+    private final MyMomentPageFacadeService myMomentPageFacadeService;
+    private final MomentApplicationService momentApplicationService;
 
     @Operation(summary = "기본 모멘트 등록", description = "사용자가 기본 모멘트를 등록합니다.")
     @ApiResponses({
@@ -57,7 +60,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addBasicMoment(request, authentication.id());
+        MomentCreateResponse response = momentApplicationService.createBasicMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -82,7 +85,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addExtraMoment(request, authentication.id());
+        MomentCreateResponse response = momentApplicationService.createExtraMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
