@@ -45,7 +45,7 @@ class EchoRepositoryTest {
         User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
         User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
-        Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment));
+        Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
 
         echoRepository.save(new Echo("HEART", momenter, comment));
 
@@ -69,7 +69,7 @@ class EchoRepositoryTest {
         userRepository.save(commenter);
         Moment moment = new Moment("하이", momenter, WriteType.BASIC);
         momentRepository.save(moment);
-        Comment comment = new Comment("바이", commenter, moment);
+        Comment comment = new Comment("바이", commenter, moment.getId());
         commentRepository.save(comment);
         Echo existingEcho1 = new Echo("THANKS", commenter, comment);
         echoRepository.save(existingEcho1);
@@ -92,7 +92,7 @@ class EchoRepositoryTest {
         userRepository.save(commenter);
         Moment moment = new Moment("하이", momenter, WriteType.BASIC);
         momentRepository.save(moment);
-        Comment comment = new Comment("바이", commenter, moment);
+        Comment comment = new Comment("바이", commenter, moment.getId());
         commentRepository.save(comment);
         Echo existingEcho = new Echo("THANKS", commenter, comment);
         echoRepository.save(existingEcho);

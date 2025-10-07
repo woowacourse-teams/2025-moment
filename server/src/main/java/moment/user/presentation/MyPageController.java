@@ -13,7 +13,7 @@ import moment.auth.application.AuthService;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.user.application.MyPageService;
+import moment.user.service.MyPageService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;

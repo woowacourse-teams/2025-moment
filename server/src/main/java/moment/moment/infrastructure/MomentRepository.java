@@ -63,9 +63,9 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
               AND m.createdAt >= :someDaysAgo
               AND m.id NOT IN :reportedMoments
             """)
-    List<Moment> findCommentableMoments(@Param("user") User user,
-                                        @Param("someDaysAgo") LocalDateTime someDaysAgo,
-                                        @Param("reportedMoments") List<Long> reportedMoments);
+    List<Moment> findAllExceptUser(@Param("user") User user,
+                                   @Param("someDaysAgo") LocalDateTime someDaysAgo,
+                                   @Param("reportedMoments") List<Long> reportedMoments);
 
 //    @Query("""
 //            SELECT m FROM moments m

@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.user.application.UserService;
+import moment.user.service.NicknameGenerateService;
+import moment.user.service.user.UserService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final NicknameGenerateService nicknameGenerateService;
 
     @Operation(summary = "회원 가입", description = "새로운 사용자를 등록합니다.")
     @ApiResponses({
@@ -108,7 +110,7 @@ public class UserController {
     })
     @GetMapping("/signup/nickname")
     public ResponseEntity<SuccessResponse<MomentRandomNicknameResponse>> readRandomNickname() {
-        MomentRandomNicknameResponse response = userService.createRandomNickname();
+        MomentRandomNicknameResponse response = nicknameGenerateService.createRandomNickname();
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

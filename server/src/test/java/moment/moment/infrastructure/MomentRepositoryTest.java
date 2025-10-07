@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.moment.domain.Moment;
@@ -138,10 +137,10 @@ class MomentRepositoryTest {
         // TODO : 시간을 DB에서 처리하고 있어서 컨트롤 불가능
 
         Moment commentedMoment = momentRepository.save(new Moment("이미 코멘트를 단 모멘트", other, WriteType.BASIC));
-        commentRepository.save(new Comment("희희", user, commentedMoment));
+        commentRepository.save(new Comment("희희", user, commentedMoment.getId()));
 
         // when
-        List<Moment> results = momentRepository.findCommentableMoments(user, LocalDateTime.now().minusDays(3), reportedMomentIds);
+        List<Moment> results = momentRepository.findAllExceptUser(user, LocalDateTime.now().minusDays(3), reportedMomentIds);
 
         // then
         assertThat(results).containsExactly(recentMoment);
@@ -176,7 +175,7 @@ class MomentRepositoryTest {
         momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC)); // This one is not unread
 
         // when
-        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(Set.of(moment1.getId(), moment2.getId()), PageRequest.of(0, 5));
+        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(List.of(moment1.getId(), moment2.getId()), PageRequest.of(0, 5));
 
         // then
         assertThat(result).hasSize(2)
@@ -196,7 +195,7 @@ class MomentRepositoryTest {
 
         // when
         List<Moment> result = momentRepository.findMyUnreadMomentNextPage(
-                Set.of(moment1.getId(), moment2.getId(), moment3.getId()),
+                List.of(moment1.getId(), moment2.getId(), moment3.getId()),
                 moment3.getCreatedAt(),
                 moment3.getId(),
                 PageRequest.of(0, 1));

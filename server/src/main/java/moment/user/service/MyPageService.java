@@ -1,4 +1,4 @@
-package moment.user.application;
+package moment.user.service;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
@@ -6,6 +6,7 @@ import moment.global.exception.MomentException;
 import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
+import moment.user.service.user.UserService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
@@ -22,27 +23,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MyPageService {
 
-    private final UserQueryService userQueryService;
-
+    private final UserService userService;
     private final RewardService rewardService;
-
     private final PasswordEncoder passwordEncoder;
 
     public MyPageProfileResponse getProfile(Long userId) {
-        User user = userQueryService.getUserById(userId);
+        User user = userService.getUserById(userId);
         return MyPageProfileResponse.from(user);
     }
 
     public MyRewardHistoryPageResponse getMyRewardHistory(Integer pageNum, Integer pageSize, Long userId) {
 
-        User user = userQueryService.getUserById(userId);
+        User user = userService.getUserById(userId);
 
         return rewardService.getRewardHistoryByUser(user, pageNum, pageSize);
     }
 
     @Transactional
     public NicknameChangeResponse changeNickname(NicknameChangeRequest request, Long userId) {
-        User user = userQueryService.getUserById(userId);
+        User user = userService.getUserById(userId);
 
         Reason rewardReason = Reason.NICKNAME_CHANGE;
         int requiredStar = rewardReason.getPointTo();
@@ -66,14 +65,14 @@ public class MyPageService {
     }
 
     private void validateNicknameConflict(NicknameChangeRequest request) {
-        if (userQueryService.existsByNickname(request.newNickname())) {
+        if (userService.existsByNickname(request.newNickname())) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
         }
     }
 
     @Transactional
     public void changePassword(ChangePasswordRequest request, Long userId) {
-        User user = userQueryService.getUserById(userId);
+        User user = userService.getUserById(userId);
 
         validateChangeablePasswordUser(user);
         comparePasswordWithRepassword(request.newPassword(), request.checkedPassword());

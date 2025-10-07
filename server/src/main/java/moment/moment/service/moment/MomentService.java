@@ -51,7 +51,7 @@ public class MomentService {
 
     public List<Moment> getCommentableMoments(User user, LocalDateTime threeDaysAgo,
                                               List<Long> reportedMomentIds) {
-        return momentRepository.findCommentableMoments(user, threeDaysAgo, reportedMomentIds);
+        return momentRepository.findAllExceptUser(user, threeDaysAgo, reportedMomentIds);
 
     }
 

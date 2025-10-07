@@ -129,7 +129,7 @@ class CommentControllerTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
-        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
+        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment.getId());
         Comment savedComment = commentRepository.save(comment);
 
         Echo echo = new Echo("HEART", savedMomenter, savedComment);
@@ -138,7 +138,7 @@ class CommentControllerTest {
         Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
 
-        Comment comment2 = new Comment("즐거운 댓글", savedCommenter, savedMoment2);
+        Comment comment2 = new Comment("즐거운 댓글", savedCommenter, savedMoment2.getId());
         Comment savedComment2 = commentRepository.save(comment2);
 
         Echo echo2 = new Echo("HEART", savedMomenter, savedComment2);
@@ -188,7 +188,7 @@ class CommentControllerTest {
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.saveAndFlush(moment);
 
-        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment);
+        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment.getId());
         Comment savedComment = commentRepository.saveAndFlush(comment);
 
         // when
@@ -225,7 +225,7 @@ class CommentControllerTest {
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
-        Comment comment = new Comment("아 행복해", savedCommenter, savedMoment);
+        Comment comment = new Comment("아 행복해", savedCommenter, savedMoment.getId());
         Comment savedComment = commentRepository.save(comment);
 
         String token = jwtTokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -259,7 +259,7 @@ class CommentControllerTest {
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
-        Comment comment = new Comment("아 행복해", savedCommenter, savedMoment);
+        Comment comment = new Comment("아 행복해", savedCommenter, savedMoment.getId());
         Comment savedComment = commentRepository.save(comment);
 
         String token = jwtTokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());

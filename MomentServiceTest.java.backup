@@ -40,7 +40,7 @@ import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
-import moment.user.application.UserQueryService;
+import moment.user.service.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;

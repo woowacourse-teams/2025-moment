@@ -5,7 +5,7 @@ import moment.global.domain.TargetType;
 import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
 import moment.report.dto.ReportCreateRequest;
-import moment.user.application.tobe.user.UserService;
+import moment.user.service.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -53,7 +53,7 @@ class NotificationRepositoryTest {
         notificationRepository.save(notification3);
 
         // when
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user, false);
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user.getId(), false);
 
         // then
         assertThat(notifications).hasSize(3);
@@ -80,7 +80,7 @@ class NotificationRepositoryTest {
         notificationRepository.save(notification3);
 
         // when
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user, true);
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user.getId(), true);
 
         // then
         assertThat(notifications).hasSize(2);

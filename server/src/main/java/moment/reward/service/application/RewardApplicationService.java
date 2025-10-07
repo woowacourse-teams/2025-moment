@@ -3,7 +3,7 @@ package moment.reward.service.application;
 import lombok.RequiredArgsConstructor;
 import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
-import moment.user.application.tobe.user.UserService;
+import moment.user.service.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

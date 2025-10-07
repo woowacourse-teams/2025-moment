@@ -22,7 +22,7 @@ import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.user.application.tobe.user.UserService;
+import moment.user.service.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

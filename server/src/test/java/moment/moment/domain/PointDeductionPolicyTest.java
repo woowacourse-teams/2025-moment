@@ -29,7 +29,7 @@ class PointDeductionPolicyTest {
         when(user.canNotUseStars(any(Integer.class))).thenReturn(false);
 
         // when
-        boolean result = pointDeductionPolicy.validate(user);
+        boolean result = pointDeductionPolicy.canCreate(user);
 
         // then
         assertThat(result).isTrue();
@@ -41,7 +41,7 @@ class PointDeductionPolicyTest {
         when(user.canNotUseStars(any(Integer.class))).thenReturn(true);
 
         // when
-        boolean result = pointDeductionPolicy.validate(user);
+        boolean result = pointDeductionPolicy.canCreate(user);
 
         // then
         assertThat(result).isFalse();

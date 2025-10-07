@@ -3,12 +3,10 @@ package moment.comment.infrastructure;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,12 +24,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("""
             SELECT c
             FROM comments c
-            LEFT JOIN FETCH c.moment m
-            LEFT JOIN FETCH m.momenter
             WHERE c.id IN :ids
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findCommentsWithDetailsByIds(@Param("ids") List<Long> ids);
+    List<Comment> findCommentsByIds(@Param("ids") List<Long> ids);
 
     @Query("""
             SELECT c
@@ -62,22 +58,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                                              @Param("cursorId") Long cursorId,
                                              Pageable pageable);
 
-    @EntityGraph(attributePaths = {"moment"})
-    List<Comment> findAllByMomentIn(List<Moment> moments);
-
-    boolean existsByMomentAndCommenter(Moment moment, User commenter);
-
-    long countByMomentAndCreatedAtBetween(Moment moment, LocalDateTime start, LocalDateTime end);
-
-    @EntityGraph(attributePaths = {"commenter"})
-    Optional<Comment> findWithCommenterById(Long id);
-
     List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 
     @Query("""
-            SELECT c.moment.id
+            SELECT c.momentId
             FROM comments c
-            WHERE c.moment.id IN :momentIds
+            WHERE c.momentId IN :momentIds
             AND c.commenter.id <> :commenterId
             """)
     List<Long> findMomentIdsCommentedOnByOthers(@Param("momentIds") List<Long> momentIds,

@@ -51,11 +51,11 @@ public class CommentService {
         if (cursor.isFirstPage()) {
             List<Long> firstPageCommentIds = commentRepository.findFirstPageCommentIdsByCommenter(commenter,
                     pageable);
-            return commentRepository.findCommentsWithDetailsByIds(firstPageCommentIds);
+            return commentRepository.findCommentsByIds(firstPageCommentIds);
         }
         List<Long> nextPageCommentIds = commentRepository.findNextPageCommentIdsByCommenter(commenter,
                 cursor.dateTime(), cursor.id(), pageable);
-        return commentRepository.findCommentsWithDetailsByIds(nextPageCommentIds);
+        return commentRepository.findCommentsByIds(nextPageCommentIds);
     }
 
     public List<Comment> getCommentsBy(List<Long> commentIds, Cursor cursor, PageSize pageSize) {

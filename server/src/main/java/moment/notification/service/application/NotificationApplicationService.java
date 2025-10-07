@@ -12,7 +12,7 @@ import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.service.notification.NotificationService;
 import moment.notification.service.notification.SseNotificationService;
-import moment.user.application.tobe.user.UserService;
+import moment.user.service.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

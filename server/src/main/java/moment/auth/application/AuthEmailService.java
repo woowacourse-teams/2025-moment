@@ -16,7 +16,7 @@ import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.application.UserQueryService;
+import moment.user.service.user.UserService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class AuthEmailService implements EmailService{
     private static final long COOL_DOWN_SECONDS = 60;
     private static final long EXPIRY_SECONDS = 300;
 
-    private final UserQueryService userQueryService;
+    private final UserService userService;
     private final JavaMailSender mailSender;
     private final Map<String, EmailVerification> verificationInfos = new ConcurrentHashMap<>();
     private final Map<String, EmailVerification> passwordUpdateInfos = new ConcurrentHashMap<>();
@@ -47,7 +47,7 @@ public class AuthEmailService implements EmailService{
     public void sendVerificationEmail(EmailRequest request) {
         String email = request.email();
 
-        userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)
+        userService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)
                 .ifPresent(user -> {
                     throw new MomentException(ErrorCode.USER_CONFLICT);
                 });
@@ -99,7 +99,7 @@ public class AuthEmailService implements EmailService{
     @Override
     public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
         String email = request.email();
-        Optional<User> findUser = userQueryService.findUserByEmailAndProviderType(email, ProviderType.EMAIL);
+        Optional<User> findUser = userService.findUserByEmailAndProviderType(email, ProviderType.EMAIL);
 
         if (findUser.isPresent()) {
             EmailVerification existingInfo = passwordUpdateInfos.get(email);

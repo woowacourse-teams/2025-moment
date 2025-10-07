@@ -36,7 +36,7 @@ class EchoTest {
         User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
         Moment moment = new Moment("오운완!", false, momenter, WriteType.BASIC);
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
-        Comment comment = new Comment("오운완!", commenter, moment);
+        Comment comment = new Comment("오운완!", commenter, moment.getId());
 
         // when & then
         assertThatThrownBy(() -> new Echo("HEART", null, comment))
@@ -49,7 +49,7 @@ class EchoTest {
         User momenter = new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL);
         Moment moment = new Moment("오운완!", false, momenter, WriteType.BASIC);
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
-        Comment comment = new Comment("오운완!", commenter, moment);
+        Comment comment = new Comment("오운완!", commenter, moment.getId());
         Echo echo = new Echo("HEART", momenter, comment);
 
         // when & then
@@ -67,7 +67,7 @@ class EchoTest {
         User commenter = new User("ama@gmail.com", "1234", "ama", ProviderType.EMAIL);
         ReflectionTestUtils.setField(commenter, "id", 2L);
 
-        Comment comment = new Comment("오운완!", commenter, writer);
+        Comment comment = new Comment("오운완!", commenter, writer.getId());
         Echo echo = new Echo("HEART", momenter, comment);
 
         // when & then

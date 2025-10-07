@@ -6,7 +6,7 @@ import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
-import moment.user.application.NicknameGenerateService;
+import moment.user.service.NicknameGenerateService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -48,8 +48,7 @@ public class GoogleAuthService {
 
     private User addUser(String email, String sub) {
         String encodedPassword = passwordEncoder.encode(sub);
-        User user = new User(email, encodedPassword, nicknameGenerateService.createRandomNickname(),
-                ProviderType.GOOGLE);
+        User user = new User(email, encodedPassword, nicknameGenerateService.generate(), ProviderType.GOOGLE);
 
         return userRepository.save(user);
     }

@@ -4,7 +4,6 @@ package moment.comment.service.facade;
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.CommentForEcho;
 import moment.comment.service.application.CommentApplicationService;
-import moment.comment.service.application.EchoApplicationService;
 import moment.global.domain.TargetType;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.domain.NotificationType;

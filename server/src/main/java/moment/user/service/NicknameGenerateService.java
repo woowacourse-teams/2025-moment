@@ -1,9 +1,11 @@
-package moment.user.application;
+package moment.user.service;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.user.service.user.UserService;
 import moment.user.domain.NicknameGenerator;
+import moment.user.dto.response.MomentRandomNicknameResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +16,15 @@ public class NicknameGenerateService {
 
     private static final int LIMIT_RETRY_COUNT = 5;
 
-    private final UserQueryService userQueryService;
+    private final UserService userService;
     private final NicknameGenerator nicknameGenerator;
 
-    public String createRandomNickname() {
+    public MomentRandomNicknameResponse createRandomNickname() {
+        String randomNickname = generate();
+        return new MomentRandomNicknameResponse(randomNickname);
+    }
+
+    public String generate() {
         int retry = 0;
 
         while (true) {
@@ -26,7 +33,7 @@ public class NicknameGenerateService {
             }
 
             String nickname = nicknameGenerator.generateNickname();
-            boolean exists = userQueryService.existsByNickname(nickname);
+            boolean exists = userService.existsByNickname(nickname);
             if (!exists) {
                 return nickname;
             }

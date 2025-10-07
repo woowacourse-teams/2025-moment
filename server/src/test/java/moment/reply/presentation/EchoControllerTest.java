@@ -74,7 +74,7 @@ public class EchoControllerTest {
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter, WriteType.BASIC));
-        comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment));
+        comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment.getId()));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class EchoControllerTest {
         // then
         assertAll(
                 () -> assertThat(response).hasSize(1),
-                () -> assertThat(response.get(0).emojiType()).isEqualTo(savedEcho.getEchoType()),
+                () -> assertThat(response.get(0).echoType()).isEqualTo(savedEcho.getEchoType()),
                 () -> assertThat(response.get(0).userName()).isEqualTo(savedEcho.getUser().getNickname())
         );
     }

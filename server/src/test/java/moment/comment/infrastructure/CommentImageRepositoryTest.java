@@ -51,9 +51,9 @@ public class CommentImageRepositoryTest {
         String imageUrl = "https://s3:moment-dev/images/고양이.jpg";
         String imageName = "고양이.jpg";
 
-        Comment comment1 = new Comment("내용1", savedCommenter1, savedMoment);
-        Comment comment2 = new Comment("내용2", savedCommenter2, savedMoment);
-        Comment comment3 = new Comment("내용3", savedCommenter3, savedMoment);
+        Comment comment1 = new Comment("내용1", savedCommenter1, savedMoment.getId());
+        Comment comment2 = new Comment("내용2", savedCommenter2, savedMoment.getId());
+        Comment comment3 = new Comment("내용3", savedCommenter3, savedMoment.getId());
         Comment savedComment1 = commentRepository.save(comment1);
         Comment savedComment2 = commentRepository.save(comment2);
         Comment savedComment3 = commentRepository.save(comment3);

@@ -1,5 +1,7 @@
-package moment.user.application;
+package moment.user.service.user;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -8,7 +10,6 @@ import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
-import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -21,9 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
-    private final UserQueryService userQueryService;
     private final UserRepository userRepository;
-    private final NicknameGenerateService nicknameGenerateService;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -57,17 +56,33 @@ public class UserService {
     }
 
     public UserProfileResponse getUserProfile(Authentication authentication) {
-        User user = userQueryService.getUserById(authentication.id());
+        User user = getUserById(authentication.id());
         return UserProfileResponse.from(user);
-    }
-
-    public MomentRandomNicknameResponse createRandomNickname() {
-        String randomNickname = nicknameGenerateService.createRandomNickname();
-        return new MomentRandomNicknameResponse(randomNickname);
     }
 
     public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
         boolean existsByNickname = userRepository.existsByNickname(request.nickname());
         return new NicknameConflictCheckResponse(existsByNickname);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
+        return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public List<User> getAllByIds(List<Long> ids) {
+        return userRepository.findAllByIdIn(ids);
+    }
+
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 }
