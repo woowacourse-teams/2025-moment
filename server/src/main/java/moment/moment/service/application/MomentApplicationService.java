@@ -222,4 +222,9 @@ public class MomentApplicationService {
         List<Moment> moments = momentService.getMomentsBy(momentIds);
         return mapMomentCompositionInfoBy(moments);
     }
+
+    public void validateMomenter(Long momentId, Long momenterId) {
+        User momenter = userService.getUserById(momenterId);
+        momentService.validateMomenter(momentId, momenter);
+    }
 }

@@ -10,10 +10,11 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
+import moment.comment.service.application.CommentApplicationService;
+import moment.comment.service.facade.EchoCreateFacadeService;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.reply.application.EchoService;
-import moment.reply.dto.request.EchoCreateRequest;
+import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.dto.tobe.EchoDetail;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/echos")
 public class EchoController {
 
-    private final EchoService echoService;
+    private final EchoCreateFacadeService echoCreateFacadeService;
+    private final CommentApplicationService commentApplicationService;
 
     @Operation(summary = "에코 등록", description = "새로운 에코를 등록합니다.")
     @ApiResponses({
@@ -59,7 +61,7 @@ public class EchoController {
             @Valid @RequestBody EchoCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        echoService.addEchos(request, authentication);
+        echoCreateFacadeService.createEchos(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
@@ -73,7 +75,7 @@ public class EchoController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        List<EchoDetail> response = echoService.getEchosByCommentId(commentId);
+        List<EchoDetail> response = commentApplicationService.getEchosBy(commentId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

@@ -84,4 +84,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                                                 @Param("commenterId") Long commenterId);
 
     boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
+
+    Optional<Long> findMomentIdById(Long commentId);
 }

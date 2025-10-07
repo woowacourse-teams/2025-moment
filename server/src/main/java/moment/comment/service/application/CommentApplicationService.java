@@ -5,15 +5,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.domain.Echo;
+import moment.comment.dto.CommentForEcho;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
+import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
@@ -98,14 +101,14 @@ public class CommentApplicationService {
         Comment savedComment = commentService.create(commentWithoutId);
 
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
-        
+
         return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
                 .orElseGet(() -> CommentCreateResponse.from(savedComment));
     }
 
     public CommentCompositions getMyCommentCompositions(Cursor cursor, PageSize pageSize, Long commenterId) {
         User commenter = userService.getUserById(commenterId);
-        
+
         List<Comment> commentsWithinCursor = commentService.getCommentsBy(commenter, cursor, pageSize);
 
         List<Comment> commentsWithoutCursor = removeCursor(commentsWithinCursor, pageSize);
@@ -121,7 +124,8 @@ public class CommentApplicationService {
     }
 
     private List<CommentComposition> mapCommentCompositionInfo(List<Comment> commentsWithoutCursor, User commenter) {
-        Map<Comment, CommentImage> commentImagesByComment = commentImageService.getCommentImageByComment(commentsWithoutCursor);
+        Map<Comment, CommentImage> commentImagesByComment = commentImageService.getCommentImageByComment(
+                commentsWithoutCursor);
 
         Map<Comment, List<Echo>> echoesByComments = echoService.getEchosOfComments(commentsWithoutCursor);
 
@@ -144,9 +148,9 @@ public class CommentApplicationService {
     }
 
     public CommentCompositions getUnreadMyCommentCompositions(Cursor cursor,
-                                               PageSize pageSize,
-                                               Long commenterId,
-                                               List<Long> unreadCommentIds) {
+                                                              PageSize pageSize,
+                                                              Long commenterId,
+                                                              List<Long> unreadCommentIds) {
 
         User commenter = userService.getUserById(commenterId);
 
@@ -162,5 +166,24 @@ public class CommentApplicationService {
                 hasNextPage,
                 commentsWithoutCursor.size()
         );
+    }
+
+    public CommentForEcho getCommentForEchoBy(Long commentId) {
+        Comment comment = commentService.getCommentBy(commentId);
+        return CommentForEcho.from(comment);
+    }
+
+    public void createEcho(Long commentId, Long momenterId, Set<String> echoTypes) {
+        Comment comment = commentService.getCommentBy(commentId);
+        User momenter = userService.getUserById(momenterId);
+        echoService.saveIfNotExisted(comment, momenter, echoTypes);
+    }
+
+    public List<EchoDetail> getEchosBy(Long commentId) {
+        Comment comment = commentService.getCommentBy(commentId);
+        List<Echo> echos = echoService.getEchosBy(comment);
+
+        return echos.stream().map(EchoDetail::from)
+                .toList();
     }
 }

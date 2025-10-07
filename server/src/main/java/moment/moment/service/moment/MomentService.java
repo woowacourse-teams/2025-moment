@@ -72,4 +72,13 @@ public class MomentService {
     public boolean existsMoment(Long momentId) {
         return momentRepository.existsById(momentId);
     }
+
+    public void validateMomenter(Long momentId, User momenter) {
+        Moment moment = momentRepository.findById(momentId)
+                .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+
+        if (moment.isNotSame(momenter)) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+    }
 }

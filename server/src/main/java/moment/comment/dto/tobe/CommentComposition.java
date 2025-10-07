@@ -22,9 +22,9 @@ public record CommentComposition(
                                         User commenter,
                                         CommentImage commentImage,
                                         List<Echo> echos) {
-        
+
         String imageUrl = commentImage == null ? null : commentImage.getImageUrl();
-        
+
         List<EchoDetail> echoDetails = echos.stream()
                 .map(EchoDetail::from)
                 .toList();

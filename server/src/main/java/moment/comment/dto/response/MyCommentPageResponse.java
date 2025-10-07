@@ -40,6 +40,6 @@ public record MyCommentPageResponse(
                 myCommentCompositions.nextCursor(),
                 myCommentCompositions.hasNextPage(),
                 myCommentCompositions.pageSize()
-        )
+        );
     }
 }

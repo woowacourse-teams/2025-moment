@@ -61,9 +61,19 @@ public class CommentService {
     public List<Comment> getCommentsBy(List<Long> commentIds, Cursor cursor, PageSize pageSize) {
         PageRequest pageable = pageSize.getPageRequest();
 
-        if(cursor.isFirstPage()) {
+        if (cursor.isFirstPage()) {
             return commentRepository.findUnreadCommentsFirstPage(commentIds, pageable);
         }
         return commentRepository.findUnreadCommentsNextPage(commentIds, cursor.dateTime(), cursor.id(), pageable);
+    }
+
+    public Long getMomentIdBy(Long commentId) {
+        return commentRepository.findMomentIdById(commentId)
+                .orElseThrow(() -> new MomentException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    public Comment getCommentBy(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new MomentException(ErrorCode.COMMENT_NOT_FOUND));
     }
 }

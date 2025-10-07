@@ -15,7 +15,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.comment.domain.Echo;
-import moment.reply.dto.request.EchoCreateRequest;
+import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;

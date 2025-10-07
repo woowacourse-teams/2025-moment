@@ -64,8 +64,8 @@ class MomentTest {
 
         // when & then
         assertAll(
-                () -> assertThat(moment.checkMomenter(momenter)).isTrue(),
-                () -> assertThat(moment.checkMomenter(unAuthorizedUser)).isFalse()
+                () -> assertThat(moment.isNotSame(momenter)).isTrue(),
+                () -> assertThat(moment.isNotSame(unAuthorizedUser)).isFalse()
         );
     }
 }

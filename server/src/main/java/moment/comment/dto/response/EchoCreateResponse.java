@@ -1,4 +1,4 @@
-package moment.reply.dto.response;
+package moment.comment.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.Set;

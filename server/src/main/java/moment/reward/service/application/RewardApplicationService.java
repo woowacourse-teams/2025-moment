@@ -26,6 +26,11 @@ public class RewardApplicationService {
         rewardService.rewardForMoment(user, reason, momentId);
     }
 
+    public void rewardForEcho(Long userId, Reason reason, Long commentId) {
+        User user = userService.getUserById(userId);
+        rewardService.rewardForEcho(user, reason, commentId);
+    }
+
     public void useReward(Long userId, Reason reason, Long contentId) {
         User user = userService.getUserById(userId);
         rewardService.useReward(user, reason, contentId);
