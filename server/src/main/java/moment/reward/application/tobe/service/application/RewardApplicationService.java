@@ -20,4 +20,14 @@ public class RewardApplicationService {
         User user = userService.getUserById(userId);
         rewardService.rewardForComment(user, reason, commentId);
     }
+
+    public void rewardForMoment(Long userId, Reason reason, Long momentId) {
+        User user = userService.getUserById(userId);
+        rewardService.rewardForMoment(user, reason, momentId);
+    }
+
+    public void useReward(Long userId, Reason reason, Long contentId) {
+        User user = userService.getUserById(userId);
+        rewardService.useReward(user, reason, contentId);
+    }
 }

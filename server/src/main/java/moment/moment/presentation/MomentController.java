@@ -19,6 +19,7 @@ import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.service.tobe.application.MomentApplicationService;
 import moment.moment.service.tobe.facade.CommentableMomentFacadeService;
+import moment.moment.service.tobe.facade.MomentCreateFacadeService;
 import moment.moment.service.tobe.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ public class MomentController {
 
     private final MyMomentPageFacadeService myMomentPageFacadeService;
     private final CommentableMomentFacadeService commentableMomentFacadeService;
+    private final MomentCreateFacadeService momentCreateFacadeService;
     private final MomentApplicationService momentApplicationService;
 
     @Operation(summary = "기본 모멘트 등록", description = "사용자가 기본 모멘트를 등록합니다.")
@@ -58,7 +60,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentApplicationService.createBasicMoment(request, authentication.id());
+        MomentCreateResponse response = momentCreateFacadeService.createBasicMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -83,7 +85,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentApplicationService.createExtraMoment(request, authentication.id());
+        MomentCreateResponse response = momentCreateFacadeService.createExtraMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
