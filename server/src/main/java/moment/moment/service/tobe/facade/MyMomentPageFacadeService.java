@@ -1,15 +1,18 @@
 package moment.moment.service.tobe.facade;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.tobe.application.CommentApplicationService;
+import moment.global.domain.TargetType;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.service.tobe.application.MomentApplicationService;
 import moment.moment.service.tobe.application.MomentComposition;
+import moment.notification.service.tobe.application.NotificationApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ public class MyMomentPageFacadeService {
 
     private final MomentApplicationService momentApplicationService;
     private final CommentApplicationService commentApplicationService;
+    private final NotificationApplicationService notificationApplicationService;
 
     public MyMomentPageResponse getMyMomentsPage(String nextCursor, int limit, Long momenterId) {
         return createMyMomentPage(
@@ -31,11 +35,14 @@ public class MyMomentPageFacadeService {
     }
 
     public MyMomentPageResponse getUnreadMyMomentsPage(String nextCursor, int limit, Long momenterId) {
+        List<Long> unreadMomentIds = notificationApplicationService.getUnreadNotifications(momenterId, TargetType.MOMENT);
+
         return createMyMomentPage(
                 () -> momentApplicationService.getUnreadMyMomentCompositions(
                         new Cursor(nextCursor),
                         new PageSize(limit),
-                        momenterId)
+                        momenterId,
+                        unreadMomentIds)
         );
     }
 
@@ -47,9 +54,12 @@ public class MyMomentPageFacadeService {
                 .map(moment.moment.dto.response.tobe.MomentComposition::id)
                 .toList();
 
-        List<CommentComposition> commentCompositions = commentApplicationService.getMyCommentCompositions(
+        Map<Long, List<Long>> unreadNotificationsByMomentIds
+                = notificationApplicationService.getNotificationsByTargetIdsAndTargetType(myMomentIds, TargetType.MOMENT);
+
+        List<CommentComposition> commentCompositions = commentApplicationService.getMyCommentCompositionsBy(
                 myMomentIds);
 
-        return MyMomentPageResponse.of(momentCompositions, commentCompositions);
+        return MyMomentPageResponse.of(momentCompositions, commentCompositions, unreadNotificationsByMomentIds);
     }
 }

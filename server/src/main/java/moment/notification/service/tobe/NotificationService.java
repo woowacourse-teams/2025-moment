@@ -28,12 +28,16 @@ public class NotificationService {
     }
 
     public Notification saveNotification(
-            User user, 
-            Long targetId, 
+            User user,
+            Long targetId,
             NotificationType notificationType,
             TargetType targetType
     ) {
         Notification notification = new Notification(user, notificationType, targetType, targetId);
         return notificationRepository.save(notification);
+    }
+
+    public List<Notification> getNotificationsBy(List<Long> targetIds, boolean isRead, TargetType targetType) {
+        return notificationRepository.findNotificationsBy(targetIds, isRead, targetType);
     }
 }

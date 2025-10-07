@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -31,7 +29,6 @@ import moment.moment.service.tobe.moment.MomentService;
 import moment.moment.service.tobe.moment.MomentTagService;
 import moment.moment.service.tobe.moment.TagService;
 import moment.notification.service.tobe.NotificationService;
-import moment.notification.domain.Notification;
 import moment.report.application.ReportService;
 import moment.reward.application.RewardService;
 import moment.reward.domain.Reason;
@@ -106,68 +103,37 @@ public class MomentApplicationService {
 
         List<Moment> momentsWithinCursor = momentService.getMomentsBy(momenter, cursor, pageSize);
 
-        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(momenter,
-                TargetType.MOMENT);
-
-        Map<Moment, List<Notification>> unreadNotificationsByMomoent = mapNotificationForMoment(unreadNotifications,
-                momentsWithinCursor);
-
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
         boolean hasNextPage = pageSize.hasNextPage(momentsWithinCursor.size());
 
         return MomentCompositions.of(
-                mapMomentCompositionInfo(momentsWithoutCursor, unreadNotificationsByMomoent),
+                mapMomentCompositionInfo(momentsWithoutCursor),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,
                 momentsWithoutCursor.size()
         );
     }
 
-    public MomentCompositions getUnreadMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
+    public MomentCompositions getUnreadMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId, List<Long> unreadMomentIds) {
         User momenter = userService.getUserById(momenterId);
-
-        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(momenter,
-                TargetType.MOMENT);
-
-        List<Long> unreadMomentIds = unreadNotifications.stream()
-                .map(Notification::getTargetId)
-                .distinct()
-                .toList();
 
         List<Moment> momentsWithinCursor = momentService.getUnreadMomentsBy(unreadMomentIds, cursor, pageSize);
 
-        Map<Moment, List<Notification>> unreadNotificationsByMomoent = mapNotificationForMoment(unreadNotifications,
-                momentsWithinCursor);
-
         List<Moment> momentsWithoutCursor = removeCursor(momentsWithinCursor, pageSize);
 
         boolean hasNextPage = pageSize.hasNextPage(momentsWithinCursor.size());
 
         return MomentCompositions.of(
-                mapMomentCompositionInfo(momentsWithoutCursor, unreadNotificationsByMomoent),
+                mapMomentCompositionInfo(momentsWithoutCursor),
                 cursor.extract(new ArrayList<>(momentsWithinCursor), hasNextPage),
                 hasNextPage,
                 momentsWithoutCursor.size()
         );
     }
 
-    private Map<Moment, List<Notification>> mapNotificationForMoment(List<Notification> unreadNotifications,
-                                                                     List<Moment> moments) {
-
-        Map<Long, List<Notification>> notificationsByMomentIds = unreadNotifications.stream()
-                .collect(Collectors.groupingBy(Notification::getTargetId));
-
-        return moments.stream()
-                .collect(Collectors.toMap(
-                        moment -> moment,
-                        moment -> notificationsByMomentIds.getOrDefault(moment.getId(), List.of())
-                ));
-    }
-
     private List<MomentComposition> mapMomentCompositionInfo(
-            List<Moment> momentsWithoutCursor,
-            Map<Moment, List<Notification>> unreadNotificationsByMoments
+            List<Moment> momentsWithoutCursor
     ) {
         Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(momentsWithoutCursor);
         Map<Moment, MomentImage> momentImageByMoment = momentImageService.getMomentImageByMoment(momentsWithoutCursor);
@@ -176,8 +142,7 @@ public class MomentApplicationService {
                 .map(moment ->
                         MomentComposition.of(
                                 moment, momentTagsByMoment.get(moment),
-                                momentImageByMoment.getOrDefault(moment, null),
-                                unreadNotificationsByMoments.get(moment)
+                                momentImageByMoment.getOrDefault(moment, null)
                         )
                 )
                 .toList();

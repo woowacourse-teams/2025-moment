@@ -2,6 +2,7 @@ package moment.moment.dto.response.tobe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import java.util.Map;
 import moment.comment.dto.tobe.CommentComposition;
 
 @Schema(description = "나의 Moment 페이지 조회 응답")
@@ -20,10 +21,11 @@ public record MyMomentPageResponse(
 ) {
 
     public static MyMomentPageResponse of(MomentCompositions momentCompositions,
-                                          List<CommentComposition> commentCompositionInfo) {
+                                          List<CommentComposition> commentCompositionInfo,
+                                          Map<Long, List<Long>> unreadNotificationsByMomentIds) {
 
         return new MyMomentPageResponse(
-                MyMomentsResponse.of(momentCompositions.momentCompositionInfo(), commentCompositionInfo),
+                MyMomentsResponse.of(momentCompositions.momentCompositionInfo(), commentCompositionInfo, unreadNotificationsByMomentIds),
                 momentCompositions.nextCursor(),
                 momentCompositions.hasNextPage(),
                 momentCompositions.pageSize());

@@ -35,7 +35,8 @@ public record MyMomentResponse(
 ) {
 
     public static MyMomentResponse of(MomentComposition momentComposition,
-                                      List<CommentComposition> commentCompositions) {
+                                      List<CommentComposition> commentCompositions,
+                                      List<Long> unreadNotificationIds) {
 
         List<MyMomentCommentResponse> myMomentCommentResponses = commentCompositions.stream()
                 .map(MyMomentCommentResponse::from)
@@ -49,7 +50,7 @@ public record MyMomentResponse(
                 momentComposition.imageUrl(),
                 momentComposition.momentCreatedAt(),
                 myMomentCommentResponses,
-                new MomentNotificationResponse(momentComposition.isRead(), momentComposition.unreadNotificationsIds())
+                MomentNotificationResponse.from(unreadNotificationIds)
         );
     }
 }

@@ -22,4 +22,13 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Long> findAllByUserIdAndIsReadAndTargetType(@Param("userId") Long userId,
                                                      @Param("isRead") Boolean isRead,
                                                      @Param("targetType") TargetType targetType);
+
+    @Query("""
+            SELECT n
+            FROM notifications n
+            WHERE n.targetId IN :targetIds AND n.isRead = :isRead AND n.targetType = :targetType
+            """)
+    List<Notification> findNotificationsBy(@Param("targetIds") List<Long> targetIds,
+                                           @Param("isRead") boolean isRead,
+                                           @Param("targetType")TargetType targetType);
 }
