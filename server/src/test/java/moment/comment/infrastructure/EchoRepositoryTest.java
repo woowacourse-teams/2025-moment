@@ -1,4 +1,4 @@
-package moment.reply.infrastructure;
+package moment.comment.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.Set;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
-import moment.comment.infrastructure.EchoRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
