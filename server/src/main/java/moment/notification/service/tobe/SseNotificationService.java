@@ -3,7 +3,7 @@ package moment.notification.service.tobe;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.logging.NoLogging;
-import moment.notification.domain.Emitters;
+import moment.notification.infrastructure.Emitters;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

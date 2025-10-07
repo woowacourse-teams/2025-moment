@@ -3,7 +3,7 @@ package moment.notification.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import moment.notification.service.tobe.SseNotificationService;
-import moment.notification.domain.Emitters;
+import moment.notification.infrastructure.Emitters;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;

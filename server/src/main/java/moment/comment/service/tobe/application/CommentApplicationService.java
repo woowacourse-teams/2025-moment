@@ -14,9 +14,6 @@ import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.tobe.comment.CommentImageService;
 import moment.comment.service.tobe.comment.CommentService;
 import moment.comment.service.tobe.comment.EchoService;
-import moment.global.domain.TargetType;
-import moment.notification.domain.NotificationType;
-import moment.reward.domain.Reason;
 import moment.user.application.tobe.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -90,21 +87,13 @@ public class CommentApplicationService {
         commentService.validateUniqueBy(request.momentId(), commenterId);
     }
 
-    public void createComment(CommentCreateRequest request, Long commenterId) {
+    public CommentCreateResponse createComment(CommentCreateRequest request, Long commenterId) {
         User commenter = userService.getUserById(commenterId);
         Comment commentWithoutId = request.toComment(commenter, request.momentId());
         Comment savedComment = commentService.create(commentWithoutId);
 
         Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
-
-        notificationFacade.sendSseNotificationAndNotification(
-                moment.getMomenter(),
-                moment.getId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT);
-
-        rewardService.rewardForComment(commenter, Reason.COMMENT_CREATION, savedComment.getId());
-
+        
         return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
                 .orElseGet(() -> CommentCreateResponse.from(savedComment));
     }

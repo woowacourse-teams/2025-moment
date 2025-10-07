@@ -1,0 +1,23 @@
+package moment.reward.application.tobe.service.application;
+
+import lombok.RequiredArgsConstructor;
+import moment.reward.application.RewardService;
+import moment.reward.domain.Reason;
+import moment.user.application.tobe.user.UserService;
+import moment.user.domain.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class RewardApplicationService {
+
+    private final RewardService rewardService;
+    private final UserService userService;
+
+    public void rewardForComment(Long userId, Reason reason, Long commentId) {
+        User user = userService.getUserById(userId);
+        rewardService.rewardForComment(user, reason, commentId);
+    }
+}

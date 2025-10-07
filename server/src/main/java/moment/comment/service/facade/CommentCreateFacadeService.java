@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.tobe.application.CommentApplicationService;
-import moment.moment.domain.Moment;
+import moment.global.domain.TargetType;
 import moment.moment.service.tobe.application.MomentApplicationService;
+import moment.notification.domain.NotificationType;
+import moment.notification.service.tobe.application.NotificationApplicationService;
+import moment.reward.application.tobe.service.application.RewardApplicationService;
+import moment.reward.domain.Reason;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +20,23 @@ public class CommentCreateFacadeService {
 
     private final CommentApplicationService commentApplicationService;
     private final MomentApplicationService momentApplicationService;
+    private final NotificationApplicationService notificationApplicationService;
+    private final RewardApplicationService rewardApplicationService;
 
     public CommentCreateResponse createComment(CommentCreateRequest request, Long userId) {
         commentApplicationService.validateCreateComment(request, userId);
         momentApplicationService.validateExistMoment(request.momentId());
-        commentApplicationService.createComment(request, userId);
-        // TODO
+        CommentCreateResponse createdComment = commentApplicationService.createComment(request, userId);
+
+        rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
+
+        notificationApplicationService.createNotificationAndSendSse(
+                userId,
+                createdComment.commentId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                TargetType.COMMENT
+        );
+
+        return createdComment;
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,15 @@ public class NotificationService {
     public List<Long> getUnreadTargetIdsBy(Long userId, TargetType targetType) {
         boolean isRead = false;
         return notificationRepository.findAllByUserIdAndIsReadAndTargetType(userId, isRead, targetType);
+    }
+
+    public Notification saveNotification(
+            User user, 
+            Long targetId, 
+            NotificationType notificationType,
+            TargetType targetType
+    ) {
+        Notification notification = new Notification(user, notificationType, targetType, targetId);
+        return notificationRepository.save(notification);
     }
 }
