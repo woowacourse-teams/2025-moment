@@ -11,9 +11,12 @@ import moment.comment.domain.Echo;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
+import moment.comment.dto.tobe.CommentCompositions;
 import moment.comment.service.tobe.comment.CommentImageService;
 import moment.comment.service.tobe.comment.CommentService;
 import moment.comment.service.tobe.comment.EchoService;
+import moment.global.page.Cursor;
+import moment.global.page.PageSize;
 import moment.user.application.tobe.user.UserService;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -31,7 +34,7 @@ public class CommentApplicationService {
     private final CommentImageService commentImageService;
     private final EchoService echoService;
 
-    public List<CommentComposition> getMyCommentCompositions(List<Long> momentIds) {
+    public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
         List<Comment> comments = commentService.getAllByMomentIds(momentIds);
 
         List<Long> commenterIds = extractCommenterIdsByComments(comments);
@@ -96,5 +99,13 @@ public class CommentApplicationService {
         
         return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
                 .orElseGet(() -> CommentCreateResponse.from(savedComment));
+    }
+
+    public CommentCompositions getMyCommentCompositions(Cursor cursor, PageSize pageSize, Long commenterId) {
+        User commenter = userService.getUserById(commenterId);
+        
+        List<Comment> commentsWithinCursor = commentService.getCommentsBy(commenter, cursor, pageSize);
+        
+        
     }
 }

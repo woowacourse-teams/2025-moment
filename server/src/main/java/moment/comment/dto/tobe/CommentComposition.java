@@ -33,7 +33,7 @@ public record CommentComposition(
                 echos.stream()
                         .map(EchoDetail::from)
                         .toList(),
-                comment.getMoment().getId()
+                comment.getMomentId()
         );
     }
 }
