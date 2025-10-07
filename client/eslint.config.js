@@ -90,6 +90,26 @@ export default [
       'no-undef': 'warn',
     },
   },
+  {
+    files: ['**/*.cy.{js,jsx,ts,tsx}', 'cypress/**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      globals: {
+        cy: 'readonly',
+        Cypress: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        before: 'readonly',
+        after: 'readonly',
+        expect: 'readonly',
+        assert: 'readonly',
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+    },
+  },
   prettierConfig,
   ...storybook.configs['flat/recommended'],
 ];

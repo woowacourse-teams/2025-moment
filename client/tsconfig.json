@@ -15,7 +15,7 @@
     "paths": {
       "@/*": ["*"]
     },
-    "types": ["node", "jest"]
+    "types": ["node", "jest", "cypress"]
   },
   "include": ["src", ".storybook", "test", "src/types/**/*"],
   "exclude": ["node_modules", "dist"]
