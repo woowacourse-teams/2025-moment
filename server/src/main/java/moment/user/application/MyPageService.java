@@ -3,7 +3,7 @@ package moment.user.application;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.reward.application.RewardService;
+import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.user.domain.ProviderType;

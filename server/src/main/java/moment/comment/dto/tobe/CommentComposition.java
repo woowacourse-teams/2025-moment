@@ -22,17 +22,21 @@ public record CommentComposition(
                                         User commenter,
                                         CommentImage commentImage,
                                         List<Echo> echos) {
+        
+        String imageUrl = commentImage == null ? null : commentImage.getImageUrl();
+        
+        List<EchoDetail> echoDetails = echos.stream()
+                .map(EchoDetail::from)
+                .toList();
 
         return new CommentComposition(
                 comment.getId(),
                 comment.getContent(),
                 commenter.getNickname(),
                 commenter.getLevel(),
-                commentImage.getImageUrl(),
+                imageUrl,
                 comment.getCreatedAt(),
-                echos.stream()
-                        .map(EchoDetail::from)
-                        .toList(),
+                echoDetails,
                 comment.getMomentId()
         );
     }

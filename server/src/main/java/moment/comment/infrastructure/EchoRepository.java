@@ -11,10 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EchoRepository extends JpaRepository<Echo, Long> {
 
-    @EntityGraph(attributePaths = {"user"})
     List<Echo> findAllByComment(Comment comment);
 
-    @EntityGraph(attributePaths = {"comment"})
     List<Echo> findAllByCommentIn(List<Comment> comments);
 
     List<Echo> findByCommentAndUserAndEchoTypeIn(Comment comment, User user, Collection<String> echoTypes);

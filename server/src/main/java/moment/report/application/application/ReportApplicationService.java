@@ -2,7 +2,7 @@ package moment.report.application.application;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
-import moment.report.application.ReportService;
+import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
 import moment.report.dto.ReportCreateRequest;
 import moment.user.application.tobe.user.UserService;

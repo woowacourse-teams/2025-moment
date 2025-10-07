@@ -16,7 +16,7 @@ import moment.comment.domain.Echo;
 import moment.reply.dto.request.EchoCreateRequest;
 import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.infrastructure.EchoRepository;
-import moment.reward.application.RewardService;
+import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
 import moment.user.application.UserQueryService;
 import moment.user.domain.User;
@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class EchoService {
 
     private final EchoRepository echoRepository;
-    private final CommentQueryService commentQueryService;
     private final UserQueryService userQueryService;
     private final EchoQueryService echoQueryService;
     private final NotificationFacade notificationFacade;

@@ -5,6 +5,7 @@ import moment.comment.domain.Echo;
 public record EchoDetail(
         Long id,
         String echoType,
+        Long userId,
         String userName
 ) {
 
@@ -12,6 +13,7 @@ public record EchoDetail(
         return new EchoDetail(
                 echo.getId(),
                 echo.getEchoType(),
+                echo.getUser().getId(),
                 echo.getUser().getNickname()
         );
     }

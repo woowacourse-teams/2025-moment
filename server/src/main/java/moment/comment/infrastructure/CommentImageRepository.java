@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentImageRepository extends JpaRepository<CommentImage, Long> {
     
-    @EntityGraph(attributePaths = {"comment"})
     List<CommentImage> findAllByCommentIn(List<Comment> comments);
 
     void deleteByComment(Comment comment);

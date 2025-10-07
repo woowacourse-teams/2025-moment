@@ -1,9 +1,9 @@
 package moment.report.application.facade;
 
 import lombok.RequiredArgsConstructor;
-import moment.comment.service.tobe.application.CommentApplicationService;
+import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
-import moment.moment.service.tobe.application.MomentApplicationService;
+import moment.moment.service.application.MomentApplicationService;
 import moment.report.application.application.ReportApplicationService;
 import moment.report.dto.ReportCreateRequest;
 import moment.report.dto.ReportCreateResponse;

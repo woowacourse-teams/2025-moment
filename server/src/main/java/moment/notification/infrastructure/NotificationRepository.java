@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findAllByUserAndIsRead(User user, Boolean isRead);
+    List<Notification> findAllByUserIdAndIsRead(Long userId, Boolean isRead);
 
     List<Notification> findAllByUserAndIsReadAndTargetType(User user, Boolean isRead, TargetType targetType);
 

@@ -1,10 +1,19 @@
 package moment.comment.service.facade;
 
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.response.MyCommentPageResponse;
-import moment.comment.service.tobe.application.CommentApplicationService;
+import moment.comment.dto.tobe.CommentComposition;
+import moment.comment.dto.tobe.CommentCompositions;
+import moment.comment.service.application.CommentApplicationService;
+import moment.comment.service.application.CommentComposable;
+import moment.global.domain.TargetType;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.moment.dto.response.tobe.MomentComposition;
+import moment.moment.service.application.MomentApplicationService;
+import moment.notification.service.application.NotificationApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +23,46 @@ import org.springframework.transaction.annotation.Transactional;
 public class MyCommentPageFacadeService {
     
     private final CommentApplicationService commentApplicationService;
-    
+    private final MomentApplicationService momentApplicationService;
+    private final NotificationApplicationService notificationApplicationService;
+
     public MyCommentPageResponse getMyCommentsPage(String nextCursor, int limit, Long commenterId) {
-        // Todo : 1.코멘트 조회 2.모멘트 조회(List<Long>코멘트id) 3,알림조회  4.합친다.
-        Cursor cursor = new Cursor(nextCursor);
-        PageSize pageSize = new PageSize(limit);
-        
-        commentApplicationService.getMyCommentCompositions(cursor, pageSize, commenterId);
-        
+        return createMyCommentPage(() -> commentApplicationService.getMyCommentCompositions(
+                new Cursor(nextCursor),
+                new PageSize(limit),
+                commenterId));
+    }
+
+    public MyCommentPageResponse getUnreadMyCommentsPage(String nextCursor, int limit, Long commenterId) {
+        List<Long> unreadCommentIds = notificationApplicationService.getUnreadNotifications(
+                commenterId, TargetType.COMMENT);
+
+        return createMyCommentPage(() -> commentApplicationService.getUnreadMyCommentCompositions(
+                new Cursor(nextCursor),
+                new PageSize(limit),
+                commenterId,
+                unreadCommentIds));
+
+    }
+
+    private MyCommentPageResponse createMyCommentPage(CommentComposable commentComposable) {
+
+        CommentCompositions commentCompositions = commentComposable.generate();
+
+        List<Long> momentIds = commentCompositions.commentCompositions().stream()
+                .map(CommentComposition::momentId)
+                .toList();
+
+        List<MomentComposition> myMomentCompositions = momentApplicationService.getMyMomentCompositionsBy(momentIds);
+
+        List<Long> commentIds = commentCompositions.commentCompositions().stream()
+                .map(CommentComposition::id)
+                .toList();
+
+        Map<Long, List<Long>> unreadNotificationsByCommentIds
+                = notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
+                commentIds, TargetType.COMMENT);
+
+        return MyCommentPageResponse.of(commentCompositions, myMomentCompositions, unreadNotificationsByCommentIds);
     }
 }

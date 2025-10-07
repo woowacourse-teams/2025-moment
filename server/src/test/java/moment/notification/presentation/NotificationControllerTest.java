@@ -19,7 +19,7 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.service.tobe.SseNotificationService;
+import moment.notification.service.notification.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.dto.request.NotificationReadRequest;
@@ -283,7 +283,7 @@ public class NotificationControllerTest {
                 .then().log().all()
                 .statusCode(201);
 
-        Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
+        Notification notification = notificationRepository.findAllByUserIdAndIsRead(momenter, false).getFirst();
 
         RestAssured.given().log().all()
                 .cookie("accessToken", momenterToken)

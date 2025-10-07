@@ -12,10 +12,10 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.notification.service.NotificationService;
-import moment.notification.service.tobe.SseNotificationService;
+import moment.notification.service.notification.SseNotificationService;
 import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
+import moment.notification.service.application.NotificationApplicationService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    private final NotificationApplicationService notificationApplicationService;
     private final SseNotificationService sseNotificationService;
 
     @Operation(summary = "SSE 구독", description = "클라이언트가 SSE를 구독합니다.")
@@ -74,7 +74,7 @@ public class NotificationController {
             @AuthenticationPrincipal Authentication authentication,
             @RequestParam(value = "read", defaultValue = "false") Boolean read
     ) {
-        List<NotificationResponse> responses = notificationService.getNotificationByUser(
+        List<NotificationResponse> responses = notificationApplicationService.getNotificationBy(
                 authentication.id(), read);
         HttpStatus status = HttpStatus.OK;
 
@@ -92,7 +92,7 @@ public class NotificationController {
     })
     @PatchMapping("/{id}/read")
     public ResponseEntity<SuccessResponse<Void>> read(@PathVariable Long id) {
-        notificationService.markAsRead(id);
+        notificationApplicationService.markAsRead(id);
         HttpStatus status = HttpStatus.NO_CONTENT;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
@@ -105,7 +105,7 @@ public class NotificationController {
     @PatchMapping("/read-all")
     public ResponseEntity<SuccessResponse<Void>> readAll(
             @RequestBody NotificationReadRequest notificationReadRequest) {
-        notificationService.readNotifications(notificationReadRequest);
+        notificationApplicationService.markAllAsRead(notificationReadRequest);
         HttpStatus status = HttpStatus.NO_CONTENT;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));

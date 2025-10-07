@@ -8,4 +8,12 @@ public record CommentCompositions(
         boolean hasNextPage,
         int pageSize
 ) {
+
+
+    public static CommentCompositions of(List<CommentComposition> commentCompositions,
+                                         String extract,
+                                         boolean hasNextPage,
+                                         int size) {
+        return new CommentCompositions(commentCompositions, extract, hasNextPage, size);
+    }
 }

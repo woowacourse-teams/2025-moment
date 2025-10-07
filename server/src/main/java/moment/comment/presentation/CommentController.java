@@ -14,7 +14,6 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.service.facade.CommentCreateFacadeService;
 import moment.comment.service.facade.MyCommentPageFacadeService;
-import moment.comment.service.tobe.application.CommentApplicationService;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.dto.request.Authentication;
@@ -35,7 +34,6 @@ public class CommentController {
 
     private final CommentCreateFacadeService commentCreateFacadeService;
     private final MyCommentPageFacadeService myCommentPageFacadeService;
-    private final CommentApplicationService commentApplicationService;
 
     @Operation(summary = "Comment 등록", description = "새로운 Comment를 등록합니다.")
     @ApiResponses({
@@ -115,7 +113,7 @@ public class CommentController {
             @AuthenticationPrincipal Authentication authentication) {
 
         Long userId = authentication.id();
-        MyCommentPageResponse response = commentService.getMyUnreadComments(nextCursor, limit, userId);
+        MyCommentPageResponse response = myCommentPageFacadeService.getUnreadMyCommentsPage(nextCursor, limit, userId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
