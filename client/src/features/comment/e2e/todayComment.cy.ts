@@ -31,19 +31,36 @@ describe('오늘의 코멘트 페이지', () => {
       },
     }).as('getNotifications');
 
-    cy.intercept('GET', '**/api/v1/moments/commentable*', {
-      statusCode: 200,
-      body: {
-        status: 200,
-        data: {
-          id: 1,
-          nickname: '푸르른 물방울의 테리우스',
-          level: 'ASTEROID_WHITE',
-          content: '오늘 정말 힘든 하루였어요. 그래도 버텨냈네요.',
-          imageUrl: null,
-          createdAt: '2025-01-20T10:00:00',
+    let momentCallCount = 0;
+    cy.intercept('GET', '**/api/v1/moments/commentable*', req => {
+      momentCallCount++;
+
+      const momentData =
+        momentCallCount === 1
+          ? {
+              id: 1,
+              nickname: '푸르른 물방울의 테리우스',
+              level: 'ASTEROID_WHITE',
+              content: '오늘 정말 힘든 하루였어요. 그래도 버텨냈네요.',
+              imageUrl: null,
+              createdAt: '2025-01-20T10:00:00',
+            }
+          : {
+              id: 2,
+              nickname: '따뜻한 햇살의 아리아',
+              level: 'ASTEROID_WHITE',
+              content: '새로운 하루가 시작되었어요. 오늘도 화이팅!',
+              imageUrl: null,
+              createdAt: '2025-01-20T11:00:00',
+            };
+
+      req.reply({
+        statusCode: 200,
+        body: {
+          status: 200,
+          data: momentData,
         },
-      },
+      });
     }).as('getMoments');
 
     cy.intercept('POST', '**/api/v1/comments', {
@@ -79,12 +96,21 @@ describe('오늘의 코멘트 페이지', () => {
       cy.get('textarea').clear().type('오늘 정말 수고 많으셨어요.');
 
       cy.get('button').contains('코멘트 보내기').should('not.be.disabled');
-
       cy.get('button').contains('코멘트 보내기').click();
 
       cy.wait('@sendComment');
 
       cy.contains('별조각', { timeout: 5000 }).should('be.visible');
+
+      cy.wait('@getMoments');
+
+      cy.contains('푸르른 물방울의 테리우스').should('not.exist');
+      cy.contains('오늘 정말 힘든 하루였어요').should('not.exist');
+
+      cy.contains('따뜻한 햇살의 아리아').should('be.visible');
+      cy.contains('새로운 하루가 시작되었어요. 오늘도 화이팅!').should('be.visible');
+
+      cy.get('textarea').should('have.value', '');
     });
 
     it('빈 댓글로는 코멘트를 보낼 수 없다', () => {
