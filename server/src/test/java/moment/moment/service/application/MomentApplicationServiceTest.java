@@ -81,7 +81,7 @@ class MomentApplicationServiceTest {
                 () -> assertThat(response.id()).isNotNull(),
                 () -> assertThat(response.content()).isEqualTo("안녕하세요 반갑습니다."),
                 () -> assertThat(momenter.getAvailableStar())
-                        .isEqualTo(startPoint - Reason.MOMENT_ADDITIONAL_USE.getPointTo())
+                        .isEqualTo(startPoint + Reason.MOMENT_ADDITIONAL_USE.getPointTo())
         );
     }
 
