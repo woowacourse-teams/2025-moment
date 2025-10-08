@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { COMPLAINT_REASONS } from '../../complaint/types/complaintType';
+
 describe('오늘의 코멘트 페이지', () => {
   beforeEach(() => {
     cy.intercept('GET', '**/api/v1/auth/login/check', {
@@ -32,27 +34,36 @@ describe('오늘의 코멘트 페이지', () => {
     }).as('getNotifications');
 
     let momentCallCount = 0;
-    cy.intercept('GET', '**/api/v1/moments/commentable*', req => {
-      momentCallCount++;
+    const momentDataList = [
+      {
+        id: 1,
+        nickname: '푸르른 물방울의 테리우스',
+        level: 'ASTEROID_WHITE',
+        content: '오늘 정말 힘든 하루였어요. 그래도 버텨냈네요.',
+        imageUrl: null,
+        createdAt: '2025-01-20T10:00:00',
+      },
+      {
+        id: 2,
+        nickname: '따뜻한 햇살의 아리아',
+        level: 'ASTEROID_WHITE',
+        content: '새로운 하루가 시작되었어요. 오늘도 화이팅!',
+        imageUrl: null,
+        createdAt: '2025-01-20T11:00:00',
+      },
+      {
+        id: 3,
+        nickname: '빛나는 별의 루나',
+        level: 'ASTEROID_WHITE',
+        content: '오늘도 좋은 하루를 보내고 있어요!',
+        imageUrl: null,
+        createdAt: '2025-01-20T12:00:00',
+      },
+    ];
 
-      const momentData =
-        momentCallCount === 1
-          ? {
-              id: 1,
-              nickname: '푸르른 물방울의 테리우스',
-              level: 'ASTEROID_WHITE',
-              content: '오늘 정말 힘든 하루였어요. 그래도 버텨냈네요.',
-              imageUrl: null,
-              createdAt: '2025-01-20T10:00:00',
-            }
-          : {
-              id: 2,
-              nickname: '따뜻한 햇살의 아리아',
-              level: 'ASTEROID_WHITE',
-              content: '새로운 하루가 시작되었어요. 오늘도 화이팅!',
-              imageUrl: null,
-              createdAt: '2025-01-20T11:00:00',
-            };
+    cy.intercept('GET', '**/api/v1/moments/commentable*', req => {
+      const momentData = momentDataList[momentCallCount % momentDataList.length];
+      momentCallCount++;
 
       req.reply({
         statusCode: 200,
@@ -114,6 +125,25 @@ describe('오늘의 코멘트 페이지', () => {
     });
 
     it('빈 댓글로는 코멘트를 보낼 수 없다', () => {
+      cy.get('textarea').should('have.value', '');
+      cy.get('button').contains('코멘트 보내기').should('be.disabled');
+    });
+  });
+
+  describe('시나리오 2: 리롤 버튼', () => {
+    it('리롤 버튼을 클릭하면 다른 모멘트가 보인다', () => {
+      cy.contains('푸르른 물방울의 테리우스').should('be.visible');
+      cy.contains('오늘 정말 힘든 하루였어요').should('be.visible');
+
+      cy.get('button[class*="RefreshButton"]').click();
+
+      cy.wait('@getMoments');
+
+      cy.contains('푸르른 물방울의 테리우스').should('not.exist');
+      cy.contains('오늘 정말 힘든 하루였어요').should('not.exist');
+      cy.contains('따뜻한 햇살의 아리아').should('be.visible');
+      cy.contains('새로운 하루가 시작되었어요').should('be.visible');
+
       cy.get('textarea').should('have.value', '');
       cy.get('button').contains('코멘트 보내기').should('be.disabled');
     });
