@@ -54,12 +54,14 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
+          working-directory: ./client
+          install: false
           build: pnpm run build
           start: pnpm run dev
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
           browser: chrome
-          record: false
+          record: false  
 
       - name: Build application
         run: pnpm run build
