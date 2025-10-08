@@ -51,6 +51,9 @@ jobs:
       - name: Run tests
         run: pnpm run test --coverage
 
+      - name: Run Cypress tests
+        run: pnpm run cypress:run
+
       - name: Build application
         run: pnpm run build
 
