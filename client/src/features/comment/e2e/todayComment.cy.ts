@@ -148,4 +148,113 @@ describe('오늘의 코멘트 페이지', () => {
       cy.get('button').contains('코멘트 보내기').should('be.disabled');
     });
   });
+
+  describe('시나리오 3: 신고하기', () => {
+    beforeEach(() => {
+      cy.intercept('POST', '**/api/v1/moments/*/reports', req => {
+        expect(req.body).to.have.property('reason');
+        expect(req.body.reason).to.be.oneOf(Object.values(COMPLAINT_REASONS));
+
+        req.reply({
+          statusCode: 201,
+          body: {
+            id: 1,
+            reason: req.body.reason,
+          },
+        });
+      }).as('momentComplaint');
+
+      cy.intercept('GET', '**/api/v1/moments/commentable*', {
+        statusCode: 200,
+        body: {
+          status: 200,
+          data: {
+            id: 2,
+            nickname: '따뜻한 햇살의 아리아',
+            level: 'ASTEROID_WHITE',
+            content: '새로운 하루가 시작되었어요. 오늘도 화이팅!',
+            imageUrl: null,
+            createdAt: '2025-01-20T11:00:00',
+          },
+        },
+      }).as('getNewMoments');
+    });
+
+    it('신고 아이콘을 클릭하면 신고하기 모달이 보인다', () => {
+      cy.get('button[class*="ComplaintButton"]').click();
+
+      cy.contains('신고하기').should('be.visible');
+      cy.contains('신고 사유를 선택해주세요').should('be.visible');
+
+      cy.get('[role="dialog"]').within(() => {
+        cy.contains('스팸/광고').should('exist');
+        cy.contains('선정적 콘텐츠').should('exist');
+        cy.contains('혐오 발언/차별').should('exist');
+        cy.contains('괴롭힘/악플').should('exist');
+
+        cy.get('button').contains('신고하기').should('be.disabled');
+      });
+    });
+
+    it('리스트 중 하나를 클릭하고 신고하기 버튼을 클릭하면 모달이 꺼지면서 신고 접수 토스트가 보인다', () => {
+      cy.get('button[class*="ComplaintButton"]').click();
+
+      cy.get('[role="dialog"]').within(() => {
+        cy.contains('스팸/광고').click();
+
+        cy.get('button').contains('신고하기').should('not.be.disabled');
+        cy.get('button').contains('신고하기').click();
+      });
+
+      cy.wait('@momentComplaint');
+
+      cy.contains('신고하기').should('not.exist');
+
+      cy.contains('신고가 접수되었습니다', { timeout: 4000 }).should('be.visible');
+    });
+
+    it('신고를 누르면 해당 모멘트가 사라진다', () => {
+      cy.contains('푸르른 물방울의 테리우스').should('be.visible');
+      cy.contains('오늘 정말 힘든 하루였어요').should('be.visible');
+
+      cy.get('button[class*="ComplaintButton"]').click();
+
+      cy.get('[role="dialog"]').within(() => {
+        cy.contains('스팸/광고').click();
+        cy.get('button').contains('신고하기').click();
+      });
+
+      cy.wait('@momentComplaint');
+      cy.wait('@getNewMoments');
+
+      cy.contains('푸르른 물방울의 테리우스').should('not.exist');
+      cy.contains('오늘 정말 힘든 하루였어요').should('not.exist');
+
+      cy.contains('따뜻한 햇살의 아리아').should('be.visible');
+      cy.contains('새로운 하루가 시작되었어요').should('be.visible');
+    });
+
+    it('모달에서 취소 버튼을 클릭하면 모달이 닫힌다', () => {
+      cy.get('button[class*="ComplaintButton"]').click();
+
+      cy.contains('신고하기').should('be.visible');
+
+      cy.get('[role="dialog"]').within(() => {
+        cy.get('button').contains('취소').click();
+      });
+
+      cy.contains('신고하기').should('not.exist');
+      cy.contains('신고 사유를 선택해주세요').should('not.exist');
+    });
+
+    it('모달 외부를 클릭하면 모달이 닫힌다', () => {
+      cy.get('button[class*="ComplaintButton"]').click();
+
+      cy.contains('신고하기').should('be.visible');
+
+      cy.get('body').click(0, 0);
+
+      cy.contains('신고하기').should('not.exist');
+    });
+  });
 });
