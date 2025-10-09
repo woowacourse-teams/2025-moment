@@ -11,18 +11,10 @@ public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
 
     List<MomentTag> findAllByMomentIn(List<Moment> moments);
 
-    List<MomentTag> findAllByMoment(Moment savedMoment);
-
-    void deleteAllByMoment(Moment moment);
-
-    List<MomentTag> findAllByMomentId(Long momentId);
-
-    List<MomentTag> findAllByMomentIdIn(List<Long> momentIds);
-
     @Query("""
             SELECT DISTINCT mt.moment.id
             FROM moment_tags mt
-            JOIN tags t
+            JOIN mt.tag t
             WHERE t.name IN :tagNames
                 AND mt.moment.id IN :momentIds
             """)
