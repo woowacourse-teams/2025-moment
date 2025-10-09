@@ -15,7 +15,6 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -42,9 +41,6 @@ class MomentServiceTest {
 
     @Autowired
     MomentRepository momentRepository;
-
-    @Autowired
-    NotificationRepository notificationRepository;
 
     private User momenter;
 

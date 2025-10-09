@@ -19,11 +19,6 @@ public class MomentTagService {
     private final MomentTagRepository momentTagRepository;
 
     @Transactional
-    public MomentTag save(Moment moment, Tag tag) {
-        return momentTagRepository.save(new MomentTag(moment, tag));
-    }
-    
-    @Transactional
     public List<MomentTag> createAll(Moment savedMoment, List<Tag> tags) {
         List<MomentTag> momentTags = tags.stream()
                 .map(tag -> new MomentTag(savedMoment, tag))
