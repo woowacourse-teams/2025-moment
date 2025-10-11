@@ -4,17 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -33,9 +39,6 @@ public class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserService userService;
@@ -132,6 +135,155 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.getUserProfileBy(authentication))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("message", "존재하지 않는 사용자입니다.");
+    }
+
+    @Test
+    void 중복된_닉네임을_사용중인_유저가_있다면_isExists_true를_반환합니다() {
+        // given
+        String nickname = "테스트 유저";
+
+        User user = new User("test@email.com", "1234qwer!@", nickname, ProviderType.EMAIL);
+        userRepository.save(user);
+
+        // when
+        NicknameConflictCheckResponse nicknameConflictCheckResponse = userService.checkNicknameConflict(nickname);
+
+        // then
+        assertThat(nicknameConflictCheckResponse.isExists()).isTrue();
+    }
+
+    @Test
+    void 중복된_닉네임을_사용중인_유저가_없다면_isExists_false를_반환합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        userRepository.save(user);
+
+        // when
+        NicknameConflictCheckResponse nicknameConflictCheckResponse = userService.checkNicknameConflict(
+                "새로운 유저");
+
+        // then
+        assertThat(nicknameConflictCheckResponse.isExists()).isFalse();
+    }
+
+    @Test
+    void ID를_이용하여_유저를_조회합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        assertThat(userService.getUserBy(savedUser.getId())).isEqualTo(savedUser);
+    }
+
+    @Test
+    void ID를_이용하여_유저를_조회하는_경우_존재하지_않으면_예외가_발생한다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        assertThatThrownBy(() -> userService.getUserBy(999L))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "존재하지 않는 사용자입니다.");
+    }
+
+    @Test
+    void 이메일과_가입_유형으로_유저를_조회합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when
+        Optional<User> result = userService.findUserBy(savedUser.getEmail(), ProviderType.EMAIL);
+
+        // then
+        assertAll(
+                () -> assertThat(result).isPresent(),
+                () -> assertThat(result.get()).isEqualTo(savedUser)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"other@email.com,EMAIL", "test@email.com,GOOGLE"})
+    void 이메일과_가입_유형으로_유저를_조회하는_경우_존재하지_않으면_빈_Optional을_반환한다(String email, ProviderType providerType) {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        userRepository.save(user);
+
+        // when
+        Optional<User> result = userService.findUserBy(email, providerType);
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void ID_목록으로_유저_목록을_조회한다() {
+        // given
+        List<Long> ids = new ArrayList<>();
+
+        User user1 = new User("test1@email.com", "1234qwer!@", "테스트 유저1", ProviderType.EMAIL);
+        User savedUser1 = userRepository.save(user1);
+        ids.add(savedUser1.getId());
+
+        User user2 = new User("test2@email.com", "1234qwer!@", "테스트 유저2", ProviderType.GOOGLE);
+        User savedUser2 = userRepository.save(user2);
+        ids.add(savedUser2.getId());
+
+        User user3 = new User("test3@email.com", "1234qwer!@", "테스트 유저3", ProviderType.EMAIL);
+        User savedUser3 = userRepository.save(user3);
+        ids.add(savedUser3.getId());
+
+        // when
+        List<User> usersByIds = userService.getAllBy(ids);
+
+        assertAll(
+                () -> assertThat(usersByIds).hasSize(3),
+                () -> assertThat(usersByIds).contains(savedUser1, savedUser2, savedUser3)
+        );
+    }
+
+    @Test
+    void ID_목록에_해당하는_유저가_없는_경우_빈_목록을_반환한다() {
+        // given
+        User user1 = new User("test1@email.com", "1234qwer!@", "테스트 유저1", ProviderType.EMAIL);
+        userRepository.save(user1);
+
+        User user2 = new User("test2@email.com", "1234qwer!@", "테스트 유저2", ProviderType.GOOGLE);
+        userRepository.save(user2);
+
+        User user3 = new User("test3@email.com", "1234qwer!@", "테스트 유저3", ProviderType.EMAIL);
+        userRepository.save(user3);
+
+        List<Long> ids = List.of(999L, 1000L, 1001L);
+
+        // when
+        List<User> usersByIds = userService.getAllBy(ids);
+
+        // then
+        assertThat(usersByIds).isEmpty();
+    }
+
+    @Test
+    void 닉네임을_사용하는_유저가_존재하는_경우_true_반환한다() {
+        // given
+        String nickname = "테스트 유저";
+        User user = new User("test@email.com", "1234qwer!@", nickname, ProviderType.EMAIL);
+        userRepository.save(user);
+
+        // when & then
+        assertThat(userService.existsBy(nickname)).isTrue();
+    }
+
+    @Test
+    void 닉네임을_사용하는_유저가_존재하지_않는_경우_true_반환한다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        userRepository.save(user);
+
+        // when & then
+        assertThat(userService.existsBy("새로운 유저")).isFalse();
     }
 
     @TestConfiguration
