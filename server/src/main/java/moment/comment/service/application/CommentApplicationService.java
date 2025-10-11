@@ -22,8 +22,8 @@ import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.user.service.user.UserService;
 import moment.user.domain.User;
+import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +44,7 @@ public class CommentApplicationService {
 
         List<Long> commenterIds = extractCommenterIdsByComments(comments);
 
-        List<User> commenters = userService.getAllByIds(commenterIds);
+        List<User> commenters = userService.getAllBy(commenterIds);
 
         Map<Comment, User> commentersByComments = mapCommentersByComments(commenters, comments);
 
@@ -96,7 +96,7 @@ public class CommentApplicationService {
     }
 
     public CommentCreateResponse createComment(CommentCreateRequest request, Long commenterId) {
-        User commenter = userService.getUserById(commenterId);
+        User commenter = userService.getUserBy(commenterId);
         Comment commentWithoutId = request.toComment(commenter, request.momentId());
         Comment savedComment = commentService.create(commentWithoutId);
 
@@ -107,7 +107,7 @@ public class CommentApplicationService {
     }
 
     public CommentCompositions getMyCommentCompositions(Cursor cursor, PageSize pageSize, Long commenterId) {
-        User commenter = userService.getUserById(commenterId);
+        User commenter = userService.getUserBy(commenterId);
 
         List<Comment> commentsWithinCursor = commentService.getCommentsBy(commenter, cursor, pageSize);
 
@@ -152,7 +152,7 @@ public class CommentApplicationService {
                                                               Long commenterId,
                                                               List<Long> unreadCommentIds) {
 
-        User commenter = userService.getUserById(commenterId);
+        User commenter = userService.getUserBy(commenterId);
 
         List<Comment> commentsWithinCursor = commentService.getCommentsBy(unreadCommentIds, cursor, pageSize);
 
@@ -175,7 +175,7 @@ public class CommentApplicationService {
 
     public void createEcho(Long commentId, Long momenterId, Set<String> echoTypes) {
         Comment comment = commentService.getCommentBy(commentId);
-        User momenter = userService.getUserById(momenterId);
+        User momenter = userService.getUserBy(momenterId);
         echoService.saveIfNotExisted(comment, momenter, echoTypes);
     }
 

@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public UserProfileResponse getUserProfileBy(Authentication authentication) {
-        User user = getUserById(authentication.id());
+        User user = getUserBy(authentication.id());
         return UserProfileResponse.from(user);
     }
 
@@ -63,20 +63,20 @@ public class UserService {
         return new NicknameConflictCheckResponse(existsByNickname);
     }
 
-    public User getUserById(Long id) {
+    public User getUserBy(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
+    public Optional<User> findUserBy(String email, ProviderType providerType) {
         return userRepository.findByEmailAndProviderType(email, providerType);
     }
 
-    public List<User> getAllByIds(List<Long> ids) {
+    public List<User> getAllBy(List<Long> ids) {
         return userRepository.findAllByIdIn(ids);
     }
 
-    public boolean existsByNickname(String nickname) {
+    public boolean existsBy(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 }

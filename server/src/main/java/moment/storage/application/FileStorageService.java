@@ -20,7 +20,7 @@ public class FileStorageService {
     private String bucketPath;
 
     public UploadUrlResponse getUploadUrl(UploadUrlRequest request, Long id) {
-        userService.getUserById(id);
+        userService.getUserBy(id);
 
         String filePath = bucketPath + UUID.randomUUID() + request.imageName();
 

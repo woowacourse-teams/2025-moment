@@ -11,14 +11,14 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.user.service.NicknameGenerateService;
-import moment.user.service.user.UserService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
+import moment.user.service.NicknameGenerateService;
+import moment.user.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +55,7 @@ public class UserController {
     })
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<Void>> createUser(@Valid @RequestBody UserCreateRequest request) {
-        userService.addUser(request);
+        userService.addUser(request.email(), request.password(), request.rePassword(), request.nickname());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
@@ -77,7 +77,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<UserProfileResponse>> readUserProfile(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        UserProfileResponse response = userService.getUserProfile(authentication);
+        UserProfileResponse response = userService.getUserProfileBy(authentication);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -95,7 +95,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<NicknameConflictCheckResponse>> readNicknameConflict(
             @Valid @RequestBody NicknameConflictCheckRequest request
     ) {
-        NicknameConflictCheckResponse response = userService.checkNicknameConflict(request);
+        NicknameConflictCheckResponse response = userService.checkNicknameConflict(request.nickname());
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

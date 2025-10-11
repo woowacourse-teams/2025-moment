@@ -3,9 +3,9 @@ package moment.user.service;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.service.user.UserService;
 import moment.user.domain.NicknameGenerator;
 import moment.user.dto.response.MomentRandomNicknameResponse;
+import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class NicknameGenerateService {
             }
 
             String nickname = nicknameGenerator.generateNickname();
-            boolean exists = userService.existsByNickname(nickname);
+            boolean exists = userService.existsBy(nickname);
             if (!exists) {
                 return nickname;
             }
