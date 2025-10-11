@@ -8,7 +8,6 @@ import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -25,13 +24,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User addUser(UserCreateRequest request) {
-        comparePasswordWithRepassword(request.password(), request.rePassword());
-        validateEmailInBasicSignUp(request);
-        validateNickname(request);
+    public User addUser(String email, String password, String rePassword, String nickname) {
+        comparePasswordWithRepassword(password, rePassword);
+        validateEmailInBasicSignUp(email);
+        validateNickname(nickname);
 
-        String encodedPassword = passwordEncoder.encode(request.password());
-        User user = new User(request.email(), encodedPassword, request.nickname(), ProviderType.EMAIL);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(email, encodedPassword, nickname, ProviderType.EMAIL);
 
         return userRepository.save(user);
     }
@@ -42,14 +41,14 @@ public class UserService {
         }
     }
 
-    private void validateNickname(UserCreateRequest request) {
-        if (userRepository.existsByNickname(request.nickname())) {
+    private void validateNickname(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
         }
     }
 
-    private void validateEmailInBasicSignUp(UserCreateRequest request) {
-        if (userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL)) {
+    private void validateEmailInBasicSignUp(String email) {
+        if (userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)) {
             throw new MomentException(ErrorCode.USER_CONFLICT);
         }
     }
