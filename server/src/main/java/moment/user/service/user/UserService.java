@@ -53,7 +53,7 @@ public class UserService {
         }
     }
 
-    public UserProfileResponse getUserProfile(Authentication authentication) {
+    public UserProfileResponse getUserProfileBy(Authentication authentication) {
         User user = getUserById(authentication.id());
         return UserProfileResponse.from(user);
     }
