@@ -26,7 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void addUser(UserCreateRequest request) {
+    public User addUser(UserCreateRequest request) {
         comparePasswordWithRepassword(request.password(), request.rePassword());
         validateEmailInBasicSignUp(request);
         validateNickname(request);
@@ -34,7 +34,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(request.password());
         User user = new User(request.email(), encodedPassword, request.nickname(), ProviderType.EMAIL);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private void comparePasswordWithRepassword(String password, String rePassword) {
