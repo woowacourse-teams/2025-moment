@@ -25,7 +25,7 @@ public class CommentService {
     }
 
     public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
-        return commentRepository.findMomentIdsCommentedOnByOthers(momentIds, commenterId);
+        return commentRepository.findMomentIdsNotCommentedOnByMe(momentIds, commenterId);
     }
 
     @Transactional

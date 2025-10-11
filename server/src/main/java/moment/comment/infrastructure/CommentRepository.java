@@ -60,13 +60,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 
     @Query("""
-            SELECT c.momentId
-            FROM comments c
-            WHERE c.momentId IN :momentIds
-            AND c.commenter.id <> :commenterId
+               SELECT m.id
+               FROM moments m
+               WHERE m.id IN :momentIds
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM comments c
+                   WHERE c.momentId = m.id
+                   AND c.commenter.id = :commenterId
+                  )
             """)
-    List<Long> findMomentIdsCommentedOnByOthers(@Param("momentIds") List<Long> momentIds,
-                                                @Param("commenterId") Long commenterId);
+    List<Long> findMomentIdsNotCommentedOnByMe(@Param("momentIds") List<Long> momentIds,
+                                               @Param("commenterId") Long commenterId);
 
     boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
 

@@ -12,7 +12,6 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -209,7 +208,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    void 다른_사람이_코멘트한_모멘트_ID_목록을_조회한다() {
+    void 내가_코멘트하지_않은_모멘트_ID_목록을_조회한다() {
         // given
         User user1 = userRepository.save(
                 new User("user1@test.com", "password", "user1", ProviderType.EMAIL));
@@ -223,22 +222,24 @@ class CommentRepositoryTest {
         Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC));
         Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC));
         Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner, WriteType.BASIC));
+        Moment moment4 = momentRepository.save(new Moment("Moment 4", momentOwner, WriteType.BASIC));
 
-        commentRepository.save(new Comment("User1 on Moment1", user1, moment1.getId()));
+        commentRepository.save(new Comment("User1 on Moment1", user1, moment1.getId())); // 내가 코멘트
 
         commentRepository.save(new Comment("User2 on Moment2", user2, moment2.getId()));
         commentRepository.save(new Comment("User3 on Moment2", user3, moment2.getId()));
 
         commentRepository.save(new Comment("User2 on Moment3", user2, moment3.getId()));
+        commentRepository.save(new Comment("User1 on Moment3", user1, moment3.getId())); // 내가 코멘트
 
-        List<Long> momentIdsToSearch = List.of(moment1.getId(), moment2.getId(), moment3.getId());
+        List<Long> momentIdsToSearch = List.of(moment1.getId(), moment2.getId(), moment3.getId(), moment4.getId());
 
         // when
-        List<Long> result = commentRepository.findMomentIdsCommentedOnByOthers(momentIdsToSearch, user1.getId());
+        List<Long> result = commentRepository.findMomentIdsNotCommentedOnByMe(momentIdsToSearch, user1.getId());
 
         // then
-        assertThat(result).hasSize(3)
-                .containsExactlyInAnyOrder(moment2.getId(), moment2.getId(), moment3.getId());
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(moment2.getId(), moment4.getId());
     }
 
     @Test
