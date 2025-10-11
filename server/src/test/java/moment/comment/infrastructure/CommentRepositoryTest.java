@@ -3,8 +3,8 @@ package moment.comment.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
@@ -36,7 +36,6 @@ class CommentRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @Disabled
     void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_조회한다() {
         // given
         User momenter1 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -75,10 +74,8 @@ class CommentRepositoryTest {
         );
     }
 
-
     @Test
-    @Disabled
-    void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_원하는_커서부터_조회한다() {
+    void Comment_ID와_일치하는_Comment_목록을_페이징_처리하여_생성_시간_내림차순으로_원하는_커서부터_조회한다() throws InterruptedException {
         // given
         User momenter1 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
         userRepository.save(momenter1);
@@ -103,12 +100,15 @@ class CommentRepositoryTest {
 
         Comment comment1 = new Comment("moment1 comment", commenter, savedMoment1.getId());
         Comment savedComment1 = commentRepository.save(comment1);
+        Thread.sleep(10);
 
         Comment comment2 = new Comment("moment2 comment", commenter, savedMoment2.getId());
         Comment savedComment2 = commentRepository.save(comment2);
+        Thread.sleep(10);
 
         Comment comment3 = new Comment("moment2 comment2", commenter, savedMoment3.getId());
         Comment savedComment3 = commentRepository.save(comment3);
+        Thread.sleep(10);
 
         Comment comment4 = new Comment("moment2 comment3", commenter, savedMoment4.getId());
         Comment savedComment4 = commentRepository.save(comment4);
@@ -118,7 +118,7 @@ class CommentRepositoryTest {
                 savedComment4.getCreatedAt(),
                 savedComment4.getId(),
                 PageRequest.of(0, 3));
-        
+
         List<Comment> comments = commentRepository.findCommentsByIds(commentIds);
 
         // then
@@ -133,14 +133,20 @@ class CommentRepositoryTest {
     @Test
     void 읽지_않은_코멘트_목록의_첫_페이지를_조회한다() {
         // given
-        User user = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
-        Moment moment = momentRepository.save(new Moment("A moment", user, WriteType.BASIC));
-        Comment comment1 = commentRepository.save(new Comment("comment1", user, moment.getId()));
-        Comment comment2 = commentRepository.save(new Comment("comment2", user, moment.getId()));
-        commentRepository.save(new Comment("comment3", user, moment.getId())); // This one is not unread
+        User momentOwner = userRepository.save(
+                new User("owner@user.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@user.com", "password", "commenter", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+
+        Comment comment1 = commentRepository.save(new Comment("comment1", commenter, moment.getId()));
+        Comment comment2 = commentRepository.save(new Comment("comment2", commenter, moment.getId()));
+        commentRepository.save(
+                new Comment("comment3", commenter, moment.getId())); // This one is not in the unread list
 
         // when
-        List<Comment> result = commentRepository.findUnreadCommentsFirstPage(List.of(comment1.getId(), comment2.getId()),
+        List<Comment> result = commentRepository.findUnreadCommentsFirstPage(
+                List.of(comment1.getId(), comment2.getId()),
                 PageRequest.of(0, 5));
 
         // then
@@ -148,17 +154,20 @@ class CommentRepositoryTest {
                 .containsExactlyInAnyOrder(comment1, comment2);
     }
 
-    @Disabled
     @Test
     void 읽지_않은_코멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
         // given
-        User user = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
-        Moment moment = momentRepository.save(new Moment("A moment", user, WriteType.BASIC));
-        Comment comment1 = commentRepository.save(new Comment("comment1", user, moment.getId()));
+        User momentOwner = userRepository.save(
+                new User("owner@user.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@user.com", "password", "commenter", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+
+        Comment comment1 = commentRepository.save(new Comment("comment1", commenter, moment.getId()));
         Thread.sleep(10);
-        Comment comment2 = commentRepository.save(new Comment("comment2", user, moment.getId()));
+        Comment comment2 = commentRepository.save(new Comment("comment2", commenter, moment.getId()));
         Thread.sleep(10);
-        Comment comment3 = commentRepository.save(new Comment("comment3", user, moment.getId()));
+        Comment comment3 = commentRepository.save(new Comment("comment3", commenter, moment.getId()));
 
         // when
         List<Comment> result = commentRepository.findUnreadCommentsNextPage(
@@ -172,5 +181,126 @@ class CommentRepositoryTest {
                 .containsExactly(comment2);
     }
 
+    @Test
+    void 모멘트_ID_목록에_포함된_모든_코멘트를_조회한다() {
+        // given
+        User momentOwner = userRepository.save(
+                new User("owner@user.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@user.com", "password", "commenter", ProviderType.EMAIL));
 
+        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC));
+        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner, WriteType.BASIC));
+
+        Comment comment1 = commentRepository.save(new Comment("Comment on moment 1", commenter, moment1.getId()));
+        Comment comment2 = commentRepository.save(new Comment("Comment on moment 2", commenter, moment2.getId()));
+        commentRepository.save(
+                new Comment("Comment on moment 3", commenter, moment3.getId()));
+
+        List<Long> momentIdsToSearch = List.of(moment1.getId(), moment2.getId());
+
+        // when
+        List<Comment> result = commentRepository.findAllByMomentIdIn(momentIdsToSearch);
+
+        // then
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(comment1, comment2);
+    }
+
+    @Test
+    void 다른_사람이_코멘트한_모멘트_ID_목록을_조회한다() {
+        // given
+        User user1 = userRepository.save(
+                new User("user1@test.com", "password", "user1", ProviderType.EMAIL));
+        User user2 = userRepository.save(
+                new User("user2@test.com", "password", "user2", ProviderType.EMAIL));
+        User user3 = userRepository.save(
+                new User("user3@test.com", "password", "user3", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(
+                new User("owner@test.com", "password", "owner", ProviderType.EMAIL));
+
+        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC));
+        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner, WriteType.BASIC));
+
+        commentRepository.save(new Comment("User1 on Moment1", user1, moment1.getId()));
+
+        commentRepository.save(new Comment("User2 on Moment2", user2, moment2.getId()));
+        commentRepository.save(new Comment("User3 on Moment2", user3, moment2.getId()));
+
+        commentRepository.save(new Comment("User2 on Moment3", user2, moment3.getId()));
+
+        List<Long> momentIdsToSearch = List.of(moment1.getId(), moment2.getId(), moment3.getId());
+
+        // when
+        List<Long> result = commentRepository.findMomentIdsCommentedOnByOthers(momentIdsToSearch, user1.getId());
+
+        // then
+        assertThat(result).hasSize(3)
+                .containsExactlyInAnyOrder(moment2.getId(), moment2.getId(), moment3.getId());
+    }
+
+    @Test
+    void 모멘트ID와_코멘터ID로_코멘트_존재함을_확인한다() {
+        // given
+        User momentOwner = userRepository.save(
+                new User("owner@test.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@test.com", "password", "commenter", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        commentRepository.save(new Comment("A comment", commenter, moment.getId()));
+
+        // when
+        boolean result = commentRepository.existsByMomentIdAndCommenterId(moment.getId(), commenter.getId());
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 모멘트ID와_코멘터ID로_코멘트_존재하지_않음을_확인한다() {
+        // given
+        User momentOwner = userRepository.save(
+                new User("owner@test.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@test.com", "password", "commenter", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+
+        // when
+        boolean result = commentRepository.existsByMomentIdAndCommenterId(moment.getId(), commenter.getId());
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void 코멘트_ID로_모멘트_ID를_조회한다() {
+        // given
+        User momentOwner = userRepository.save(
+                new User("owner@test.com", "password", "owner", ProviderType.EMAIL));
+        User commenter = userRepository.save(
+                new User("commenter@test.com", "password", "commenter", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
+
+        // when
+        Optional<Long> result = commentRepository.findMomentIdById(comment.getId());
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(moment.getId());
+    }
+
+    @Test
+    void 존재하지_않는_경우_코멘트_ID로_모멘트_ID를_조회한다() {
+        // given
+        Long nonExistentCommentId = 999L;
+
+        // when
+        Optional<Long> result = commentRepository.findMomentIdById(nonExistentCommentId);
+
+        // then
+        assertThat(result).isNotPresent();
+    }
 }

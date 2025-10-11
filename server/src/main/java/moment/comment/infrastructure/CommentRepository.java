@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -71,5 +70,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
 
+    @Query("SELECT c.momentId FROM comments c WHERE c.id = :commentId")
     Optional<Long> findMomentIdById(Long commentId);
 }
