@@ -59,8 +59,8 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
-    public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
-        boolean existsByNickname = userRepository.existsByNickname(request.nickname());
+    public NicknameConflictCheckResponse checkNicknameConflict(String nickname) {
+        boolean existsByNickname = userRepository.existsByNickname(nickname);
         return new NicknameConflictCheckResponse(existsByNickname);
     }
 
