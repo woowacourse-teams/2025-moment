@@ -74,10 +74,6 @@ public class UserService {
         return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public List<User> getAllByIds(List<Long> ids) {
         return userRepository.findAllByIdIn(ids);
     }
