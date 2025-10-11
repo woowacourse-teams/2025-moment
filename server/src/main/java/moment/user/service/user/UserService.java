@@ -8,7 +8,6 @@ import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.NicknameConflictCheckRequest;
 import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
@@ -71,7 +70,7 @@ public class UserService {
     }
 
     public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
-        return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
+        return userRepository.findByEmailAndProviderType(email, providerType);
     }
 
     public List<User> getAllByIds(List<Long> ids) {
