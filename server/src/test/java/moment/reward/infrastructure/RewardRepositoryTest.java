@@ -1,5 +1,9 @@
 package moment.reward.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.Comparator;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.user.domain.ProviderType;
@@ -13,11 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Comparator;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -37,7 +36,7 @@ class RewardRepositoryTest {
         Reason reason = Reason.ECHO_RECEIVED;
         Long contentId = 1L;
 
-        rewardRepository.save(new RewardHistory(user, reason.getPointTo(), reason, contentId));
+        rewardRepository.save(new RewardHistory(user, reason, contentId));
 
         // when
         boolean result = rewardRepository.existsByUserAndReasonAndContentId(user, reason, contentId);
@@ -85,7 +84,8 @@ class RewardRepositoryTest {
 
     private void createTestRewardHistory(User user) {
         for (int i = 0; i < 20; i++) {
-            rewardRepository.save(new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
+            rewardRepository.save(
+                    new RewardHistory(user, Reason.MOMENT_CREATION, (long) i));
         }
     }
 }
