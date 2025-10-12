@@ -5,9 +5,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
+import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -78,5 +80,56 @@ public class UserService {
 
     public boolean existsBy(String nickname) {
         return userRepository.existsByNickname(nickname);
+    }
+
+    @Transactional
+    public NicknameChangeResponse changeNickname(String nickname, Long userId) {
+        User user = getUserBy(userId);
+
+        Reason rewardReason = Reason.NICKNAME_CHANGE;
+        validateEnoughStars(user, rewardReason);
+        validateNicknameConflict(nickname);
+
+        user.updateNickname(nickname, rewardReason.getPointTo());
+
+        return NicknameChangeResponse.from(user);
+    }
+
+    private void validateNicknameConflict(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
+        }
+    }
+
+    private void validateEnoughStars(User user, Reason reason) {
+        int requiredStar = reason.getPointTo();
+        if (user.canNotUseStars(requiredStar)) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+    }
+
+    @Transactional
+    public void changePassword(String newPassword, String checkPassword, Long userId) {
+        User user = getUserBy(userId);
+
+        validateChangeablePasswordUser(user);
+        comparePasswordWithRepassword(newPassword, checkPassword);
+
+        String encodedChangePassword = passwordEncoder.encode(newPassword);
+        validateNotSameAsOldPassword(user, encodedChangePassword);
+
+        user.updatePassword(encodedChangePassword);
+    }
+
+    private void validateNotSameAsOldPassword(User user, String encodedChangePassword) {
+        if (user.checkPassword(encodedChangePassword)) {
+            throw new MomentException(ErrorCode.PASSWORD_SAME_AS_OLD);
+        }
+    }
+
+    private void validateChangeablePasswordUser(User user) {
+        if (!user.checkProviderType(ProviderType.EMAIL)) {
+            throw new MomentException(ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
+        }
     }
 }

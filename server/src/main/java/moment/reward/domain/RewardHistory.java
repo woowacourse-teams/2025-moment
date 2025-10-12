@@ -45,10 +45,10 @@ public class RewardHistory extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public RewardHistory(User user, Integer amount, Reason reason, Long contentId) {
+    public RewardHistory(User user, Reason reason, Long contentId) {
         validate(user, amount, reason, contentId);
         this.user = user;
-        this.amount = amount;
+        this.amount = reason.getPointTo();
         this.reason = reason;
         this.contentId = contentId;
     }

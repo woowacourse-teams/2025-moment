@@ -1,4 +1,4 @@
-package moment.user.service;
+package moment.user.service.application;
 
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class NicknameGenerateService {
-
+public class NicknameGenerateApplicationService {
     private static final int LIMIT_RETRY_COUNT = 5;
 
     private final UserService userService;
