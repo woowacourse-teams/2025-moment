@@ -17,6 +17,13 @@ export const HomePageWrapper = styled.main`
   overflow: hidden;
 `;
 
+export const MainContainer = styled.div`
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
 export const HeroSection = styled.section`
   position: relative;
   width: 100%;
@@ -48,6 +55,32 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
     margin-top: 80px;
     padding: 12px;
   }
+`;
+
+export const IntroSection = styled.section`
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+`;
+
+export const IntroText = styled.div`
+  font-size: 1.5rem;
+  font-weight: 600;
+`;
+
+export const IntroTextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
+export const IntroImage = styled.img`
+  width: 200px;
+  height: 200px;
 `;
 
 export const BlackHoleContainer = styled.aside`
