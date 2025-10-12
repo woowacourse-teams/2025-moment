@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import moment.global.exception.MomentException;
+import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -15,25 +17,28 @@ import moment.user.dto.request.UserCreateRequest;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-@ActiveProfiles("test")
+/*@ActiveProfiles("test")
 @DataJpaTest
 @Import({
         UserService.class,
-})
+})*/
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("test")
+@Transactional
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class UserServiceTest {
 
@@ -42,12 +47,6 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
-
-    @BeforeEach
-    public void setUp() {
-        new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.GOOGLE);
-        new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
-    }
 
     @Test
     void 일반_회원가입_유저를_추가한다() {
@@ -286,9 +285,124 @@ public class UserServiceTest {
         assertThat(userService.existsBy("새로운 유저")).isFalse();
     }
 
+    @Test
+    void 리워드를_소모하여_유저_닉네임을_변경합니다() throws NoSuchFieldException, IllegalAccessException {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        int availableStar = 1000;
+        Field field = User.class.getDeclaredField("availableStar");
+        field.setAccessible(true);
+        field.set(savedUser, availableStar);
+
+        // when
+        String changedNickname = "변경된 닉네임";
+        userService.changeNickname(changedNickname, savedUser.getId());
+
+        // then
+        User changedUser = userRepository.findById(savedUser.getId()).get();
+        assertAll(
+                () -> assertThat(changedUser.getNickname()).isEqualTo(changedNickname),
+                () -> assertThat(changedUser.getAvailableStar()).isEqualTo(
+                        availableStar + Reason.NICKNAME_CHANGE.getPointTo())
+        );
+    }
+
+    @Test
+    void 사용중인_닉네임으로_변경_시_예외가_발생합니다() throws NoSuchFieldException, IllegalAccessException {
+        // given
+        String changedNickname = "변경된 닉네임";
+        User user1 = new User("test1@email.com", "1234qwer!@", changedNickname, ProviderType.EMAIL);
+        User savedUser1 = userRepository.save(user1);
+
+        User user2 = new User("test@email.com", "1234qwer!@", "테스트 유저2", ProviderType.EMAIL);
+        User savedUser2 = userRepository.save(user2);
+
+        int availableStar = 1000;
+        Field field = User.class.getDeclaredField("availableStar");
+        field.setAccessible(true);
+        field.set(savedUser2, availableStar);
+
+        // when & then
+        assertThatThrownBy(() -> userService.changeNickname(changedNickname, savedUser2.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "이미 존재하는 닉네임입니다.");
+    }
+
+    @Test
+    void 닉네임_변경_시_사용_가능한_리워드가_부족한_경우_예외가_발생합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        String changedNickname = "변경된 닉네임";
+        assertThatThrownBy(() -> userService.changeNickname(changedNickname, savedUser.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "사용 가능한 별조각을 확인해주세요.");
+    }
+
+    @Test
+    void 유저_비밀번호를_변경합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when
+        String newPassword = "changed123!@#";
+        userService.changePassword(newPassword, newPassword, savedUser.getId());
+
+        //
+        User changedUser = userRepository.findById(savedUser.getId()).get();
+        assertThat(changedUser.getPassword()).isEqualTo(newPassword);
+    }
+
+    @Test
+    void 일반_회원이_아닌_경우_비밀번호_변경_시_예외가_발생합니다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.GOOGLE);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        String newPassword = "changed123!@#";
+        assertThatThrownBy(() -> userService.changePassword(newPassword, newPassword, savedUser.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "일반 회원가입 사용자가 아닌 경우 비밀번호를 변경할 수 없습니다.");
+    }
+
+    @Test
+    void 새_비밀번호와_확인용_비밀번호가_다른_경우_예외가_발생한다() {
+        // given
+        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        String newPassword = "changed123!@#";
+        String checkedPassword = "checked123!@#";
+        assertThatThrownBy(() -> userService.changePassword(newPassword, checkedPassword, savedUser.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "비밀번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    void 새_비밀번호가_이전_비밀번호와_같은_경우_예외가_발생한다() {
+        // given
+        String password = "1234qwer!@";
+        User user = new User("test@email.com", password, "테스트 유저", ProviderType.EMAIL);
+        User savedUser = userRepository.save(user);
+
+        // when & then
+        assertThatThrownBy(() -> userService.changePassword(password, password, savedUser.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("message", "새 비밀번호가 기존의 비밀번호와 동일합니다.");
+    }
+
     @TestConfiguration
     static class UserServiceTestConfiguration {
+
         @Bean
+        @Primary
         public PasswordEncoder passwordEncoder() {
             return new PasswordEncoder() {
                 @Override
