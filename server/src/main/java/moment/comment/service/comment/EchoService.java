@@ -1,5 +1,6 @@
 package moment.comment.service.comment;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,8 +21,14 @@ public class EchoService {
     private final EchoRepository echoRepository;
     
     public Map<Comment, List<Echo>> getEchosOfComments(List<Comment> comments) {
-        return echoRepository.findAllByCommentIn(comments).stream()
-                .collect(Collectors.groupingBy(Echo::getComment));
+        Map<Comment, List<Echo>> echosByComment = echoRepository.findAllByCommentIn(comments).stream()
+            .collect(Collectors.groupingBy(Echo::getComment));
+
+        return comments.stream()
+            .collect(Collectors.toMap(
+                comment -> comment,
+                comment -> echosByComment.getOrDefault(comment, Collections.emptyList())
+            ));
     }
 
     @Transactional

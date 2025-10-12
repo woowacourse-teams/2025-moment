@@ -68,10 +68,10 @@ class EchoServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result).hasSize(3),
                 () -> assertThat(result.get(comment1)).hasSize(2).containsExactlyInAnyOrder(echo1, echo2),
                 () -> assertThat(result.get(comment2)).hasSize(1).containsExactlyInAnyOrder(echo3),
-                () -> assertThat(result.get(comment3)).isNull()
+                () -> assertThat(result.get(comment3)).isEmpty()
         );
     }
 
