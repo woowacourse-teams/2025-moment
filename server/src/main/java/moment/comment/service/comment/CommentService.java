@@ -25,12 +25,13 @@ public class CommentService {
     }
 
     public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
-        return commentRepository.findMomentIdsCommentedOnByOthers(momentIds, commenterId);
+        return commentRepository.findMomentIdsNotCommentedOnByMe(momentIds, commenterId);
     }
 
     @Transactional
     public void deleteBy(Long commentId) {
         commentRepository.deleteById(commentId);
+        commentRepository.flush();
     }
 
     public void validateUniqueBy(Long momentId, Long commenterId) {

@@ -4,12 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import moment.comment.domain.Comment;
+import moment.comment.domain.Echo;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.comment.domain.Echo;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -75,7 +76,8 @@ class EchoRepositoryTest {
         echoRepository.save(existingEcho2);
 
         // when
-        List<Echo> result = echoRepository.findByCommentAndUserAndEchoTypeIn(comment, commenter, Set.of("THANKS", "COMFORTED"));
+        List<Echo> result = echoRepository.findByCommentAndUserAndEchoTypeIn(comment, commenter,
+                Set.of("THANKS", "COMFORTED"));
 
         // then
         assertThat(result).hasSize(2);
@@ -100,5 +102,84 @@ class EchoRepositoryTest {
 
         // then
         assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void 코멘트_리스트에_포함된_모든_에코를_조회한다() {
+        // given
+        User user1 = userRepository.save(new User("user1@gmail.com", "1234", "user1", ProviderType.EMAIL));
+        User user2 = userRepository.save(new User("user2@gmail.com", "1234", "user2", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("moment content", true, user1, WriteType.BASIC));
+        Comment comment1 = commentRepository.save(new Comment("comment 1", user1, moment.getId()));
+        Comment comment2 = commentRepository.save(new Comment("comment 2", user2, moment.getId()));
+        Comment comment3 = commentRepository.save(new Comment("comment 3", user1, moment.getId()));
+
+        Echo echo1 = echoRepository.save(new Echo("HEART", user2, comment1));
+        Echo echo2 = echoRepository.save(new Echo("THANKS", user1, comment2));
+        echoRepository.save(new Echo("SAD", user2, comment3));
+
+        List<Comment> commentsToSearch = List.of(comment1, comment2);
+
+        // when
+        List<Echo> result = echoRepository.findAllByCommentIn(commentsToSearch);
+
+        // then
+        assertThat(result).hasSize(2)
+                .containsExactlyInAnyOrder(echo1, echo2);
+    }
+
+    @Test
+    void 코멘트로_에코를_조회한다() {
+        // given
+        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
+        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
+        Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
+
+        Echo savedEcho = echoRepository.save(new Echo("HEART", momenter, comment));
+
+        // when
+        Optional<Echo> result = echoRepository.findByComment(comment);
+
+        // then
+        assertAll(
+                () -> assertThat(result).isPresent(),
+                () -> assertThat(result.get()).isEqualTo(savedEcho)
+        );
+    }
+
+    @Test
+    void 코멘트에_에코가_없으면_빈_Optional을_반환한다() {
+        // given
+        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
+        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
+        Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
+
+        // when
+        Optional<Echo> result = echoRepository.findByComment(comment);
+
+        // then
+        assertThat(result).isNotPresent();
+    }
+
+    @Test
+    void 코멘트_ID로_에코를_삭제한다() {
+        // given
+        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
+        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
+        Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
+        Long commentId = comment.getId();
+
+        echoRepository.save(new Echo("HEART", momenter, comment));
+        echoRepository.save(new Echo("THANKS", commenter, comment));
+
+        // when
+        echoRepository.deleteByCommentId(commentId);
+
+        // then
+        List<Echo> result = echoRepository.findAllByComment(comment);
+        assertThat(result).isEmpty();
     }
 }

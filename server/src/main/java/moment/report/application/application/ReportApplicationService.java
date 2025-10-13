@@ -27,7 +27,7 @@ public class ReportApplicationService {
     ) {
         User user = userService.getUserBy(userId);
 
-        Report report = reportService.createReport(TargetType.MOMENT, user, contentId, request.reason());
+        Report report = reportService.createReport(targetType, user, contentId, request.reason());
 
         return report.getId();
     }

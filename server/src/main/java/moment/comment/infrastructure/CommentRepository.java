@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,15 +60,21 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 
     @Query("""
-            SELECT c.momentId
-            FROM comments c
-            WHERE c.momentId IN :momentIds
-            AND c.commenter.id <> :commenterId
+               SELECT m.id
+               FROM moments m
+               WHERE m.id IN :momentIds
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM comments c
+                   WHERE c.momentId = m.id
+                   AND c.commenter.id = :commenterId
+                  )
             """)
-    List<Long> findMomentIdsCommentedOnByOthers(@Param("momentIds") List<Long> momentIds,
-                                                @Param("commenterId") Long commenterId);
+    List<Long> findMomentIdsNotCommentedOnByMe(@Param("momentIds") List<Long> momentIds,
+                                               @Param("commenterId") Long commenterId);
 
     boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
 
+    @Query("SELECT c.momentId FROM comments c WHERE c.id = :commentId")
     Optional<Long> findMomentIdById(Long commentId);
 }

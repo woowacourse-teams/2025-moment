@@ -37,12 +37,14 @@ public record MyCommentResponse(
                 .map(EchoDetailResponse::from)
                 .toList();
 
+        MomentDetailResponse momentDetail = momentComposition == null ? null : MomentDetailResponse.from(momentComposition);
+
         return new MyCommentResponse(
                 commentComposition.id(),
                 commentComposition.content(),
                 commentComposition.imageUrl(),
                 commentComposition.commentCreatedAt(),
-                MomentDetailResponse.from(momentComposition),
+                momentDetail,
                 echos,
                 CommentNotificationResponse.from(unreadNotificationIds)
         );

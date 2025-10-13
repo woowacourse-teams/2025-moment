@@ -12,6 +12,7 @@ import java.util.Optional;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
+import moment.comment.domain.Echo;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
@@ -20,14 +21,13 @@ import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
+import moment.comment.infrastructure.EchoRepository;
 import moment.common.DatabaseCleaner;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.comment.domain.Echo;
-import moment.comment.infrastructure.EchoRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -226,7 +226,6 @@ class CommentControllerTest {
         Moment savedMoment = momentRepository.save(moment);
 
         Comment comment = new Comment("아 행복해", savedCommenter, savedMoment.getId());
-        Comment savedComment = commentRepository.save(comment);
 
         String token = jwtTokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
@@ -249,7 +248,7 @@ class CommentControllerTest {
     }
 
     @Test
-    void 신고된_코멘트를_삭제한다() {
+    void 신고된_코멘트를_삭제한다() throws InterruptedException {
         // given
         User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
         User commenter = new User("good@gmail.com", "1234", "lebron", ProviderType.EMAIL);
