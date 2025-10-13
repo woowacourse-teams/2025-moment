@@ -16,8 +16,9 @@ public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
 
         List<MyMomentResponse> myMomentsResponse = momentCompositionInfo.stream()
                 .map(momentComposition -> MyMomentResponse.of(
-                        momentComposition, commentCompositionsByMomentIds.get(momentComposition.id()),
-                        unreadNotificationsByMomentIds.get(momentComposition.id())
+                        momentComposition,
+                        commentCompositionsByMomentIds.getOrDefault(momentComposition.id(), List.of()),
+                        unreadNotificationsByMomentIds.getOrDefault(momentComposition.id(), List.of())
                 )).toList();
 
         return new MyMomentsResponse(myMomentsResponse);
