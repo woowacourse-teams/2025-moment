@@ -321,12 +321,8 @@ public class NotificationControllerTest {
                 .then().log().all()
                 .statusCode(201);
 
-        List<Notification> unReadNotifications = notificationRepository.findAllByUserAndIsReadAndTargetType(
-                momenter, false, TargetType.MOMENT);
-
-        List<Long> unReadNotificationsIds = unReadNotifications.stream()
-                .map(Notification::getId)
-                .toList();
+        List<Long> unReadNotificationsIds = notificationRepository.findAllByUserIdAndIsReadAndTargetType(
+                momenter.getId(), false, TargetType.MOMENT);
 
         NotificationReadRequest notificationReadRequest = new NotificationReadRequest(unReadNotificationsIds);
 
