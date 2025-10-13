@@ -1,5 +1,6 @@
 package moment.reward.service.reward;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +24,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class StarRewardService implements RewardService {
 
     private final RewardRepository rewardRepository;
+    private final Clock clock;
 
     @Override
     @Transactional
-    public RewardHistory save(User user, Reason rewardReason, Long userId) {
-        RewardHistory rewardHistory = new RewardHistory(user, rewardReason, userId);
+    public RewardHistory save(User user, Reason rewardReason, Long contentId) {
+        RewardHistory rewardHistory = new RewardHistory(user, rewardReason, contentId);
         return rewardRepository.save(rewardHistory);
     }
 
     @Override
     @Transactional
     public void rewardForMoment(User momenter, Reason reason, Long momentId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
 
         LocalDateTime startOfToday = today.atStartOfDay();
         LocalDateTime endOfToday = today.plusDays(1).atStartOfDay();
