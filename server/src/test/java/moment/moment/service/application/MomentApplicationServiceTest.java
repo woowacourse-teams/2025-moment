@@ -10,7 +10,6 @@ import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.infrastructure.MomentRepository;
-import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -82,9 +81,7 @@ class MomentApplicationServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.id()).isNotNull(),
-                () -> assertThat(response.content()).isEqualTo("안녕하세요 반갑습니다."),
-                () -> assertThat(momenter.getAvailableStar())
-                        .isEqualTo(startPoint + Reason.MOMENT_ADDITIONAL_USE.getPointTo())
+                () -> assertThat(response.content()).isEqualTo("안녕하세요 반갑습니다.")
         );
     }
 

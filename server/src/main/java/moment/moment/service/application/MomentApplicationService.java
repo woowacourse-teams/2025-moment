@@ -28,8 +28,6 @@ import moment.moment.service.moment.MomentService;
 import moment.moment.service.moment.MomentTagService;
 import moment.moment.service.moment.TagService;
 import moment.report.application.report.ReportService;
-import moment.reward.domain.Reason;
-import moment.reward.service.reward.RewardService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -50,7 +48,6 @@ public class MomentApplicationService {
     private final MomentImageService momentImageService;
     private final MomentTagService momentTagService;
     private final TagService tagService;
-    private final RewardService rewardService;
     private final ReportService reportService;
 
     @Transactional
@@ -68,8 +65,6 @@ public class MomentApplicationService {
 
         List<MomentTag> savedMomentTags = momentTagService.createAll(savedMoment, tags);
 
-        rewardService.rewardForMoment(momenter, Reason.MOMENT_CREATION, savedMoment.getId());
-
         return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
                 .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
     }
@@ -80,7 +75,7 @@ public class MomentApplicationService {
 
         extraMomentCreatePolicy.validate(momenter);
 
-        Moment savedMoment = momentService.create(request.content(), momenter, WriteType.BASIC);
+        Moment savedMoment = momentService.create(request.content(), momenter, WriteType.EXTRA);
 
         Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(),
                 request.imageName());
@@ -88,8 +83,6 @@ public class MomentApplicationService {
         List<Tag> tags = tagService.getOrCreate(request.tagNames());
 
         List<MomentTag> savedMomentTags = momentTagService.createAll(savedMoment, tags);
-
-        rewardService.useReward(momenter, Reason.MOMENT_ADDITIONAL_USE, savedMoment.getId());
 
         return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
                 .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
@@ -166,11 +159,10 @@ public class MomentApplicationService {
     public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
         User user = userService.getUserBy(id);
 
-        if (extraMomentCreatePolicy.canCreate(user)) {
-            return MomentCreationStatusResponse.createAllowedStatus();
+        if (extraMomentCreatePolicy.canNotCreate(user)) {
+            return MomentCreationStatusResponse.createDeniedStatus();
         }
-
-        return MomentCreationStatusResponse.createDeniedStatus();
+        return MomentCreationStatusResponse.createAllowedStatus();
     }
 
     public List<Long> getCommentableMoment(Long id) {
