@@ -3,7 +3,10 @@ import styled from '@emotion/styled';
 
 export const CardTitleStyles = {
   cardTitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.title.fontSize.small};
+    font-size: ${theme.typography.fontSize.title.small};
+    ${theme.mediaQueries.mobile} {
+      font-size: ${theme.typography.fontSize.mobileTitle.small};
+    }
     font-weight: ${theme.typography.fontWeight.large};
     color: ${theme.colors.white};
     `,
@@ -11,7 +14,10 @@ export const CardTitleStyles = {
 
 export const CardSubtitleStyles = {
   cardSubtitle: (theme: CustomTheme) => `
-    font-size: ${theme.typography.subTitle.fontSize.medium};
+    font-size: ${theme.typography.fontSize.subTitle.medium};
+    ${theme.mediaQueries.mobile} {
+      font-size: ${theme.typography.fontSize.mobileSubTitle.medium};
+    }
     color: ${theme.colors['gray-200']};
     `,
 };
