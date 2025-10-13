@@ -69,3 +69,6 @@ auth:
 s3:
   bucket-name: test-bucket-1
   bucket-path: test/images
+
+fcm:
+  service-account-json: {"test-key": "test-value"}
