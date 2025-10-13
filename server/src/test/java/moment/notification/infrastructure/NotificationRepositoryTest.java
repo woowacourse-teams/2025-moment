@@ -31,33 +31,43 @@ class NotificationRepositoryTest {
     private UserRepository userRepository;
 
     private User user;
+    private User notTargetUser;
+
+    private final boolean isReadFlag = true;
+    private final boolean isNotReadFlag = false;
+    private final long contentId = 1L;
 
     @BeforeEach
     void setUp() {
         user = new User("lebron@james.com", "lebron1234!", "르브론", ProviderType.EMAIL);
         userRepository.save(user);
+
+        notTargetUser = new User("mimi@icloud.com", "mimi1234!", "밍밍", ProviderType.EMAIL);
+        userRepository.save(notTargetUser);
     }
 
     @Test
     void 읽지_않은_알림을_조회한다() {
         // given
-        Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
-        Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
-        Notification notification3 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
+        TargetType contentType = TargetType.MOMENT;
+        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
 
-        notificationRepository.save(notification1);
-        notificationRepository.save(notification2);
-        notificationRepository.save(notification3);
+        Notification unreadNotification1 = new Notification(user, reason, contentType, contentId);
+        Notification unreadNotification2 = new Notification(user, reason, contentType, contentId);
+        Notification unreadNotification3 = new Notification(user, reason, contentType, contentId);
+        Notification notTargetUserNotification = new Notification(notTargetUser, reason, contentType, contentId);
+
+        notificationRepository.save(unreadNotification1);
+        notificationRepository.save(unreadNotification2);
+        notificationRepository.save(unreadNotification3);
+        notificationRepository.save(notTargetUserNotification);
 
         // when
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user.getId(), false);
+        List<Notification> unreadNotifications = notificationRepository.findAllByUserAndIsRead(user, isNotReadFlag);
 
         // then
-        assertThat(notifications).hasSize(3);
-        assertThat(notifications.stream()
+        assertThat(unreadNotifications).hasSize(3);
+        assertThat(unreadNotifications.stream()
                 .noneMatch(Notification::isRead))
                 .isTrue();
     }
@@ -65,26 +75,29 @@ class NotificationRepositoryTest {
     @Test
     void 읽은_알림을_조회한다() {
         // given
-        Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
-        Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
-        Notification notification3 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
+        TargetType contentType = TargetType.MOMENT;
+        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
 
-        notification2.checkNotification();
-        notification3.checkNotification();
+        Notification unreadNotification1 = new Notification(user, reason, contentType, contentId);
+        Notification readNotification1 = new Notification(user, reason, contentType, contentId);
+        Notification readNotification2 = new Notification(user, reason, contentType, contentId);
+        Notification notTargetUserNotification = new Notification(notTargetUser, reason, contentType, contentId);
 
-        notificationRepository.save(notification1);
-        notificationRepository.save(notification2);
-        notificationRepository.save(notification3);
+        readNotification1.checkNotification();
+        readNotification2.checkNotification();
+        notTargetUserNotification.checkNotification();
+
+        notificationRepository.save(unreadNotification1);
+        notificationRepository.save(readNotification1);
+        notificationRepository.save(readNotification2);
+        notificationRepository.save(notTargetUserNotification);
 
         // when
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(user.getId(), true);
+        List<Notification> readNotifications = notificationRepository.findAllByUserAndIsRead(user, isReadFlag);
 
         // then
-        assertThat(notifications).hasSize(2);
-        assertThat(notifications.stream()
+        assertThat(readNotifications).hasSize(2);
+        assertThat(readNotifications.stream()
                 .allMatch(Notification::isRead))
                 .isTrue();
     }
@@ -92,28 +105,34 @@ class NotificationRepositoryTest {
     @Test
     void 읽지_않은_알림을_타겟_타입과_함께_조회한다() {
         // given
-        Notification notification1 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                1L);
-        Notification notification2 = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                2L);
-        Notification notification3 = new Notification(user, NotificationType.NEW_REPLY_ON_COMMENT, TargetType.COMMENT,
-                1L);
+        TargetType targetContentType = TargetType.MOMENT;
+        TargetType notTargetContentType = TargetType.COMMENT;
+        NotificationType targetReason = NotificationType.NEW_COMMENT_ON_MOMENT;
+        NotificationType notTargetReason = NotificationType.NEW_REPLY_ON_COMMENT;
 
-        notification2.checkNotification();
+        Notification expectedNotification = new Notification(user, targetReason, targetContentType, contentId);
+        Notification readNotification = new Notification(user, targetReason, targetContentType, contentId);
+        Notification notContentTypeNotification = new Notification(user, notTargetReason, notTargetContentType, contentId);
+        Notification notTargetUserNotification = new Notification(notTargetUser, targetReason, targetContentType, contentId);
 
-        notificationRepository.save(notification1);
-        notificationRepository.save(notification2);
-        notificationRepository.save(notification3);
+        readNotification.checkNotification();
+
+        notificationRepository.save(expectedNotification);
+        notificationRepository.save(readNotification);
+        notificationRepository.save(notContentTypeNotification);
+        notificationRepository.save(notTargetUserNotification);
 
         // when
-        List<Notification> notifications = notificationRepository.findAllByUserAndIsReadAndTargetType(user, false,
-                TargetType.MOMENT);
+
+        List<Notification> expectedNotifications = notificationRepository.findAllByUserAndIsReadAndTargetType(
+                user, isNotReadFlag, targetContentType);
 
         // then
         Assertions.assertAll(
-                () -> assertThat(notifications).hasSize(1),
-                () -> assertThat(notifications.stream()
-                        .allMatch(notification -> !notification.isRead() && notification.getTargetType() == TargetType.MOMENT))
+                () -> assertThat(expectedNotifications).hasSize(1),
+                () -> assertThat(expectedNotifications.stream()
+                        .allMatch(notification -> !notification.isRead()
+                                && notification.getTargetType() == targetContentType))
                         .isTrue()
         );
     }
