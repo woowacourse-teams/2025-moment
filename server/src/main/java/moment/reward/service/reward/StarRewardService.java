@@ -1,5 +1,7 @@
 package moment.reward.service.reward;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -15,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,7 +26,8 @@ public class StarRewardService implements RewardService {
 
     @Override
     @Transactional
-    public RewardHistory save(RewardHistory rewardHistory) {
+    public RewardHistory save(User user, Reason rewardReason, Long userId) {
+        RewardHistory rewardHistory = new RewardHistory(user, rewardReason, userId);
         return rewardRepository.save(rewardHistory);
     }
 
@@ -46,14 +46,17 @@ public class StarRewardService implements RewardService {
         updateStar(momenter, reason, momentId);
     }
 
-    private boolean stopIfDuplicateMomentRewardFound(User momenter, Reason reason, LocalDateTime startOfToday, LocalDateTime endOfToday) {
+    private boolean stopIfDuplicateMomentRewardFound(User momenter, Reason reason, LocalDateTime startOfToday,
+                                                     LocalDateTime endOfToday) {
         return rewardRepository.existsByUserAndReasonAndToday(momenter, reason, startOfToday, endOfToday);
     }
 
     @Override
     @Transactional
     public void rewardForComment(User commenter, Reason reason, Long commentId) {
-        if (stopIfDuplicateCommentRewardFound(commenter, reason, commentId)) return;
+        if (stopIfDuplicateCommentRewardFound(commenter, reason, commentId)) {
+            return;
+        }
 
         updateStar(commenter, reason, commentId);
     }
@@ -65,7 +68,9 @@ public class StarRewardService implements RewardService {
     @Override
     @Transactional
     public void rewardForEcho(User commenter, Reason reason, Long echoId) {
-        if (stopIfDuplicateEchoRewardFound(commenter, reason, echoId)) return;
+        if (stopIfDuplicateEchoRewardFound(commenter, reason, echoId)) {
+            return;
+        }
 
         updateStar(commenter, reason, echoId);
     }
@@ -86,7 +91,7 @@ public class StarRewardService implements RewardService {
         int star = reason.getPointTo();
         user.addStarAndUpdateLevel(star);
 
-        RewardHistory rewardHistory = new RewardHistory(user, star, reason, contentId);
+        RewardHistory rewardHistory = new RewardHistory(user, reason, contentId);
         rewardRepository.save(rewardHistory);
     }
 

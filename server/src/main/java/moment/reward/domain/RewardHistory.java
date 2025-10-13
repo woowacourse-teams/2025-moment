@@ -45,17 +45,17 @@ public class RewardHistory extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public RewardHistory(User user, Integer amount, Reason reason, Long contentId) {
-        validate(user, amount, reason, contentId);
+    public RewardHistory(User user, Reason reason, Long contentId) {
+        validate(user, reason, contentId);
         this.user = user;
-        this.amount = amount;
+        this.amount = reason.getPointTo();
         this.reason = reason;
         this.contentId = contentId;
     }
 
-    private void validate(User user, Integer amount, Reason reason, Long contentId) {
+    private void validate(User user, Reason reason, Long contentId) {
         validateUser(user);
-        validateAmount(amount);
+        validateAmount(reason.getPointTo());
         validateReason(reason);
         validateContentId(contentId);
     }
@@ -67,8 +67,8 @@ public class RewardHistory extends BaseEntity {
     }
 
     private void validateAmount(Integer amount) {
-        if (amount == null || amount == 0) {
-            throw new IllegalArgumentException("amount가 null이나 0이 되어서는 안 됩니다.");
+        if (amount == 0) {
+            throw new IllegalArgumentException("amount가 0이 되어서는 안 됩니다.");
         }
     }
 

@@ -16,9 +16,9 @@ import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.service.user.UserService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
+import moment.user.service.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthEmailService implements EmailService{
+public class AuthEmailService implements EmailService {
 
     private static final long COOL_DOWN_SECONDS = 60;
     private static final long EXPIRY_SECONDS = 300;
@@ -47,7 +47,7 @@ public class AuthEmailService implements EmailService{
     public void sendVerificationEmail(EmailRequest request) {
         String email = request.email();
 
-        userService.findUserByEmailAndProviderType(email, ProviderType.EMAIL)
+        userService.findUserBy(email, ProviderType.EMAIL)
                 .ifPresent(user -> {
                     throw new MomentException(ErrorCode.USER_CONFLICT);
                 });
@@ -99,8 +99,7 @@ public class AuthEmailService implements EmailService{
     @Override
     public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
         String email = request.email();
-        Optional<User> findUser = userService.findUserByEmailAndProviderType(email, ProviderType.EMAIL);
-
+        Optional<User> findUser = userService.findUserBy(email, ProviderType.EMAIL);
         if (findUser.isPresent()) {
             EmailVerification existingInfo = passwordUpdateInfos.get(email);
             validateCoolTimePassed(existingInfo);

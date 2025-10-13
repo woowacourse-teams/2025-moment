@@ -12,8 +12,8 @@ import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.service.notification.NotificationService;
 import moment.notification.service.notification.SseNotificationService;
-import moment.user.service.user.UserService;
 import moment.user.domain.User;
+import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public class NotificationApplicationService {
     private final UserService userService;
 
     public List<NotificationResponse> getNotificationBy(Long userId, Boolean read) {
-        userService.getUserById(userId);
+        userService.getUserBy(userId);
 
         List<Notification> notifications = notificationService.getAllBy(userId, read);
 
@@ -53,7 +53,7 @@ public class NotificationApplicationService {
             NotificationType notificationType,
             TargetType targetType
     ) {
-        User user = userService.getUserById(userId);
+        User user = userService.getUserBy(userId);
 
         Notification savedNotification = notificationService.saveNotification(
                 user,
@@ -81,7 +81,7 @@ public class NotificationApplicationService {
     }
 
     private Map<Long, List<Long>> mapNotificationIdForMomentId(List<Notification> unreadNotifications,
-                                                           List<Long> momentIds) {
+                                                               List<Long> momentIds) {
 
         Map<Long, List<Notification>> notificationsByMomentIds = unreadNotifications.stream()
                 .collect(Collectors.groupingBy(Notification::getTargetId));
@@ -90,7 +90,8 @@ public class NotificationApplicationService {
                 .collect(Collectors.toMap(
                         momentId -> momentId,
                         momentId -> {
-                            List<Notification> findNotifications = notificationsByMomentIds.getOrDefault(momentId, List.of());
+                            List<Notification> findNotifications = notificationsByMomentIds.getOrDefault(momentId,
+                                    List.of());
                             return findNotifications.stream()
                                     .map(Notification::getId)
                                     .toList();

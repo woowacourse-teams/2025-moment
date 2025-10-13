@@ -123,7 +123,7 @@ class MyPageControllerTest {
     private void createTestRewardHistory(User user) {
         for (int i = 0; i < 20; i++) {
             rewardRepository.save(
-                    new RewardHistory(user, Reason.MOMENT_CREATION.getPointTo(), Reason.MOMENT_CREATION, (long) i));
+                    new RewardHistory(user, Reason.MOMENT_CREATION, (long) i));
         }
     }
 
