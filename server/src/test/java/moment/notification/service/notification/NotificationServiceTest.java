@@ -143,7 +143,7 @@ class NotificationServiceTest {
                 () -> assertThat(unreadNotifications).containsExactly(savedUnreadNotification1,
                         savedUnreadNotification2),
                 () -> assertThat(readNotifications).hasSize(1),
-                () -> assertThat(readNotifications).containsExactly(savedReadNotification)
+                () -> assertThat(readNotifications).containsExactlyInAnyOrder(savedReadNotification)
         );
     }
 
