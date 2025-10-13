@@ -137,7 +137,7 @@ class NotificationRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(expectedContentIds).hasSize(1),
-                () -> assertThat(expectedContentIds).contains(expectedNotification.getId())
+                () -> assertThat(expectedContentIds).contains(expectedNotification.getTargetId())
         );
     }
 
@@ -167,7 +167,7 @@ class NotificationRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(expectedContentIds).hasSize(1),
-                () -> assertThat(expectedContentIds).contains(expectedNotification.getId())
+                () -> assertThat(expectedContentIds).contains(expectedNotification.getTargetId())
         );
     }
 

@@ -158,8 +158,10 @@ class NotificationApplicationServiceTest {
         List<Long> result = notificationApplicationService.getUnreadNotifications(user.getId(), targetType);
 
         // then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(10L);
+        assertAll(
+                () -> assertThat(result).hasSize(1),
+                () -> assertThat(result.get(0)).isEqualTo(10L)
+        );
     }
 
     @Test
@@ -194,7 +196,7 @@ class NotificationApplicationServiceTest {
                 contentIds, contentType);
 
         // then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(result.get(100L)).hasSize(1),
                 () -> assertThat(result.get(200L)).hasSize(0),
                 () -> assertThat(result.get(300L)).hasSize(0)
