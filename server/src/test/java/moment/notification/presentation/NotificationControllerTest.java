@@ -31,6 +31,7 @@ import moment.comment.dto.request.EchoCreateRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -90,7 +91,6 @@ public class NotificationControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        databaseCleaner.clean();
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
@@ -98,6 +98,11 @@ public class NotificationControllerTest {
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
+    }
+
+    @AfterEach
+    void databaseClean() {
+        databaseCleaner.clean();
     }
 
     @Test
