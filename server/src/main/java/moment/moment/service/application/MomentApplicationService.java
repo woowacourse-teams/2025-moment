@@ -206,12 +206,8 @@ public class MomentApplicationService {
         }
     }
 
-    public void validateExistMoment(Long momentId) {
-        boolean exsitsMoment = momentService.existsMoment(momentId);
-
-        if (!exsitsMoment) {
-            throw new MomentException(ErrorCode.MOMENT_NOT_FOUND);
-        }
+    public Moment getMomentBy(Long momentId) {
+        return momentService.getMomentBy(momentId);
     }
 
     public List<MomentComposition> getMyMomentCompositionsBy(List<Long> momentIds) {

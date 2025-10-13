@@ -5,6 +5,7 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
+import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.domain.NotificationType;
 import moment.notification.service.application.NotificationApplicationService;
@@ -25,16 +26,16 @@ public class CommentCreateFacadeService {
 
     public CommentCreateResponse createComment(CommentCreateRequest request, Long userId) {
         commentApplicationService.validateCreateComment(request, userId);
-        momentApplicationService.validateExistMoment(request.momentId());
+        Moment moment = momentApplicationService.getMomentBy(request.momentId());
         CommentCreateResponse createdComment = commentApplicationService.createComment(request, userId);
 
         rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
 
         notificationApplicationService.createNotificationAndSendSse(
-                userId,
+                moment.getMomenterId(),
                 createdComment.commentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.COMMENT
+                TargetType.MOMENT
         );
 
         return createdComment;
