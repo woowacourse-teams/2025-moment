@@ -31,6 +31,7 @@ public class CommentService {
     @Transactional
     public void deleteBy(Long commentId) {
         commentRepository.deleteById(commentId);
+        commentRepository.flush();
     }
 
     public void validateUniqueBy(Long momentId, Long commenterId) {
