@@ -59,10 +59,9 @@ class NotificationRepositoryTest {
         Notification unreadNotification3 = new Notification(user, reason, contentType, contentId);
         Notification anotherUserNotification = new Notification(anotherUser, reason, contentType, contentId);
 
-        notificationRepository.save(unreadNotification1);
-        notificationRepository.save(unreadNotification2);
-        notificationRepository.save(unreadNotification3);
-        notificationRepository.save(anotherUserNotification);
+        notificationRepository.saveAll(
+                List.of(unreadNotification1, unreadNotification2, unreadNotification3, anotherUserNotification)
+        );
 
         // when
         List<Notification> unreadNotifications = notificationRepository.findAllByUserIdAndIsRead(userId, unReadFlag);
@@ -91,10 +90,9 @@ class NotificationRepositoryTest {
         readNotification2.checkNotification();
         anotherUserNotification.checkNotification();
 
-        notificationRepository.save(unreadNotification1);
-        notificationRepository.save(readNotification1);
-        notificationRepository.save(readNotification2);
-        notificationRepository.save(anotherUserNotification);
+        notificationRepository.saveAll(
+                List.of(unreadNotification1, readNotification1, readNotification2, anotherUserNotification)
+        );
 
         // when
         List<Notification> readNotifications = notificationRepository.findAllByUserIdAndIsRead(userId, readFlag);
@@ -123,10 +121,9 @@ class NotificationRepositoryTest {
 
         readNotification.checkNotification();
 
-        Notification savedExpectedNotification = notificationRepository.save(expectedNotification);
-        notificationRepository.save(readNotification);
-        notificationRepository.save(anotherTypeNotification);
-        notificationRepository.save(anotherUserNotification);
+        notificationRepository.saveAll(
+                List.of(expectedNotification, readNotification, anotherTypeNotification, anotherUserNotification)
+        );
 
         // when
         List<Long> expectedContentIds = notificationRepository.findAllByUserIdAndIsReadAndTargetType(
