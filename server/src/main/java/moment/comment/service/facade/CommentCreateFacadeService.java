@@ -24,6 +24,7 @@ public class CommentCreateFacadeService {
     private final NotificationApplicationService notificationApplicationService;
     private final RewardApplicationService rewardApplicationService;
 
+    @Transactional
     public CommentCreateResponse createComment(CommentCreateRequest request, Long userId) {
         commentApplicationService.validateCreateComment(request, userId);
         Moment moment = momentApplicationService.getMomentBy(request.momentId());
