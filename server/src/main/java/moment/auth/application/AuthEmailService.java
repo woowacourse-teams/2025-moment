@@ -100,7 +100,6 @@ public class AuthEmailService implements EmailService {
     public void sendPasswordUpdateEmail(PasswordUpdateRequest request) {
         String email = request.email();
         Optional<User> findUser = userService.findUserBy(email, ProviderType.EMAIL);
-        // todo Optional을 반환하지 않고 findUser가 없는 경우 예외를 터트리고 사용하는 부분에서 예외에 따른 try catch 로 로직을 수행하는 방향은 어떤지?
         if (findUser.isPresent()) {
             EmailVerification existingInfo = passwordUpdateInfos.get(email);
             validateCoolTimePassed(existingInfo);

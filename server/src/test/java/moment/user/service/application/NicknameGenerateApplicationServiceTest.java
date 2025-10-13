@@ -52,7 +52,6 @@ class NicknameGenerateApplicationServiceTest {
                 .hasFieldOrPropertyWithValue("message", "사용 가능한 닉네임을 생성할 수 없습니다.");
     }
 
-
     @TestConfiguration
     static class NicknameGeneratorTestConfiguration {
 
