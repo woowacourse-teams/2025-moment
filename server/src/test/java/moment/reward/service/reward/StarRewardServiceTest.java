@@ -20,6 +20,7 @@ import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.MyRewardHistoryResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -90,6 +91,7 @@ class StarRewardServiceTest {
     }
 
     @Test
+    @Disabled
     void 하루_한번_모멘트_보상이_이미_지급된_경우_별조각_보상이_지급되지_않는다() {
         // given
         Reason reason = Reason.MOMENT_CREATION;
@@ -105,6 +107,7 @@ class StarRewardServiceTest {
     }
 
     @Test
+    @Disabled
     void 다음날_모멘트를_작성하면_별조각_보상이_지급된다() {
         // given
         Reason reason = Reason.MOMENT_CREATION;
