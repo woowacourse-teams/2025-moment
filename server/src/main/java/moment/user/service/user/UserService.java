@@ -5,11 +5,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
-import moment.user.dto.request.NicknameConflictCheckRequest;
-import moment.user.dto.request.UserCreateRequest;
+import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.dto.response.NicknameConflictCheckResponse;
 import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
@@ -26,15 +26,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void addUser(UserCreateRequest request) {
-        comparePasswordWithRepassword(request.password(), request.rePassword());
-        validateEmailInBasicSignUp(request);
-        validateNickname(request);
+    public User addUser(String email, String password, String rePassword, String nickname) {
+        comparePasswordWithRepassword(password, rePassword);
+        validateEmailInBasicSignUp(email);
+        validateNickname(nickname);
 
-        String encodedPassword = passwordEncoder.encode(request.password());
-        User user = new User(request.email(), encodedPassword, request.nickname(), ProviderType.EMAIL);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(email, encodedPassword, nickname, ProviderType.EMAIL);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private void comparePasswordWithRepassword(String password, String rePassword) {
@@ -43,46 +43,93 @@ public class UserService {
         }
     }
 
-    private void validateNickname(UserCreateRequest request) {
-        if (userRepository.existsByNickname(request.nickname())) {
+    private void validateNickname(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
             throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
         }
     }
 
-    private void validateEmailInBasicSignUp(UserCreateRequest request) {
-        if (userRepository.existsByEmailAndProviderType(request.email(), ProviderType.EMAIL)) {
+    private void validateEmailInBasicSignUp(String email) {
+        if (userRepository.existsByEmailAndProviderType(email, ProviderType.EMAIL)) {
             throw new MomentException(ErrorCode.USER_CONFLICT);
         }
     }
 
-    public UserProfileResponse getUserProfile(Authentication authentication) {
-        User user = getUserById(authentication.id());
+    public UserProfileResponse getUserProfileBy(Authentication authentication) {
+        User user = getUserBy(authentication.id());
         return UserProfileResponse.from(user);
     }
 
-    public NicknameConflictCheckResponse checkNicknameConflict(NicknameConflictCheckRequest request) {
-        boolean existsByNickname = userRepository.existsByNickname(request.nickname());
+    public NicknameConflictCheckResponse checkNicknameConflict(String nickname) {
+        boolean existsByNickname = userRepository.existsByNickname(nickname);
         return new NicknameConflictCheckResponse(existsByNickname);
     }
 
-    public User getUserById(Long id) {
+    public User getUserBy(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public Optional<User> findUserByEmailAndProviderType(String email, ProviderType providerType) {
-        return userRepository.findByEmailAndProviderType(email, ProviderType.EMAIL);
+    public Optional<User> findUserBy(String email, ProviderType providerType) {
+        return userRepository.findByEmailAndProviderType(email, providerType);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public List<User> getAllByIds(List<Long> ids) {
+    public List<User> getAllBy(List<Long> ids) {
         return userRepository.findAllByIdIn(ids);
     }
 
-    public boolean existsByNickname(String nickname) {
+    public boolean existsBy(String nickname) {
         return userRepository.existsByNickname(nickname);
+    }
+
+    @Transactional
+    public NicknameChangeResponse changeNickname(String nickname, Long userId) {
+        User user = getUserBy(userId);
+
+        Reason rewardReason = Reason.NICKNAME_CHANGE;
+        validateEnoughStars(user, rewardReason);
+        validateNicknameConflict(nickname);
+
+        user.updateNickname(nickname, rewardReason.getPointTo());
+
+        return NicknameChangeResponse.from(user);
+    }
+
+    private void validateNicknameConflict(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new MomentException(ErrorCode.USER_NICKNAME_CONFLICT);
+        }
+    }
+
+    private void validateEnoughStars(User user, Reason reason) {
+        int requiredStar = reason.getPointTo();
+        if (user.canNotUseStars(requiredStar)) {
+            throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);
+        }
+    }
+
+    @Transactional
+    public void changePassword(String newPassword, String checkPassword, Long userId) {
+        User user = getUserBy(userId);
+
+        validateChangeablePasswordUser(user);
+        comparePasswordWithRepassword(newPassword, checkPassword);
+
+        String encodedChangePassword = passwordEncoder.encode(newPassword);
+        validateNotSameAsOldPassword(user, encodedChangePassword);
+
+        user.updatePassword(encodedChangePassword);
+    }
+
+    private void validateNotSameAsOldPassword(User user, String encodedChangePassword) {
+        if (user.checkPassword(encodedChangePassword)) {
+            throw new MomentException(ErrorCode.PASSWORD_SAME_AS_OLD);
+        }
+    }
+
+    private void validateChangeablePasswordUser(User user) {
+        if (!user.checkProviderType(ProviderType.EMAIL)) {
+            throw new MomentException(ErrorCode.PASSWORD_CHANGE_UNSUPPORTED_PROVIDER);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package moment.moment.service.application;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +28,10 @@ import moment.moment.service.moment.MomentService;
 import moment.moment.service.moment.MomentTagService;
 import moment.moment.service.moment.TagService;
 import moment.report.application.report.ReportService;
-import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
-import moment.user.service.user.UserService;
+import moment.reward.service.reward.RewardService;
 import moment.user.domain.User;
+import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +55,7 @@ public class MomentApplicationService {
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
-        User momenter = userService.getUserById(momenterId);
+        User momenter = userService.getUserBy(momenterId);
 
         basicMomentCreatePolicy.validate(momenter);
 
@@ -77,7 +76,7 @@ public class MomentApplicationService {
 
     @Transactional
     public MomentCreateResponse createExtraMoment(MomentCreateRequest request, Long momenterId) {
-        User momenter = userService.getUserById(momenterId);
+        User momenter = userService.getUserBy(momenterId);
 
         extraMomentCreatePolicy.validate(momenter);
 
@@ -97,7 +96,7 @@ public class MomentApplicationService {
     }
 
     public MomentCompositions getMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
-        User momenter = userService.getUserById(momenterId);
+        User momenter = userService.getUserBy(momenterId);
 
         List<Moment> momentsWithinCursor = momentService.getMomentsBy(momenter, cursor, pageSize);
 
@@ -113,8 +112,9 @@ public class MomentApplicationService {
         );
     }
 
-    public MomentCompositions getUnreadMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId, List<Long> unreadMomentIds) {
-        User momenter = userService.getUserById(momenterId);
+    public MomentCompositions getUnreadMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId,
+                                                            List<Long> unreadMomentIds) {
+        User momenter = userService.getUserBy(momenterId);
 
         List<Moment> momentsWithinCursor = momentService.getUnreadMomentsBy(unreadMomentIds, cursor, pageSize);
 
@@ -154,7 +154,7 @@ public class MomentApplicationService {
     }
 
     public MomentCreationStatusResponse canCreateMoment(Long id) {
-        User user = userService.getUserById(id);
+        User user = userService.getUserBy(id);
 
         if (basicMomentCreatePolicy.canCreate(user)) {
             return MomentCreationStatusResponse.createAllowedStatus();
@@ -164,7 +164,7 @@ public class MomentApplicationService {
     }
 
     public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
-        User user = userService.getUserById(id);
+        User user = userService.getUserBy(id);
 
         if (extraMomentCreatePolicy.canCreate(user)) {
             return MomentCreationStatusResponse.createAllowedStatus();
@@ -174,15 +174,11 @@ public class MomentApplicationService {
     }
 
     public List<Long> getCommentableMoment(Long id) {
-        User user = userService.getUserById(id);
-
-        final int MOMENT_DELETE_THRESHOLD = 3;
-
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(MOMENT_DELETE_THRESHOLD);
+        User user = userService.getUserBy(id);
 
         List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
 
-        List<Moment> commentableMoments = momentService.getCommentableMoments(user, threeDaysAgo, reportedMomentIds);
+        List<Moment> commentableMoments = momentService.getCommentableMoments(user, reportedMomentIds);
 
         return commentableMoments.stream()
                 .map(Moment::getId)
@@ -224,7 +220,7 @@ public class MomentApplicationService {
     }
 
     public void validateMomenter(Long momentId, Long momenterId) {
-        User momenter = userService.getUserById(momenterId);
+        User momenter = userService.getUserBy(momenterId);
         momentService.validateMomenter(momentId, momenter);
     }
 }

@@ -93,24 +93,34 @@ public class MomentImageRepositoryTest {
     }
 
     @Test
-    void 모멘트_이미지를_모멘트로_삭제한다() {
+    void 모멘트id로_모멘트_이미지를_삭제한다() {
         // given
-        String momentContent = "재미있는 내용이네요.";
-        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        User momenter = new User("emial@meail.com", "1234!", "마아", ProviderType.EMAIL);
         User savedMomenter = userRepository.save(momenter);
-        Moment moment = new Moment(momentContent, savedMomenter, WriteType.BASIC);
-        Moment savedMoment = momentRepository.save(moment);
 
-        String imageUrl = "https://s3:tech-course/moment-dev/images/cat.jpg";
-        String imageName = "cat.jpg";
-        MomentImage momentImage = new MomentImage(savedMoment, imageUrl, imageName);
-        MomentImage savedMomentImage = momentImageRepository.save(momentImage);
+        Moment moment1 = new Moment("내용1", savedMomenter, WriteType.BASIC);
+        Moment moment2 = new Moment("내용2", savedMomenter, WriteType.BASIC);
+        Moment savedMoment1 = momentRepository.save(moment1);
+        Moment savedMoment2 = momentRepository.save(moment2);
+
+        String imageUrl = "https://s3:moment-dev/images/고양이.jpg";
+        String imageName = "고양이.jpg";
+
+        MomentImage momentImage1 = new MomentImage(savedMoment1, imageUrl, imageName);
+        MomentImage momentImage2 = new MomentImage(savedMoment2, imageUrl, imageName);
+        momentImageRepository.save(momentImage1);
+        momentImageRepository.save(momentImage2);
 
         // when
-        momentImageRepository.deleteByMoment(savedMoment);
+        momentImageRepository.deleteByMomentId(savedMoment1.getId());
 
         // then
-        Optional<MomentImage> result = momentImageRepository.findById(savedMomentImage.getId());
-        assertThat(result).isEmpty();
+        Optional<MomentImage> findResult1 = momentImageRepository.findByMoment(savedMoment1);
+        Optional<MomentImage> findResult2 = momentImageRepository.findByMoment(savedMoment2);
+
+        assertAll(
+                () -> assertThat(findResult1).isEmpty(),
+                () -> assertThat(findResult2).isPresent()
+        );
     }
 }

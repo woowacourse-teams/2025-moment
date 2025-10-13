@@ -7,7 +7,7 @@ import moment.user.dto.response.MyRewardHistoryPageResponse;
 
 public interface RewardService {
 
-    RewardHistory save(RewardHistory rewardHistory);
+    RewardHistory save(User user, Reason rewardReason, Long userId);
 
     void rewardForMoment(User user, Reason reason, Long contentId);
 
