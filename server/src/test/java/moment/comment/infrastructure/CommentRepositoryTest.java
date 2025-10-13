@@ -289,8 +289,10 @@ class CommentRepositoryTest {
         Optional<Long> result = commentRepository.findMomentIdById(comment.getId());
 
         // then
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(moment.getId());
+        assertAll(
+                () -> assertThat(result).isPresent(),
+                () -> assertThat(result.get()).isEqualTo(moment.getId())
+        );
     }
 
     @Test

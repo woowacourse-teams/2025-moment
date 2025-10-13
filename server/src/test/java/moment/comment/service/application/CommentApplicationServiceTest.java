@@ -109,10 +109,12 @@ class CommentApplicationServiceTest {
         Comment comment = commentRepository.findById(response.commentId()).get();
 
         // then
-        assertThat(response.commentId()).isNotNull();
-        assertThat(response.content()).isEqualTo("new comment");
-        assertThat(commentRepository.findById(response.commentId())).isPresent();
-        assertThat(commentImageRepository.findByComment(comment)).isEmpty();
+        assertAll(
+                () -> assertThat(response.commentId()).isNotNull(),
+                () -> assertThat(response.content()).isEqualTo("new comment"),
+                () -> assertThat(commentRepository.findById(response.commentId())).isPresent(),
+                () -> assertThat(commentImageRepository.findByComment(comment)).isEmpty()
+        );
     }
 
     @Test
