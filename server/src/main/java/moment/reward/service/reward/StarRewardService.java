@@ -69,12 +69,12 @@ public class StarRewardService implements RewardService {
 
     @Override
     @Transactional
-    public void rewardForEcho(User commenter, Reason reason, Long echoId) {
-        if (stopIfDuplicateEchoRewardFound(commenter, reason, echoId)) {
+    public void rewardForEcho(User commenter, Reason reason, Long commentId) {
+        if (stopIfDuplicateEchoRewardFound(commenter, reason, commentId)) {
             return;
         }
 
-        updateStar(commenter, reason, echoId);
+        updateStar(commenter, reason, commentId);
     }
 
     private boolean stopIfDuplicateEchoRewardFound(User commenter, Reason reason, Long echoId) {
