@@ -71,11 +71,15 @@ public class MomentService {
     }
 
     public void validateMomenter(Long momentId, User momenter) {
-        Moment moment = momentRepository.findById(momentId)
-                .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+        Moment moment = getMomentBy(momentId);
 
         if (moment.isNotSame(momenter)) {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
+    }
+
+    public Moment getMomentBy(Long momentId) {
+        return momentRepository.findById(momentId)
+                .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
     }
 }

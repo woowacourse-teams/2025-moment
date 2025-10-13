@@ -33,7 +33,7 @@ public class EchoCreateFacadeService {
         commentApplicationService.createEcho(request.commentId(), momenterId, request.echoTypes());
 
         notificationApplicationService.createNotificationAndSendSse(
-                momenterId,
+                commentForEcho.commenterId(),
                 request.commentId(),
                 NotificationType.NEW_REPLY_ON_COMMENT,
                 TargetType.COMMENT
