@@ -1,9 +1,8 @@
 package moment.comment.domain;
 
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
-import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,10 +10,6 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
@@ -63,7 +58,7 @@ class CommentTest {
                 new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL),
                 null
         )).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("moment가 null이어서는 안 됩니다.");
+                .hasMessage("momentId가 null이어서는 안 됩니다.");
     }
 
     @Test
