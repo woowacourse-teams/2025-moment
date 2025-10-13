@@ -12,8 +12,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findAllByUserIdAndIsRead(Long userId, Boolean isRead);
 
-    List<Notification> findAllByUserAndIsReadAndTargetType(User user, Boolean isRead, TargetType targetType);
-
     @Query("""
             SELECT DISTINCT n.targetId
             FROM notifications n
