@@ -56,8 +56,7 @@ public class MyMomentPageFacadeService {
                 .toList();
 
         Map<Long, List<Long>> unreadNotificationsByMomentIds
-                = notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
-                        myMomentIds, TargetType.MOMENT);
+                = notificationApplicationService.getNotificationsByTargetIdsAndTargetType(myMomentIds, TargetType.MOMENT);
 
         List<CommentComposition> commentCompositions = commentApplicationService.getMyCommentCompositionsBy(
                 myMomentIds);

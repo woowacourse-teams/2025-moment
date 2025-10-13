@@ -19,6 +19,7 @@ public class ReportCreateFacadeService {
     private final MomentApplicationService momentApplicationService;
     private final CommentApplicationService commentApplicationService;
 
+    @Transactional
     public ReportCreateResponse createReport(
             Long contentId,
             Long userId,
