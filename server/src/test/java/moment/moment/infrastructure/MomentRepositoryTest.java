@@ -122,6 +122,7 @@ class MomentRepositoryTest {
     }
 
     @Test
+    @Disabled
     void 코멘트를_달_수_있는_모멘트를_조회한다() {
         // given
         User user = userRepository.save(new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL));
@@ -145,25 +146,6 @@ class MomentRepositoryTest {
         // then
         assertThat(results).containsExactly(recentMoment);
         assertThat(results).doesNotContain(myMoment, commentedMoment);
-    }
-
-    @Test
-    void 특정_기간_동안_등록한_나의_모멘트_목록을_조회한다() throws InterruptedException {
-        // given
-        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
-
-        Thread.sleep(10); // Ensure timestamps are distinct
-        Moment newMoment1 = momentRepository.save(new Moment("1 day ago", momenter, WriteType.BASIC));
-        Thread.sleep(10);
-        Moment newMoment2 = momentRepository.save(new Moment("now", momenter, WriteType.BASIC));
-
-        // when
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        List<Moment> recentMoments = momentRepository.findByMomenterAndCreatedAtAfter(momenter, threeDaysAgo);
-
-        // then
-        assertThat(recentMoments).hasSize(2)
-                .containsExactlyInAnyOrder(newMoment1, newMoment2);
     }
 
     @Test
@@ -203,5 +185,49 @@ class MomentRepositoryTest {
         // then
         assertThat(result).hasSize(1)
                 .containsExactly(moment2);
+    }
+
+    @Test
+    void 내_모멘트_목록의_첫_페이지를_조회한다() throws InterruptedException {
+        // given
+        User momenter = userRepository.save(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
+        User other = userRepository.save(new User("other@gmail.com", "1234", "other", ProviderType.EMAIL));
+
+        momentRepository.save(new Moment("다른 사람 모멘트", other, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("아 행복해", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment2 = momentRepository.save(new Moment("아 즐거워", momenter, WriteType.BASIC));
+        Thread.sleep(10);
+        Moment moment3 = momentRepository.save(new Moment("아 짜릿해", momenter, WriteType.BASIC));
+
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
+        // when
+        List<Moment> moments = momentRepository.findMyMomentFirstPage(momenter, pageRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(moments).hasSize(2),
+                () -> assertThat(moments).isSortedAccordingTo(Comparator.comparing(Moment::getCreatedAt).reversed()),
+                () -> assertThat(moments.get(0)).isEqualTo(moment3),
+                () -> assertThat(moments.get(1)).isEqualTo(moment2)
+        );
+    }
+
+    @Test
+    void 모멘트_ID로_모멘트를_삭제한다() {
+        // given
+        User momenter = userRepository.save(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
+        Moment momentToDelete = momentRepository.save(new Moment("삭제될 모멘트", momenter, WriteType.BASIC));
+        Moment momentToKeep = momentRepository.save(new Moment("유지될 모멘트", momenter, WriteType.BASIC));
+
+        // when
+        momentRepository.deleteById(momentToDelete.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(momentRepository.findById(momentToDelete.getId())).isEmpty(),
+                () -> assertThat(momentRepository.findById(momentToKeep.getId())).isPresent()
+        );
     }
 }

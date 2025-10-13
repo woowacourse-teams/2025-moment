@@ -1,7 +1,8 @@
 package moment.moment.service.moment;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.moment.domain.Tag;
 import moment.moment.infrastructure.TagRepository;
@@ -14,14 +15,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagService {
 
     private final TagRepository tagRepository;
-    
+
     @Transactional
     public List<Tag> getOrCreate(List<String> tagNames) {
-        List<Tag> tags = new ArrayList<>();
-        for (String tagName : tagNames) {
-            tagRepository.findByName(tagName)
-                    .ifPresentOrElse(tags::add, () -> tagRepository.save(new Tag(tagName)));
+        List<Tag> allByNameIn = tagRepository.findAllByNameIn(tagNames);
+
+        Set<String> existTagNames = allByNameIn.stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+
+        List<Tag> newTagsToSave = tagNames.stream()
+                .filter(tagName -> !existTagNames.contains(tagName))
+                .map(Tag::new)
+                .toList();
+
+        if (!newTagsToSave.isEmpty()) {
+            List<Tag> newTags = tagRepository.saveAll(newTagsToSave);
+            allByNameIn.addAll(newTags);
         }
-        return tags;
+
+        return allByNameIn;
     }
 }

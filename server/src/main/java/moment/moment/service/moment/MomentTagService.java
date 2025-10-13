@@ -19,16 +19,12 @@ public class MomentTagService {
     private final MomentTagRepository momentTagRepository;
 
     @Transactional
-    public MomentTag save(Moment moment, Tag tag) {
-        return momentTagRepository.save(new MomentTag(moment, tag));
-    }
-
-    @Transactional
     public List<MomentTag> createAll(Moment savedMoment, List<Tag> tags) {
-        for (Tag tag : tags) {
-            momentTagRepository.save(new MomentTag(savedMoment, tag));
-        }
-        return momentTagRepository.findAllByMoment(savedMoment);
+        List<MomentTag> momentTags = tags.stream()
+                .map(tag -> new MomentTag(savedMoment, tag))
+                .toList();
+
+        return momentTagRepository.saveAll(momentTags);
     }
 
     public Map<Moment, List<MomentTag>> getMomentTagsByMoment(List<Moment> moments) {

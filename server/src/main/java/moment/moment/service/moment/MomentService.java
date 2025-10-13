@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentService {
 
+    private static final int COMMENTABLE_PERIOD_IN_DAYS = 3;
+
     private final MomentRepository momentRepository;
 
     @Transactional
@@ -49,19 +51,14 @@ public class MomentService {
                 pageable);
     }
 
-    public List<Moment> getCommentableMoments(User user, LocalDateTime threeDaysAgo,
-                                              List<Long> reportedMomentIds) {
-        return momentRepository.findAllExceptUser(user, threeDaysAgo, reportedMomentIds);
+    public List<Moment> getCommentableMoments(User user, List<Long> reportedMomentIds) {
+        LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
+        return momentRepository.findAllExceptUser(user, cutoffDateTime, reportedMomentIds);
 
     }
 
     public List<Moment> getMomentsBy(List<Long> momentIds) {
         return momentRepository.findAllById(momentIds);
-    }
-
-    public Moment getMomentById(Long id) {
-        return momentRepository.findById(id)
-                .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
     }
 
     @Transactional

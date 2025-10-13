@@ -12,9 +12,5 @@ public interface MomentImageRepository extends JpaRepository<MomentImage, Long> 
 
     List<MomentImage> findAllByMomentIn(List<Moment> moments);
 
-    void deleteByMoment(Moment moment);
-
-    List<MomentImage> findAllByMomentIdIn(List<Long> momentIds);
-
     void deleteByMomentId(Long momentId);
 }
