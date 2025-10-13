@@ -23,6 +23,12 @@
     "converter:csv": "node src/converter/csv/csvToTs.js"
   },
   "license": "MIT",
+  "sideEffects": [
+    "*.css",
+    "@emotion/**/*",
+    "@sentry/**/*",
+    "react-ga4/**/*"
+  ],
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
