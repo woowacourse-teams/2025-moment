@@ -15,6 +15,7 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.support.MomentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -45,6 +46,9 @@ class MomentServiceTest {
     @Autowired
     MomentRepository momentRepository;
 
+    @Autowired
+    MomentCreatedAtHelper momentCreatedAtHelper;
+
     private User momenter;
 
     @BeforeEach
@@ -73,9 +77,10 @@ class MomentServiceTest {
     @Test
     void 나의_모멘트_첫_페이지를_조회한다() {
         // given
-        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+        LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
+        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start);
+        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC, start.plusHours(1));
+        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC, start.plusHours(2));
 
         Cursor cursor = new Cursor(null);
         PageSize pageSize = new PageSize(2);
@@ -95,9 +100,10 @@ class MomentServiceTest {
     @Test
     void 나의_모멘트_다음_페이지를_조회한다() {
         // given
-        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+        LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
+        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start);
+        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC, start.plusHours(1));
+        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC, start.plusHours(2));
 
         Cursor cursor = new Cursor(moment3.getCreatedAt().toString() + "_" + moment3.getId());
         PageSize pageSize = new PageSize(2);
@@ -116,10 +122,11 @@ class MomentServiceTest {
     @Test
     void 읽지_않은_모멘트_첫_페이지를_조회한다() {
         // given
-        Moment unReadMoment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment unReadMoment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment readMoment = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
-        Moment unReadMoment3 = momentRepository.save(new Moment("moment4", momenter, WriteType.BASIC));
+        LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
+        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start.plusHours(1));
+        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC, start.plusHours(2));
+        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC, start.plusHours(3));
+        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter, WriteType.BASIC, start.plusHours(4));
 
         Cursor cursor = new Cursor(null);
         PageSize pageSize = new PageSize(2);
@@ -143,10 +150,11 @@ class MomentServiceTest {
     @Test
     void 읽지_않은_모멘트_다음_페이지를_조회한다() {
         // given
-        Moment unReadMoment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment unReadMoment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment readMoment = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
-        Moment unReadMoment3 = momentRepository.save(new Moment("moment4", momenter, WriteType.BASIC));
+        LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
+        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start.plusHours(1));
+        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC, start.plusHours(2));
+        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC, start.plusHours(3));
+        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter, WriteType.BASIC, start.plusHours(4));
 
         Cursor cursor = new Cursor(unReadMoment2.getCreatedAt() + "_" + unReadMoment2.getId());
         PageSize pageSize = new PageSize(2);

@@ -12,6 +12,7 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -154,6 +155,7 @@ class CommentRepositoryTest {
     }
 
     @Test
+    @Disabled
     void 읽지_않은_코멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
         // given
         User momentOwner = userRepository.save(

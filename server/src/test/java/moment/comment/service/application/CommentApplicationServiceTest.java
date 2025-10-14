@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.domain.Echo;
@@ -30,6 +32,7 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -46,7 +49,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({DatabaseCleaner.class, AppConfig.class, CommentApplicationService.class, CommentService.class,
-        CommentImageService.class, EchoService.class, UserService.class})
+        CommentImageService.class, EchoService.class, UserService.class, CommentCreatedAtHelper.class})
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentApplicationServiceTest {
 
@@ -70,6 +73,9 @@ class CommentApplicationServiceTest {
 
     @Autowired
     private EchoRepository echoRepository;
+
+    @Autowired
+    private CommentCreatedAtHelper createdAtHelper;
 
     private User user;
     private Moment moment;
@@ -283,10 +289,10 @@ class CommentApplicationServiceTest {
     @Test
     void 나의_코멘트_구성_요소를_조회한다_첫_페이지() {
         // given
-        for (int i = 0; i < 5; i++) {
-            commentRepository.save(new Comment("comment " + i, user, moment.getId()));
-        }
-        commentRepository.flush();
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        IntStream.range(0, 5).forEach(i -> {
+            createdAtHelper.saveCommentWithCreatedAt("comment " + i, user, moment.getId(), start.plusHours(i));
+        });
 
         // when
         CommentCompositions result = commentApplicationService.getMyCommentCompositions(
@@ -305,10 +311,10 @@ class CommentApplicationServiceTest {
     @Test
     void 나의_코멘트_구성_요소를_조회한다_두_번째_페이지() {
         // given
-        for (int i = 0; i < 5; i++) {
-            commentRepository.save(new Comment("comment " + i, user, moment.getId()));
-        }
-        commentRepository.flush();
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        IntStream.range(0, 5).forEach(i -> {
+            createdAtHelper.saveCommentWithCreatedAt("comment " + i, user, moment.getId(), start.plusHours(i));
+        });
 
         Comment cursorComment = commentRepository.findAll().stream()
                 .filter(c -> c.getContent().equals("comment 2"))

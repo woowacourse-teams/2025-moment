@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -18,6 +19,7 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -32,7 +34,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @DataJpaTest
-@Import(DatabaseCleaner.class)
+@Import({DatabaseCleaner.class, CommentCreatedAtHelper.class})
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentServiceTest {
 
@@ -48,7 +50,12 @@ class CommentServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CommentCreatedAtHelper createdAtHelper;
+
     private CommentService commentService;
+    @Autowired
+    private CommentCreatedAtHelper commentCreatedAtHelper;
 
     @BeforeEach
     void setUp() {
@@ -172,8 +179,9 @@ class CommentServiceTest {
         User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentRepository.save(new Comment("comment " + i, commenter, moment.getId()));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
         });
 
         PageSize pageSize = new PageSize(3);
@@ -199,8 +207,9 @@ class CommentServiceTest {
         User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentRepository.save(new Comment("comment " + i, commenter, moment.getId()));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
         });
 
         List<Comment> allComments = commentRepository.findAll().stream()
@@ -232,10 +241,10 @@ class CommentServiceTest {
         User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentRepository.save(new Comment("comment " + i, commenter, moment.getId()));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
         });
-        commentRepository.flush();
 
         List<Long> commentIds = commentRepository.findAll().stream().map(Comment::getId).toList();
         PageSize pageSize = new PageSize(3);
@@ -261,10 +270,10 @@ class CommentServiceTest {
         User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
+        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentRepository.save(new Comment("comment " + i, commenter, moment.getId()));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
         });
-        commentRepository.flush();
 
         List<Long> commentIds = commentRepository.findAll().stream().map(Comment::getId).toList();
         Comment cursorComment = commentRepository.findById(3L).orElseThrow();

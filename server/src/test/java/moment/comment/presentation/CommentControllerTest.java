@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,13 +27,17 @@ import moment.common.DatabaseCleaner;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.moment.infrastructure.MomentTagRepository;
+import moment.moment.infrastructure.TagRepository;
+import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -73,6 +78,13 @@ class CommentControllerTest {
     private DatabaseCleaner databaseCleaner;
     @Autowired
     private CommentImageRepository commentImageRepository;
+
+    @Autowired
+    private CommentCreatedAtHelper commentCreatedAtHelper;
+    @Autowired
+    private MomentTagRepository momentTagRepository;
+    @Autowired
+    private TagRepository tagRepository;
 
     @BeforeEach
     void setUp() {
@@ -115,7 +127,6 @@ class CommentControllerTest {
     }
 
     @Test
-    @Disabled
     void 나의_Comment_목록을_조회한다() {
         // given
         User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
@@ -128,18 +139,20 @@ class CommentControllerTest {
 
         Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
+        Tag savedTag = tagRepository.save(new Tag("일상/생각"));
+        momentTagRepository.save(new MomentTag(savedMoment, savedTag));
 
-        Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment.getId());
-        Comment savedComment = commentRepository.save(comment);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
+        Comment savedComment = commentCreatedAtHelper.saveCommentWithCreatedAt("첫 번째 댓글", savedCommenter, savedMoment.getId(), start);
 
         Echo echo = new Echo("HEART", savedMomenter, savedComment);
         Echo savedEcho = echoRepository.save(echo);
 
         Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter, WriteType.BASIC);
         Moment savedMoment2 = momentRepository.save(moment2);
+        momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
 
-        Comment comment2 = new Comment("즐거운 댓글", savedCommenter, savedMoment2.getId());
-        Comment savedComment2 = commentRepository.save(comment2);
+        Comment savedComment2 = commentCreatedAtHelper.saveCommentWithCreatedAt("즐거운 댓글", savedCommenter, savedMoment2.getId(), start.plusHours(1));
 
         Echo echo2 = new Echo("HEART", savedMomenter, savedComment2);
         Echo savedEcho2 = echoRepository.save(echo2);
