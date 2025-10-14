@@ -9,6 +9,7 @@ import GlobalStyles from './styles/GlobalStyles';
 import { theme } from './styles/theme';
 import { useEffect } from 'react';
 import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/utils/firebase';
+import { registerFCMToken } from '@/shared/api/registerFCMToken';
 
 const App = () => {
   useEffect(() => {
@@ -20,7 +21,15 @@ const App = () => {
 
     const initializeFCM = async () => {
       try {
-        await requestFCMPermissionAndToken();
+        const token = await requestFCMPermissionAndToken();
+
+        if (token) {
+          try {
+            await registerFCMToken(token);
+          } catch (error) {
+            console.error('FCM 토큰 등록 오류:', error);
+          }
+        }
       } catch (error) {
         console.error('FCM 초기화 오류:', error);
       }
