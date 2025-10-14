@@ -7,6 +7,14 @@ const getStorage = (type: StorageType) => {
   return type === 'session' ? sessionStorage : localStorage;
 };
 
+const parseStorageData = <T>(data: string): T | null => {
+  try {
+    return JSON.parse(data) as T;
+  } catch {
+    return data as T;
+  }
+};
+
 const getItem = <T = string>(key: string, type: StorageType = 'session'): T | null => {
   const storage = getStorage(type);
   if (!storage) return null;
@@ -15,11 +23,7 @@ const getItem = <T = string>(key: string, type: StorageType = 'session'): T | nu
     const item = storage.getItem(key);
     if (item === null) return null;
 
-    try {
-      return JSON.parse(item) as T;
-    } catch {
-      return item as T;
-    }
+    return parseStorageData<T>(item);
   } catch {
     return null;
   }
