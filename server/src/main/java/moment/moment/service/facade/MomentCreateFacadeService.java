@@ -17,6 +17,7 @@ public class MomentCreateFacadeService {
     private final MomentApplicationService momentApplicationService;
     private final RewardApplicationService rewardApplicationService;
 
+    @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
         MomentCreateResponse basicMoment = momentApplicationService.createBasicMoment(request, momenterId);
 
@@ -24,6 +25,7 @@ public class MomentCreateFacadeService {
         return basicMoment;
     }
 
+    @Transactional
     public MomentCreateResponse createExtraMoment(MomentCreateRequest request, Long momenterId) {
         MomentCreateResponse extraMoment = momentApplicationService.createExtraMoment(request, momenterId);
         rewardApplicationService.useReward(momenterId, Reason.MOMENT_ADDITIONAL_USE, momenterId);

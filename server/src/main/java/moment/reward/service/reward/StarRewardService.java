@@ -82,6 +82,7 @@ public class StarRewardService implements RewardService {
     }
 
     @Override
+    @Transactional
     public void useReward(User user, Reason reason, Long contentId) {
         if (user.canNotUseStars(reason.getPointTo())) {
             throw new MomentException(ErrorCode.USER_NOT_ENOUGH_STAR);

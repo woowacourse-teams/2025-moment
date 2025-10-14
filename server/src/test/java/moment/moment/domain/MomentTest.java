@@ -1,5 +1,9 @@
 package moment.moment.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -9,10 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class MomentTest {
@@ -64,8 +64,8 @@ class MomentTest {
 
         // when & then
         assertAll(
-                () -> assertThat(moment.isNotSame(momenter)).isTrue(),
-                () -> assertThat(moment.isNotSame(unAuthorizedUser)).isFalse()
+                () -> assertThat(moment.isNotSame(momenter)).isFalse(),
+                () -> assertThat(moment.isNotSame(unAuthorizedUser)).isTrue()
         );
     }
 }

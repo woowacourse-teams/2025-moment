@@ -6,5 +6,5 @@ public interface ExtraMomentCreatePolicy {
 
     void validate(User user);
 
-    boolean canCreate(User user);
+    boolean canNotCreate(User user);
 }

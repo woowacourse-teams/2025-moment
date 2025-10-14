@@ -17,26 +17,31 @@ public class RewardApplicationService {
     private final RewardService rewardService;
     private final UserService userService;
 
+    @Transactional
     public void saveRewardHistory(Reason rewardReason, Long userId) {
         User user = userService.getUserBy(userId);
         rewardService.save(user, rewardReason, userId);
     }
 
+    @Transactional
     public void rewardForComment(Long userId, Reason reason, Long commentId) {
         User user = userService.getUserBy(userId);
         rewardService.rewardForComment(user, reason, commentId);
     }
 
+    @Transactional
     public void rewardForMoment(Long userId, Reason reason, Long momentId) {
         User user = userService.getUserBy(userId);
         rewardService.rewardForMoment(user, reason, momentId);
     }
 
+    @Transactional
     public void rewardForEcho(Long userId, Reason reason, Long commentId) {
         User user = userService.getUserBy(userId);
         rewardService.rewardForEcho(user, reason, commentId);
     }
 
+    @Transactional
     public void useReward(Long userId, Reason reason, Long contentId) {
         User user = userService.getUserBy(userId);
         rewardService.useReward(user, reason, contentId);

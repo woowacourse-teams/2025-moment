@@ -18,11 +18,11 @@ public interface RewardRepository extends JpaRepository<RewardHistory, Long> {
 
     @EntityGraph(attributePaths = {"user"})
     @Query("""
-            SELECT COUNT(rh) > 0 
+            SELECT COUNT(rh) > 0
             FROM reward_history rh
-            WHERE rh.user = :user 
-                AND rh.reason = :reason 
-                AND rh.createdAt >= :startOfToday 
+            WHERE rh.user = :user
+                AND rh.reason = :reason
+                AND rh.createdAt >= :startOfToday
                 AND rh.createdAt < :endOfToday
             """
     )

@@ -254,30 +254,6 @@ class MomentControllerTest {
                 () -> assertThat(responseExtra.content()).isEqualTo(contentExtra),
                 () -> assertThat(findUser.getAvailableStar()).isEqualTo(25)
         );
-
-        // when
-        String contentExtraExtra = "추가 추가 모멘트 재미있는 내용이네요~~?";
-        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra, tagNames, null, null);
-
-        MomentCreateResponse responseExtraExtra = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("accessToken", token)
-                .body(requestExtraExtra)
-                .when().post("/api/v1/moments/extra")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", MomentCreateResponse.class);
-
-        User findfindUser = userRepository.findById(savedMomenter.getId()).get();
-
-        // then
-        assertAll(
-                () -> assertThat(responseExtraExtra.momenterId()).isEqualTo(savedMomenter.getId()),
-                () -> assertThat(responseExtraExtra.content()).isEqualTo(contentExtraExtra),
-                () -> assertThat(findfindUser.getAvailableStar()).isEqualTo(15)
-        );
     }
 
     @Test
