@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,5 +49,12 @@ public class MomentImage extends BaseEntity {
         this.moment = moment;
         this.imageUrl = imageUrl;
         this.imageName = imageName;
+    }
+
+    public static Optional<MomentImage> createNew(Moment moment, String imageUrl, String imageName) {
+        if (imageUrl != null && imageName != null) {
+            return Optional.of(new MomentImage(moment, imageUrl, imageName));
+        }
+        return Optional.empty();
     }
 }

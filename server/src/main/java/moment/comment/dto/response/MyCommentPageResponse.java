@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import moment.comment.domain.Comment;
+import moment.comment.dto.tobe.CommentCompositions;
+import moment.moment.dto.response.tobe.MomentComposition;
 
 @Schema(description = "나의 Comment 페이지 조회 응답")
 public record MyCommentPageResponse(
@@ -27,5 +30,16 @@ public record MyCommentPageResponse(
             int pageSize
     ) {
         return new MyCommentPageResponse(responses, nextCursor, hasNextPage, pageSize);
+    }
+
+    public static MyCommentPageResponse of(CommentCompositions myCommentCompositions,
+                                           List<MomentComposition> myMomentCompositions,
+                                           Map<Long, List<Long>> unreadNotificationsByCommentIds) {
+        return new MyCommentPageResponse(
+                MyCommentsResponse.of(myCommentCompositions.commentCompositions(), myMomentCompositions, unreadNotificationsByCommentIds),
+                myCommentCompositions.nextCursor(),
+                myCommentCompositions.hasNextPage(),
+                myCommentCompositions.pageSize()
+        );
     }
 }
