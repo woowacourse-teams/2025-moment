@@ -37,6 +37,8 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.4.0'
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+    implementation 'com.google.firebase:firebase-admin:9.5.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     compileOnly 'org.projectlombok:lombok'
 

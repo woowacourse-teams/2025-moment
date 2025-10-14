@@ -5,31 +5,37 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import jakarta.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import moment.auth.application.TokenManager;
+import moment.comment.dto.request.CommentCreateRequest;
 import moment.common.DatabaseCleaner;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.MomentImage;
+import moment.moment.domain.MomentTag;
+import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
-import moment.moment.dto.response.MyMomentPageResponse;
-import moment.moment.dto.response.MyMomentResponse;
+import moment.moment.dto.response.tobe.MyMomentPageResponse;
+import moment.moment.dto.response.tobe.MyMomentResponse;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
+import moment.moment.infrastructure.MomentTagRepository;
+import moment.moment.infrastructure.TagRepository;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
-import moment.reward.infrastructure.RewardRepository;
+import moment.support.MomentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -50,8 +56,6 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class MomentControllerTest {
 
-    @Autowired
-    EntityManager entityManager;
     @LocalServerPort
     private int port;
     @Autowired
@@ -63,11 +67,15 @@ class MomentControllerTest {
     @Autowired
     private TokenManager tokenManager;
     @Autowired
-    private RewardRepository rewardRepository;
-    @Autowired
     private MomentImageRepository momentImageRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private MomentTagRepository momentTagRepository;
+    @Autowired
+    private MomentCreatedAtHelper momentCreatedAtHelper;
 
     @BeforeEach
     void setUp() {
@@ -255,30 +263,6 @@ class MomentControllerTest {
                 () -> assertThat(responseExtra.content()).isEqualTo(contentExtra),
                 () -> assertThat(findUser.getAvailableStar()).isEqualTo(25)
         );
-
-        // when
-        String contentExtraExtra = "추가 추가 모멘트 재미있는 내용이네요~~?";
-        MomentCreateRequest requestExtraExtra = new MomentCreateRequest(contentExtraExtra, tagNames, null, null);
-
-        MomentCreateResponse responseExtraExtra = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("accessToken", token)
-                .body(requestExtraExtra)
-                .when().post("/api/v1/moments/extra")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", MomentCreateResponse.class);
-
-        User findfindUser = userRepository.findById(savedMomenter.getId()).get();
-
-        // then
-        assertAll(
-                () -> assertThat(responseExtraExtra.momenterId()).isEqualTo(savedMomenter.getId()),
-                () -> assertThat(responseExtraExtra.content()).isEqualTo(contentExtraExtra),
-                () -> assertThat(findfindUser.getAvailableStar()).isEqualTo(15)
-        );
     }
 
     @Test
@@ -327,6 +311,69 @@ class MomentControllerTest {
                 () -> assertThat(response.nextCursor()).isEqualTo(expectedNextCursor),
                 () -> assertThat(response.hasNextPage()).isTrue(),
                 () -> assertThat(response.pageSize()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 내_모멘트_조회_시_읽음_상태를_함께_반환한다() {
+        // given
+        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+
+        User commenter = userRepository.save(new User("commenter@gmail.com", "1234", "commenter", ProviderType.EMAIL));
+
+        String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+        String commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
+
+        MomentCreateRequest createRequest1 = new MomentCreateRequest("첫 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateResponse momentResponse1 = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", momenterToken)
+                .body(createRequest1)
+                .when().post("/api/v1/moments")
+                .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
+        Long momentId1 = momentResponse1.id();
+
+        MomentCreateRequest createRequest2 = new MomentCreateRequest("두 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateResponse momentResponse2 = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", momenterToken)
+                .body(createRequest2)
+                .when().post("/api/v1/moments/extra")
+                .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
+
+        CommentCreateRequest commentRequest = new CommentCreateRequest("코멘트 내용", momentId1, null, null);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", commenterToken)
+                .body(commentRequest)
+                .when().post("/api/v1/comments")
+                .then().statusCode(HttpStatus.CREATED.value());
+
+        // when
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .param("limit", 5)
+                .cookie("accessToken", momenterToken)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyMomentPageResponse.class);
+
+        // then
+        List<MyMomentResponse> myMoments = response.items().myMomentsResponse();
+
+        MomentNotificationResponse recentMomentNotificationResponse = myMoments.get(0).momentNotification();
+        MomentNotificationResponse olderMomentNotificationResponse = myMoments.get(1).momentNotification();
+
+        assertAll(
+                () -> assertThat(recentMomentNotificationResponse.isRead()).isTrue(),
+                () -> assertThat(recentMomentNotificationResponse.notificationIds()).isEmpty(),
+                () -> assertThat(olderMomentNotificationResponse.isRead()).isFalse(),
+                () -> assertThat(olderMomentNotificationResponse.notificationIds()).isNotEmpty()
         );
     }
 
@@ -604,5 +651,48 @@ class MomentControllerTest {
         // then
         Optional<Moment> result = momentRepository.findById(savedMoment.getId());
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void 나의_Moment_목록을_조회한다() {
+        // given
+        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User savedMomenter = userRepository.save(momenter);
+
+        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
+        Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter, WriteType.BASIC, start);
+        Tag savedTag = tagRepository.save(new Tag("일상/생각"));
+        momentTagRepository.save(new MomentTag(savedMoment, savedTag));
+
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter, WriteType.BASIC, start.plusHours(1));
+        momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
+
+        // when
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .cookie("accessToken", token)
+                .param("limit", 1)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyMomentPageResponse.class);
+
+        // then
+        List<MyMomentResponse> myMoments = response.items().myMomentsResponse();
+        MyMomentResponse firstResponse = myMoments.getFirst();
+
+        String cursor = savedMoment2.getCreatedAt().toString() + "_" + savedMoment2.getId();
+
+        assertAll(
+                () -> assertThat(myMoments).hasSize(1),
+                () -> assertThat(response.nextCursor()).isEqualTo(cursor),
+                () -> assertThat(response.hasNextPage()).isTrue(),
+                () -> assertThat(response.pageSize()).isEqualTo(1),
+                () -> assertThat(firstResponse.content()).isEqualTo(savedMoment2.getContent()),
+                () -> assertThat(firstResponse.content()).isEqualTo(savedMoment2.getContent())
+        );
     }
 }

@@ -12,20 +12,19 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.moment.application.MomentService;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.request.MomentReportCreateRequest;
-import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
-import moment.moment.dto.response.MomentReportCreateResponse;
-import moment.moment.dto.response.MyMomentPageResponse;
+import moment.moment.dto.response.tobe.MyMomentPageResponse;
+import moment.moment.service.application.MomentApplicationService;
+import moment.moment.service.facade.CommentableMomentFacadeService;
+import moment.moment.service.facade.MomentCreateFacadeService;
+import moment.moment.service.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +37,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/moments")
 public class MomentController {
 
-    private final MomentService momentService;
+    private final MyMomentPageFacadeService myMomentPageFacadeService;
+    private final CommentableMomentFacadeService commentableMomentFacadeService;
+    private final MomentCreateFacadeService momentCreateFacadeService;
+    private final MomentApplicationService momentApplicationService;
 
     @Operation(summary = "기본 모멘트 등록", description = "사용자가 기본 모멘트를 등록합니다.")
     @ApiResponses({
@@ -58,7 +60,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addBasicMoment(request, authentication.id());
+        MomentCreateResponse response = momentCreateFacadeService.createBasicMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -83,7 +85,7 @@ public class MomentController {
             @Valid @RequestBody MomentCreateRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreateResponse response = momentService.addExtraMoment(request, authentication.id());
+        MomentCreateResponse response = momentCreateFacadeService.createExtraMoment(request, authentication.id());
         HttpStatus status = HttpStatus.CREATED;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -109,7 +111,8 @@ public class MomentController {
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyMomentPageResponse response = momentService.getMyMoments(nextCursor, limit, authentication.id());
+        MyMomentPageResponse response = myMomentPageFacadeService.getMyMomentsPage(nextCursor, limit,
+                authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -135,7 +138,8 @@ public class MomentController {
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyMomentPageResponse response = momentService.getMyUnreadMoments(nextCursor, limit, authentication.id());
+        MyMomentPageResponse response = myMomentPageFacadeService.getUnreadMyMomentsPage(nextCursor, limit,
+                authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -158,7 +162,7 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getBasicMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreationStatusResponse response = momentService.canCreateMoment(authentication.id());
+        MomentCreationStatusResponse response = momentApplicationService.canCreateMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -181,7 +185,7 @@ public class MomentController {
     public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getExtraMomentCreationStatus(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MomentCreationStatusResponse response = momentService.canCreateExtraMoment(authentication.id());
+        MomentCreationStatusResponse response = momentApplicationService.canCreateExtraMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -205,34 +209,10 @@ public class MomentController {
             @AuthenticationPrincipal Authentication authentication,
             @RequestParam(required = false, defaultValue = "") List<String> tagName
     ) {
-        CommentableMomentResponse response = momentService.getCommentableMoment(authentication.id(), tagName);
+        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMoment(authentication.id(),
+                tagName);
 
         HttpStatus status = HttpStatus.OK;
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
-    @Operation(summary = "모멘트 신고", description = "부적절한 모멘트를 신고합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모멘트 신고 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    - [M-002] 존재하지 않는 모멘트입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PostMapping("/{id}/reports")
-    public ResponseEntity<SuccessResponse<MomentReportCreateResponse>> createMomentReport(
-            @AuthenticationPrincipal Authentication authentication,
-            @RequestBody MomentReportCreateRequest request,
-            @PathVariable(name = "id") Long momentId
-    ) {
-        MomentReportCreateResponse response = momentService.reportMoment(momentId, authentication.id(), request);
-        HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }

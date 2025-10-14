@@ -1,4 +1,4 @@
-package moment.moment.application;
+package moment.moment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,14 +33,14 @@ import moment.moment.dto.response.MomentReportCreateResponse;
 import moment.moment.dto.response.MyMomentPageResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
-import moment.reply.domain.Echo;
-import moment.reply.infrastructure.EchoRepository;
-import moment.report.application.ReportService;
+import moment.comment.domain.Echo;
+import moment.comment.infrastructure.EchoRepository;
+import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
-import moment.reward.application.RewardService;
+import moment.reward.service.reward.RewardService;
 import moment.reward.domain.Reason;
-import moment.user.application.UserQueryService;
+import moment.user.service.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;

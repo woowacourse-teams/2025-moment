@@ -15,10 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import moment.global.page.Cursorable;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -44,23 +41,21 @@ public class Comment extends BaseEntity implements Cursorable {
     @JoinColumn(nullable = false, name = "commenter_id")
     private User commenter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "moment_id")
-    private Moment moment;
+    private Long momentId;
 
     private LocalDateTime deletedAt;
 
-    public Comment(String content, User commenter, Moment moment) {
-        validate(content, commenter, moment);
+    public Comment(String content, User commenter, Long momentId) {
+        validate(content, commenter, momentId);
         this.content = content;
         this.commenter = commenter;
-        this.moment = moment;
+        this.momentId = momentId;
     }
 
-    private void validate(String content, User commenter, Moment moment) {
+    private void validate(String content, User commenter, Long momentId) {
         validateContent(content);
         validateCommenter(commenter);
-        validateMoment(moment);
+        validateMoment(momentId);
     }
 
     private void validateContent(String content) {
@@ -79,21 +74,10 @@ public class Comment extends BaseEntity implements Cursorable {
         }
     }
 
-    private void validateMoment(Moment moment) {
-        if (moment == null) {
-            throw new IllegalArgumentException("moment가 null이어서는 안 됩니다.");
+    private void validateMoment(Long momentId) {
+        if (momentId == null) {
+            throw new IllegalArgumentException("momentId가 null이어서는 안 됩니다.");
         }
     }
 
-    public void checkAuthorization(User user) {
-        User momenter = moment.getMomenter();
-
-        if (!this.commenter.equals(user) && !momenter.equals(user)) {
-            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
-        }
-    }
-
-    public boolean hasNotMomenter(User user) {
-        return this.moment.checkMomenter(user);
-    }
 }
