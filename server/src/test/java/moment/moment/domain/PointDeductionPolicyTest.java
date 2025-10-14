@@ -1,5 +1,9 @@
 package moment.moment.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -8,10 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -29,10 +29,10 @@ class PointDeductionPolicyTest {
         when(user.canNotUseStars(any(Integer.class))).thenReturn(false);
 
         // when
-        boolean result = pointDeductionPolicy.canCreate(user);
+        boolean result = pointDeductionPolicy.canNotCreate(user);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -41,9 +41,9 @@ class PointDeductionPolicyTest {
         when(user.canNotUseStars(any(Integer.class))).thenReturn(true);
 
         // when
-        boolean result = pointDeductionPolicy.canCreate(user);
+        boolean result = pointDeductionPolicy.canNotCreate(user);
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
     }
 }
