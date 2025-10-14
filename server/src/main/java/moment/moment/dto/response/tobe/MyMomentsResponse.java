@@ -1,5 +1,6 @@
 package moment.moment.dto.response.tobe;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,5 +23,10 @@ public record MyMomentsResponse(List<MyMomentResponse> myMomentsResponse) {
                 )).toList();
 
         return new MyMomentsResponse(myMomentsResponse);
+    }
+
+    @JsonValue
+    public List<MyMomentResponse> getMyMomentsResponse() {
+        return myMomentsResponse;
     }
 }
