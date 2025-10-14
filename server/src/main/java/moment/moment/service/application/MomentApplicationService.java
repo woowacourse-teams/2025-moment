@@ -183,6 +183,9 @@ public class MomentApplicationService {
         }
 
         List<Moment> commentableMoments = momentService.getMomentsBy(momentIds);
+        if (commentableMoments.isEmpty()) {
+            return CommentableMomentResponse.empty();
+        }
         Moment moment = commentableMoments.get(RANDOM.nextInt(commentableMoments.size()));
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
 
