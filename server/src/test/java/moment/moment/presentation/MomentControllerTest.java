@@ -333,7 +333,6 @@ class MomentControllerTest {
                 .body(createRequest1)
                 .when().post("/api/v1/moments")
                 .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
-        Long momentId1 = momentResponse1.id();
 
         MomentCreateRequest createRequest2 = new MomentCreateRequest("두 번째 모멘트", List.of("일상/여가"), null, null);
         MomentCreateResponse momentResponse2 = RestAssured.given()
@@ -343,7 +342,7 @@ class MomentControllerTest {
                 .when().post("/api/v1/moments/extra")
                 .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
 
-        CommentCreateRequest commentRequest = new CommentCreateRequest("코멘트 내용", momentId1, null, null);
+        CommentCreateRequest commentRequest = new CommentCreateRequest("코멘트 내용", momentResponse2.id(), null, null);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -370,10 +369,10 @@ class MomentControllerTest {
         MomentNotificationResponse olderMomentNotificationResponse = myMoments.get(1).momentNotification();
 
         assertAll(
-                () -> assertThat(recentMomentNotificationResponse.isRead()).isTrue(),
-                () -> assertThat(recentMomentNotificationResponse.notificationIds()).isEmpty(),
-                () -> assertThat(olderMomentNotificationResponse.isRead()).isFalse(),
-                () -> assertThat(olderMomentNotificationResponse.notificationIds()).isNotEmpty()
+                () -> assertThat(recentMomentNotificationResponse.isRead()).isFalse(),
+                () -> assertThat(recentMomentNotificationResponse.notificationIds()).isNotEmpty(),
+                () -> assertThat(olderMomentNotificationResponse.isRead()).isTrue(),
+                () -> assertThat(olderMomentNotificationResponse.notificationIds()).isEmpty()
         );
     }
 
@@ -662,11 +661,13 @@ class MomentControllerTest {
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter, WriteType.BASIC, start);
+        Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter,
+                WriteType.BASIC, start);
         Tag savedTag = tagRepository.save(new Tag("일상/생각"));
         momentTagRepository.save(new MomentTag(savedMoment, savedTag));
 
-        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter, WriteType.BASIC, start.plusHours(1));
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter,
+                WriteType.BASIC, start.plusHours(1));
         momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
 
         // when

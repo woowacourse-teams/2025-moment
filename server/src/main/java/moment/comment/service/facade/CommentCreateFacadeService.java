@@ -11,8 +11,8 @@ import moment.notification.domain.NotificationType;
 import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.application.NotificationApplicationService;
 import moment.notification.service.application.PushNotificationApplicationService;
-import moment.reward.service.application.RewardApplicationService;
 import moment.reward.domain.Reason;
+import moment.reward.service.application.RewardApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +37,7 @@ public class CommentCreateFacadeService {
 
         notificationApplicationService.createNotificationAndSendSse(
                 moment.getMomenterId(),
-                createdComment.commentId(),
+                moment.getId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT
         );
