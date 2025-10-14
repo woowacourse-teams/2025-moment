@@ -1,14 +1,19 @@
-import { ReactNode } from 'react';
-
 export type ToastVariant = 'success' | 'error' | 'warning' | 'message';
 export type ToastRouteType = 'moment' | 'comment';
 
 export interface ToastData {
-  id: string;
-  message: ReactNode;
+  message: string;
   variant: ToastVariant;
   duration?: number;
   routeType?: ToastRouteType;
+}
+
+export interface ToastProps {
+  message: string;
+  variant: ToastVariant;
+  duration?: number;
+  routeType?: ToastRouteType;
+  onClose: () => void;
 }
 
 export interface UseToastReturn {
@@ -17,8 +22,5 @@ export interface UseToastReturn {
   showWarning: (message: string, duration?: number) => void;
   showMessage: (message: string, routeType?: ToastRouteType, duration?: number) => void;
   removeToast: () => void;
-}
-
-export interface ToastsState {
-  toasts: ToastData[];
+  toast: ToastData | null;
 }

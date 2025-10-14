@@ -58,7 +58,7 @@ export const SignupStep1 = ({
           />
         </S.CheckExistContainer>
         {isEmailChecked && !emailErrorMessage ? (
-          <S.SuccessMessage>인증코드가 전송되었습니다.</S.SuccessMessage>
+          <S.SuccessMessage>이메일 중복 확인에 성공했습니다.</S.SuccessMessage>
         ) : (
           <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
         )}

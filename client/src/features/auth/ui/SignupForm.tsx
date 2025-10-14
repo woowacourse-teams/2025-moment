@@ -1,5 +1,5 @@
+import { useCheckEmailMutation } from '@/features/auth/api/useCheckEmailMutation';
 import { useCheckEmailCode } from '@/features/auth/hooks/useCheckEmailCode';
-import { useCheckEmailWithStorage } from '@/features/auth/hooks/useCheckEmailWithStorage';
 import { useSignup } from '@/features/auth/hooks/useSignup';
 import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
@@ -22,7 +22,7 @@ export const SignupForm = () => {
     isError: isEmailCheckError,
     error: emailCheckError,
     isSuccess: isEmailCheckSuccess,
-  } = useCheckEmailWithStorage();
+  } = useCheckEmailMutation();
   const {
     emailCode,
     isCheckEmailCodeLoading,

@@ -1,34 +1,14 @@
 import { useSignupMutation } from '@/features/auth/api/useSignupMutation';
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { isSignupFormValid, validateSignupField } from '@/features/auth/utils/validateAuth';
-import { storageService } from '@/shared/utils/storageService';
-import { useCallback, useEffect, useState } from 'react';
-
-const SIGNUP_DATA_KEY = 'signup_data';
-const EMAIL_CODE_KEY = 'signup_email_code';
-const EMAIL_CODE_SUCCESS_KEY = 'signup_email_code_success';
-const EMAIL_CHECK_SUCCESS_KEY = 'signup_email_check_success';
-
-const clearSignupStorage = () => {
-  storageService.session.removeMultiple([
-    SIGNUP_DATA_KEY,
-    EMAIL_CODE_KEY,
-    EMAIL_CODE_SUCCESS_KEY,
-    EMAIL_CHECK_SUCCESS_KEY,
-  ]);
-};
+import { useCallback, useState } from 'react';
 
 export const useSignup = () => {
-  const [signupData, setSignupData] = useState<SignupFormData>(() => {
-    const savedData = storageService.session.get<SignupFormData>(SIGNUP_DATA_KEY);
-    return (
-      savedData || {
-        email: '',
-        password: '',
-        rePassword: '',
-        nickname: '',
-      }
-    );
+  const [signupData, setSignupData] = useState<SignupFormData>({
+    email: '',
+    password: '',
+    rePassword: '',
+    nickname: '',
   });
 
   const [errors, setErrors] = useState<SignupErrors>({
@@ -37,10 +17,6 @@ export const useSignup = () => {
     rePassword: '',
     nickname: '',
   });
-
-  useEffect(() => {
-    storageService.session.set(SIGNUP_DATA_KEY, signupData);
-  }, [signupData]);
 
   const { mutateAsync: signup, isPending, isError } = useSignupMutation();
 
@@ -79,7 +55,6 @@ export const useSignup = () => {
   const handleClick = useCallback(async () => {
     try {
       await signup(signupData);
-      clearSignupStorage();
     } catch (error) {
       console.error('Signup failed:', error);
     }
