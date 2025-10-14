@@ -13,11 +13,11 @@ import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
-import moment.user.application.UserQueryService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
+import moment.user.service.user.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final UserQueryService userQueryService;
+    private final UserService userService;
     private final EmailService emailService;
     private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
@@ -103,7 +103,7 @@ public class AuthService {
 
         emailService.verifyPasswordResetToken(request);
 
-        User user = userQueryService.findUserByEmailAndProviderType(request.email(), ProviderType.EMAIL)
+        User user = userService.findUserBy(request.email(), ProviderType.EMAIL)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
         String encryptedPassword = passwordEncoder.encode(request.newPassword());
         user.updatePassword(encryptedPassword);
