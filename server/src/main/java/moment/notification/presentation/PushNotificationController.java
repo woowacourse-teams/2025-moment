@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.notification.application.PushNotificationService;
 import moment.notification.dto.request.DeviceEndPointRegisterRequest;
+import moment.notification.service.application.PushNotificationApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/push-notifications")
 public class PushNotificationController {
 
-    private final PushNotificationService pushNotificationService;
+    private final PushNotificationApplicationService pushNotificationApplicationService;
 
     @Operation(summary = "사용자 디바이스 정보 저장", description = "푸시 알림을 위한 사용자의 디바이스 정보를 저장합니다.")
     @ApiResponses({
@@ -37,7 +37,7 @@ public class PushNotificationController {
     public ResponseEntity<SuccessResponse<Void>> registerDeviceEndpoint(
             @RequestBody DeviceEndPointRegisterRequest deviceEndPointRegisterRequest
     ) {
-        pushNotificationService.registerDeviceEndpoint(deviceEndPointRegisterRequest);
+        pushNotificationApplicationService.registerDeviceEndpoint(deviceEndPointRegisterRequest);
         return ResponseEntity.ok().build();
     }
 }

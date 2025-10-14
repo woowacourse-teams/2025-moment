@@ -8,7 +8,9 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.domain.NotificationType;
+import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.application.NotificationApplicationService;
+import moment.notification.service.application.PushNotificationApplicationService;
 import moment.reward.service.application.RewardApplicationService;
 import moment.reward.domain.Reason;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class CommentCreateFacadeService {
     private final CommentApplicationService commentApplicationService;
     private final MomentApplicationService momentApplicationService;
     private final NotificationApplicationService notificationApplicationService;
+    private final PushNotificationApplicationService pushNotificationApplicationService;
     private final RewardApplicationService rewardApplicationService;
 
     @Transactional
@@ -37,6 +40,10 @@ public class CommentCreateFacadeService {
                 createdComment.commentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT
+        );
+
+        pushNotificationApplicationService.sendToDeviceEndpoint(
+                moment.getMomenterId(), PushNotificationMessage.REPLY_TO_MOMENT
         );
 
         return createdComment;
