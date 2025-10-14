@@ -21,8 +21,8 @@ public class PushNotificationApplicationService {
     private final PushNotificationSender pushNotificationSender;
 
     @Transactional
-    public void registerDeviceEndpoint(DeviceEndPointRegisterRequest request) {
-        User user = userService.getUserBy(request.userId());
+    public void registerDeviceEndpoint(DeviceEndPointRegisterRequest request, long userId) {
+        User user = userService.getUserBy(userId);
         pushNotificationService.save(user, request.deviceEndpoint());
     }
 
