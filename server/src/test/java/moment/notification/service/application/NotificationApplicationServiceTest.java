@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Map;
+import moment.common.DatabaseCleaner;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -37,6 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 class NotificationApplicationServiceTest {
 
     @Autowired
+    private DatabaseCleaner databaseCleaner;
+
+    @Autowired
     private NotificationApplicationService notificationApplicationService;
 
     @Autowired
@@ -53,6 +57,7 @@ class NotificationApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
+        databaseCleaner.clean();
         user = userRepository.save(new User("test@email.com", "password", "tester", ProviderType.EMAIL));
         anotherUser = userRepository.save(new User("another@email.com", "password", "another", ProviderType.EMAIL));
     }
