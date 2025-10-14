@@ -61,7 +61,7 @@ class PushNotificationControllerTest {
     @Test
     void 사용자_디바이스_정보_저장에_성공하면_DB에_해당_정보가_저장된다() {
         // given
-        DeviceEndPointRegisterRequest request = new DeviceEndPointRegisterRequest(user.getId(), "test-endpoint-arn");
+        DeviceEndPointRegisterRequest request = new DeviceEndPointRegisterRequest("test-endpoint-arn");
 
         // when
         RestAssured.given().log().all()
