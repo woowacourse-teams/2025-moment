@@ -19,18 +19,19 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.application.SseNotificationService;
+import moment.notification.service.application.NotificationApplicationService;
+import moment.notification.service.notification.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.reply.application.EchoService;
-import moment.reply.dto.request.EchoCreateRequest;
+import moment.comment.dto.request.EchoCreateRequest;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -74,7 +75,7 @@ public class NotificationControllerTest {
     private DatabaseCleaner databaseCleaner;
 
     @Autowired
-    private EchoService echoService;
+    private NotificationApplicationService notificationApplicationService;
 
     @MockitoBean
     private SseNotificationService sseNotificationService;
@@ -90,7 +91,6 @@ public class NotificationControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        databaseCleaner.clean();
         momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
@@ -98,6 +98,11 @@ public class NotificationControllerTest {
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
+    }
+
+    @AfterEach
+    void databaseClean() {
+        databaseCleaner.clean();
     }
 
     @Test
@@ -134,7 +139,7 @@ public class NotificationControllerTest {
     void 사용자가_코멘트에_반응을_달면_SSE_알림을_받는다() {
         // given
         given(sseNotificationService.subscribe(anyLong())).willReturn(new SseEmitter());
-        Comment comment = commentRepository.save(new Comment("하하", commenter, moment));
+        Comment comment = commentRepository.save(new Comment("하하", commenter, moment.getId()));
 
         // when
         EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
@@ -214,7 +219,7 @@ public class NotificationControllerTest {
     @Test
     void 사용자가_읽지_않은_코멘트_알림을_받는다() {
         // given
-        Comment comment = commentRepository.save(new Comment("하하", commenter, moment2));
+        Comment comment = commentRepository.save(new Comment("하하", commenter, moment2.getId()));
         EchoCreateRequest request1 = new EchoCreateRequest(Set.of("HEART"), comment.getId());
         EchoCreateRequest request2 = new EchoCreateRequest(Set.of("DDABONG"), comment.getId());
         EchoCreateRequest request3 = new EchoCreateRequest(Set.of("STAR"), comment.getId());
@@ -283,7 +288,7 @@ public class NotificationControllerTest {
                 .then().log().all()
                 .statusCode(201);
 
-        Notification notification = notificationRepository.findAllByUserAndIsRead(momenter, false).getFirst();
+        Notification notification = notificationRepository.findAllByUserIdAndIsRead(momenter.getId(), false).getFirst();
 
         RestAssured.given().log().all()
                 .cookie("accessToken", momenterToken)
@@ -321,12 +326,8 @@ public class NotificationControllerTest {
                 .then().log().all()
                 .statusCode(201);
 
-        List<Notification> unReadNotifications = notificationRepository.findAllByUserAndIsReadAndTargetType(
-                momenter, false, TargetType.MOMENT);
-
-        List<Long> unReadNotificationsIds = unReadNotifications.stream()
-                .map(Notification::getId)
-                .toList();
+        List<Long> unReadNotificationsIds = notificationRepository.findAllByUserIdAndIsReadAndTargetType(
+                momenter.getId(), false, TargetType.MOMENT);
 
         NotificationReadRequest notificationReadRequest = new NotificationReadRequest(unReadNotificationsIds);
 

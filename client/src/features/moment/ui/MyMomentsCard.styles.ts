@@ -60,6 +60,10 @@ export const MyMomentsContent = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   text-align: center;
   word-break: break-all;
 `;
@@ -128,6 +132,10 @@ export const CommentContent = styled.div`
 
   & > div {
     word-break: break-all;
+    font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+    ${({ theme }) => theme.mediaQueries.mobile} {
+      font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+    }
   }
 `;
 
@@ -197,7 +205,7 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Title = styled.span`
-  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
+  font-size: ${({ theme }) => theme.typography.fontSize.title.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};
   color: ${({ theme }) => theme.colors.white};
 `;
