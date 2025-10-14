@@ -17,13 +17,13 @@ export const CardSuccessIcon = styled.div`
 `;
 
 export const CardSuccessTitle = styled.span`
-  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
+  font-size: ${({ theme }) => theme.typography.fontSize.title.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};
   color: ${({ theme }) => theme.colors.white};
 `;
 
 export const CardSuccessSubtitle = styled.span`
-  font-size: ${({ theme }) => theme.typography.subTitle.fontSize.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.subTitle.medium};
   color: ${({ theme }) => theme.colors['gray-200']};
   white-space: pre-line;
 `;

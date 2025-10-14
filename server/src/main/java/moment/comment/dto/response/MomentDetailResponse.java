@@ -8,6 +8,7 @@ import moment.moment.domain.Moment;
 import java.time.LocalDateTime;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
+import moment.moment.dto.response.tobe.MomentComposition;
 import moment.user.domain.Level;
 
 @Schema(description = "Comment가 등록된 Moment 상세 내용")
@@ -33,26 +34,16 @@ public record MomentDetailResponse(
         @Schema(description = "Moment 태그", example = "일상/여가")
         List<String> tagNames
 ) {
-    public static MomentDetailResponse from(
-            Moment moment,
-            List<MomentTag> momentTags,
-            MomentImage momentImage
-    ) {
-        String imageUrl = Optional.ofNullable(momentImage)
-                .map(MomentImage::getImageUrl)
-                .orElse(null);
 
-        List<String> tagNames = momentTags.stream()
-                .map(MomentTag::getTagName)
-                .toList();
-
+    public static MomentDetailResponse from(MomentComposition momentComposition) {
         return new MomentDetailResponse(
-                moment.getId(),
-                moment.getContent(),
-                moment.getMomenter().getNickname(),
-                moment.getMomenter().getLevel(),
-                imageUrl,
-                moment.getCreatedAt(),
-                tagNames);
+                momentComposition.id(),
+                momentComposition.content(),
+                momentComposition.nickname(),
+                momentComposition.level(),
+                momentComposition.imageUrl(),
+                momentComposition.momentCreatedAt(),
+                momentComposition.tagNames()
+        );
     }
 }

@@ -8,14 +8,20 @@ export const PostCommentsPageContainer = styled.section`
 `;
 
 export const MyMomentContent = styled.p`
-  font-size: 1.1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   text-align: left;
   color: ${({ theme }) => theme.colors['gray-400']};
   word-break: break-all;
 `;
 
 export const DeletedMomentText = styled.p`
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   color: ${({ theme }) => theme.colors['gray-400']};
   font-style: italic;
   text-align: left;
@@ -37,7 +43,7 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Title = styled.span`
-  font-size: ${({ theme }) => theme.typography.title.fontSize.small};
+  font-size: ${({ theme }) => theme.typography.fontSize.title.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};
   color: ${({ theme }) => theme.colors.white};
 `;
@@ -91,7 +97,10 @@ export const EchoContainer = styled.div`
 
 export const NoEchoContent = styled.p`
   text-align: center;
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
@@ -133,4 +142,22 @@ export const FullscreenImage = styled.img`
   max-width: 80vw;
   max-height: 80vh;
   object-fit: contain;
+`;
+
+export const CommentContent = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
+  }
+  text-align: left;
+  word-break: break-all;
+`;
+
+export const SubTitle = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.subTitle.medium};
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.typography.fontSize.mobileSubTitle.medium};
+  }
+  text-align: left;
+  word-break: break-all;
 `;

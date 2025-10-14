@@ -1,5 +1,6 @@
 package moment.user.infrastructure;
 
+import java.util.List;
 import java.util.Optional;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -13,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailAndProviderType(String email, ProviderType providerType);
 
+    List<User> findAllByIdIn(List<Long> ids);
 }
