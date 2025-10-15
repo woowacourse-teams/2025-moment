@@ -7,55 +7,46 @@ on:
     branches: [ develop ]
 
 jobs:
-  deploy:
+  deploy-to-aws:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push'
-    runs-on: [ self-hosted, backend, dev ]
+    runs-on: ubuntu-latest
 
     permissions:
-      actions: read
+      id-token: write
+      contents: read
 
     steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. AWS 자격 증명 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2 # 사용하는 리전
 
-      - name: Stop and remove existing container
+      # =============================================================
+      # 'Create .env file' 단계가 완전히 삭제되었습니다.
+      # 이 워크플로우는 환경변수에 대해 아무것도 알 필요가 없습니다.
+      # =============================================================
+
+      # 2. 배포 파일 압축 (appspec.yml과 스크립트만 포함)
+      - name: Zip deployment bundle
+        run: zip -r deploy.zip appspec.yml scripts/ docker-compose.yml
+
+      # 3. S3에 업로드
+      - name: Upload to S3
         run: |
-          if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
-            sudo docker stop moment-app-server
-            sudo docker rm -f moment-app-server
-          fi
+          aws s3 cp deploy.zip s3://<여러분의-S3-버킷-이름>/moment-app/${{ github.sha }}.zip
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract deploy tag
+      # 4. AWS CodeDeploy 배포 트리거
+      - name: Trigger CodeDeploy
         run: |
-          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
-          echo "Deploying version: $(cat image-tag.txt)"
-
-      - name: Pull latest image
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
-
-      - name: Deploy with Docker Compose
-        env:
-          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
-        run: |
-          cd /home/ubuntu/moment
-          
-          echo "Deploying with image tag: $IMAGE_TAG"
-          sudo -E docker compose up --no-deps -d app
-          
-          echo "=== Checking if image exists locally ==="
-          sudo docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
-
-      - name: Prune old images
-        run: sudo docker image prune -f
+          aws deploy create-deployment \
+            --application-name <CodeDeploy-애플리케이션-이름> \
+            --deployment-group-name <CodeDeploy-배포그룹-이름> \
+            --s3-location bucket=<여러분의-S3-버킷-이름>,key=moment-app/${{ github.sha }}.zip,bundleType=zip
