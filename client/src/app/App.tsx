@@ -7,8 +7,37 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
 import { theme } from './styles/theme';
+import { useEffect } from 'react';
+import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/utils/firebase';
+import { registerFCMToken } from '@/shared/api/registerFCMToken';
 
 const App = () => {
+  useEffect(() => {
+    setupForegroundMessage(payload => {
+      alert(
+        `알림 도착!\n제목: ${payload.notification?.title}\n내용: ${payload.notification?.body}`,
+      );
+    });
+
+    const initializeFCM = async () => {
+      try {
+        const token = await requestFCMPermissionAndToken();
+
+        if (token) {
+          try {
+            await registerFCMToken(token);
+          } catch (error) {
+            console.error('FCM 토큰 등록 오류:', error);
+          }
+        }
+      } catch (error) {
+        console.error('FCM 초기화 오류:', error);
+      }
+    };
+
+    initializeFCM();
+  }, []);
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
