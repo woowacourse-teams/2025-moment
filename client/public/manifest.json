@@ -4,9 +4,11 @@
   "short_name": "Moment",
   "description": "매일의 소중한 순간을 기록하고 공유하는 플랫폼",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#F4D03F",
+  "theme_color": "#ffffff",
   "background_color": "#ffffff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/icon-192x192.png",
