@@ -2,32 +2,52 @@ import App from '@/app/App';
 import { createRoot } from 'react-dom/client';
 import '../instrument';
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return;
+// async function enableMocking() {
+//   if (process.env.NODE_ENV !== 'development') {
+//     return;
+//   }
+
+//   const { worker } = await import('./mocks/browser');
+
+//   return worker.start({
+//     onUnhandledRequest: 'warn',
+//   });
+// }
+
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    console.warn('[SW] Service Worker를 지원하지 않는 브라우저입니다.');
+    return null;
   }
 
-  const { worker } = await import('./mocks/browser');
+  try {
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
 
-  return worker.start({
-    onUnhandledRequest: 'warn',
-  });
-}
+    // Service Worker가 활성화될 때까지 대기
+    if (registration.installing) {
+      await new Promise<void>(resolve => {
+        registration.installing!.addEventListener('statechange', function () {
+          if (this.state === 'activated') {
+            resolve();
+          }
+        });
+      });
+    } else {
+      await navigator.serviceWorker.ready;
+    }
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/firebase-messaging-sw.js')
-    .then(registration => {
-      console.log('[SW] 등록 성공:', registration.scope);
-    })
-    .catch(error => {
-      console.error('[SW] 등록 실패:', error);
-    });
+    console.log('[SW] Service Worker 등록 완료');
+    return registration;
+  } catch (error) {
+    console.error('[SW] 등록 실패:', error);
+    return null;
+  }
 }
 
 async function startApp() {
   // await enableMocking();
-  // cd
+
+  await registerServiceWorker();
 
   const rootElement = document.getElementById('root');
   if (!rootElement) {
