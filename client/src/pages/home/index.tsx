@@ -45,20 +45,20 @@ export default function HomePage() {
           <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
         </S.ContentSection>
       </S.MainContainer>
-      <S.IntroSection>
-        <S.IntroTextWrapper ref={intro1Ref} isVisible={visibleItems.intro1}>
-          <S.IntroImage src="/images/spaceman.png" alt="" />
-          <S.IntroText>익명 속에서, 편안하게 마음을 나눌 수 있는 곳. </S.IntroText>
-        </S.IntroTextWrapper>
-        <S.IntroTextWrapper ref={intro2Ref} isVisible={visibleItems.intro2}>
-          <S.IntroImage src="/images/rocket.png" alt="" />
-          <S.IntroText>비교 대신, 따뜻한 공감이 오가는 공간.</S.IntroText>
-        </S.IntroTextWrapper>
-        <S.IntroTextWrapper ref={intro3Ref} isVisible={visibleItems.intro3}>
-          <S.IntroImage src="/images/paperAirplane.png" alt="" />
-          <S.IntroText>나의 소소한 이야기가 누군가에게 공감으로 닿는 순간.</S.IntroText>
-        </S.IntroTextWrapper>
-      </S.IntroSection>
+      <S.IntroTextWrapper ref={intro1Ref} isVisible={visibleItems.intro1}>
+        <S.IntroSection>
+          <S.IntroLogo src="/images/momentLogo.png" alt="" />
+          "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
+          위로를 건네는 소셜 네트워크 서비스입니다. <br />
+          힘든 순간, 뿌듯한 순간, 위로받고 싶은 순간, 칭찬받고 싶은 모든 순간을 짧은 기록으로
+          남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을 제공합니다.
+          <S.IntroImagesWrapper>
+            <S.IntroImage src="/images/rocket.png" alt="" />
+            <S.IntroImage src="/images/paperAirplane.png" alt="" />
+            <S.IntroImage src="/images/spaceman.png" alt="" />
+          </S.IntroImagesWrapper>
+        </S.IntroSection>
+      </S.IntroTextWrapper>
     </S.HomePageWrapper>
   );
 }

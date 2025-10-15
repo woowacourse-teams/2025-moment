@@ -58,13 +58,12 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
 `;
 
 export const IntroSection = styled.section`
-  min-height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 50px;
+  position: relative;
 `;
 
 export const IntroText = styled.div`
@@ -72,10 +71,19 @@ export const IntroText = styled.div`
   font-weight: 600;
 `;
 
+export const IntroLogo = styled.img`
+  width: 300px;
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+`;
+
 export const IntroTextWrapper = styled.div<{ isVisible: boolean }>`
+  width: 100%;
+  height: 100vh;
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 20px;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -86,9 +94,40 @@ export const IntroTextWrapper = styled.div<{ isVisible: boolean }>`
     opacity: 1;
     transform: translateY(0);
   `}
+
+  ${IntroSection} {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    text-align: center;
+    word-break: keep-all;
+  }
+
+  @media (max-width: 768px) {
+    ${IntroSection} {
+      max-width: 80%;
+      font-size: 1.1rem;
+    }
+  }
+`;
+
+export const IntroImagesWrapper = styled.div`
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+  }
 `;
 
 export const IntroImage = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
