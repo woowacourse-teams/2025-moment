@@ -39,12 +39,12 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 30px;
   padding: 20px;
   overflow: hidden;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
+  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
 
   @media (max-width: 768px) {
     margin-top: 60px;
