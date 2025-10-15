@@ -4,14 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 import moment.notification.domain.PushNotification;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -80,5 +77,29 @@ class PushNotificationRepositoryTest {
 
         // then
         assertThat(foundNotification).isEmpty();
+    }
+
+    @Test
+    void 특정_user의_디바이스_엔드포인트_존재_여부를_판단한다() {
+        // given
+        User anotherUser = new User("cookie@gmail.com",  "cookie123!", "cookie", ProviderType.EMAIL);
+        userRepository.save(anotherUser);
+
+        String existingDeviceEndpoint = "existing-device-endpoint";
+        String nonExistingDeviceEndpoint = "non-existing-device-endpoint";
+
+        PushNotification pushNotification = new PushNotification(user, existingDeviceEndpoint);
+        PushNotification anotherUserPushNotification = new PushNotification(anotherUser, nonExistingDeviceEndpoint);
+
+        pushNotificationRepository.save(pushNotification);
+        pushNotificationRepository.save(anotherUserPushNotification);
+
+        // when
+        boolean shouldExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, existingDeviceEndpoint);
+        boolean shouldNotExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, nonExistingDeviceEndpoint);
+
+        // then
+        assertThat(shouldExist).isTrue();
+        assertThat(shouldNotExist).isFalse();
     }
 }
