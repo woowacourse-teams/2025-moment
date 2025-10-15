@@ -13,25 +13,23 @@ import { registerFCMToken } from '@/shared/api/registerFCMToken';
 
 const App = () => {
   useEffect(() => {
-    setupForegroundMessage(payload => {
-      alert(
-        `알림 도착!\n제목: ${payload.notification?.title}\n내용: ${payload.notification?.body}`,
-      );
-    });
-
     const initializeFCM = async () => {
       try {
-        const token = await requestFCMPermissionAndToken();
-
-        if (token) {
-          try {
-            await registerFCMToken(token);
-          } catch (error) {
-            console.error('FCM 토큰 등록 오류:', error);
-          }
+        if ('serviceWorker' in navigator) {
+          await navigator.serviceWorker.ready;
         }
+
+        // 포그라운드 메시지 리스너 설정
+        await setupForegroundMessage();
+
+        // FCM 토큰 발급 및 서버 등록
+        const token = await requestFCMPermissionAndToken();
+        if (!token) return;
+
+        await registerFCMToken(token);
+        console.log('[FCM] 초기화 완료');
       } catch (error) {
-        console.error('FCM 초기화 오류:', error);
+        console.error('[FCM] 초기화 오류:', error);
       }
     };
 
