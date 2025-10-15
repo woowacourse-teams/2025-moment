@@ -2,6 +2,7 @@
   "id": "/",
   "name": "Moment",
   "short_name": "Moment",
+  "description": "매일의 소중한 순간을 기록하고 공유하는 플랫폼",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#F4D03F",
@@ -11,13 +12,25 @@
       "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
