@@ -28,6 +28,6 @@ public class PushNotificationApplicationService {
 
     public void sendToDeviceEndpoint(long userId, PushNotificationMessage message) {
         User user = userService.getUserBy(userId);
-        pushNotificationSender.send(new PushNotificationCommand(user, PushNotificationMessage.REPLY_TO_MOMENT));
+        pushNotificationSender.send(new PushNotificationCommand(user, message));
     }
 }

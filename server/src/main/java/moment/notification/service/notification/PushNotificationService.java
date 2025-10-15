@@ -16,6 +16,9 @@ public class PushNotificationService {
 
     @Transactional
     public void save(User user, String deviceEndpoint) {
+        if(pushNotificationRepository.existsByUserAndDeviceEndpoint(user, deviceEndpoint)) {
+            return;
+        }
         pushNotificationRepository.save(new PushNotification(user, deviceEndpoint));
     }
 }
