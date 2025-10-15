@@ -2,7 +2,7 @@ import { api } from '@/app/lib/api';
 import { useMutation } from '@tanstack/react-query';
 
 export const registerFCMToken = async (fcmToken: string): Promise<void> => {
-  const response = await api.post('/push-notifications', { deviceEndPoint: fcmToken });
+  const response = await api.post('/push-notifications', { deviceEndpoint: fcmToken });
   return response.data;
 };
 
