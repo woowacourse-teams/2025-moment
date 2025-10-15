@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.notification.dto.request.DeviceEndPointRegisterRequest;
+import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.service.application.PushNotificationApplicationService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.ResponseEntity;
@@ -38,18 +38,19 @@ public class PushNotificationController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<Void>> registerDeviceEndpoint(
-            @RequestBody DeviceEndPointRegisterRequest deviceEndPointRegisterRequest,
+            @RequestBody DeviceEndpointRequest deviceEndpointRequest,
             @AuthenticationPrincipal Authentication authentication
-            ) {
-        pushNotificationApplicationService.registerDeviceEndpoint(deviceEndPointRegisterRequest, authentication.id());
+    ) {
+        pushNotificationApplicationService.registerDeviceEndpoint(authentication.id(), deviceEndpointRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<SuccessResponse<Void>> deleteDeviceEndpoint(
+            @RequestBody DeviceEndpointRequest deviceEndpointRequest,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        pushNotificationApplicationService.deleteDeviceEndpoint(authentication.id());
+        pushNotificationApplicationService.deleteDeviceEndpoint(authentication.id(), deviceEndpointRequest);
         return ResponseEntity.ok().build();
     }
 }
