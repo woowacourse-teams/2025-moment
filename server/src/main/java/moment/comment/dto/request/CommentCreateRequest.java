@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import moment.comment.domain.Comment;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
 
 @Schema(description = "코멘트 등록 요청")
@@ -32,7 +31,7 @@ public record CommentCreateRequest(
                 requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         String imageName
 ) {
-    public Comment toComment(User commenter, Moment moment) {
-        return new Comment(content, commenter, moment);
+    public Comment toComment(User commenter, Long momentId) {
+        return new Comment(content, commenter, momentId);
     }
 }

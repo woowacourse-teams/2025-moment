@@ -15,6 +15,5 @@ export const changeToCloudfrontUrlFromS3 = (filePath: string): string => {
     return `https://d1irdds83bn7at.cloudfront.net${imagePath}`;
   }
 
-  // moment-prod가 아닌 경우 원본 S3 URL 그대로 반환
   return filePath;
 };

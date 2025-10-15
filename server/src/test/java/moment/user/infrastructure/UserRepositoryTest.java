@@ -3,6 +3,8 @@ package moment.user.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -98,5 +100,31 @@ class UserRepositoryTest {
 
         // when & then
         assertThat(userRepository.existsByNickname(notExistedNickname)).isFalse();
+    }
+
+    @Test
+    void ID_목록으로_유저_목록을_조회한다() {
+        // given
+        List<Long> ids = new ArrayList<>();
+
+        User user1 = new User("test1@email.com", "1234qwer!@", "테스트 유저1", ProviderType.EMAIL);
+        User savedUser1 = userRepository.save(user1);
+        ids.add(savedUser1.getId());
+
+        User user2 = new User("test2@email.com", "1234qwer!@", "테스트 유저2", ProviderType.GOOGLE);
+        User savedUser2 = userRepository.save(user2);
+        ids.add(savedUser2.getId());
+
+        User user3 = new User("test3@email.com", "1234qwer!@", "테스트 유저3", ProviderType.EMAIL);
+        User savedUser3 = userRepository.save(user3);
+        ids.add(savedUser3.getId());
+
+        // when
+        List<User> usersByIds = userRepository.findAllByIdIn(ids);
+
+        assertAll(
+                () -> assertThat(usersByIds).hasSize(3),
+                () -> assertThat(usersByIds).contains(savedUser1, savedUser2, savedUser3)
+        );
     }
 }

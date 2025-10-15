@@ -92,8 +92,8 @@ public class Moment extends BaseEntity implements Cursorable {
         }
     }
 
-    public boolean checkMomenter(User user) {
-        return momenter.equals(user);
+    public boolean isNotSame(User user) {
+        return !momenter.equals(user);
     }
 
     public Long getMomenterId() {

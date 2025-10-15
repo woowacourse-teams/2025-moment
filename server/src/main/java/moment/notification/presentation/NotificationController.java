@@ -12,15 +12,17 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.notification.application.NotificationService;
-import moment.notification.application.SseNotificationService;
+import moment.notification.service.notification.SseNotificationService;
+import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
+import moment.notification.service.application.NotificationApplicationService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +34,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    private final NotificationApplicationService notificationApplicationService;
     private final SseNotificationService sseNotificationService;
 
     @Operation(summary = "SSE 구독", description = "클라이언트가 SSE를 구독합니다.")
@@ -72,7 +74,7 @@ public class NotificationController {
             @AuthenticationPrincipal Authentication authentication,
             @RequestParam(value = "read", defaultValue = "false") Boolean read
     ) {
-        List<NotificationResponse> responses = notificationService.getNotificationByUser(
+        List<NotificationResponse> responses = notificationApplicationService.getNotificationBy(
                 authentication.id(), read);
         HttpStatus status = HttpStatus.OK;
 
@@ -89,8 +91,21 @@ public class NotificationController {
             )
     })
     @PatchMapping("/{id}/read")
-    public ResponseEntity<SuccessResponse<Void>> patch(@PathVariable Long id) {
-        notificationService.markAsRead(id);
+    public ResponseEntity<SuccessResponse<Void>> read(@PathVariable Long id) {
+        notificationApplicationService.markAsRead(id);
+        HttpStatus status = HttpStatus.NO_CONTENT;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
+    }
+
+    @Operation(summary = "알림들 읽음", description = "사용자가 알림들을 읽습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "알림 읽기 성공"),
+    })
+    @PatchMapping("/read-all")
+    public ResponseEntity<SuccessResponse<Void>> readAll(
+            @RequestBody NotificationReadRequest notificationReadRequest) {
+        notificationApplicationService.markAllAsRead(notificationReadRequest);
         HttpStatus status = HttpStatus.NO_CONTENT;
 
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));

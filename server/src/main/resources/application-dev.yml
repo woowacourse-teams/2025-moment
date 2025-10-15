@@ -69,9 +69,6 @@ auth:
   password_update:
     uri: http://dev.connectingmoment.com/passwordUpdate?token=
 
-logging:
-  config: classpath:logback-dev.xml
-
 management:
   metrics:
     enable:
@@ -94,3 +91,6 @@ management:
 s3:
   bucket-name: ${S3_BUCKET_NAME}
   bucket-path: ${S3_DEV_BUCKET_PATH}
+
+fcm:
+  service-account-json: ${FCM_CREDENTIALS:}

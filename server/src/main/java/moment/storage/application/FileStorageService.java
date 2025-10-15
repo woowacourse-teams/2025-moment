@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.storage.infrastructure.AwsS3Client;
-import moment.user.application.UserQueryService;
+import moment.user.service.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 public class FileStorageService {
 
     private final AwsS3Client awsS3Client;
-    private final UserQueryService userQueryService;
+    private final UserService userService;
 
     @Value("${s3.bucket-path}")
     private String bucketPath;
 
     public UploadUrlResponse getUploadUrl(UploadUrlRequest request, Long id) {
-        userQueryService.getUserById(id);
+        userService.getUserBy(id);
 
         String filePath = bucketPath + UUID.randomUUID() + request.imageName();
 

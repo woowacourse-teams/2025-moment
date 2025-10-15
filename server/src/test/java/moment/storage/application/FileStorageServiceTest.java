@@ -8,7 +8,7 @@ import java.util.UUID;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.storage.infrastructure.AwsS3Client;
-import moment.user.application.UserQueryService;
+import moment.user.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ class FileStorageServiceTest {
     AwsS3Client awsS3Client;
 
     @Mock
-    UserQueryService userQueryService;
+    UserService userService;
 
     @Test
     void 이미지_업로드_url을_생성한다() {
