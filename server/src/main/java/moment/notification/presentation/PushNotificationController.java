@@ -14,6 +14,7 @@ import moment.notification.dto.request.DeviceEndPointRegisterRequest;
 import moment.notification.service.application.PushNotificationApplicationService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,14 @@ public class PushNotificationController {
             @AuthenticationPrincipal Authentication authentication
             ) {
         pushNotificationApplicationService.registerDeviceEndpoint(deviceEndPointRegisterRequest, authentication.id());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<SuccessResponse<Void>> deleteDeviceEndpoint(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        pushNotificationApplicationService.deleteDeviceEndpoint(authentication.id());
         return ResponseEntity.ok().build();
     }
 }
