@@ -21,4 +21,9 @@ public class PushNotificationService {
         }
         pushNotificationRepository.save(new PushNotification(user, deviceEndpoint));
     }
+
+    @Transactional
+    public void deleteBy(User user) {
+        pushNotificationRepository.deleteByUser(user);
+    }
 }

@@ -102,4 +102,19 @@ class PushNotificationRepositoryTest {
         assertThat(shouldExist).isTrue();
         assertThat(shouldNotExist).isFalse();
     }
+
+    @Test
+    void 사용자로_푸시_알림_정보를_성공적으로_삭제한다() {
+        // given
+        String deviceToken = "test-device-token";
+        PushNotification pushNotification = new PushNotification(user, deviceToken);
+        pushNotificationRepository.save(pushNotification);
+
+        // when
+        pushNotificationRepository.deleteByUser(user);
+
+        // then
+        List<PushNotification> foundNotification = pushNotificationRepository.findByUserId(user.getId());
+        assertThat(foundNotification).isEmpty();
+    }
 }

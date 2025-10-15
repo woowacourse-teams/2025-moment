@@ -30,4 +30,10 @@ public class PushNotificationApplicationService {
         User user = userService.getUserBy(userId);
         pushNotificationSender.send(new PushNotificationCommand(user, message));
     }
+
+    @Transactional
+    public void deleteDeviceEndpoint(Long userId) {
+        User user = userService.getUserBy(userId);
+        pushNotificationService.deleteBy(user);
+    }
 }

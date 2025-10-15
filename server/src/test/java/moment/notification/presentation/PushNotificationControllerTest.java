@@ -79,4 +79,22 @@ class PushNotificationControllerTest {
             () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
         );
     }
+
+    @Test
+    void 사용자_디바이스_정보_삭제에_성공하면_DB에서_해당_정보가_삭제된다() {
+        // given
+        pushNotificationRepository.save(new PushNotification(user, "test-endpoint-arn"));
+
+        // when
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", accessToken)
+            .when().delete("/api/v1/push-notifications")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+
+        // then
+        List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
+        assertThat(notifications).isEmpty();
+    }
 }
