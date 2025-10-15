@@ -1,4 +1,5 @@
 import App from '@/app/App';
+import { registerServiceWorker } from '@/app/registerServiceWorker';
 import { createRoot } from 'react-dom/client';
 import '../instrument';
 
@@ -28,3 +29,4 @@ async function startApp() {
 }
 
 startApp().catch(console.error);
+registerServiceWorker();
