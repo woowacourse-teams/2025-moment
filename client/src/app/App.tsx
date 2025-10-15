@@ -12,7 +12,7 @@ import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/u
 import { registerFCMToken } from '@/shared/api/registerFCMToken';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 
-const App = () => {
+const AppContent = () => {
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
@@ -42,13 +42,19 @@ const App = () => {
   }, [isLoggedIn]);
 
   return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <RouterProvider router={router} />
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+    </ThemeProvider>
+  );
+};
+
+const App = () => {
+  return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles />
-          <RouterProvider router={router} />
-          {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
-        </ThemeProvider>
+        <AppContent />
       </QueryClientProvider>
     </ErrorBoundary>
   );
