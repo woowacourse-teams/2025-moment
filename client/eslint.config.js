@@ -90,6 +90,9 @@ export default [
         caches: 'readonly',
         firebase: 'readonly',
         importScripts: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        NodeListOf: 'readonly',
+        HTMLImageElement: 'readonly',
       },
     },
     rules: {
