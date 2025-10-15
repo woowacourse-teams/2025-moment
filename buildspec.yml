@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      # CI 과정
+      - echo "Packaging deployment artifacts..."
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*
+    - docker-compose.yml
