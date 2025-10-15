@@ -10,8 +10,11 @@ import { theme } from './styles/theme';
 import { useEffect } from 'react';
 import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/utils/firebase';
 import { registerFCMToken } from '@/shared/api/registerFCMToken';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 
 const App = () => {
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+
   useEffect(() => {
     const initializeFCM = async () => {
       try {
@@ -19,10 +22,12 @@ const App = () => {
           await navigator.serviceWorker.ready;
         }
 
-        // 포그라운드 메시지 리스너 설정
         await setupForegroundMessage();
 
-        // FCM 토큰 발급 및 서버 등록
+        if (!isLoggedIn) {
+          return;
+        }
+
         const token = await requestFCMPermissionAndToken();
         if (!token) return;
 
@@ -34,7 +39,7 @@ const App = () => {
     };
 
     initializeFCM();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <ErrorBoundary>
