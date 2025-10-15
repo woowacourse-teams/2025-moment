@@ -72,10 +72,20 @@ export const IntroText = styled.div`
   font-weight: 600;
 `;
 
-export const IntroTextWrapper = styled.div`
+export const IntroTextWrapper = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   gap: 20px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ${({ isVisible }) =>
+    isVisible &&
+    `
+    opacity: 1;
+    transform: translateY(0);
+  `}
 `;
 
 export const IntroImage = styled.img`
