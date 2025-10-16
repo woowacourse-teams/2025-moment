@@ -79,7 +79,7 @@ class PushNotificationServiceTest {
         pushNotificationService.save(user, deviceEndpoint);
 
         // when
-        pushNotificationService.deleteBy(user);
+        pushNotificationService.deleteBy(user, deviceEndpoint);
 
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());

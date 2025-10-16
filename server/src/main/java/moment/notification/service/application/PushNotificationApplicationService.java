@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotificationMessage;
 import moment.notification.domain.PushNotificationSender;
-import moment.notification.dto.request.DeviceEndPointRegisterRequest;
+import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.service.notification.PushNotificationService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
@@ -21,7 +21,7 @@ public class PushNotificationApplicationService {
     private final PushNotificationSender pushNotificationSender;
 
     @Transactional
-    public void registerDeviceEndpoint(DeviceEndPointRegisterRequest request, long userId) {
+    public void registerDeviceEndpoint(long userId, DeviceEndpointRequest request) {
         User user = userService.getUserBy(userId);
         pushNotificationService.save(user, request.deviceEndpoint());
     }
@@ -32,8 +32,8 @@ public class PushNotificationApplicationService {
     }
 
     @Transactional
-    public void deleteDeviceEndpoint(Long userId) {
+    public void deleteDeviceEndpoint(long userId, DeviceEndpointRequest request) {
         User user = userService.getUserBy(userId);
-        pushNotificationService.deleteBy(user);
+        pushNotificationService.deleteBy(user, request.deviceEndpoint());
     }
 }
