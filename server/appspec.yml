@@ -11,25 +11,25 @@ hooks:
   # ApplicationStop: 새 배포 전에 이전 버전의 애플리케이션을 중지시키는 단계
   # Blue/Green에서는 새 인스턴스에 배포되므로 이 단계가 필수는 아니지만, 롤백이나 표준 배포를 위해 구성하는 것이 좋음
   ApplicationStop:
-    - location: stop_server.sh # 실행할 스크립트 위치
+    - location: scripts/stop_server.sh # 실행할 스크립트 위치
       timeout: 300 # 스크립트 실행 최대 시간 (초)
       runas: ubuntu # 스크립트를 실행할 사용자
 
   # BeforeInstall: 애플리케이션 설치 전에 필요한 작업을 수행하는 단계 (예: 이전 배포 파일 정리)
   BeforeInstall:
-    - location: before_install.sh
+    - location: scripts/before_install.sh
       timeout: 300
       runas: ubuntu
 
   # ApplicationStart: 애플리케이션을 실제로 시작하는 가장 중요한 단계
   ApplicationStart:
-    - location: start_server.sh
+    - location: scripts/start_server.sh
       timeout: 300
       runas: ubuntu
 
   # ValidateService: 애플리케이션이 성공적으로 시작되었는지 확인하는 단계
   # 이 훅이 성공해야 CodeDeploy는 배포를 '성공'으로 간주하고 ALB 트래픽을 전환함
   ValidateService:
-    - location: validate_service.sh
+    - location: scripts/validate_service.sh
       timeout: 300
       runas: ubuntu

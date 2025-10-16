@@ -36,17 +36,14 @@ phases:
       - "echo \"빌드된 이미지를 Docker Hub로 Push합니다...\""
       - "docker push $REPOSITORY_URI:$IMAGE_TAG"
 
-      # 작업 디렉터리를 원래 위치(최상단)로 되돌립니다.
-      - "cd .."
-
       # 배포에 사용할 이미지 태그 정보를 파일에 기록합니다.
       - "echo \"배포에 사용할 image_tag.txt 파일을 생성합니다...\""
       - "echo $IMAGE_TAG > image_tag.txt"
 
 artifacts:
+  base-directory: server
   files:
-    - server/appspec.yml
-    - server/docker-compose.yml
+    - appspec.yml
+    - docker-compose.yml
     - image_tag.txt
-    - server/scripts/**/*
-  discard-paths: yes
+    - scripts/**/*
