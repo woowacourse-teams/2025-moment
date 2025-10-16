@@ -17,6 +17,7 @@ fi
 #    DOCKERHUB_USERNAME은 방금 .env 파일에서 로드되었으므로 여기서 사용 가능합니다.
 IMAGE_TAG=$(cat image_tag.txt)
 export IMAGE_URI="${DOCKERHUB_USERNAME}/moment:${IMAGE_TAG}"
+echo "IMAGE_URI=${IMAGE_URI}" >> .env
 
 # 3. Docker Hub에 로그인합니다.
 #    DOCKERHUB_TOKEN도 .env 파일에서 로드되었습니다.
