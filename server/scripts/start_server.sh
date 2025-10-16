@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # 애플리케이션 루트 디렉터리로 이동
 cd /home/ubuntu/moment
