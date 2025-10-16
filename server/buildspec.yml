@@ -10,7 +10,7 @@ phases:
     commands:
       # Docker Hub에 로그인합니다.
       - "echo \"Docker Hub에 로그인합니다...\""
-      - "echo \"$DOCKERHUB_PASSWORD\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin"
+      - "echo \"$DOCKERHUB_TOKEN\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin"
 
       # /server 디렉터리로 이동합니다.
       - "echo \"/server 디렉터리로 이동합니다...\""
