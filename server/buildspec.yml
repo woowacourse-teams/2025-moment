@@ -8,47 +8,47 @@ phases:
   pre_build:
     commands:
       # Git sparse-checkout을 사용하여 /server 디렉터리만 남깁니다.
-      - echo "Git sparse-checkout을 설정하여 /server 디렉터리만 남깁니다..."
-      - git config core.sparseCheckout true
-      - echo "server/*" >> .git/info/sparse-checkout
-      - git read-tree -mu HEAD
+      - "echo \"Git sparse-checkout을 설정하여 /server 디렉터리만 남깁니다...\""
+      - "git config core.sparseCheckout true"
+      - "echo \"server/*\" >> .git/info/sparse-checkout"
+      - "git read-tree -mu HEAD"
 
-      # Docker Hub에 로그인합니다.
-      - echo "Docker Hub에 로그인합니다..."
-      - echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      # Docker Hub에 로그인합니다. (변수 이름을 DOCKERHUB_PASSWORD로 통일)
+      - "echo \"Docker Hub에 로그인합니다...\""
+      - "echo \"$DOCKERHUB_PASSWORD\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin"
 
       # /server 디렉터리로 이동합니다.
-      - echo "/server 디렉터리로 이동합니다..."
-      - cd server
+      - "echo \"/server 디렉터리로 이동합니다...\""
+      - "cd server"
 
 
   build:
     commands:
-      # Docker 이미지를 빌드합니다.
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - REPOSITORY_URI="$DOCKERHUB_USERNAME/moment"
-      - echo "Docker 이미지를 빌드합니다... Tag: $IMAGE_TAG"
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      # Docker 이미지를 빌드합니다. (모든 명령어를 큰따옴표로 감싸 일관성 유지)
+      - "IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"
+      - "REPOSITORY_URI=\"$DOCKERHUB_USERNAME/moment\""
+      - "echo \"Docker 이미지를 빌드합니다... Tag: $IMAGE_TAG\""
+      - "docker build -t $REPOSITORY_URI:$IMAGE_TAG ."
 
   post_build:
     commands:
       # 빌드된 이미지를 Docker Hub에 Push합니다.
-      - echo "빌드된 이미지를 Docker Hub로 Push합니다..."
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - "echo \"빌드된 이미지를 Docker Hub로 Push합니다...\""
+      - "docker push $REPOSITORY_URI:$IMAGE_TAG"
 
       # 작업 디렉터리를 원래 위치(최상단)로 되돌립니다.
-      - cd ..
+      - "cd .."
 
       # 배포에 사용할 이미지 태그 정보를 파일에 기록합니다.
-      - echo "배포에 사용할 image_tag.txt 파일을 생성합니다..."
-      - echo $IMAGE_TAG > image_tag.txt
+      - "echo \"배포에 사용할 image_tag.txt 파일을 생성합니다...\""
+      - "echo $IMAGE_TAG > image_tag.txt"
 
 artifacts:
   # Deploy 단계에 전달할 파일들을 지정합니다.
-  # 이제 docker-compose.yml을 소스에서 직접 복사합니다.
   files:
     - server/appspec.yml
-    - server/docker-compose.yml # 소스에 있는 배포용 파일을 그대로 포함
+    - server/docker-compose.yml
     - image_tag.txt
     - server/scripts/**/*
   discard-paths: yes
+
