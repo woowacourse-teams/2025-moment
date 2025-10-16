@@ -1,16 +1,14 @@
 version: 0.2
 
 phases:
+  install:
+    # 표준 빌드 이미지가 필요한 모든 것을 갖추고 있으므로 이 단계는 비워둡니다.
+    commands:
+      - echo "Docker가 사전 설치된 표준 빌드 이미지를 사용합니다."
 
   pre_build:
     commands:
-      # Git sparse-checkout을 사용하여 /server 디렉터리만 남깁니다.
-      - "echo \"Git sparse-checkout을 설정하여 /server 디렉터리만 남깁니다...\""
-      - "git config core.sparseCheckout true"
-      - "echo \"server/*\" >> .git/info/sparse-checkout"
-      - "git read-tree -mu HEAD"
-
-      # Docker Hub에 로그인합니다. (변수 이름을 DOCKERHUB_PASSWORD로 통일)
+      # Docker Hub에 로그인합니다.
       - "echo \"Docker Hub에 로그인합니다...\""
       - "echo \"$DOCKERHUB_PASSWORD\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin"
 
@@ -18,10 +16,9 @@ phases:
       - "echo \"/server 디렉터리로 이동합니다...\""
       - "cd server"
 
-
   build:
     commands:
-      # Docker 이미지를 빌드합니다. (모든 명령어를 큰따옴표로 감싸 일관성 유지)
+      # Docker 이미지를 빌드합니다.
       - "IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"
       - "REPOSITORY_URI=\"$DOCKERHUB_USERNAME/moment\""
       - "echo \"Docker 이미지를 빌드합니다... Tag: $IMAGE_TAG\""
@@ -41,11 +38,9 @@ phases:
       - "echo $IMAGE_TAG > image_tag.txt"
 
 artifacts:
-  # Deploy 단계에 전달할 파일들을 지정합니다.
   files:
     - server/appspec.yml
     - server/docker-compose.yml
     - image_tag.txt
     - server/scripts/**/*
   discard-paths: yes
-
