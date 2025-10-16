@@ -3,49 +3,10 @@ version: "3.8"
 services:
   app:
     container_name: moment-app-server
-    build: .
+    image: ${IMAGE_URI}
     ports:
       - "8080:8080"
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - EXPIRATION_TIME=${EXPIRATION_TIME}
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL}
-      -
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: "mysql:8"
-    container_name: moment-mysql-db
-    ports:
-      - "3306:3306"
+    volumes:
+      - /home/ubuntu/moment/logs:/app/logs
     env_file:
       - .env
-    #    environment:
-    #      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    #      - MYSQL_USER=${MYSQL_USER}
-    #      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    #      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-volumes:
-  db-data:
