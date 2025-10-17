@@ -64,15 +64,34 @@ export const IntroSection = styled.section`
   justify-content: center;
   gap: 50px;
   position: relative;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
 `;
 
 export const IntroText = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 export const IntroTitleLogo = styled.img`
   width: 300px;
+  @media (max-width: 768px) {
+    width: 200px;
+  }
   @media (max-width: 768px) {
     width: 200px;
   }
@@ -138,10 +157,23 @@ export const ExplainSection = styled.section`
   gap: 100px;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 1440px) {
+    flex-direction: column-reverse;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
 `;
 
 export const ExplainImage = styled.img`
   object-fit: cover;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 90%;
+  }
 `;
 
 export const ExplainContainer = styled.div`
@@ -150,14 +182,36 @@ export const ExplainContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 20px;
+
+  @media screen and (max-width: 1440px) {
+    gap: 8px;
+  }
 `;
 
 export const ExplainTitle = styled.div`
   font-size: 3rem;
   font-weight: 600;
+
+  @media screen and (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 `;
 
 export const ExplainText = styled.div`
   font-size: 1.5rem;
   font-weight: 400;
+  text-align: center;
+  word-break: keep-all;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
