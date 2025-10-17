@@ -71,14 +71,14 @@ export const IntroText = styled.div`
   font-weight: 600;
 `;
 
-export const IntroLogo = styled.img`
+export const IntroTitleLogo = styled.img`
   width: 300px;
   @media (max-width: 768px) {
     width: 200px;
   }
 `;
 
-export const IntroTextWrapper = styled.div<{ isVisible: boolean }>`
+export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
   width: 100%;
   height: 100vh;
   display: flex;
@@ -122,7 +122,7 @@ export const IntroImagesWrapper = styled.div`
   }
 `;
 
-export const IntroImage = styled.img`
+export const IntroIcon = styled.img`
   width: 120px;
   height: 120px;
 
@@ -130,4 +130,34 @@ export const IntroImage = styled.img`
     width: 80px;
     height: 80px;
   }
+`;
+
+export const ExplainSection = styled.section`
+  width: 100%;
+  display: flex;
+  gap: 100px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ExplainImage = styled.img`
+  object-fit: cover;
+`;
+
+export const ExplainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+`;
+
+export const ExplainTitle = styled.div`
+  font-size: 3rem;
+  font-weight: 600;
+`;
+
+export const ExplainText = styled.div`
+  font-size: 1.5rem;
+  font-weight: 400;
 `;
