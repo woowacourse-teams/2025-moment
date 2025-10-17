@@ -93,4 +93,4 @@ s3:
   bucket-path: ${S3_PROD_BUCKET_PATH}
 
 fcm:
-  service-account-json: ${FCM_CREDENTIALS:}
+  service-account-json: ${FCM_CREDENTIALS}
