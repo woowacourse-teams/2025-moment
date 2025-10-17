@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FcmConfig {
 
-    @Value("${fcm.service-account-json:}")
+    @Value("${fcm.service-account-json}")
     private String serviceAccountJson;
 
     @Bean
@@ -28,8 +28,8 @@ public class FcmConfig {
 
         try (InputStream serviceAccountStream = new FileInputStream(serviceAccountJson)) {
             FirebaseOptions firebaseOptions = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
-                .build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
+                    .build();
 
             FirebaseApp firebaseApp = getFirebaseApp(firebaseOptions);
             return FirebaseMessaging.getInstance(firebaseApp);
