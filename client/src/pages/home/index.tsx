@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
 import { PropsWithChildren, useState } from 'react';
-import { explainData } from './explainData';
+import { explainData } from './const';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function HomePage() {
       </S.MainContainer>
       <AnimatedIntroSection>
         <S.IntroSection>
-          <S.IntroTitleLogo src="/images/momentLogo.png" alt="" />
+          <S.IntroTitleLogo src="/images/momentLogo.webp" alt="" />
           <S.IntroText>
             "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
             위로를 건네는 소셜 네트워크 서비스입니다. <br />
@@ -39,9 +39,9 @@ export default function HomePage() {
             남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을 제공합니다.
           </S.IntroText>
           <S.IntroImagesWrapper>
-            <S.IntroIcon src="/images/rocket.png" alt="" />
-            <S.IntroIcon src="/images/paperAirplane.png" alt="" />
-            <S.IntroIcon src="/images/spaceman.png" alt="" />
+            <S.IntroIcon src="/images/rocket.webp" alt="" />
+            <S.IntroIcon src="/images/paperAirplane.webp" alt="" />
+            <S.IntroIcon src="/images/spaceman.webp" alt="" />
           </S.IntroImagesWrapper>
         </S.IntroSection>
       </AnimatedIntroSection>

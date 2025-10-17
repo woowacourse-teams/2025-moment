@@ -143,7 +143,7 @@ export const HighlightedText = styled.div`
     left: 40%;
     width: 80%;
     height: 100%;
-    background-image: url('/images/highlighter.png');
+    background-image: url('/images/highlighter.webp');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
