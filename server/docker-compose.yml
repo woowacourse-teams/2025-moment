@@ -8,5 +8,6 @@ services:
       - "8080:8080"
     volumes:
       - /home/ubuntu/moment/logs:/app/logs
+      - /home/ubuntu/moment/firebase-credentials.json:/app/firebase-credentials.json
     env_file:
       - .env
