@@ -41,7 +41,7 @@ export default function HomePage() {
           <S.IntroImagesWrapper>
             <S.IntroIcon src="/images/rocket.webp" alt="" />
             <S.IntroIcon src="/images/paperAirplane.webp" alt="" />
-            <S.IntroIcon src="/images/spaceman.webp" alt="" />
+            <S.IntroIcon src="/images/spaceMan.webp" alt="" />
           </S.IntroImagesWrapper>
         </S.IntroSection>
       </AnimatedIntroSection>
