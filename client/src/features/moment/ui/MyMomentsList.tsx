@@ -1,23 +1,25 @@
 import { useIntersectionObserver } from '@/shared/hooks';
 import { CommonSkeletonCard, NotFound } from '@/shared/ui';
 import { AlertCircle, Clock } from 'lucide-react';
-import { useMomentsWithNotifications } from '../hook/useMomentsWithNotifications';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
-import type { MomentWithNotifications } from '../types/momentsWithNotifications';
+import { useMomentsQuery } from '../hook/useMomentsQuery';
+import { MyMomentsItem } from '../types/moments';
 
 export const MyMomentsList = () => {
   const {
-    momentWithNotifications,
+    data: moments,
     isLoading,
     isError,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useMomentsWithNotifications();
+  } = useMomentsQuery();
 
-  const hasMoments = momentWithNotifications?.length && momentWithNotifications.length > 0;
+  const hasMoments =
+    moments?.pages.flatMap(page => page.data.items).length &&
+    moments?.pages.flatMap(page => page.data.items).length > 0;
 
   if (isError) {
     console.error('Error fetching moments:', error);
@@ -54,9 +56,11 @@ export const MyMomentsList = () => {
     <S.MomentsContainer $display={!!hasMoments || isLoading}>
       {hasMoments ? (
         <>
-          {momentWithNotifications.map((myMoment: MomentWithNotifications) => (
-            <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
-          ))}
+          {moments?.pages
+            .flatMap(page => page.data.items)
+            .map((myMoment: MyMomentsItem) => (
+              <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
+            ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />
 

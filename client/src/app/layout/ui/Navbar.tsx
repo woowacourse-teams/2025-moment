@@ -8,7 +8,7 @@ import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -26,7 +26,7 @@ export const Navbar = () => {
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications } = useReadNotificationsQuery();
 
   const isNotificationExisting =
     notifications?.data.length && notifications?.data.length > 0 ? true : false;
