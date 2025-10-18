@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 import moment.notification.domain.PushNotification;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -80,5 +78,52 @@ class PushNotificationRepositoryTest {
 
         // then
         assertThat(foundNotification).isEmpty();
+    }
+
+    @Test
+    void 사용자의_디바이스_엔드포인트_존재_여부를_판단한다() {
+        // given
+        User anotherUser = new User("cookie@gmail.com",  "cookie123!", "cookie", ProviderType.EMAIL);
+        userRepository.save(anotherUser);
+
+        String existingDeviceEndpoint = "existing-device-endpoint";
+        String nonExistingDeviceEndpoint = "non-existing-device-endpoint";
+
+        PushNotification pushNotification = new PushNotification(user, existingDeviceEndpoint);
+        PushNotification anotherUserPushNotification = new PushNotification(anotherUser, nonExistingDeviceEndpoint);
+
+        pushNotificationRepository.save(pushNotification);
+        pushNotificationRepository.save(anotherUserPushNotification);
+
+        // when
+        boolean shouldExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, existingDeviceEndpoint);
+        boolean shouldNotExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, nonExistingDeviceEndpoint);
+
+        // then
+        assertThat(shouldExist).isTrue();
+        assertThat(shouldNotExist).isFalse();
+    }
+
+    @Test
+    void 사용자와_디바이스_엔드포인트로_푸시_알림_정보를_성공적으로_삭제한다() {
+        // given
+        String deviceToken = "test-device-token";
+        String anotherToken = "another-test-device-token";
+
+        PushNotification pushNotification = new PushNotification(user, deviceToken);
+        pushNotificationRepository.save(pushNotification);
+
+        PushNotification anotherPushNotification = new PushNotification(user, anotherToken);
+        pushNotificationRepository.save(anotherPushNotification);
+
+        // when
+        pushNotificationRepository.deleteByUserAndDeviceEndpoint(user, deviceToken);
+
+        // then
+        List<PushNotification> foundNotification = pushNotificationRepository.findByUserId(user.getId());
+        assertAll(
+                () -> assertThat(foundNotification).hasSize(1),
+                () -> assertThat(foundNotification.getFirst().getDeviceEndpoint()).isEqualTo(anotherToken)
+        );
     }
 }

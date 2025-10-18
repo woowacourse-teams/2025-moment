@@ -1,0 +1,49 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Docker가 사전 설치된 표준 빌드 이미지를 사용합니다."
+
+  pre_build:
+    commands:
+      - "echo \"Docker Hub에 로그인합니다...\""
+      # CodeBuild 환경변수 DOCKERHUB_TOKEN
+      - "echo \"$DOCKERHUB_TOKEN\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin"
+      - "echo \"/server 디렉터리로 이동합니다...\""
+      - "cd server"
+
+  build:
+    commands:
+      # (핵심 1) Gradle Wrapper에 실행 권한을 부여합니다.
+      - "echo \"Gradle Wrapper에 실행 권한을 부여합니다...\""
+      - "chmod +x ./gradlew"
+
+      # (핵심 2) Gradle을 사용하여 Spring Boot 애플리케이션을 빌드합니다.
+      # 이 명령어가 'build/libs/*.jar' 파일을 생성합니다!
+      - "echo \"Spring Boot 애플리케이션을 빌드합니다...\""
+      - "./gradlew build -x test"
+
+      # 이제 .jar 파일이 생성되었으므로, Docker 빌드를 실행합니다.
+      - "IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"
+      - "REPOSITORY_URI=\"$DOCKERHUB_USERNAME/moment\""
+      - "echo \"Docker 이미지를 빌드합니다... Tag: $IMAGE_TAG\""
+      - "docker build -t $REPOSITORY_URI:$IMAGE_TAG ."
+
+  post_build:
+    commands:
+      # 빌드된 이미지를 Docker Hub에 Push합니다.
+      - "echo \"빌드된 이미지를 Docker Hub로 Push합니다...\""
+      - "docker push $REPOSITORY_URI:$IMAGE_TAG"
+
+      # 배포에 사용할 이미지 태그 정보를 파일에 기록합니다.
+      - "echo \"배포에 사용할 image_tag.txt 파일을 생성합니다...\""
+      - "echo $IMAGE_TAG > image_tag.txt"
+
+artifacts:
+  base-directory: server
+  files:
+    - appspec.yml
+    - docker-compose.yml
+    - image_tag.txt
+    - scripts/**/*

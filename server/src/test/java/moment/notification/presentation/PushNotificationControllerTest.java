@@ -9,7 +9,7 @@ import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.common.DatabaseCleaner;
 import moment.notification.domain.PushNotification;
-import moment.notification.dto.request.DeviceEndPointRegisterRequest;
+import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.infrastructure.PushNotificationRepository;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -61,7 +61,7 @@ class PushNotificationControllerTest {
     @Test
     void 사용자_디바이스_정보_저장에_성공하면_DB에_해당_정보가_저장된다() {
         // given
-        DeviceEndPointRegisterRequest request = new DeviceEndPointRegisterRequest(user.getId(), "test-endpoint-arn");
+        DeviceEndpointRequest request = new DeviceEndpointRequest("test-endpoint-arn");
 
         // when
         RestAssured.given().log().all()
@@ -78,5 +78,25 @@ class PushNotificationControllerTest {
             () -> assertThat(notifications).hasSize(1),
             () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
         );
+    }
+
+    @Test
+    void 사용자_디바이스_정보_삭제에_성공하면_DB에서_해당_정보가_삭제된다() {
+        // given
+        pushNotificationRepository.save(new PushNotification(user, "test-endpoint-arn"));
+        DeviceEndpointRequest request = new DeviceEndpointRequest("test-endpoint-arn");
+
+        // when
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", accessToken)
+            .body(request)
+            .when().delete("/api/v1/push-notifications")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value());
+
+        // then
+        List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
+        assertThat(notifications).isEmpty();
     }
 }

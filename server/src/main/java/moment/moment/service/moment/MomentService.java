@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MomentService {
 
-    private static final int COMMENTABLE_PERIOD_IN_DAYS = 3;
+    private static final int COMMENTABLE_PERIOD_IN_DAYS = 7;
 
     private final MomentRepository momentRepository;
 
