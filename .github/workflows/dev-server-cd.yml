@@ -1,61 +1,61 @@
-name: Dev Server CD
-
-on:
-  workflow_run:
-    workflows: [ "Dev Server CI" ]
-    types: [ completed ]
-    branches: [ develop ]
-
-jobs:
-  deploy:
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push'
-    runs-on: [ self-hosted, backend, dev ]
-
-    permissions:
-      actions: read
-
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Stop and remove existing container
-        run: |
-          if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
-            sudo docker stop moment-app-server
-            sudo docker rm -f moment-app-server
-          fi
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract deploy tag
-        run: |
-          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
-          echo "Deploying version: $(cat image-tag.txt)"
-
-      - name: Pull latest image
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
-
-      - name: Deploy with Docker Compose
-        env:
-          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
-        run: |
-          cd /home/ubuntu/moment
-          
-          echo "Deploying with image tag: $IMAGE_TAG"
-          sudo -E docker compose up --no-deps -d app
-          
-          echo "=== Checking if image exists locally ==="
-          sudo docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
-
-      - name: Prune old images
-        run: sudo docker image prune -f
+#name: Dev Server CD
+#
+#on:
+#  workflow_run:
+#    workflows: [ "Dev Server CI" ]
+#    types: [ completed ]
+#    branches: [ develop ]
+#
+#jobs:
+#  deploy:
+#    if: >
+#      github.event.workflow_run.conclusion == 'success' &&
+#      github.event.workflow_run.event == 'push'
+#    runs-on: [ self-hosted, backend, dev ]
+#
+#    permissions:
+#      actions: read
+#
+#    steps:
+#      - name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#      - name: Stop and remove existing container
+#        run: |
+#          if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
+#            sudo docker stop moment-app-server
+#            sudo docker rm -f moment-app-server
+#          fi
+#
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: build-artifact
+#          run-id: ${{ github.event.workflow_run.id }}
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Extract deploy tag
+#        run: |
+#          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
+#          echo "Deploying version: $(cat image-tag.txt)"
+#
+#      - name: Pull latest image
+#        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment:${{ env.DEPLOY_TAG }}
+#
+#      - name: Deploy with Docker Compose
+#        env:
+#          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
+#        run: |
+#          cd /home/ubuntu/moment
+#
+#          echo "Deploying with image tag: $IMAGE_TAG"
+#          sudo -E docker compose up --no-deps -d app
+#
+#          echo "=== Checking if image exists locally ==="
+#          sudo docker images | grep "$DOCKER_REPO" || echo "No local images found for $DOCKER_REPO"
+#
+#      - name: Prune old images
+#        run: sudo docker image prune -f
