@@ -14,11 +14,6 @@ export const HomePageAnalyticsEvent = {
     action: 'Click TodayMoment Button',
     label: 'TodayMoment Button',
   },
-  ClickBlackHoleButton: {
-    category: 'HomePage',
-    action: 'Click BlackHole Button',
-    label: 'BlackHole Button',
-  },
 };
 
 export const TodayMomentAnalyticsEvent = {
