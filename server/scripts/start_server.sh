@@ -27,7 +27,7 @@ echo "IMAGE_URI=${IMAGE_URI}" >> .env
 echo ">> Docker Hub에 로그인합니다..."
 echo "${DOCKERHUB_TOKEN}" | sudo docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
 
-# 5. 최신 이미지를 PULL하고 컨테이너 재시작 (docker-compose -> docker compose)
+# 5. 최신 이미지를 PULL하고 컨테이너 재시작 (docker compose)
 echo ">> 최신 이미지를 PULL합니다: ${IMAGE_URI}"
 sudo docker compose pull app
 
