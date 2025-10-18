@@ -99,7 +99,7 @@ export const IntroTitleLogo = styled.img`
 
 export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
   width: 100%;
-  height: 100vh;
+  height: 75vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -122,6 +122,10 @@ export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
     line-height: 1.8;
     text-align: center;
     word-break: keep-all;
+  }
+
+  @media screen and (max-width: 1440px) {
+    height: 85vh;
   }
 
   @media (max-width: 768px) {
