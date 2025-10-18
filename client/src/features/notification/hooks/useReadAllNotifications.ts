@@ -1,4 +1,4 @@
-import { useAllNotificationsMutation } from './useAllNotificationsMutation';
+import { useReadAllNotificationsMutation } from '../api/useReadAllNotificationsMutation';
 
 export const useReadAllNotifications = () => {
   const {
@@ -6,7 +6,7 @@ export const useReadAllNotifications = () => {
     isPending,
     error,
     isError,
-  } = useAllNotificationsMutation();
+  } = useReadAllNotificationsMutation();
   const handleReadAllNotifications = (ids: number[]) => {
     if (isPending) return;
     mutateAllNotification(ids);

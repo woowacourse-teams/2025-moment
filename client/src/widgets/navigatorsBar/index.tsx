@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { sendEvent } from '@/shared/lib/ga';
 import { NavigatorsBarAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router';
 import * as S from './index.styles';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications } = useReadNotificationsQuery();
   const location = useLocation();
 
   const isTodayMomentActive = location.pathname.startsWith('/today-moment');
