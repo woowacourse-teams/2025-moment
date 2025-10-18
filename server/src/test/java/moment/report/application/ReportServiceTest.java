@@ -10,6 +10,7 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentReportCreateRequest;
+import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;

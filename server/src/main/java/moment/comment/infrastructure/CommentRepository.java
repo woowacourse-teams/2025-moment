@@ -3,12 +3,9 @@ package moment.comment.infrastructure;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import moment.comment.domain.Comment;
-import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,21 +23,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("""
             SELECT c
             FROM comments c
-            LEFT JOIN FETCH c.moment m
-            LEFT JOIN FETCH m.momenter
             WHERE c.id IN :ids
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findCommentsWithDetailsByIds(@Param("ids") List<Long> ids);
+    List<Comment> findCommentsByIds(@Param("ids") List<Long> ids);
 
-    @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
             SELECT c
             FROM comments c
             WHERE c.id IN :ids
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findUnreadCommentsFirstPage(@Param("ids") Set<Long> ids, Pageable pageable);
+    List<Comment> findUnreadCommentsFirstPage(@Param("ids") List<Long> ids, Pageable pageable);
 
     @Query("""
                 SELECT c.id
@@ -53,24 +47,34 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                                                  @Param("cursorId") Long cursorId,
                                                  Pageable pageable);
 
-    @EntityGraph(attributePaths = {"moment.momenter"})
     @Query("""
             SELECT c FROM comments c
             WHERE c.id IN :ids AND (c.createdAt < :cursorTime OR (c.createdAt = :cursorTime AND c.id < :cursorId))
             ORDER BY c.createdAt DESC, c.id DESC
             """)
-    List<Comment> findUnreadCommentsNextPage(@Param("ids") Set<Long> ids,
+    List<Comment> findUnreadCommentsNextPage(@Param("ids") List<Long> ids,
                                              @Param("cursorTime") LocalDateTime cursorDateTime,
                                              @Param("cursorId") Long cursorId,
                                              Pageable pageable);
 
-    @EntityGraph(attributePaths = {"moment"})
-    List<Comment> findAllByMomentIn(List<Moment> moments);
+    List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 
-    boolean existsByMomentAndCommenter(Moment moment, User commenter);
+    @Query("""
+               SELECT m.id
+               FROM moments m
+               WHERE m.id IN :momentIds
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM comments c
+                   WHERE c.momentId = m.id
+                   AND c.commenter.id = :commenterId
+                  )
+            """)
+    List<Long> findMomentIdsNotCommentedOnByMe(@Param("momentIds") List<Long> momentIds,
+                                               @Param("commenterId") Long commenterId);
 
-    long countByMomentAndCreatedAtBetween(Moment moment, LocalDateTime start, LocalDateTime end);
+    boolean existsByMomentIdAndCommenterId(Long momentId, Long commenterId);
 
-    @EntityGraph(attributePaths = {"commenter"})
-    Optional<Comment> findWithCommenterById(Long id);
+    @Query("SELECT c.momentId FROM comments c WHERE c.id = :commentId")
+    Optional<Long> findMomentIdById(Long commentId);
 }

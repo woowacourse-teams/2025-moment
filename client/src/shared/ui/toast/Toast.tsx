@@ -1,47 +1,39 @@
-import { ToastProps } from '@/shared/types/toast';
+import { toasts, useToasts } from '@/shared/store/toast';
+import { ToastData } from '@/shared/types/toast';
 import { KeyRound, CheckCircle, Mail, X, XCircle } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { createPortal } from 'react-dom';
 import * as S from './Toast.styles';
 
-export const Toast: React.FC<ToastProps> = ({
-  message,
-  variant,
-  duration = 3000,
-  routeType,
-  onClose,
-}) => {
+interface ToastItemProps {
+  toast: ToastData;
+  onClose: (id: string) => void;
+}
+
+const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (duration > 0) {
-      const timer = setTimeout(() => {
-        handleClose();
-      }, duration);
-
-      return () => clearTimeout(timer);
-    }
-  }, [duration]);
 
   const handleClose = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setIsExiting(true);
     setTimeout(() => {
-      onClose();
+      onClose(toast.id);
     }, 300);
   };
 
   const handleToastClick = () => {
-    if (variant === 'message' && routeType) {
-      const route = routeType === 'moment' ? '/collection/my-moment' : '/collection/my-comment';
+    if (toast.variant === 'message' && toast.routeType) {
+      const route =
+        toast.routeType === 'moment' ? '/collection/my-moment' : '/collection/my-comment';
       navigate(route);
       handleClose();
     }
   };
 
   const getIcon = () => {
-    switch (variant) {
+    switch (toast.variant) {
       case 'success':
         return <CheckCircle size={20} />;
       case 'error':
@@ -57,16 +49,33 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <S.ToastItem
-      variant={variant}
+      variant={toast.variant}
       isExiting={isExiting}
       onClick={handleToastClick}
-      $isClickable={variant === 'message' && !!routeType}
+      $isClickable={toast.variant === 'message' && !!toast.routeType}
     >
       <S.ToastIconWrapper>{getIcon()}</S.ToastIconWrapper>
-      <S.ToastMessage>{message}</S.ToastMessage>
+      <S.ToastMessage>{toast.message}</S.ToastMessage>
       <S.CloseButton onClick={e => handleClose(e)} aria-label="토스트 닫기">
         <X size={16} />
       </S.CloseButton>
     </S.ToastItem>
+  );
+};
+
+export const Toast: React.FC = () => {
+  const { toasts: activeToasts } = useToasts();
+
+  if (activeToasts.length === 0) {
+    return null;
+  }
+
+  return createPortal(
+    <S.ToastContainer>
+      {activeToasts.map(toast => (
+        <ToastItem key={toast.id} toast={toast} onClose={toasts.hide} />
+      ))}
+    </S.ToastContainer>,
+    document.body,
   );
 };

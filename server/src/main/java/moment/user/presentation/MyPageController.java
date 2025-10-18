@@ -13,13 +13,13 @@ import moment.auth.application.AuthService;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.user.application.MyPageService;
 import moment.user.dto.request.Authentication;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
+import moment.user.service.facade.MyPageFacadeService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/me")
 public class MyPageController {
 
-    private final MyPageService myPageService;
+    private final MyPageFacadeService myPageFacadeService;
     private final AuthService authService;
 
     @Operation(summary = "마이페이지 프로필 조회", description = "마이페이지 프로필 정보를 조회합니다.")
@@ -57,7 +57,7 @@ public class MyPageController {
     public ResponseEntity<SuccessResponse<MyPageProfileResponse>> readProfile(
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyPageProfileResponse response = myPageService.getProfile(authentication.id());
+        MyPageProfileResponse response = myPageFacadeService.getMyProfile(authentication.id());
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -81,7 +81,8 @@ public class MyPageController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        MyRewardHistoryPageResponse response = myPageService.getMyRewardHistory(pageNum, pageSize, authentication.id());
+        MyRewardHistoryPageResponse response = myPageFacadeService.getMyRewardHistory(authentication.id(), pageNum,
+                pageSize);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -110,7 +111,7 @@ public class MyPageController {
             @Valid @RequestBody NicknameChangeRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        NicknameChangeResponse response = myPageService.changeNickname(request, authentication.id());
+        NicknameChangeResponse response = myPageFacadeService.changeNickname(request, authentication.id());
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -135,7 +136,7 @@ public class MyPageController {
             @Valid @RequestBody ChangePasswordRequest request,
             @AuthenticationPrincipal Authentication authentication
     ) {
-        myPageService.changePassword(request, authentication.id());
+        myPageFacadeService.changePassword(request, authentication.id());
 
         authService.logout(authentication.id());
 

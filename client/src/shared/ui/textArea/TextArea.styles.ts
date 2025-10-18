@@ -12,7 +12,11 @@ const TextAreaStyles = {
     height: ${theme.typography.textAreaHeight[$height]};
     color: ${theme.colors.white};
     border: 1px solid ${theme.colors['gray-700']};
-    resize: none; 
+    resize: none;
+    font-size: ${theme.typography.fontSize.content.medium};
+    ${theme.mediaQueries.mobile} {
+      font-size: ${theme.typography.fontSize.mobileContent.medium};
+    }
     
     &::placeholder {
         color: ${theme.colors['gray-400']};

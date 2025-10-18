@@ -1,13 +1,7 @@
 import { api } from '@/app/lib/api';
-import { UnreadCommentsResponse } from '../types/comments';
+import { CommentsResponse, GetComments } from '../types/comments';
 
-interface GetUnreadComments {
-  pageParam?: string | null;
-}
-
-export const getUnreadComments = async ({
-  pageParam,
-}: GetUnreadComments): Promise<UnreadCommentsResponse> => {
+export const getUnreadComments = async ({ pageParam }: GetComments): Promise<CommentsResponse> => {
   const params = new URLSearchParams();
   if (pageParam) {
     params.append('nextCursor', pageParam);

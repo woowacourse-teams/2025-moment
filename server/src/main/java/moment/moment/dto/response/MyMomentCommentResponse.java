@@ -3,10 +3,7 @@ package moment.moment.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import moment.comment.domain.Comment;
-import moment.comment.domain.CommentImage;
-import moment.reply.domain.Echo;
+import moment.comment.dto.tobe.CommentComposition;
 import moment.user.domain.Level;
 
 @Schema(description = "모멘트에 달린 코멘트 응답")
@@ -32,22 +29,20 @@ public record MyMomentCommentResponse(
         List<MyMomentEchoResponse> echos
 ) {
 
-    public static MyMomentCommentResponse of(Comment comment, List<Echo> echoes, CommentImage commentImage) {
-        List<MyMomentEchoResponse> echoDetailResponse = echoes.stream()
+    public static MyMomentCommentResponse from(CommentComposition commentComposition) {
+
+        List<MyMomentEchoResponse> myMomentEchoResponses = commentComposition.echoDetails().stream()
                 .map(MyMomentEchoResponse::from)
                 .toList();
 
-        String imageUrl = Optional.ofNullable(commentImage)
-                .map(CommentImage::getImageUrl)
-                .orElse(null);
-        
         return new MyMomentCommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCommenter().getNickname(),
-                comment.getCommenter().getLevel(),
-                imageUrl,
-                comment.getCreatedAt(),
-                echoDetailResponse);
+                commentComposition.id(),
+                commentComposition.content(),
+                commentComposition.nickname(),
+                commentComposition.level(),
+                commentComposition.imageUrl(),
+                commentComposition.commentCreatedAt(),
+                myMomentEchoResponses
+        );
     }
 }

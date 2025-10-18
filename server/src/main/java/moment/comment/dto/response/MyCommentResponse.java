@@ -3,13 +3,8 @@ package moment.comment.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import moment.comment.domain.Comment;
-import moment.comment.domain.CommentImage;
-import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
-import moment.moment.domain.MomentTag;
-import moment.reply.domain.Echo;
+import moment.comment.dto.tobe.CommentComposition;
+import moment.moment.dto.response.tobe.MomentComposition;
 
 @Schema(description = "나의 Comment 목록 조회 응답")
 public record MyCommentResponse(
@@ -29,78 +24,29 @@ public record MyCommentResponse(
         MomentDetailResponse moment,
 
         @Schema(description = "Comment에 등록된 에코 목록")
-        List<EchoDetailResponse> echos
+        List<EchoDetailResponse> echos,
+
+        @Schema(description = "내 코멘트 알림 정보")
+        CommentNotificationResponse commentNotification
 ) {
-    public static MyCommentResponse from(
-            Comment comment,
-            List<MomentTag> momentTags,
-            CommentImage commentImage,
-            MomentImage momentImage
-    ) {
-        String imageUrl = Optional.ofNullable(commentImage)
-                .map(CommentImage::getImageUrl)
-                .orElse(null);
-        List<EchoDetailResponse> echosResponse = null;
-        Moment momentOfComment = comment.getMoment();
+    public static MyCommentResponse of(CommentComposition commentComposition,
+                                       MomentComposition momentComposition,
+                                       List<Long> unreadNotificationIds) {
 
-        if (momentOfComment == null) {
-            return new MyCommentResponse(
-                    comment.getId(),
-                    comment.getContent(),
-                    imageUrl,
-                    comment.getCreatedAt(),
-                    null,
-                    echosResponse
-            );
-        }
-
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(momentOfComment, momentTags, momentImage);
-
-        return new MyCommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                imageUrl,
-                comment.getCreatedAt(),
-                momentResponse,
-                echosResponse
-        );
-    }
-
-    public static MyCommentResponse from(
-            Comment comment,
-            List<Echo> echoes,
-            List<MomentTag> momentTags,
-            CommentImage commentImage,
-            MomentImage momentImage
-    ) {
-        String imageUrl = Optional.ofNullable(commentImage)
-                .map(CommentImage::getImageUrl)
-                .orElse(null);
-        List<EchoDetailResponse> echosResponse = echoes.stream()
+        List<EchoDetailResponse> echos = commentComposition.echoDetails().stream()
                 .map(EchoDetailResponse::from)
                 .toList();
 
-        Moment momentOfComment = comment.getMoment();
+        MomentDetailResponse momentDetail = momentComposition == null ? null : MomentDetailResponse.from(momentComposition);
 
-        if (momentOfComment == null) {
-            return new MyCommentResponse(
-                    comment.getId(),
-                    comment.getContent(),
-                    imageUrl,
-                    comment.getCreatedAt(),
-                    null,
-                    echosResponse
-            );
-        }
-
-        MomentDetailResponse momentResponse = MomentDetailResponse.from(momentOfComment, momentTags, momentImage);
         return new MyCommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                imageUrl,
-                comment.getCreatedAt(),
-                momentResponse,
-                echosResponse
+                commentComposition.id(),
+                commentComposition.content(),
+                commentComposition.imageUrl(),
+                commentComposition.commentCreatedAt(),
+                momentDetail,
+                echos,
+                CommentNotificationResponse.from(unreadNotificationIds)
         );
     }
 }

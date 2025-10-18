@@ -34,7 +34,7 @@ export const checkIfLoggined = async (): Promise<boolean> => {
         // refreshToken 성공 후 다시 체크
         const retryResponse = await api.get<CheckIfLogginedResponse>('/auth/login/check');
         return retryResponse.data.data.isLogged;
-      } catch (refreshError) {
+      } catch {
         // refreshToken 실패 시 원래 결과 반환
         return response.data.data.isLogged;
       }
