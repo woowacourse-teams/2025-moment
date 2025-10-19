@@ -25,6 +25,7 @@ export const TagList = ({ tags, onTagClick, selectedTag }: TagListProps) => {
 const TagListStyles = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
 `;
