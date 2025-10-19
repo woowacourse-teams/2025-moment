@@ -34,19 +34,3 @@ export const sendPageview = (path: string) => {
 
   ReactGA.send({ hitType: 'pageview', page: path, title: document.title });
 };
-
-export const sendEvent = (event: {
-  category: string;
-  action: string;
-  label?: string;
-  value?: number;
-}) => {
-  if (!isGAEnabled()) {
-    if (!isProdEnv) {
-      console.debug('[GA][event-legacy][dev-only]', event);
-    }
-    return;
-  }
-
-  ReactGA.event(event);
-};

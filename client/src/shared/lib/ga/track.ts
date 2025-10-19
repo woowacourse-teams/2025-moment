@@ -56,8 +56,19 @@ type EventMap = {
     content_length_bucket?: 's' | 'm' | 'l';
     mood_tag?: string;
   };
-  error_publish: { composer?: 'moment' | 'extra'; code?: string };
-  error_comment: { code?: string };
+  click_navigation: {
+    destination: 'today_moment' | 'today_comment' | 'collection' | string;
+    source?: 'navbar' | 'nav_bar' | 'success_page' | string;
+  };
+
+  click_auth: {
+    device: 'desktop' | 'mobile';
+  };
+
+  click_cta: {
+    target: string;
+    cta_type?: 'primary' | 'secondary' | string;
+  };
 };
 
 const isProd =
