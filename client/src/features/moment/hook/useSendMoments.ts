@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useMomentsMutation } from './useMomentsMutation';
+import { track } from '@/shared/lib/ga/track';
+import { useEffect } from 'react';
 
 export const useSendMoments = () => {
   const [content, setContent] = useState('');
@@ -35,6 +37,25 @@ export const useSendMoments = () => {
       console.error('Error sending moments:', error);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      const typed = content.trim().length > 0 || imageData != null || tagNames.length > 0;
+      if (!isSuccess && typed) {
+        const len = content.length;
+        const content_length_bucket = len <= 60 ? 's' : len <= 140 ? 'm' : 'l';
+        const has_media = Boolean(imageData);
+        const mood_tag = tagNames?.[0];
+        track('abandon_composer', {
+          stage: 'typed',
+          composer: 'basic',
+          has_media,
+          content_length_bucket,
+          ...(mood_tag ? { mood_tag } : {}),
+        });
+      }
+    };
+  }, [content, imageData, tagNames, isSuccess]);
 
   return {
     handleContentChange,

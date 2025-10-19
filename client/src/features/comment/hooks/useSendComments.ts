@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
 import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
 import { useToast } from '@/shared/hooks/useToast';
+import { useEffect } from 'react';
+import { track } from '@/shared/lib/ga/track';
 
 export const useSendComments = (momentId: number) => {
   const [comment, setComment] = useState('');
@@ -31,6 +33,22 @@ export const useSendComments = (momentId: number) => {
       imageName: imageData?.imageName,
     });
   };
+
+  useEffect(() => {
+    return () => {
+      const typed = comment.trim().length > 0 || imageData != null;
+      if (typed) {
+        const len = comment.length;
+        const length_bucket = len <= 60 ? 's' : len <= 140 ? 'm' : 'l';
+        track('abandon_composer', {
+          stage: 'typed',
+          composer: 'basic',
+          content_length_bucket: length_bucket,
+          has_media: Boolean(imageData),
+        });
+      }
+    };
+  }, [comment, imageData]);
 
   return {
     error,

@@ -32,8 +32,27 @@ type EventMap = {
     content_length_bucket?: 's' | 'm' | 'l';
     mood_tag?: string;
   };
-  abandon_composer: { stage?: 'typed' | 'attached_media' | 'before_submit' };
   submit_comment: { item_id: string; length_bucket?: 's' | 'm' | 'l' };
+  dwell_start: { item_type?: 'composer' | 'comment' | 'feed' | string; item_id?: string };
+  dwell_end: {
+    item_type?: 'composer' | 'comment' | 'feed' | string;
+    item_id?: string;
+    dwell_seconds: number;
+  };
+  scroll_depth: {
+    percent_bucket: '0' | '25' | '50' | '75' | '100';
+    screen_height?: number;
+    doc_height?: number;
+  };
+  abandon_composer: {
+    stage?: 'typed' | 'attached_media' | 'before_submit';
+    composer?: 'basic' | 'extra';
+    has_media?: boolean;
+    content_length_bucket?: 's' | 'm' | 'l';
+    mood_tag?: string;
+  };
+  error_publish: { composer?: 'basic' | 'extra'; code?: string };
+  error_comment: { code?: string };
 };
 
 const isProd =
