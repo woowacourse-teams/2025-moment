@@ -26,7 +26,7 @@ phases:
 
       # 이제 .jar 파일이 생성되었으므로, Docker 빌드를 실행합니다.
       - "IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)"
-      - "REPOSITORY_URI=\"$DOCKERHUB_USERNAME/moment\""
+      - "REPOSITORY_URI=\"$DOCKERHUB_USERNAME/moment-prod-images\""
       - "echo \"Docker 이미지를 빌드합니다... Tag: $IMAGE_TAG\""
       - "docker build -t $REPOSITORY_URI:$IMAGE_TAG ."
 
