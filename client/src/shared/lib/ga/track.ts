@@ -12,10 +12,11 @@ type CommonParams = {
   content_length_bucket?: 's' | 'm' | 'l';
   mood_tag?: string;
   time_bucket?: string;
-  ab_variant?: string;
-  is_first_time?: boolean;
-  level?: number;
-  member_status?: 'guest' | 'logged_in';
+  // 향후 추가 시 주석 해제;
+  //   ab_variant?: string;
+  //   is_first_time?: boolean;
+  //   level?: number;
+  //   member_status?: 'guest' | 'logged_in';
 };
 
 type EventMap = {
