@@ -106,6 +106,7 @@ export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 100px 0;
 
   ${({ isVisible }) =>
     isVisible &&
@@ -125,10 +126,12 @@ export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
   }
 
   @media screen and (max-width: 1440px) {
-    height: 85vh;
+    height: 90vh;
   }
 
   @media (max-width: 768px) {
+    height: 80vh;
+
     ${IntroSection} {
       max-width: 80%;
       font-size: 1.1rem;
@@ -167,6 +170,7 @@ export const ExplainSection = styled.section`
   }
 
   @media (max-width: 768px) {
+    gap: 50px;
     padding: 16px;
   }
 `;

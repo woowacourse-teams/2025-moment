@@ -20,7 +20,7 @@ fi
 
 # 3. 이미지 URI 생성
 IMAGE_TAG=$(cat image_tag.txt)
-export IMAGE_URI="${DOCKERHUB_USERNAME}/moment:${IMAGE_TAG}"
+export IMAGE_URI="${DOCKERHUB_USERNAME}/moment-prod-images:${IMAGE_TAG}"
 echo "IMAGE_URI=${IMAGE_URI}" >> .env
 
 # 4. Docker Hub 로그인
