@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { GetUnreadComments, UnreadCommentsResponse } from '../types/comments';
 import { api } from '@/app/lib/api';
+import { CommentsResponse, GetComments } from '../types/comments';
 
 export const useUnreadCommentsQuery = () => {
-  return useInfiniteQuery<UnreadCommentsResponse>({
+  return useInfiniteQuery<CommentsResponse>({
     queryKey: ['comments', 'unread'],
     queryFn: ({ pageParam }) => getUnreadComments({ pageParam: pageParam as string | null }),
     getNextPageParam: lastPage =>
@@ -12,9 +12,7 @@ export const useUnreadCommentsQuery = () => {
   });
 };
 
-const getUnreadComments = async ({
-  pageParam,
-}: GetUnreadComments): Promise<UnreadCommentsResponse> => {
+const getUnreadComments = async ({ pageParam }: GetComments): Promise<CommentsResponse> => {
   const params = new URLSearchParams();
   if (pageParam) {
     params.append('nextCursor', pageParam);

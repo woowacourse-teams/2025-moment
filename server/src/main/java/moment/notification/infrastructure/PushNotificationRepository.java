@@ -15,5 +15,5 @@ public interface PushNotificationRepository extends JpaRepository<PushNotificati
 
     boolean existsByUserAndDeviceEndpoint(User user, String deviceEndpoint);
 
-    void deleteByUser(User user);
+    void deleteByUserAndDeviceEndpoint(User user, String deviceEndpoint);
 }

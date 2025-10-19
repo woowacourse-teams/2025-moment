@@ -1,9 +1,5 @@
 import { api } from '@/app/lib/api';
-import { CommentsResponse } from '../types/comments';
-
-interface GetComments {
-  pageParam?: string | null;
-}
+import { CommentsResponse, GetComments } from '../types/comments';
 
 export const getComments = async ({ pageParam }: GetComments): Promise<CommentsResponse> => {
   const params = new URLSearchParams();

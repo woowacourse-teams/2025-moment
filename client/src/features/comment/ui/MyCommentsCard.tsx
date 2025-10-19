@@ -7,25 +7,29 @@ import Tag from '@/shared/ui/tag/Tag';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Heart, Send } from 'lucide-react';
-import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import * as S from './MyCommentsCard.styles';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
+import type { CommentItem } from '../types/comments';
 
-export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
+export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
   const handleCommentOpen = () => {
-    if (myComment.read || isReadingNotification) return;
-    if (myComment.notificationId) {
-      handleReadNotifications(myComment.notificationId);
+    if (myComment.commentNotification.isRead || isReadingNotification) return;
+    if (myComment.commentNotification.notificationIds) {
+      handleReadNotifications(myComment.commentNotification.notificationIds[0]);
     }
   };
 
   return (
     <>
-      <Card width="medium" key={`card-${myComment.id}`} shadow={!myComment.read}>
+      <Card
+        width="medium"
+        key={`card-${myComment.id}`}
+        shadow={!myComment.commentNotification.isRead}
+      >
         {myComment.moment && (
           <Card.TitleContainer
             title={
@@ -108,7 +112,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               </S.MyCommentsTagWrapper>
             </S.ContentContainer>
           )}
-          {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
+          {!myComment.commentNotification.isRead && (
+            <Button onClick={handleCommentOpen} title="확인" />
+          )}
         </Card.Content>
       </Card>
       {fullImageSrc && (

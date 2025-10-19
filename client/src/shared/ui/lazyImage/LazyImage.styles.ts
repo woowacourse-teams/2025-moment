@@ -6,11 +6,6 @@ export const LazyImageContainer = styled.div`
   display: inline-block;
 `;
 
-const blackHoleStyles = css`
-  width: 150px;
-  height: 150px;
-`;
-
 const iconStyles = css`
   width: 40px;
   height: 40px;
@@ -53,8 +48,6 @@ export const ErrorFallback = styled.div<{
 
   ${({ $variant }) => {
     switch ($variant) {
-      case 'blackHole':
-        return blackHoleStyles;
       case 'icon':
         return iconStyles;
       case 'character':
@@ -103,8 +96,6 @@ export const Image = styled.img<{
 
   ${({ $variant }) => {
     switch ($variant) {
-      case 'blackHole':
-        return blackHoleStyles;
       case 'icon':
         return iconStyles;
       case 'character':

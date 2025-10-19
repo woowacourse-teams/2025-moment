@@ -4,7 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
-import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FcmConfig {
 
-    @Value("${fcm.service-account-json:}")
+    @Value("${fcm.service-account-json}")
     private String serviceAccountJson;
 
     @Bean
@@ -26,10 +26,10 @@ public class FcmConfig {
             return null;
         }
 
-        try (InputStream serviceAccountStream = new ByteArrayInputStream(serviceAccountJson.getBytes())) {
+        try (InputStream serviceAccountStream = new FileInputStream(serviceAccountJson)) {
             FirebaseOptions firebaseOptions = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
-                .build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
+                    .build();
 
             FirebaseApp firebaseApp = getFirebaseApp(firebaseOptions);
             return FirebaseMessaging.getInstance(firebaseApp);

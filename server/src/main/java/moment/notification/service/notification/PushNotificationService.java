@@ -23,7 +23,7 @@ public class PushNotificationService {
     }
 
     @Transactional
-    public void deleteBy(User user) {
-        pushNotificationRepository.deleteByUser(user);
+    public void deleteBy(User user, String deviceEndpoint) {
+        pushNotificationRepository.deleteByUserAndDeviceEndpoint(user, deviceEndpoint);
     }
 }

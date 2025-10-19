@@ -17,6 +17,13 @@ export const HomePageWrapper = styled.main`
   overflow: hidden;
 `;
 
+export const MainContainer = styled.div`
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
 export const HeroSection = styled.section`
   position: relative;
   width: 100%;
@@ -32,12 +39,12 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 30px;
   padding: 20px;
   overflow: hidden;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
+  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
 
   @media (max-width: 768px) {
     margin-top: 60px;
@@ -50,56 +57,165 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   }
 `;
 
-export const BlackHoleContainer = styled.aside`
-  position: fixed;
-  left: max(60px, 6vw);
-  transform: translateY(-50%);
-  transform: rotate(-20deg);
-  z-index: 50;
-  cursor: pointer;
+export const IntroSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  position: relative;
 
-  &:hover {
-    transform: scale(1.1);
-    transition: transform 0.3s ease-in-out;
+  @media (max-width: 768px) {
+    padding: 16px;
   }
 
-  @media (max-width: 1200px) {
-    left: max(40px, 4vw);
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+`;
+
+export const IntroText = styled.div`
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
+`;
+
+export const IntroTitleLogo = styled.img`
+  width: 300px;
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+`;
+
+export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
+  width: 100%;
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ${({ isVisible }) =>
+    isVisible &&
+    `
+    opacity: 1;
+    transform: translateY(0);
+  `}
+
+  ${IntroSection} {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    text-align: center;
+    word-break: keep-all;
+  }
+
+  @media screen and (max-width: 1440px) {
+    height: 85vh;
   }
 
   @media (max-width: 768px) {
-    display: none;
+    ${IntroSection} {
+      max-width: 80%;
+      font-size: 1.1rem;
+    }
   }
 `;
 
-export const BlackHoleImage = styled.img`
-  width: 150px;
-  height: 150px;
+export const IntroImagesWrapper = styled.div`
+  display: flex;
+  gap: 20px;
 
-  @media (max-width: 1200px) {
-    width: 100px;
-    height: 100px;
+  @media (max-width: 768px) {
+    gap: 10px;
   }
 `;
 
-export const BlackHoleText = styled.p`
-  position: absolute;
-  left: -20px;
-  top: -10px;
-  margin-top: 0;
-  font-size: 24px;
+export const IntroIcon = styled.img`
+  width: 120px;
+  height: 120px;
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
+`;
+
+export const ExplainSection = styled.section`
+  width: 100%;
+  display: flex;
+  gap: 100px;
+  align-items: center;
+  justify-content: center;
+
+  @media screen and (max-width: 1440px) {
+    flex-direction: column-reverse;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+`;
+
+export const ExplainImage = styled.img`
+  object-fit: cover;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 90%;
+  }
+`;
+
+export const ExplainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  @media screen and (max-width: 1440px) {
+    gap: 8px;
+  }
+`;
+
+export const ExplainTitle = styled.div`
+  font-size: 3rem;
   font-weight: 600;
-  pointer-events: none;
+
+  @media screen and (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 `;
 
-export const ClickMeContainer = styled.div<{ isWidgetOpen: boolean }>`
-  position: fixed;
-  left: max(100px, 10vw);
-  transform: translateY(-110%);
-  z-index: 51;
-  opacity: ${({ isWidgetOpen }) => (isWidgetOpen ? 1 : 0)};
-  visibility: ${({ isWidgetOpen }) => (isWidgetOpen ? 'visible' : 'hidden')};
-  transition:
-    opacity 0.3s ease-in-out,
-    visibility 0.3s ease-in-out;
+export const ExplainText = styled.div`
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-align: center;
+  word-break: keep-all;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;

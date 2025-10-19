@@ -74,4 +74,4 @@ s3:
   bucket-path: test/images
 
 fcm:
-  service-account-json: {"test-key": "test-value"}
+  service-account-json: ""

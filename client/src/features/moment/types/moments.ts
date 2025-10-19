@@ -23,6 +23,10 @@ export interface MyMomentsItem {
   imageUrl?: string | null;
   comments: Comment[] | null;
   tagNames: string[];
+  momentNotification: {
+    isRead: boolean;
+    notificationIds: number[];
+  };
 }
 
 export interface Comment {

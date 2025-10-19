@@ -8,6 +8,7 @@ import moment.notification.domain.PushNotification;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -80,7 +81,7 @@ class PushNotificationRepositoryTest {
     }
 
     @Test
-    void 특정_user의_디바이스_엔드포인트_존재_여부를_판단한다() {
+    void 사용자의_디바이스_엔드포인트_존재_여부를_판단한다() {
         // given
         User anotherUser = new User("cookie@gmail.com",  "cookie123!", "cookie", ProviderType.EMAIL);
         userRepository.save(anotherUser);
@@ -104,17 +105,25 @@ class PushNotificationRepositoryTest {
     }
 
     @Test
-    void 사용자로_푸시_알림_정보를_성공적으로_삭제한다() {
+    void 사용자와_디바이스_엔드포인트로_푸시_알림_정보를_성공적으로_삭제한다() {
         // given
         String deviceToken = "test-device-token";
+        String anotherToken = "another-test-device-token";
+
         PushNotification pushNotification = new PushNotification(user, deviceToken);
         pushNotificationRepository.save(pushNotification);
 
+        PushNotification anotherPushNotification = new PushNotification(user, anotherToken);
+        pushNotificationRepository.save(anotherPushNotification);
+
         // when
-        pushNotificationRepository.deleteByUser(user);
+        pushNotificationRepository.deleteByUserAndDeviceEndpoint(user, deviceToken);
 
         // then
         List<PushNotification> foundNotification = pushNotificationRepository.findByUserId(user.getId());
-        assertThat(foundNotification).isEmpty();
+        assertAll(
+                () -> assertThat(foundNotification).hasSize(1),
+                () -> assertThat(foundNotification.getFirst().getDeviceEndpoint()).isEqualTo(anotherToken)
+        );
     }
 }
