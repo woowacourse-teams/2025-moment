@@ -1,4 +1,5 @@
 import ReactGA from 'react-ga4';
+import { isGAEnabled } from '.';
 
 type CommonParams = {
   screen?: string;
@@ -71,9 +72,6 @@ type EventMap = {
   };
 };
 
-const isProd =
-  process.env.NODE_ENV === 'production' && window.location.hostname === 'connectingmoment.com';
-
 function getCommonParams(): CommonParams {
   return {
     screen: window.location.pathname,
@@ -85,11 +83,6 @@ export function track<E extends keyof EventMap>(
   eventName: E,
   params: EventMap[E] & CommonParams = {} as any,
 ) {
-  if (!isProd) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[GA][dev-only]', eventName, { ...getCommonParams(), ...params });
-    }
-    return;
-  }
+  if (!isGAEnabled()) return;
   ReactGA.event(eventName as string, { ...getCommonParams(), ...params });
 }

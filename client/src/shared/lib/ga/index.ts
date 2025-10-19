@@ -25,12 +25,6 @@ export const initGA = () => {
 };
 
 export const sendPageview = (path: string) => {
-  if (!isGAEnabled()) {
-    if (!isProdEnv) {
-      console.debug('[GA][pageview][dev-only]', path, { title: document.title });
-    }
-    return;
-  }
-
+  if (!isGAEnabled()) return;
   ReactGA.send({ hitType: 'pageview', page: path, title: document.title });
 };
