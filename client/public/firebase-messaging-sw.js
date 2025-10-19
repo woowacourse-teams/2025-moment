@@ -79,6 +79,7 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
 
+  // API 요청은 서비스 워커가 개입하지 않고 브라우저가 직접 처리하도록 함
   const isApiRequest =
     url.hostname === 'localhost' ||
     url.hostname.startsWith('api-') ||
@@ -86,51 +87,52 @@ self.addEventListener('fetch', event => {
     request.headers.get('content-type')?.includes('application/json');
 
   if (isApiRequest) {
-    // API 요청은 캐싱하지 않고 바로 fetch (더 간단하고 안전)
-    event.respondWith(fetch(request));
-  } else {
-    event.respondWith(
-      caches.match(request).then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(request)
-          .then(response => {
-            // 캐싱 가능한 응답인지 체크
-            if (
-              !response ||
-              response.status !== 200 ||
-              response.type === 'error' ||
-              response.type === 'opaque'
-            ) {
-              return response;
-            }
-
-            // GET 요청만 캐싱
-            if (request.method === 'GET') {
-              const responseToCache = response.clone();
-              caches
-                .open(CACHE_NAME)
-                .then(cache => {
-                  return cache.put(request, responseToCache);
-                })
-                .catch(() => {
-                  // 캐싱 실패는 조용히 무시 (앱 동작에 영향 없음)
-                });
-            }
-
-            return response;
-          })
-          .catch(() => {
-            // 오프라인 또는 네트워크 오류 시 대체 페이지
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/offline.html');
-            }
-          });
-      }),
-    );
+    // early return: 서비스 워커를 거치지 않고 바로 네트워크로 요청
+    return;
   }
+
+  // 정적 리소스만 캐싱 처리
+  event.respondWith(
+    caches.match(request).then(cachedResponse => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      return fetch(request)
+        .then(response => {
+          // 캐싱 가능한 응답인지 체크
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type === 'error' ||
+            response.type === 'opaque'
+          ) {
+            return response;
+          }
+
+          // GET 요청만 캐싱
+          if (request.method === 'GET') {
+            const responseToCache = response.clone();
+            caches
+              .open(CACHE_NAME)
+              .then(cache => {
+                return cache.put(request, responseToCache);
+              })
+              .catch(() => {
+                // 캐싱 실패는 조용히 무시 (앱 동작에 영향 없음)
+              });
+          }
+
+          return response;
+        })
+        .catch(() => {
+          // 오프라인 또는 네트워크 오류 시 대체 페이지
+          if (request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/offline.html');
+          }
+        });
+    }),
+  );
 });
 
 self.addEventListener('notificationclick', event => {
