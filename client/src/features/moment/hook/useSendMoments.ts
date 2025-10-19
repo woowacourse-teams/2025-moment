@@ -42,8 +42,8 @@ export const useSendMoments = () => {
     return () => {
       const typed = content.trim().length > 0 || imageData != null || tagNames.length > 0;
       if (!isSuccess && typed) {
-        const len = content.length;
-        const content_length_bucket = len <= 60 ? 's' : len <= 140 ? 'm' : 'l';
+        const length = content.length;
+        const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
         const has_media = Boolean(imageData);
         const mood_tag = tagNames?.[0];
         track('abandon_composer', {

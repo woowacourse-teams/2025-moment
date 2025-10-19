@@ -44,13 +44,14 @@ export const useSendComments = (momentId: number) => {
     return () => {
       const typed = comment.trim().length > 0 || imageData != null;
       if (!isSuccess && typed) {
-        const len = comment.length;
-        const length_bucket = len <= 60 ? 's' : len <= 140 ? 'm' : 'l';
+        const length = comment.length;
+        const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
+        const has_media = Boolean(imageData);
         track('abandon_composer', {
           stage: 'typed',
           composer: 'comment',
-          content_length_bucket: length_bucket,
-          has_media: Boolean(imageData),
+          has_media,
+          content_length_bucket,
         });
       }
     };
