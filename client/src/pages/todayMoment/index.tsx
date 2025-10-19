@@ -6,6 +6,7 @@ import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
+import { track } from '@/shared/lib/ga/track';
 
 export default function TodayMomentPage() {
   const {
@@ -20,6 +21,10 @@ export default function TodayMomentPage() {
   const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
   const momentBasicWritable = momentWritingStatusData?.data?.status;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    track('open_composer', { entry: 'nav' });
+  }, []);
 
   useEffect(() => {
     if (momentBasicWritable === 'DENIED') {
