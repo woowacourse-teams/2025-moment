@@ -1,7 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { track } from '@/shared/lib/ga/track';
 
-export function useDwell(params: { item_type: string; item_id?: string }) {
+export function useDwell(params: {
+  item_type: 'moment' | 'comment';
+  surface: 'composer' | 'feed' | 'detail' | string;
+  item_id?: string;
+}) {
   const start = useRef<number>(0);
 
   useEffect(() => {

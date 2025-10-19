@@ -25,7 +25,7 @@ type EventMap = {
     content_length_bucket?: 's' | 'm' | 'l';
   };
   give_empathy: { item_id: string; source?: 'feed' | 'detail' };
-  open_composer: { entry?: 'nav' | 'cta' | 'reminder' };
+  open_composer: { entry?: 'nav' | 'cta' | 'reminder'; composer?: 'moment' | 'comment' | 'extra' };
   publish_moment: {
     item_id: string;
     has_media?: boolean;
@@ -33,9 +33,14 @@ type EventMap = {
     mood_tag?: string;
   };
   submit_comment: { item_id: string; length_bucket?: 's' | 'm' | 'l' };
-  dwell_start: { item_type?: 'composer' | 'comment' | 'feed' | string; item_id?: string };
+  dwell_start: {
+    item_type?: 'moment' | 'comment';
+    surface?: 'composer' | 'feed' | 'detail' | string;
+    item_id?: string;
+  };
   dwell_end: {
-    item_type?: 'composer' | 'comment' | 'feed' | string;
+    item_type?: 'moment' | 'comment';
+    surface?: 'composer' | 'feed' | 'detail' | string;
     item_id?: string;
     dwell_seconds: number;
   };
@@ -46,12 +51,12 @@ type EventMap = {
   };
   abandon_composer: {
     stage?: 'typed' | 'attached_media' | 'before_submit';
-    composer?: 'basic' | 'extra';
+    composer?: 'moment' | 'comment' | 'extra';
     has_media?: boolean;
     content_length_bucket?: 's' | 'm' | 'l';
     mood_tag?: string;
   };
-  error_publish: { composer?: 'basic' | 'extra'; code?: string };
+  error_publish: { composer?: 'moment' | 'extra'; code?: string };
   error_comment: { code?: string };
 };
 

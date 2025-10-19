@@ -11,7 +11,13 @@ export const useSendComments = (momentId: number) => {
   const { showError } = useToast();
   const [imageData, setImageData] = useState<ImageUploadData | null>(null);
 
-  const { mutateAsync: sendComments, isPending, error, isError } = useSendCommentsMutation();
+  const {
+    mutateAsync: sendComments,
+    isPending,
+    error,
+    isError,
+    isSuccess,
+  } = useSendCommentsMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
@@ -37,18 +43,18 @@ export const useSendComments = (momentId: number) => {
   useEffect(() => {
     return () => {
       const typed = comment.trim().length > 0 || imageData != null;
-      if (typed) {
+      if (!isSuccess && typed) {
         const len = comment.length;
         const length_bucket = len <= 60 ? 's' : len <= 140 ? 'm' : 'l';
         track('abandon_composer', {
           stage: 'typed',
-          composer: 'basic',
+          composer: 'comment',
           content_length_bucket: length_bucket,
           has_media: Boolean(imageData),
         });
       }
     };
-  }, [comment, imageData]);
+  }, [comment, imageData, isSuccess]);
 
   return {
     error,

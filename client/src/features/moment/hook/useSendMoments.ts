@@ -48,7 +48,7 @@ export const useSendMoments = () => {
         const mood_tag = tagNames?.[0];
         track('abandon_composer', {
           stage: 'typed',
-          composer: 'basic',
+          composer: 'moment',
           has_media,
           content_length_bucket,
           ...(mood_tag ? { mood_tag } : {}),

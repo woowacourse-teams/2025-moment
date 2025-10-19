@@ -9,7 +9,7 @@ export const useMomentsExtraMutation = () => {
 
   return useMutation({
     mutationFn: sendExtraMoments,
-    onSuccess: (_data, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
@@ -21,8 +21,10 @@ export const useMomentsExtraMutation = () => {
       const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
       const has_media = Boolean(variables.imageUrl && variables.imageName);
       const mood_tag = variables.tagNames?.[0];
+
+      const momentId = data?.data?.id ?? data?.data?.momentId ?? data?.id ?? data?.momentId;
       track('publish_moment', {
-        item_id: _data.id,
+        item_id: momentId ?? '',
         has_media,
         content_length_bucket,
         ...(mood_tag ? { mood_tag } : {}),

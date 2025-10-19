@@ -22,10 +22,6 @@ export const initGA = () => {
 
   ReactGA.initialize(GA_MEASUREMENT_ID);
   initialized = true;
-
-  if (!isProdEnv) {
-    console.debug('[GA] initialized');
-  }
 };
 
 export const sendPageview = (path: string) => {

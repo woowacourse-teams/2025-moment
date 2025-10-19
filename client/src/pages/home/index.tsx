@@ -9,8 +9,11 @@ import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
 import { PropsWithChildren, useState } from 'react';
 import { explainData } from './const';
+import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 
 export default function HomePage() {
+  useScrollDepth();
+
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
 

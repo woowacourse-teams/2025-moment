@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';
+import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 
 export default function TodayMomentPage() {
   const {
@@ -17,14 +18,15 @@ export default function TodayMomentPage() {
     content,
     tagNames,
   } = useSendMoments();
-  useSendMoments();
   const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
   const momentBasicWritable = momentWritingStatusData?.data?.status;
   const navigate = useNavigate();
 
   useEffect(() => {
-    track('open_composer', { entry: 'nav' });
+    track('open_composer', { entry: 'nav', composer: 'moment' });
   }, []);
+
+  useDwell({ item_type: 'moment', surface: 'composer' });
 
   useEffect(() => {
     if (momentBasicWritable === 'DENIED') {
