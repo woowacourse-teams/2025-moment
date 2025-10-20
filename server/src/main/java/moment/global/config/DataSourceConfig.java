@@ -7,8 +7,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -38,8 +40,14 @@ public class DataSourceConfig {
         return router;
     }
 
+    @Primary
+    @Bean
+    public DataSource dataSource() {
+        return new LazyConnectionDataSourceProxy(routingDataSource());
+    }
+
     @Bean
     public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(routingDataSource());
+        return new DataSourceTransactionManager(dataSource());
     }
 }
