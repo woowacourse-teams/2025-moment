@@ -1,6 +1,7 @@
 package moment.moment.dto.response.tobe;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
@@ -23,6 +24,7 @@ public record MomentComposition(
                                        MomentImage momentImage) {
 
         String imageUrl = momentImage == null ? null : momentImage.getImageUrl();
+        momentTags = momentTags == null ? Collections.emptyList() : momentTags;
 
         List<String> tagNames = momentTags.stream()
                 .map(MomentTag::getTagName)
