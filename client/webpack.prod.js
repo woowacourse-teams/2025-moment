@@ -1,7 +1,6 @@
 import CompressionPlugin from 'compression-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import fs from 'fs';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -11,22 +10,6 @@ import common from './webpack.common.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Service Worker에 빌드 버전을 주입하는 커스텀 플러그인
-class InjectServiceWorkerVersionPlugin {
-  apply(compiler) {
-    compiler.hooks.done.tap('InjectServiceWorkerVersionPlugin', () => {
-      const buildVersion = Date.now();
-      const swPath = path.join(compiler.options.output.path, 'firebase-messaging-sw.js');
-
-      if (fs.existsSync(swPath)) {
-        let content = fs.readFileSync(swPath, 'utf-8');
-        content = content.replace(/__BUILD_VERSION__/g, buildVersion.toString());
-        fs.writeFileSync(swPath, content, 'utf-8');
-      }
-    });
-  }
-}
 
 export default merge(common, {
   mode: 'production',
@@ -92,7 +75,6 @@ export default merge(common, {
         },
       ],
     }),
-    new InjectServiceWorkerVersionPlugin(),
     new CompressionPlugin({
       algorithm: 'gzip',
       test: /\.(js|css|html|svg)$/,
