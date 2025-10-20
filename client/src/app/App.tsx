@@ -18,29 +18,35 @@ const AppContent = () => {
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   useEffect(() => {
-    const initializeFCM = async () => {
+    const initializeMessaging = async () => {
       try {
         if ('serviceWorker' in navigator) {
           await navigator.serviceWorker.ready;
         }
-
         await setupForegroundMessage();
+      } catch (error) {
+        console.error('[FCM] Messaging 초기화 오류:', error);
+      }
+    };
 
-        if (!isLoggedIn) {
-          return;
-        }
+    initializeMessaging();
+  }, []);
 
+  useEffect(() => {
+    const registerToken = async () => {
+      if (!isLoggedIn) return;
+
+      try {
         const token = await requestFCMPermissionAndToken();
         if (!token) return;
 
         await registerFCMToken(token);
-        console.log('[FCM] 초기화 완료');
       } catch (error) {
-        console.error('[FCM] 초기화 오류:', error);
+        console.error('[FCM] 토큰 등록 오류:', error);
       }
     };
 
-    initializeFCM();
+    registerToken();
   }, [isLoggedIn]);
 
   return (
