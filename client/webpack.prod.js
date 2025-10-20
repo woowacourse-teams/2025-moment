@@ -23,7 +23,6 @@ class InjectServiceWorkerVersionPlugin {
         let content = fs.readFileSync(swPath, 'utf-8');
         content = content.replace(/__BUILD_VERSION__/g, buildVersion.toString());
         fs.writeFileSync(swPath, content, 'utf-8');
-        console.log(`[Webpack] ✅ Injected build version ${buildVersion} into Service Worker`);
       }
     });
   }
