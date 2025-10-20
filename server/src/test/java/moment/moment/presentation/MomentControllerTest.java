@@ -26,6 +26,7 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
+import moment.moment.dto.response.TagNamesResponse;
 import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.dto.response.tobe.MyMomentResponse;
 import moment.moment.infrastructure.MomentImageRepository;
@@ -374,6 +375,37 @@ class MomentControllerTest {
                 () -> assertThat(olderMomentNotificationResponse.isRead()).isTrue(),
                 () -> assertThat(olderMomentNotificationResponse.notificationIds()).isEmpty()
         );
+    }
+
+    @Test
+    void 내_모멘트_조회_시_모멘트_태그가_없는_경우도_조회된다() {
+        // given
+        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        momenter.addStarAndUpdateLevel(10);
+        User savedMomenter = userRepository.save(momenter);
+
+        String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
+
+        Moment momentWithoutTag = new Moment("태그 없는 모멘트", savedMomenter, WriteType.BASIC);
+        momentRepository.save(momentWithoutTag);
+
+        // when
+        MyMomentPageResponse response = RestAssured.given().log().all()
+                .param("limit", 5)
+                .cookie("accessToken", momenterToken)
+                .when().get("/api/v1/moments/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getObject("data", MyMomentPageResponse.class);
+
+        // then
+        List<MyMomentResponse> myMoments = response.items().myMomentsResponse();
+
+        TagNamesResponse tagNames = myMoments.get(0).tagNames();
+
+        assertThat(tagNames.getTagNames()).isEmpty();
     }
 
     @Test

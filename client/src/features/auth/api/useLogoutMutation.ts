@@ -24,7 +24,29 @@ export const useLogoutMutation = () => {
   });
 };
 
+const deletePushNotification = async (): Promise<void> => {
+  const deviceEndpoint = localStorage.getItem('deviceEndpoint');
+
+  if (!deviceEndpoint) return;
+
+  await api.delete('/push-notifications', {
+    data: { deviceEndpoint },
+  });
+};
+
 const logoutUser = async (): Promise<void> => {
-  const response = await api.post('/auth/logout');
-  return response.data;
+  const [logoutResult, pushResult] = await Promise.allSettled([
+    api.post('/auth/logout'),
+    deletePushNotification(),
+  ]);
+
+  if (logoutResult.status === 'rejected') {
+    throw logoutResult.reason;
+  }
+
+  if (pushResult.status === 'fulfilled') {
+    localStorage.removeItem('deviceEndpoint');
+  }
+
+  return logoutResult.value.data;
 };

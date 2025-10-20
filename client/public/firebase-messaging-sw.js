@@ -1,8 +1,8 @@
-/* eslint-env browser, serviceworker */
-/* global importScripts, firebase, self, URL, clients, caches */
-
 // --- 캐시 설정 ---
-const CACHE_NAME = 'moment-cache-v1';
+// 빌드마다 새로운 캐시를 사용하도록 버전 관리
+const CACHE_VERSION = '__BUILD_VERSION__';
+const CACHE_NAME = `moment-cache-${CACHE_VERSION}`;
+// 오프라인 지원을 위한 필수 리소스만 캐싱
 const urlsToCache = ['/manifest.json', '/icon-192x192.png', '/icon-512x512.png', '/offline.html'];
 
 // --- Firebase 초기화 ---
@@ -20,31 +20,10 @@ try {
     measurementId: 'G-NM044KCWN9',
   });
 
-  const messaging = firebase.messaging();
-
-  messaging.onBackgroundMessage(({ notification, data }) => {
-    const title = (notification && notification.title) || '새 알림';
-    const options = {
-      body: (notification && notification.body) || '',
-      icon: '/icon-512x512.png',
-      badge: '/icon-192x192.png',
-      data,
-      requireInteraction: true,
-    };
-
-    self.registration.showNotification(title, options);
-  });
+  // Firebase가 자동으로 백그라운드 알림을 처리하므로 별도 핸들러 불필요
+  // -> 필요 시 messaging.onBackgroundMessage()로 커스텀 처리 가능
 } catch (error) {
   console.warn('[SW] Firebase FCM 초기화 실패:', error);
-}
-
-// MSW 로드 (개발 환경)
-if (self.location.hostname === 'localhost') {
-  try {
-    importScripts('/mockServiceWorker.js');
-  } catch {
-    // MSW 로드 실패는 정상 (프로덕션 환경)
-  }
 }
 
 self.addEventListener('install', event => {
@@ -83,54 +62,46 @@ self.addEventListener('fetch', event => {
     url.hostname === 'localhost' ||
     url.hostname.startsWith('api-') ||
     url.hostname.startsWith('api.') ||
-    request.headers.get('content-type')?.includes('application/json');
+    url.pathname.startsWith('/api/');
 
   if (isApiRequest) {
-    // API 요청은 캐싱하지 않고 바로 fetch (더 간단하고 안전)
-    event.respondWith(fetch(request));
-  } else {
+    //  API 요청 -> 서비스 워커를 거치지 않고 바로 네트워크로 요청
+    return;
+  }
+
+  // 오프라인 지원용 정적 리소스 (manifest, icons, offline.html)만 캐시 우선
+  const isOfflineResource = urlsToCache.some(cachedUrl => url.pathname === cachedUrl);
+
+  if (isOfflineResource) {
     event.respondWith(
       caches.match(request).then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(request)
-          .then(response => {
-            // 캐싱 가능한 응답인지 체크
-            if (
-              !response ||
-              response.status !== 200 ||
-              response.type === 'error' ||
-              response.type === 'opaque'
-            ) {
-              return response;
-            }
-
-            // GET 요청만 캐싱
-            if (request.method === 'GET') {
-              const responseToCache = response.clone();
-              caches
-                .open(CACHE_NAME)
-                .then(cache => {
-                  return cache.put(request, responseToCache);
-                })
-                .catch(() => {
-                  // 캐싱 실패는 조용히 무시 (앱 동작에 영향 없음)
-                });
-            }
-
-            return response;
-          })
-          .catch(() => {
-            // 오프라인 또는 네트워크 오류 시 대체 페이지
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/offline.html');
-            }
-          });
+        return cachedResponse || fetch(request);
       }),
     );
+    return;
   }
+
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        if (!response || response.status !== 200 || response.type === 'error') {
+          return response;
+        }
+        return response;
+      })
+      .catch(() => {
+        // 오프라인 또는 네트워크 오류 시에만 캐시에서 찾거나 오프라인 페이지 표시
+        return caches.match(request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // HTML 요청이면 오프라인 페이지 표시
+          if (request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/offline.html');
+          }
+        });
+      }),
+  );
 });
 
 self.addEventListener('notificationclick', event => {
