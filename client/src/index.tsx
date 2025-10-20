@@ -2,18 +2,6 @@ import App from '@/app/App';
 import { createRoot } from 'react-dom/client';
 import '../instrument';
 
-// async function enableMocking() {
-//   if (process.env.NODE_ENV !== 'development') {
-//     return;
-//   }
-
-//   const { worker } = await import('./mocks/browser');
-
-//   return worker.start({
-//     onUnhandledRequest: 'warn',
-//   });
-// }
-
 async function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) {
     console.warn('[SW] Service Worker를 지원하지 않는 브라우저입니다.');
@@ -47,8 +35,6 @@ async function registerServiceWorker() {
 }
 
 async function startApp() {
-  // await enableMocking();
-
   await registerServiceWorker();
 
   const rootElement = document.getElementById('root');
