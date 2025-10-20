@@ -72,6 +72,13 @@ export default merge(common, {
           globOptions: {
             ignore: ['**/index.html'],
           },
+          transform(content, absolutePath) {
+            if (absolutePath.includes('firebase-messaging-sw.js')) {
+              const buildVersion = Date.now();
+              return content.toString().replace(/__BUILD_VERSION__/g, buildVersion);
+            }
+            return content;
+          },
         },
       ],
     }),
