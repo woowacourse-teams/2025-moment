@@ -7,11 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @Profile("prod")
@@ -30,6 +28,8 @@ public class DataSourceConfig {
     }
 
     @Bean
+    @Primary
+    @DependsOn(value = {"readDataSource", "writeDataSource"})
     public DataSource routingDataSource() {
         DataSourceRouter router = new DataSourceRouter();
         Map<Object, Object> targetDataSources = new HashMap<>();
@@ -40,7 +40,7 @@ public class DataSourceConfig {
         return router;
     }
 
-    @Primary
+    /*@Primary
     @Bean
     public DataSource dataSource() {
         return new LazyConnectionDataSourceProxy(routingDataSource());
@@ -49,5 +49,5 @@ public class DataSourceConfig {
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
-    }
+    }*/
 }
