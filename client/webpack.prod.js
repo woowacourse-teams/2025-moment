@@ -70,7 +70,7 @@ export default merge(common, {
           from: 'public',
           to: '',
           globOptions: {
-            ignore: ['**/index.html'],
+            ignore: ['**/index.html', '**/mockServiceWorker.js'],
           },
         },
       ],
