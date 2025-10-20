@@ -7,12 +7,12 @@ spring:
 
   datasource:
     write:
-      url: jdbc:mysql://${WRITE_DB_HOST}:${DB_PORT}/${DB_NAME}
+      jdbc-url: jdbc:mysql://${WRITE_DB_HOST}:${DB_PORT}/${DB_NAME}
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
     read:
-      url: jdbc:mysql://${READ_DB_HOST}:${DB_PORT}/${DB_NAME}
+      jdbc-url: jdbc:mysql://${READ_DB_HOST}:${DB_PORT}/${DB_NAME}
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
