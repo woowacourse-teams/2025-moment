@@ -48,7 +48,7 @@ public class DataSourceConfig {
         targetDataSources.put("read", readDataSource);
         targetDataSources.put("write", writeDataSource);
 
-        routingDataSource routingDataSource = new routingDataSource();
+        RoutingDataSource routingDataSource = new RoutingDataSource();
         routingDataSource.setDefaultTargetDataSource(writeDataSource);
         routingDataSource.setTargetDataSources(targetDataSources);
         routingDataSource.afterPropertiesSet();
