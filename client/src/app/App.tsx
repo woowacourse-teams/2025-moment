@@ -8,15 +8,11 @@ import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
 import { theme } from './styles/theme';
 import { useEffect } from 'react';
-import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/utils/firebase';
-import { registerFCMToken } from '@/shared/api/registerFCMToken';
-import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { setupForegroundMessage } from '@/shared/utils/firebase';
 import { shouldShowIOSBrowserWarning } from '@/shared/utils/detectBrowser';
 import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
 
 const AppContent = () => {
-  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
-
   useEffect(() => {
     const initializeMessaging = async () => {
       try {
@@ -31,23 +27,6 @@ const AppContent = () => {
 
     initializeMessaging();
   }, []);
-
-  useEffect(() => {
-    const registerToken = async () => {
-      if (!isLoggedIn) return;
-
-      try {
-        const token = await requestFCMPermissionAndToken();
-        if (!token) return;
-
-        await registerFCMToken(token);
-      } catch (error) {
-        console.error('[FCM] 토큰 등록 오류:', error);
-      }
-    };
-
-    registerToken();
-  }, [isLoggedIn]);
 
   return (
     <ThemeProvider theme={theme}>
