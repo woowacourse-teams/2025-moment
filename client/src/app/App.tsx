@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { requestFCMPermissionAndToken, setupForegroundMessage } from '@/shared/utils/firebase';
 import { registerFCMToken } from '@/shared/api/registerFCMToken';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { shouldShowIOSBrowserWarning } from '@/shared/utils/detectBrowser';
+import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
 
 const AppContent = () => {
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
@@ -44,6 +46,7 @@ const AppContent = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
+      {shouldShowIOSBrowserWarning() && <IOSBrowserWarning />}
       <RouterProvider router={router} />
       {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </ThemeProvider>
