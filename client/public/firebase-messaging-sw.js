@@ -52,30 +52,6 @@ self.addEventListener('activate', event => {
   );
 });
 
-self.addEventListener('fetch', event => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // 같은 origin의 리소스가 아니면 개입하지 않음
-  if (url.origin !== self.location.origin) {
-    return;
-  }
-
-  // PWA 필수 리소스(manifest, icons, offline.html)만 캐싱: Cache First
-  const isOfflineResource = urlsToCache.some(cachedUrl => url.pathname === cachedUrl);
-  if (isOfflineResource) {
-    event.respondWith(
-      caches.match(request).then(cachedResponse => {
-        return cachedResponse || fetch(request);
-      }),
-    );
-    return;
-  }
-
-  // 나머지 모든 리소스(JS, CSS, 이미지, 폰트, API 등)는 브라우저 기본 처리에 맡김
-  // Service Worker가 개입하지 않음
-});
-
 self.addEventListener('notificationclick', event => {
   event.notification.close();
 
