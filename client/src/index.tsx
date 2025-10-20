@@ -8,6 +8,18 @@ async function registerServiceWorker() {
     return null;
   }
 
+  // MSW Service Worker 제거 (프로덕션 환경에서 불필요)
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    for (const registration of registrations) {
+      if (registration.active?.scriptURL.includes('mockServiceWorker')) {
+        await registration.unregister();
+      }
+    }
+  } catch (error) {
+    console.warn('[SW] MSW 제거 실패:', error);
+  }
+
   try {
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
       scope: '/',
