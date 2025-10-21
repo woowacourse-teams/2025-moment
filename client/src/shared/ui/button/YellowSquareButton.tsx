@@ -9,8 +9,21 @@ interface RequestButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-export const YellowSquareButton = ({ Icon, title, onClick, disabled, type }: RequestButtonProps) => {
+export const YellowSquareButton = ({
+  Icon,
+  title,
+  onClick,
+  disabled,
+  type,
+}: RequestButtonProps) => {
   return (
-    <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} disabled={disabled} type={type} />
+    <Button
+      Icon={Icon}
+      title={title}
+      variant="tertiary"
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    />
   );
 };
