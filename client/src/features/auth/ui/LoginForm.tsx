@@ -22,7 +22,7 @@ export const LoginForm = () => {
         <S.LoginFormTitleContainer>
           <S.LoginLogoTitleContainer>
             <S.LogoImage src="/images/logo.webp" alt="" />
-            <S.LogoTitle>모멘트</S.LogoTitle>
+            <S.LogoTitle>Moment</S.LogoTitle>
           </S.LoginLogoTitleContainer>
           <S.LoginTitle>로그인</S.LoginTitle>
           <S.LoginDescription>이메일과 비밀번호를 입력하여 로그인해주세요.</S.LoginDescription>
