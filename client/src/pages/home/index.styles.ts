@@ -56,12 +56,10 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
 
   @media (max-width: 768px) {
-    margin-top: 60px;
     padding: 16px;
   }
 
   @media (max-width: 480px) {
-    margin-top: 80px;
     padding: 12px;
   }
 `;
@@ -142,6 +140,11 @@ export const BottomArrow = styled.img<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? float : 'none')} 2s ease-in-out infinite;
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
     drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 45px rgba(255, 255, 255, 0.2));
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
 export const IntroSection = styled.section`
