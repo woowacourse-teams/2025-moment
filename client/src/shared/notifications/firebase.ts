@@ -25,13 +25,12 @@ export const requestFCMPermission = async () => {
     }
 
     if (permission === 'denied') {
-      alert('알림 권한이 거부되었습니다.');
+      // alert('알림 권한이 거부되었습니다.');
       return null;
     }
 
     if (permission === 'default') {
-      // S.TODO : 권한 선택으로 유도할지
-      alert('권한 선택을 하지 않았습니다.');
+      // alert('알림 권한 선택을 하지 않았습니다.');
       return null;
     }
   } catch (error) {

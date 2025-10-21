@@ -73,7 +73,6 @@ export default function HomePage() {
         ))}
       </S.HomePageWrapper>
       <Modal size="small" isOpen={isOpen} onClose={handleClose}>
-        {' '}
         <Modal.Header title="모멘트와 코멘트 알림을 받아보세요!" showCloseButton={true} />
         <Modal.Content>
           <NotificationButton onClose={handleClose} />

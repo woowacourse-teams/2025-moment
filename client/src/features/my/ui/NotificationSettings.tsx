@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { requestFCMPermissionAndToken } from '@/shared/utils/firebase';
-import { registerFCMToken } from '@/shared/api/registerFCMToken';
 import { Bell, BellOff, AlertCircle } from 'lucide-react';
 import * as S from './NotificationSettings.styles';
+import { registerFCMToken } from '@/shared/notifications/registerFCMToken';
 
 type PermissionStatus = 'default' | 'granted' | 'denied';
 
