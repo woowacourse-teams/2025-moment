@@ -9,7 +9,7 @@ import { api } from '@/app/lib/api';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 
 export const registerFCMToken = async (registrationToken: string) => {
-  return await api.post<void>('/push-notifications', { registrationToken });
+  return await api.post<void>('/push-notifications', { deviceEndpoint: registrationToken });
 };
 
 export const useInitializeFCM = () => {

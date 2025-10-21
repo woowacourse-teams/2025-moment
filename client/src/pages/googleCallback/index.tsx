@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { requestFCMPermissionAndToken } from '@/shared/utils/firebase';
-import { registerFCMToken } from '@/shared/api/registerFCMToken';
+import { registerFCMToken } from '@/shared/notifications/useInitializeFCM';
 
 export default function GoogleCallbackPage() {
   const queryClient = useQueryClient();
