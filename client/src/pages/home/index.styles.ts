@@ -117,7 +117,7 @@ export const HighlightedText = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
     margin: 0;
 
     &:first-of-type,

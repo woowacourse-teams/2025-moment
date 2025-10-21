@@ -65,7 +65,7 @@ export const Title = styled.h1`
   }
 
   @media (max-width: 768px) {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    font-size: clamp(2.5em, 6vw, 4rem);
   }
 `;
 
@@ -89,7 +89,7 @@ export const Subtitle = styled.p`
   }
 
   @media (max-width: 768px) {
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     line-height: 1.5;
   }
 `;
