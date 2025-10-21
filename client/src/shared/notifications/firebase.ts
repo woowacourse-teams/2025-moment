@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 
 let messagingInstance: ReturnType<typeof getMessaging> | null = null;
 
-const getMessagingInstance = async () => {
+export const getMessagingInstance = async () => {
   if (messagingInstance) return messagingInstance;
 
   const supported = await isSupported();
