@@ -13,7 +13,7 @@ import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { NotificationButton } from '@/shared/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { isIOS, isPWA } from '@/shared/utils/device';
+import { isDevice, isPWA } from '@/shared/utils/device';
 import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
 
 export default function HomePage() {
@@ -25,7 +25,7 @@ export default function HomePage() {
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
   const shouldShowNotificationModal =
-    isLoggedIn && isIOS() && isPWA() && Notification.permission === 'default';
+    isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
 
   useEffect(() => {
     if (shouldShowNotificationModal) {
