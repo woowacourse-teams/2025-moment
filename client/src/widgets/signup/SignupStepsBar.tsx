@@ -33,11 +33,7 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
           aria-hidden="true"
         />
         <S.StepConnector completed={currentStepNumber > 2} aria-hidden="true" />
-        <S.StepDot
-          active={currentStepNumber === 3}
-          completed={false}
-          aria-hidden="true"
-        />
+        <S.StepDot active={currentStepNumber === 3} completed={false} aria-hidden="true" />
       </S.StepsContainer>
       <S.SignupFormTitle>
         <S.SignupFormIcon aria-hidden="true">{stepConfig.icon}</S.SignupFormIcon>
