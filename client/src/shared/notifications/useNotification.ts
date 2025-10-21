@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 import { getToken } from 'firebase/messaging';
 
 import { messaging } from './firebase';
-import { registerFCMToken } from './useInitializeFCM';
+import { registerFCMToken } from './registerFCMToken';
 
 export const useNotification = () => {
   const [permission, setPermission] = useState<NotificationPermission>('default');
