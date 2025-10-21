@@ -63,7 +63,10 @@ export const LoginDescription = styled.p`
   color: ${({ theme }) => theme.colors['gray-200']};
 `;
 
-export const LoginFormContent = styled.div`
+export const LoginFormContent = styled.fieldset`
+  border: none;
+  padding: 0;
+  margin: 0;
   width: 100%;
   flex: 1;
   display: flex;

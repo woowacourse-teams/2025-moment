@@ -28,6 +28,7 @@ export const LoginForm = () => {
           <S.LoginDescription>이메일과 비밀번호를 입력하여 로그인해주세요.</S.LoginDescription>
         </S.LoginFormTitleContainer>
         <S.LoginFormContent>
+          <legend className="sr-only">로그인 정보 입력</legend>
           <S.InputGroup>
             <S.Label htmlFor="email">이메일</S.Label>
             <Input
