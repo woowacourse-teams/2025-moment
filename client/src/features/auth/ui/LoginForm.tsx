@@ -37,8 +37,16 @@ export const LoginForm = () => {
               placeholder="이메일을 입력해주세요"
               value={formData.email}
               onChange={handleChange('email')}
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              aria-invalid={!!errors.email}
             />
-            <S.ErrorMessage>{errors.email || ' '}</S.ErrorMessage>
+            <S.ErrorMessage
+              id="email-error"
+              role={errors.email ? 'alert' : undefined}
+              aria-live="polite"
+            >
+              {errors.email || ' '}
+            </S.ErrorMessage>
           </S.InputGroup>
           <S.InputGroup>
             <S.Label htmlFor="password">비밀번호</S.Label>
@@ -48,8 +56,16 @@ export const LoginForm = () => {
               placeholder="비밀번호를 입력해주세요"
               value={formData.password}
               onChange={handleChange('password')}
+              aria-describedby={errors.password ? 'password-error' : undefined}
+              aria-invalid={!!errors.password}
             />
-            <S.ErrorMessage>{errors.password || ' '}</S.ErrorMessage>
+            <S.ErrorMessage
+              id="password-error"
+              role={errors.password ? 'alert' : undefined}
+              aria-live="polite"
+            >
+              {errors.password || ' '}
+            </S.ErrorMessage>
           </S.InputGroup>
         </S.LoginFormContent>
         <S.LoginButton type="submit" disabled={isDisabled}>
