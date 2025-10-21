@@ -52,10 +52,17 @@ export const SignupForm = () => {
     !isEmailCheckSuccess ||
     !isCheckEmailCodeSuccess;
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isDisabled && nextStep) {
+      handleNextStep();
+    }
+  };
+
   return (
-    <S.SignupFormWrapper>
+    <S.SignupFormWrapper onSubmit={handleFormSubmit} aria-label="회원가입">
       <SignupStepBar step={step as Step} />
-      <S.SignupFormContent>
+      <S.SignupFormContent aria-live="polite">
         <Funnel>
           <Step name="step1">
             <SignupStep1
@@ -93,8 +100,19 @@ export const SignupForm = () => {
       </S.SignupFormContent>
 
       <S.ButtonContainer>
-        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
-        <Button title="다음" onClick={handleNextStep} disabled={isDisabled} />
+        <Button 
+          title="이전" 
+          onClick={handlePreviousStep} 
+          disabled={!beforeStep} 
+          type="button"
+          aria-label="이전 단계로" 
+        />
+        <Button 
+          title="다음" 
+          type="submit"
+          disabled={isDisabled} 
+          aria-label="다음 단계로" 
+        />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );
