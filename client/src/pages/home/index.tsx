@@ -1,7 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
-import { sendEvent } from '@/shared/lib/ga';
-import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
 import { Button } from '@/shared/ui/button/Button';
 import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
@@ -9,6 +7,8 @@ import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { explainData } from './const';
+import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
+import { track } from '@/shared/lib/ga/track';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { NotificationButton } from '@/shared/notifications/NotificationButton';
@@ -16,6 +16,8 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQ
 import { isIOS, isPWA } from '@/shared/utils/device';
 
 export default function HomePage() {
+  useScrollDepth();
+
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
   const { isOpen, handleClose, handleOpen } = useModal();
@@ -32,8 +34,8 @@ export default function HomePage() {
 
   const handleClick = () => {
     handleOpen();
-    sendEvent(HomePageAnalyticsEvent.ClickTodayMomentButton);
-    navigate(ROUTES.TODAY_MOMENT);
+    track('click_cta', { target: 'today_moment', cta_type: 'primary' });
+    navigate(ROUTES.TODAY_MOMENT, { state: { entry: 'cta' } });
   };
 
   return (

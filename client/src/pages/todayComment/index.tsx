@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { TAGS } from '@/features/moment/const/tags';
+import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 
 export default function TodayCommentPage() {
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
@@ -16,6 +17,8 @@ export default function TodayCommentPage() {
     error,
     refetch,
   } = useCommentableMomentsQuery({ enabled: isLoggedIn === true }, selectedTag);
+
+  useDwell({ item_type: 'comment', surface: 'composer' });
 
   const handleTagClick = (tag: string) => {
     const newSelectedTag = selectedTag === tag ? undefined : tag;
