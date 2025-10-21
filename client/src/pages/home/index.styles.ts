@@ -22,6 +22,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 export const HeroSection = styled.section`
@@ -44,7 +45,7 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   overflow: hidden;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
+  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
 
   @media (max-width: 768px) {
     margin-top: 60px;
@@ -54,6 +55,73 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   @media (max-width: 480px) {
     margin-top: 80px;
     padding: 12px;
+  }
+`;
+
+export const HighlightedTextContainer = styled.div<{ isVisible: boolean }>`
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 560px;
+
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
+`;
+
+export const HighlightedText = styled.div`
+  position: relative;
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  font-size: clamp(1.4rem, 2.5vw, 1.6rem);
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors['white']};
+  line-height: 1.4;
+  margin: 0.5rem;
+
+  &:first-of-type {
+    align-self: flex-start;
+  }
+
+  &:nth-of-type(2) {
+    align-self: flex-end;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 80%;
+    left: 40%;
+    width: 80%;
+    height: 100%;
+    background-image: url('/images/highlighter.webp');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: translate(-50%, -50%);
+    filter: opacity(0.7);
+    z-index: -1;
+  }
+
+  &:nth-of-type(2)::before {
+    transform: translate(-50%, -50%) scaleX(-1);
+    left: 55%;
+  }
+
+  @media (max-width: 768px) {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    margin: 0;
+
+    &:first-of-type,
+    &:nth-of-type(2) {
+      align-self: center;
+    }
+
+    &::before {
+      height: 80%;
+    }
   }
 `;
 

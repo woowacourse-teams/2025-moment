@@ -50,6 +50,10 @@ export default function HomePage() {
           <S.ContentSection isVisible={isVisible}>
             <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
           </S.ContentSection>
+          <S.HighlightedTextContainer isVisible={isVisible}>
+            <S.HighlightedText>" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
+            <S.HighlightedText>" 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "</S.HighlightedText>
+          </S.HighlightedTextContainer>
         </S.MainContainer>
         <AnimatedIntroSection>
           <S.IntroSection>
