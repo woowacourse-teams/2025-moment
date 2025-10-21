@@ -79,17 +79,7 @@ const config = {
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
     }),
 
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'public',
-          to: '',
-          globOptions: {
-            ignore: ['**/index.html'],
-          },
-        },
-      ],
-    }),
+    // CopyWebpackPlugin은 dev/prod 각각에서 개별 설정
   ],
 };
 

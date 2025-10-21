@@ -5,54 +5,81 @@ import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
+import { useModal } from '@/shared/hooks/useModal';
+import { Modal } from '@/shared/ui/modal/Modal';
+import { NotificationButton } from '@/shared/notifications/NotificationButton';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { isIOS, isPWA } from '@/shared/utils/device';
 
 export default function HomePage() {
   useScrollDepth();
 
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
+  const { isOpen, handleClose, handleOpen } = useModal();
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+
+  const shouldShowNotificationModal =
+    isLoggedIn && isIOS() && isPWA() && Notification.permission === 'default';
+
+  useEffect(() => {
+    if (shouldShowNotificationModal) {
+      handleOpen();
+    }
+  }, [handleOpen, shouldShowNotificationModal]);
 
   const handleClick = () => {
+    handleOpen();
     track('click_cta', { target: 'today_moment', cta_type: 'primary' });
     navigate(ROUTES.TODAY_MOMENT, { state: { entry: 'cta' } });
   };
 
   return (
-    <S.HomePageWrapper>
-      <S.MainContainer>
-        <S.HeroSection>
-          <Hero />
-        </S.HeroSection>
-        <S.ContentSection isVisible={isVisible}>
-          <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
-        </S.ContentSection>
-      </S.MainContainer>
-      <AnimatedIntroSection>
-        <S.IntroSection>
-          <S.IntroTitleLogo src="/images/momentLogo.webp" alt="" />
-          <S.IntroText>
-            "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
-            위로를 건네는 소셜 네트워크 서비스입니다. <br />
-            힘든 순간, 뿌듯한 순간, 위로받고 싶은 순간, 칭찬받고 싶은 모든 순간을 짧은 기록으로
-            남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을 제공합니다.
-          </S.IntroText>
-          <S.IntroImagesWrapper>
-            <S.IntroIcon src="/images/rocket.webp" alt="" />
-            <S.IntroIcon src="/images/paperAirplane.webp" alt="" />
-            <S.IntroIcon src="/images/spaceMan.webp" alt="" />
-          </S.IntroImagesWrapper>
-        </S.IntroSection>
-      </AnimatedIntroSection>
-      {explainData.map(section => (
-        <AnimatedIntroSection key={section.title}>
-          <ExplainSection {...section} />
+    <>
+      <S.HomePageWrapper>
+        <S.MainContainer>
+          <S.HeroSection>
+            <Hero />
+          </S.HeroSection>
+          <S.ContentSection isVisible={isVisible}>
+            <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
+          </S.ContentSection>
+        </S.MainContainer>
+        <AnimatedIntroSection>
+          <S.IntroSection>
+            <S.IntroTitleLogo src="/images/momentLogo.webp" alt="" />
+            <S.IntroText>
+              "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
+              위로를 건네는 소셜 네트워크 서비스입니다. <br />
+              힘든 순간, 뿌듯한 순간, 위로받고 싶은 순간, 칭찬받고 싶은 모든 순간을 짧은 기록으로
+              남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을
+              제공합니다.
+            </S.IntroText>
+            <S.IntroImagesWrapper>
+              <S.IntroIcon src="/images/rocket.webp" alt="" />
+              <S.IntroIcon src="/images/paperAirplane.webp" alt="" />
+              <S.IntroIcon src="/images/spaceMan.webp" alt="" />
+            </S.IntroImagesWrapper>
+          </S.IntroSection>
         </AnimatedIntroSection>
-      ))}
-    </S.HomePageWrapper>
+        {explainData.map(section => (
+          <AnimatedIntroSection key={section.title}>
+            <ExplainSection {...section} />
+          </AnimatedIntroSection>
+        ))}
+      </S.HomePageWrapper>
+      <Modal size="small" isOpen={isOpen} onClose={handleClose}>
+        {' '}
+        <Modal.Header title="모멘트와 코멘트 알림을 받아보세요!" showCloseButton={true} />
+        <Modal.Content>
+          <NotificationButton onClose={handleClose} />
+        </Modal.Content>
+      </Modal>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 import { useRewardHistoryQuery } from '@/features/my/api/useRewardHistory';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
+import { NotificationSettings } from '@/features/my/ui/NotificationSettings';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
@@ -114,6 +115,15 @@ export default function MyPage() {
             </S.EXPSection>
             <S.AvailableStar>사용가능한 별조각: {myProfile.availableStar}</S.AvailableStar>
           </S.UserInfoContainer>
+        </Card>
+      </S.UserInfoSection>
+
+      <S.UserInfoSection>
+        <S.SectionTitleContainer>
+          <S.SectionTitle>알림 설정</S.SectionTitle>
+        </S.SectionTitleContainer>
+        <Card width="large">
+          <NotificationSettings />
         </Card>
       </S.UserInfoSection>
 

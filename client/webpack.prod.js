@@ -70,14 +70,7 @@ export default merge(common, {
           from: 'public',
           to: '',
           globOptions: {
-            ignore: ['**/index.html'],
-          },
-          transform(content, absolutePath) {
-            if (absolutePath.includes('firebase-messaging-sw.js')) {
-              const buildVersion = Date.now();
-              return content.toString().replace(/__BUILD_VERSION__/g, buildVersion);
-            }
-            return content;
+            ignore: ['**/index.html', '**/mockServiceWorker.js'],
           },
         },
       ],

@@ -6,8 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { LoginFormData, LoginResponse } from '../types/login';
 import { isAxiosError } from 'axios';
-import { requestFCMPermissionAndToken } from '@/shared/utils/firebase';
-import { registerFCMToken } from '@/shared/api/registerFCMToken';
 
 export const useLoginMutation = () => {
   const navigate = useNavigate();
@@ -18,15 +16,6 @@ export const useLoginMutation = () => {
     onSuccess: async () => {
       queryClient.setQueryData(['checkIfLoggedIn'], true);
       await queryClient.prefetchQuery({ queryKey: ['profile'], queryFn: getProfile });
-
-      try {
-        const token = await requestFCMPermissionAndToken();
-        if (token) {
-          await registerFCMToken(token);
-        }
-      } catch (error) {
-        console.error('[FCM] 로그인 후 토큰 등록 실패:', error);
-      }
 
       showSuccess('로그인에 성공했습니다!');
       navigate('/');
