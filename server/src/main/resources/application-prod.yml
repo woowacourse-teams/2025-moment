@@ -76,8 +76,18 @@ auth:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: always
+
   metrics:
-    enable:
+    enabled: # enable -> enabled로 수정
       jvm.memory.used: true
       jvm.memory.max: true
       jvm.gc.pause: true
@@ -87,12 +97,15 @@ management:
       process.cpu: true
       process.uptime: true
 
-  cloudwatch:
-    metrics:
-      export:
+    export:
+      cloudwatch:
         enabled: true
         step: 1m
         namespace: Moment/prod
+
+    tags:
+      application: ${spring.application.name}
+      environment: prod
 
 s3:
   bucket-name: ${S3_BUCKET_NAME}
