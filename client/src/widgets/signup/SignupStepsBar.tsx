@@ -24,22 +24,19 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
         <S.StepDot
           active={currentStepNumber === 1}
           completed={currentStepNumber > 1}
-          aria-label="1단계"
-          role="presentation"
+          aria-hidden="true"
         />
-        <S.StepConnector completed={currentStepNumber > 1} role="presentation" />
+        <S.StepConnector completed={currentStepNumber > 1} aria-hidden="true" />
         <S.StepDot
           active={currentStepNumber === 2}
           completed={currentStepNumber > 2}
-          aria-label="2단계"
-          role="presentation"
+          aria-hidden="true"
         />
-        <S.StepConnector completed={currentStepNumber > 2} role="presentation" />
+        <S.StepConnector completed={currentStepNumber > 2} aria-hidden="true" />
         <S.StepDot
           active={currentStepNumber === 3}
           completed={false}
-          aria-label="3단계"
-          role="presentation"
+          aria-hidden="true"
         />
       </S.StepsContainer>
       <S.SignupFormTitle>
