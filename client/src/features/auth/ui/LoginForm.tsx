@@ -59,11 +59,15 @@ export const LoginForm = () => {
         <GoogleLoginButton />
         <S.LoginFooterContent>
           <S.LoginSignupContainer>
-            <S.NewPasswordLink onClick={handleNewPassword}>비밀번호 찾기</S.NewPasswordLink>
+            <S.NewPasswordLink type="button" onClick={handleNewPassword}>
+              비밀번호 찾기
+            </S.NewPasswordLink>
           </S.LoginSignupContainer>
           <S.LoginSignupContainer>
             <p>아직 회원이 아니신가요?</p>
-            <S.LoginSignupLink onClick={handleSignupClick}>회원가입</S.LoginSignupLink>
+            <S.LoginSignupLink type="button" onClick={handleSignupClick}>
+              회원가입
+            </S.LoginSignupLink>
           </S.LoginSignupContainer>
         </S.LoginFooterContent>
       </S.LoginFooter>
