@@ -14,6 +14,7 @@ import { Modal } from '@/shared/ui/modal/Modal';
 import { NotificationButton } from '@/shared/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isIOS, isPWA } from '@/shared/utils/device';
+import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
 
 export default function HomePage() {
   useScrollDepth();
@@ -40,6 +41,7 @@ export default function HomePage() {
 
   return (
     <>
+      <IOSBrowserWarning />
       <S.HomePageWrapper>
         <S.MainContainer>
           <S.HeroSection>
