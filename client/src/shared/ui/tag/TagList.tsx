@@ -9,7 +9,7 @@ interface TagListProps {
 
 export const TagList = ({ tags, onTagClick, selectedTag }: TagListProps) => {
   return (
-    <TagListStyles>
+    <TagListStyles aria-label="모멘트 태그 카테고리">
       {tags.map(tag => (
         <Tag
           key={tag}
@@ -22,7 +22,7 @@ export const TagList = ({ tags, onTagClick, selectedTag }: TagListProps) => {
   );
 };
 
-const TagListStyles = styled.div`
+const TagListStyles = styled.nav`
   display: flex;
   flex-direction: row;
   justify-content: center;
