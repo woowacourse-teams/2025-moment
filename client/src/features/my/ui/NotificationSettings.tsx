@@ -99,7 +99,7 @@ export const NotificationSettings = () => {
   return (
     <S.Container>
       <S.Header>
-        <S.Title>알림 설정</S.Title>
+        <S.Title>알림 설정 안내</S.Title>
       </S.Header>
 
       <S.NotificationCard>
