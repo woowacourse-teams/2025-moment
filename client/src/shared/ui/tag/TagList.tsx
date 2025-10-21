@@ -9,7 +9,7 @@ interface TagListProps {
 
 export const TagList = ({ tags, onTagClick, selectedTag }: TagListProps) => {
   return (
-    <TagListStyles>
+    <TagListStyles role="group">
       {tags.map(tag => (
         <Tag
           key={tag}
