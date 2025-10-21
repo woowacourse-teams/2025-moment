@@ -42,7 +42,7 @@ export const SignupStep1 = ({
   return (
     <S.StepContainer>
       <S.EmailGroup>
-        <S.EmailLabel htmlFor="username">이메일</S.EmailLabel>
+        <S.EmailLabel htmlFor="email">이메일</S.EmailLabel>
         <S.CheckExistContainer>
           <Input
             id="email"
@@ -50,38 +50,42 @@ export const SignupStep1 = ({
             placeholder="이메일을 입력해주세요"
             value={signupData.email}
             onChange={handleChange('email')}
+            aria-describedby="email-error"
           />
           <CheckButton
             title="인증코드 전송"
             onClick={() => handleCheckEmail(signupData.email)}
             disabled={isEmailCheckLoading || errors.email !== '' || isCheckEmailCodeSuccess}
+            aria-label="이메일 인증코드 전송"
           />
         </S.CheckExistContainer>
         {isEmailChecked && !emailErrorMessage ? (
-          <S.SuccessMessage>인증코드가 전송되었습니다.</S.SuccessMessage>
+          <S.SuccessMessage role="status" aria-live="polite">인증코드가 전송되었습니다.</S.SuccessMessage>
         ) : (
-          <S.ErrorMessage>{emailErrorMessage || errors.email}</S.ErrorMessage>
+          <S.ErrorMessage id="email-error" role="alert" aria-live="assertive">{emailErrorMessage || errors.email}</S.ErrorMessage>
         )}
         <S.CheckExistContainer>
           <Input
-            id="email"
-            type="email"
+            id="emailCode"
+            type="text"
             placeholder="이메일로 전송된 인증코드를 입력해주세요"
             value={emailCode}
             onChange={updateEmailCode}
+            aria-describedby="emailCode-error"
           />
           <CheckButton
             title="인증코드 확인"
             onClick={() => checkEmailCode(signupData.email, emailCode)}
             disabled={isCheckEmailCodeSuccess || isCheckEmailCodeLoading || emailCode.length !== 6}
+            aria-label="이메일 인증코드 확인"
           />
         </S.CheckExistContainer>
         {isCheckEmailCodeSuccess ? (
-          <S.SuccessMessage>인증코드가 확인되었습니다.</S.SuccessMessage>
+          <S.SuccessMessage role="status" aria-live="polite">인증코드가 확인되었습니다.</S.SuccessMessage>
         ) : emailCode !== '' && isCheckEmailCodeError ? (
-          <S.ErrorMessage>인증코드가 일치하지 않습니다.</S.ErrorMessage>
+          <S.ErrorMessage id="emailCode-error" role="alert" aria-live="assertive">인증코드가 일치하지 않습니다.</S.ErrorMessage>
         ) : (
-          <S.ErrorMessage></S.ErrorMessage>
+          <S.ErrorMessage id="emailCode-error"></S.ErrorMessage>
         )}
       </S.EmailGroup>
 
@@ -93,9 +97,10 @@ export const SignupStep1 = ({
           placeholder="비밀번호를 입력해주세요"
           value={signupData.password}
           onChange={handleChange('password')}
+          aria-describedby="password-error"
         />
 
-        <S.ErrorMessage>{errors.password || ''}</S.ErrorMessage>
+        <S.ErrorMessage id="password-error" role="alert" aria-live="polite">{errors.password || ''}</S.ErrorMessage>
       </S.InputGroup>
 
       <S.InputGroup>
@@ -106,9 +111,10 @@ export const SignupStep1 = ({
           placeholder="비밀번호를 다시 입력해주세요"
           value={signupData.rePassword}
           onChange={handleChange('rePassword')}
+          aria-describedby="rePassword-error"
         />
 
-        <S.ErrorMessage>{errors.rePassword || ''}</S.ErrorMessage>
+        <S.ErrorMessage id="rePassword-error" role="alert" aria-live="polite">{errors.rePassword || ''}</S.ErrorMessage>
       </S.InputGroup>
     </S.StepContainer>
   );

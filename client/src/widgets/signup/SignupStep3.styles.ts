@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const StepContainer = styled.div`
+export const StepContainer = styled.fieldset`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -8,6 +8,9 @@ export const StepContainer = styled.div`
   gap: 24px;
   margin-top: 24px;
   text-align: center;
+  border: none;
+  padding: 0;
+  margin: 0;
 `;
 
 export const Title = styled.h2`
@@ -17,7 +20,7 @@ export const Title = styled.h2`
   margin: 0;
 `;
 
-export const InfoContainer = styled.div`
+export const InfoContainer = styled.dl`
   width: 100%;
   max-width: 320px;
   display: flex;
@@ -36,18 +39,19 @@ export const InfoItem = styled.div`
   background-color: ${({ theme }) => theme.colors['slate-800_60']};
 `;
 
-export const InfoLabel = styled.label`
+export const InfoLabel = styled.dt`
   font-size: 14px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors['yellow-500']};
   text-align: left;
 `;
 
-export const InfoValue = styled.span`
+export const InfoValue = styled.dd`
   font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.white};
   text-align: left;
+  margin: 0;
 `;
 
 export const Description = styled.p`
