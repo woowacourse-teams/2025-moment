@@ -77,9 +77,8 @@ const config = {
       ),
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
+      'process.env.FCM_VAPID_KEY': JSON.stringify(process.env.FCM_VAPID_KEY || ''),
     }),
-
-    // CopyWebpackPlugin은 dev/prod 각각에서 개별 설정
   ],
 };
 
