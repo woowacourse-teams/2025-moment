@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD4qy5-cB5BclCX36uoyWx0RjOs2vZ-i1c',
@@ -13,10 +13,24 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const messaging = getMessaging(app);
+
+let messagingInstance: ReturnType<typeof getMessaging> | null = null;
+
+export const getMessagingInstance = async () => {
+  if (messagingInstance) return messagingInstance;
+
+  const supported = await isSupported();
+  if (!supported) {
+    throw new Error('Firebase Messaging is not supported in this browser');
+  }
+
+  messagingInstance = getMessaging(app);
+  return messagingInstance;
+};
 
 export const requestFCMPermission = async () => {
   try {
+    const messaging = await getMessagingInstance();
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       return await getToken(messaging, {
@@ -40,24 +54,30 @@ export const requestFCMPermission = async () => {
   }
 };
 
-export const setupForegroundMessage = () => {
-  onMessage(messaging, payload => {
-    if (Notification.permission === 'granted' && payload.notification) {
-      const notification = new Notification(payload.notification?.title || '새 알림', {
-        body: payload.notification?.body || '',
-        icon: '/icon-192x192.png',
-        data: payload.data,
-      });
+export const setupForegroundMessage = async () => {
+  try {
+    const messaging = await getMessagingInstance();
+    onMessage(messaging, payload => {
+      if (Notification.permission === 'granted' && payload.notification) {
+        const notification = new Notification(payload.notification?.title || '새 알림', {
+          body: payload.notification?.body || '',
+          icon: '/icon-192x192.png',
+          data: payload.data,
+        });
 
-      notification.onclick = event => {
-        const data = (event.target as Notification).data;
-        const redirectUrl = data?.redirectUrl;
+        notification.onclick = event => {
+          const data = (event.target as Notification).data;
+          const redirectUrl = data?.redirectUrl;
 
-        if (redirectUrl) {
-          window.location.href = redirectUrl;
-        }
-        notification.close();
-      };
-    }
-  });
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+          notification.close();
+        };
+      }
+    });
+  } catch (error) {
+    // Firebase Messaging이 지원되지 않는 브라우저에서는 무시
+    Sentry.captureException(error);
+  }
 };

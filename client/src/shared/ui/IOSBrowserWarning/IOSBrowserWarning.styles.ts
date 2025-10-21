@@ -2,19 +2,19 @@ import styled from '@emotion/styled';
 
 export const Banner = styled.div`
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 9999;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 16px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  animation: slideDown 0.3s ease-out;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
 
-  @keyframes slideDown {
+  @keyframes slideUp {
     from {
-      transform: translateY(-100%);
+      transform: translateY(100%);
     }
     to {
       transform: translateY(0);

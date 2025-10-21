@@ -14,6 +14,7 @@ import { Modal } from '@/shared/ui/modal/Modal';
 import { NotificationButton } from '@/shared/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isIOS, isPWA } from '@/shared/utils/device';
+import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
 
 export default function HomePage() {
   useScrollDepth();
@@ -40,6 +41,7 @@ export default function HomePage() {
 
   return (
     <>
+      <IOSBrowserWarning />
       <S.HomePageWrapper>
         <S.MainContainer>
           <S.HeroSection>
@@ -48,6 +50,13 @@ export default function HomePage() {
           <S.ContentSection isVisible={isVisible}>
             <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
           </S.ContentSection>
+          <S.ContentSection isVisible={isVisible}>
+            <S.BottomArrow isVisible={isVisible} src="/images/belowAirplane.webp" alt="" />
+          </S.ContentSection>
+          <S.HighlightedTextContainer isVisible={isVisible}>
+            <S.HighlightedText>" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
+            <S.HighlightedText>" 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "</S.HighlightedText>
+          </S.HighlightedTextContainer>
         </S.MainContainer>
         <AnimatedIntroSection>
           <S.IntroSection>

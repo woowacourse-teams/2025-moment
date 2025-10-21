@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Share, Smartphone } from 'lucide-react';
 import * as S from './IOSBrowserWarning.styles';
+import { isIOS, isPWA } from '@/shared/utils/device';
 
 const IOS_BROWSER_WARNING_DISMISSED_KEY = 'ios_browser_warning_dismissed';
 
@@ -8,8 +9,10 @@ export const IOSBrowserWarning: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const shouldShow = isIOS() && !isPWA();
     const isDismissed = localStorage.getItem(IOS_BROWSER_WARNING_DISMISSED_KEY);
-    if (!isDismissed) {
+
+    if (shouldShow && !isDismissed) {
       setIsVisible(true);
     }
   }, []);
