@@ -21,7 +21,8 @@ export default function HomePage() {
   const { isOpen, handleClose, handleOpen } = useModal();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
 
-  const shouldShowNotificationModal = isLoggedIn && isIOS() && isPWA() && Notification.permission === 'default';
+  const shouldShowNotificationModal =
+    isLoggedIn && isIOS() && isPWA() && Notification.permission === 'default';
 
   useEffect(() => {
     if (shouldShowNotificationModal) {
@@ -53,7 +54,8 @@ export default function HomePage() {
               "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
               위로를 건네는 소셜 네트워크 서비스입니다. <br />
               힘든 순간, 뿌듯한 순간, 위로받고 싶은 순간, 칭찬받고 싶은 모든 순간을 짧은 기록으로
-              남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을 제공합니다.
+              남기고, 긍정적인 상호작용을 통해 정서적 지지와 유대감을 나눌 수 있는 공간을
+              제공합니다.
             </S.IntroText>
             <S.IntroImagesWrapper>
               <S.IntroIcon src="/images/rocket.webp" alt="" />
@@ -68,7 +70,9 @@ export default function HomePage() {
           </AnimatedIntroSection>
         ))}
       </S.HomePageWrapper>
-      <Modal size='small' isOpen={isOpen} onClose={handleClose}> <Modal.Header title="모멘트와 코멘트 알림을 받아보세요!" showCloseButton={true} />
+      <Modal size="small" isOpen={isOpen} onClose={handleClose}>
+        {' '}
+        <Modal.Header title="모멘트와 코멘트 알림을 받아보세요!" showCloseButton={true} />
         <Modal.Content>
           <NotificationButton onClose={handleClose} />
         </Modal.Content>
