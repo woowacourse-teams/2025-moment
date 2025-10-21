@@ -29,7 +29,8 @@ export function TodayMomentForm({
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const { showError, showWarning } = useToast();
 
-  const handleNavigateToTodayMomentSuccess = () => {
+  const handleNavigateToTodayMomentSuccess = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (checkProfanityWord(content)) {
       showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
       return;
@@ -74,7 +75,7 @@ export function TodayMomentForm({
           <fieldset>
             <legend className="sr-only">태그 선택(필수, 최대 3개)</legend>
             <S.TagWrapper>
-              <S.TagLabel>태그: </S.TagLabel>
+              <S.TagLabel id="tag-label">태그: </S.TagLabel>
               <TagList tags={TAGS} onTagClick={handleTagNameClick} selectedTag={tagNames} />
             </S.TagWrapper>
           </fieldset>
@@ -98,7 +99,7 @@ export function TodayMomentForm({
           <YellowSquareButton
             Icon={Send}
             title="모멘트 공유하기"
-            onClick={handleNavigateToTodayMomentSuccess}
+            onClick={e => handleNavigateToTodayMomentSuccess(e)}
             disabled={content.trim().length === 0}
           />
         </Card.Action>

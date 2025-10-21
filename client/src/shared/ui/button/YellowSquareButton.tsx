@@ -4,7 +4,7 @@ import { LucideIcon } from 'lucide-react';
 interface RequestButtonProps {
   Icon?: LucideIcon;
   title: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
 }
 
