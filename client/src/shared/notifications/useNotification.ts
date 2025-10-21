@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
 import * as Sentry from '@sentry/react';
-import { getToken } from 'firebase/messaging';
 
-import { messaging } from './firebase';
+import { requestFCMPermission } from './firebase';
 import { registerFCMToken } from './registerFCMToken';
 
 export const useNotification = () => {
@@ -28,14 +27,15 @@ export const useNotification = () => {
             try {
               await navigator.serviceWorker.register('/firebase-messaging-sw.js');
 
-              const token = await getToken(messaging, {
-                vapidKey: process.env.FCM_VAPID_KEY,
-              });
+              const token = await requestFCMPermission();
 
               if (token) {
                 await registerFCMToken(token);
                 alert('알림 설정이 완료되었습니다.');
                 resolve(true);
+              } else {
+                alert('알림 설정에 실패했습니다.');
+                resolve(false);
               }
             } catch (error) {
               Sentry.captureException(error);
