@@ -60,9 +60,13 @@ export const SignupStep1 = ({
           />
         </S.CheckExistContainer>
         {isEmailChecked && !emailErrorMessage ? (
-          <S.SuccessMessage role="status" aria-live="polite">인증코드가 전송되었습니다.</S.SuccessMessage>
+          <S.SuccessMessage role="status" aria-live="polite">
+            인증코드가 전송되었습니다.
+          </S.SuccessMessage>
         ) : (
-          <S.ErrorMessage id="email-error" role="alert" aria-live="assertive">{emailErrorMessage || errors.email}</S.ErrorMessage>
+          <S.ErrorMessage id="email-error" role="alert" aria-live="assertive">
+            {emailErrorMessage || errors.email}
+          </S.ErrorMessage>
         )}
         <S.CheckExistContainer>
           <Input
@@ -81,9 +85,13 @@ export const SignupStep1 = ({
           />
         </S.CheckExistContainer>
         {isCheckEmailCodeSuccess ? (
-          <S.SuccessMessage role="status" aria-live="polite">인증코드가 확인되었습니다.</S.SuccessMessage>
+          <S.SuccessMessage role="status" aria-live="polite">
+            인증코드가 확인되었습니다.
+          </S.SuccessMessage>
         ) : emailCode !== '' && isCheckEmailCodeError ? (
-          <S.ErrorMessage id="emailCode-error" role="alert" aria-live="assertive">인증코드가 일치하지 않습니다.</S.ErrorMessage>
+          <S.ErrorMessage id="emailCode-error" role="alert" aria-live="assertive">
+            인증코드가 일치하지 않습니다.
+          </S.ErrorMessage>
         ) : (
           <S.ErrorMessage id="emailCode-error"></S.ErrorMessage>
         )}
@@ -100,7 +108,9 @@ export const SignupStep1 = ({
           aria-describedby="password-error"
         />
 
-        <S.ErrorMessage id="password-error" role="alert" aria-live="polite">{errors.password || ''}</S.ErrorMessage>
+        <S.ErrorMessage id="password-error" role="alert" aria-live="polite">
+          {errors.password || ''}
+        </S.ErrorMessage>
       </S.InputGroup>
 
       <S.InputGroup>
@@ -114,7 +124,9 @@ export const SignupStep1 = ({
           aria-describedby="rePassword-error"
         />
 
-        <S.ErrorMessage id="rePassword-error" role="alert" aria-live="polite">{errors.rePassword || ''}</S.ErrorMessage>
+        <S.ErrorMessage id="rePassword-error" role="alert" aria-live="polite">
+          {errors.rePassword || ''}
+        </S.ErrorMessage>
       </S.InputGroup>
     </S.StepContainer>
   );

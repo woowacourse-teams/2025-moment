@@ -107,12 +107,7 @@ export const SignupForm = () => {
           type="button"
           aria-label="이전 단계로"
         />
-        <Button
-          title="다음"
-          type="submit"
-          disabled={isDisabled}
-          aria-label="다음 단계로"
-        />
+        <Button title="다음" type="submit" disabled={isDisabled} aria-label="다음 단계로" />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );

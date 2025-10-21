@@ -49,7 +49,9 @@ export const SignupStep2 = ({ signupData, onNext, updateNickname }: SignupStep2P
           </RotateNicknameButton>
         </S.CheckExistContainer>
         {isError && (
-          <S.ErrorMessage id="nickname-error" role="alert" aria-live="assertive">닉네임을 가져오는 데 실패했습니다. 다시 시도해주세요.</S.ErrorMessage>
+          <S.ErrorMessage id="nickname-error" role="alert" aria-live="assertive">
+            닉네임을 가져오는 데 실패했습니다. 다시 시도해주세요.
+          </S.ErrorMessage>
         )}
       </S.InputGroup>
     </S.StepContainer>
