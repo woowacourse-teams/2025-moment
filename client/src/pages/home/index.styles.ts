@@ -12,24 +12,35 @@ const fadeInUp = keyframes`
   }
 `;
 
+const float = keyframes`
+  0%, 100% {
+    transform:  translateY(0px);
+  }
+  50% {
+    transform:  translateY(-10px);
+  }
+`;
+
 export const HomePageWrapper = styled.main`
   width: 100%;
   overflow: hidden;
 `;
 
 export const MainContainer = styled.div`
+  position: relative;
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 30px;
 `;
 
 export const HeroSection = styled.section`
   position: relative;
   width: 100%;
 
-  margin-top: 80px;
+  margin-top: 60px;
 
   @media (max-width: 768px) {
     margin-top: 110px;
@@ -40,9 +51,6 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 30px;
-  padding: 20px;
-  overflow: hidden;
 
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
@@ -123,6 +131,17 @@ export const HighlightedText = styled.div`
       height: 80%;
     }
   }
+`;
+
+export const BottomArrow = styled.img<{ isVisible: boolean }>`
+  width: 100px;
+  height: 100px;
+  margin-top: 40px;
+
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  animation: ${({ isVisible }) => (isVisible ? float : 'none')} 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
+    drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 45px rgba(255, 255, 255, 0.2));
 `;
 
 export const IntroSection = styled.section`
