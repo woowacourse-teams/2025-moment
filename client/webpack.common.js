@@ -77,18 +77,7 @@ const config = {
       ),
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
-    }),
-
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'public',
-          to: '',
-          globOptions: {
-            ignore: ['**/index.html'],
-          },
-        },
-      ],
+      'process.env.FCM_VAPID_KEY': JSON.stringify(process.env.FCM_VAPID_KEY || ''),
     }),
   ],
 };
