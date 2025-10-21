@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import * as Sentry from '@sentry/react';
 
-import { requestFCMPermission } from './firebase';
+import { getMessagingInstance } from './firebase';
 import { registerFCMToken } from './registerFCMToken';
 import { getToken } from 'firebase/messaging';
 
