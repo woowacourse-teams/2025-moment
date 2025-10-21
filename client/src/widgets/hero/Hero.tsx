@@ -27,11 +27,6 @@ export default function Hero({
           <S.Subtitle key={`hero-subtitle-${index}`}>{text}</S.Subtitle>
         ))}
       </S.SubtitleContainer>
-
-      <S.HighlightedTextContainer isVisible={isVisible}>
-        <S.HighlightedText>" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
-        <S.HighlightedText>" 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "</S.HighlightedText>
-      </S.HighlightedTextContainer>
     </S.HeroWrapper>
   );
 }
