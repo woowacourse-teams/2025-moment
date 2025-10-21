@@ -26,7 +26,7 @@ export const TodayMomentSuccessContent = () => {
   };
 
   return (
-    <S.TodayContentWrapper>
+    <S.TodayContentForm>
       <Card.Content>
         <CardSuccessContainer
           Icon={CheckCircle}
@@ -76,6 +76,6 @@ export const TodayMomentSuccessContent = () => {
           </Modal.Footer>
         </Modal>
       )}
-    </S.TodayContentWrapper>
+    </S.TodayContentForm>
   );
 };
