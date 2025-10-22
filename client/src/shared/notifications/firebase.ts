@@ -48,7 +48,6 @@ export const requestFCMPermission = async () => {
       return null;
     }
   } catch (error) {
-    // TODO : FCM 토큰 획득 실패 시 처리 로직 추가
     Sentry.captureException(error);
     return null;
   }
