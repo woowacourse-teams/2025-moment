@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { requestFCMPermissionAndToken } from '@/shared/utils/firebase';
-import { Bell, BellOff, AlertCircle } from 'lucide-react';
+import { Bell, BellOff, AlertCircle, Smartphone } from 'lucide-react';
 import * as S from './NotificationSettings.styles';
 import { registerFCMToken } from '@/shared/notifications/registerFCMToken';
+import { isPWA } from '@/shared/utils/device';
 
 type PermissionStatus = 'default' | 'granted' | 'denied';
 
@@ -10,8 +11,39 @@ export const NotificationSettings = () => {
   const [permission, setPermission] = useState<PermissionStatus>('default');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isInPWA = isPWA();
 
-  // 초기 로드 시 권한 확인
+  if (!isInPWA) {
+    return (
+      <S.Container>
+        <S.Header>
+          <S.Title>알림 설정</S.Title>
+        </S.Header>
+
+        <S.NotificationCard>
+          <S.NotificationInfo>
+            <S.IconWrapper color="#ff9800">
+              <Smartphone size={20} />
+            </S.IconWrapper>
+            <S.TextWrapper>
+              <S.StatusText>APP 설치 필요</S.StatusText>
+              <S.Description>
+                푸시 알림은 앱을 홈 화면에 추가한 후 사용할 수 있습니다.
+              </S.Description>
+            </S.TextWrapper>
+          </S.NotificationInfo>
+
+          <S.HelpText>
+            <AlertCircle size={14} />
+            iOS: Safari에서 공유 버튼 → 홈 화면에 추가
+            <br />
+            Android: Chrome에서 메뉴 → 홈 화면에 추가
+          </S.HelpText>
+        </S.NotificationCard>
+      </S.Container>
+    );
+  }
+
   useEffect(() => {
     if ('Notification' in window) {
       setPermission(Notification.permission);
