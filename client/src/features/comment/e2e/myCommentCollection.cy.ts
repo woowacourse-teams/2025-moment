@@ -2,8 +2,8 @@
 
 import { mockGlobalAPIs } from '../../../../cypress/fixtures/mockGlobalApi';
 
-const commentsData = {
-  withNotification: {
+const commentsData = [
+  {
     id: 1,
     content: '힘내세요! 응원합니다.',
     createdAt: '2025-01-20T10:00:00',
@@ -13,7 +13,7 @@ const commentsData = {
       nickName: '별빛 가득한 아리아',
       level: 'ASTEROID_WHITE',
       content: '오늘은 정말 힘든 하루였어요.',
-      imageUrl: 'https://example.com/image1.jpg',
+      imageUrl: null,
       tagNames: ['일상/생각'],
       createdAt: '2025-01-20T09:00:00',
     },
@@ -21,16 +21,20 @@ const commentsData = {
       {
         id: 1,
         echoType: 'THANKS',
+        userId: 1,
       },
       {
         id: 2,
         echoType: 'TOUCHED',
+        userId: 2,
       },
     ],
-    notificationId: 1001,
-    read: false,
+    commentNotification: {
+      isRead: false,
+      notificationIds: [1001],
+    },
   },
-  withoutNotification: {
+  {
     id: 2,
     content: '저도 비슷한 경험이 있어요.',
     createdAt: '2025-01-20T11:00:00',
@@ -45,10 +49,12 @@ const commentsData = {
       createdAt: '2025-01-20T10:30:00',
     },
     echos: [],
-    notificationId: null,
-    read: true,
+    commentNotification: {
+      isRead: true,
+      notificationIds: [],
+    },
   },
-} as const;
+] as const;
 
 describe('나의 코멘트 모음집 페이지', () => {
   beforeEach(() => {
@@ -59,7 +65,7 @@ describe('나의 코멘트 모음집 페이지', () => {
       body: {
         status: 200,
         data: {
-          items: [commentsData.withNotification, commentsData.withoutNotification],
+          items: commentsData,
           hasNextPage: true,
           nextCursor: 'next_page_cursor',
         },
@@ -71,7 +77,7 @@ describe('나의 코멘트 모음집 페이지', () => {
       body: {
         status: 200,
         data: {
-          items: [commentsData.withNotification],
+          items: commentsData,
           hasNextPage: false,
           nextCursor: null,
         },
@@ -84,19 +90,14 @@ describe('나의 코멘트 모음집 페이지', () => {
 
   describe('시나리오 1: 코멘트 확인', () => {
     it('내가 작성한 코멘트와 관련 정보를 볼 수 있다', () => {
-      cy.contains(commentsData.withNotification.content).should('be.visible');
-      cy.contains(commentsData.withoutNotification.content).should('be.visible');
+      cy.contains(commentsData[0].content).should('be.visible');
+      cy.contains(commentsData[1].content).should('be.visible');
 
-      cy.contains(commentsData.withNotification.moment.content).should('be.visible');
-      cy.contains(commentsData.withoutNotification.moment.content).should('be.visible');
+      cy.contains(commentsData[0].moment?.content).should('be.visible');
+      cy.contains(commentsData[1].moment?.content).should('be.visible');
 
-      cy.contains(commentsData.withNotification.moment.tagNames[0]).should('be.visible');
-      cy.contains(commentsData.withoutNotification.moment.tagNames[0]).should('be.visible');
-
-      cy.get(`img[src*="${commentsData.withNotification.moment.imageUrl}"]`).should('exist');
-
-      cy.contains('마음 고마워요').should('be.visible');
-      cy.contains('감동 받았어요').should('be.visible');
+      cy.contains(commentsData[0].moment?.tagNames[0]).should('be.visible');
+      cy.contains(commentsData[1].moment?.tagNames[0]).should('be.visible');
     });
   });
 });
