@@ -4,11 +4,10 @@ import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayMomentSuccessContent.styles';
-import { sendEvent } from '@/shared/lib/ga';
 import { useMomentExtraWritableQuery } from '../hook/useMomentExtraWritableQuery';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { TodayMomentAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { track } from '@/shared/lib/ga/track';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ export const TodayMomentSuccessContent = () => {
   const { handleOpen, handleClose, isOpen } = useModal();
 
   const handleNavigate = () => {
-    sendEvent(TodayMomentAnalyticsEvent.ClickMoveToTodayCommentButton);
+    track('click_navigation', { destination: 'today_comment', source: 'success_page' });
     navigate('/today-comment');
   };
 

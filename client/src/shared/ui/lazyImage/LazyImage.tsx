@@ -9,7 +9,7 @@ interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>,
   height?: string | number;
   borderRadius?: string | number;
   skeletonClassName?: string;
-  variant?: 'blackHole' | 'icon' | 'character' | 'levelIcon' | 'default';
+  variant?: 'icon' | 'character' | 'levelIcon' | 'default';
   eager?: boolean;
 }
 
@@ -37,16 +37,14 @@ export const LazyImage: React.FC<LazyImageProps> = ({
 
   return (
     <S.LazyImageContainer>
-      {variant !== 'blackHole' && (
-        <S.PlaceholderWrapper $isVisible={!isLoaded && !hasError}>
-          <Skeleton
-            width={width}
-            height={height}
-            borderRadius={borderRadius}
-            className={skeletonClassName}
-          />
-        </S.PlaceholderWrapper>
-      )}
+      <S.PlaceholderWrapper $isVisible={!isLoaded && !hasError}>
+        <Skeleton
+          width={width}
+          height={height}
+          borderRadius={borderRadius}
+          className={skeletonClassName}
+        />
+      </S.PlaceholderWrapper>
 
       <S.ErrorWrapper $isVisible={hasError}>
         <S.ErrorFallback

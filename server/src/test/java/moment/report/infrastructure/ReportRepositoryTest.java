@@ -2,15 +2,15 @@ package moment.report.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import moment.global.domain.TargetType;
-import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
-import moment.moment.infrastructure.MomentRepository;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,39 +21,36 @@ import org.springframework.test.context.ActiveProfiles;
 class ReportRepositoryTest {
 
     @Autowired
-    ReportRepository reportRepository;
+    private ReportRepository reportRepository;
 
     @Autowired
-    MomentRepository momentRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = userRepository.save(new User("test@email.com", "password", "nickname", ProviderType.EMAIL));
+    }
 
     @Test
-    void 모멘트의_신고_갯수를_센다() {
+    @DisplayName("유저 ID와 대상 타입으로 신고된 대상의 ID 목록을 조회한다")
+    void findAllTargetIdByUserIdAndTargetType() {
         // given
-        TargetType targetType = TargetType.MOMENT;
-        User user = new User("eee@gmail.com", "1234!", "아마", ProviderType.EMAIL);
-        User saveMomenter = userRepository.save(user);
+        Report report1 = reportRepository.save(
+                new Report(user, TargetType.MOMENT, 1L, ReportReason.SPAM_OR_ADVERTISEMENT));
+        Report report2 = reportRepository.save(
+                new Report(user, TargetType.MOMENT, 2L, ReportReason.SPAM_OR_ADVERTISEMENT));
 
-        Moment moment = new Moment("내용", saveMomenter, WriteType.BASIC);
-        Moment savedMoment = momentRepository.save(moment);
+        reportRepository.save(new Report(user, TargetType.COMMENT, 3L, ReportReason.SPAM_OR_ADVERTISEMENT));
 
-        User reporter1 = new User("ddd@gmail.com", "1234!", "드라고", ProviderType.EMAIL);
-        User reporter2 = new User("hhh@gmail.com", "1234!", "히포", ProviderType.EMAIL);
-        User savedReporter1 = userRepository.save(reporter1);
-        User savedReporter2 = userRepository.save(reporter2);
-
-        Report report1 = new Report(savedReporter1, targetType, savedMoment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
-        Report report2 = new Report(savedReporter2, targetType, savedMoment.getId(), ReportReason.ABUSE_OR_HARASSMENT);
-
-        reportRepository.save(report1);
-        reportRepository.save(report2);
+        User otherUser = userRepository.save(new User("other@email.com", "password", "other", ProviderType.EMAIL));
+        reportRepository.save(new Report(otherUser, TargetType.MOMENT, 4L, ReportReason.SPAM_OR_ADVERTISEMENT));
 
         // when
-        long result = reportRepository.countByTargetTypeAndTargetId(targetType, savedMoment.getId());
+        List<Long> targetIds = reportRepository.findAllTargetIdByUserIdAndTargetType(user.getId(), TargetType.MOMENT);
 
         // then
-        assertThat(result).isEqualTo(2L);
+        assertThat(targetIds).hasSize(2).containsExactlyInAnyOrder(report1.getTargetId(), report2.getTargetId());
     }
 }

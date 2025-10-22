@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>오프라인 - Moment</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        text-align: center;
+        background: #f8f8f8;
+        color: #333;
+      }
+      button {
+        margin-top: 16px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #6d6e6f;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>인터넷 연결이 끊어졌습니다</h1>
+    <p>네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>
+    <button onclick="window.location.reload()">다시 시도</button>
+  </body>
+</html>

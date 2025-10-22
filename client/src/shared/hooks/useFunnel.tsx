@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router';
 export function useFunnel<T extends readonly string[]>(steps: T) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const stepQuery = searchParams.get('step');
   const stepsArray = Array.from(steps);

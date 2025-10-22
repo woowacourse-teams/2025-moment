@@ -7,25 +7,29 @@ import Tag from '@/shared/ui/tag/Tag';
 import { WriteTime } from '@/shared/ui/writeTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Heart, Send } from 'lucide-react';
-import type { CommentWithNotifications } from '../types/commentsWithNotifications';
 import * as S from './MyCommentsCard.styles';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
+import type { CommentItem } from '../types/comments';
 
-export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotifications }) => {
+export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
   const handleCommentOpen = () => {
-    if (myComment.read || isReadingNotification) return;
-    if (myComment.notificationId) {
-      handleReadNotifications(myComment.notificationId);
+    if (myComment.commentNotification.isRead || isReadingNotification) return;
+    if (myComment.commentNotification.notificationIds) {
+      handleReadNotifications(myComment.commentNotification.notificationIds[0]);
     }
   };
 
   return (
     <>
-      <Card width="medium" key={`card-${myComment.id}`} shadow={!myComment.read}>
+      <Card
+        width="medium"
+        key={`card-${myComment.id}`}
+        shadow={!myComment.commentNotification.isRead}
+      >
         {myComment.moment && (
           <Card.TitleContainer
             title={
@@ -64,13 +68,13 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
           <S.ContentContainer>
             <S.TitleContainer>
               <Send size={20} color={theme.colors['yellow-500']} />
-              <p>보낸 코멘트</p>
+              <S.SubTitle>보낸 코멘트</S.SubTitle>
             </S.TitleContainer>
             <SimpleCard
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <p>{myComment.content}</p>
+                  <S.CommentContent>{myComment.content}</S.CommentContent>
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
@@ -90,7 +94,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
             <S.ContentContainer>
               <S.TitleContainer>
                 <Heart size={20} color={theme.colors['yellow-500']} />
-                <p>받은 에코</p>
+                <S.SubTitle>받은 에코</S.SubTitle>
               </S.TitleContainer>
               <S.EchoContainer>
                 {myComment.echos && myComment.echos.length > 0 ? (
@@ -108,7 +112,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentWithNotificati
               </S.MyCommentsTagWrapper>
             </S.ContentContainer>
           )}
-          {!myComment.read && <Button onClick={handleCommentOpen} title="확인" />}
+          {!myComment.commentNotification.isRead && (
+            <Button onClick={handleCommentOpen} title="확인" />
+          )}
         </Card.Content>
       </Card>
       {fullImageSrc && (

@@ -6,10 +6,16 @@ spring:
       request-timeout: -1
 
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    write:
+      jdbc-url: jdbc:mysql://${WRITE_DB_HOST}:${DB_PORT}/${DB_NAME}
+      username: ${DB_USER}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    read:
+      jdbc-url: jdbc:mysql://${READ_DB_HOST}:${DB_PORT}/${DB_NAME}
+      username: ${DB_USER}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -26,7 +32,7 @@ spring:
     locations: classpath:db/migration/mysql
     user: ${FLYWAY_DB_USER}
     password: ${FLYWAY_DB_PASSWORD}
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:mysql://${WRITE_DB_HOST}:${DB_PORT}/${DB_NAME}
 
   sql:
     init:
@@ -70,8 +76,18 @@ auth:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: always
+
   metrics:
-    enable:
+    enabled: # enable -> enabled로 수정
       jvm.memory.used: true
       jvm.memory.max: true
       jvm.gc.pause: true
@@ -81,13 +97,19 @@ management:
       process.cpu: true
       process.uptime: true
 
-  cloudwatch:
-    metrics:
-      export:
+    export:
+      cloudwatch:
         enabled: true
         step: 1m
         namespace: Moment/prod
 
+    tags:
+      application: ${spring.application.name}
+      environment: prod
+
 s3:
   bucket-name: ${S3_BUCKET_NAME}
   bucket-path: ${S3_PROD_BUCKET_PATH}
+
+fcm:
+  service-account-json: ${FCM_CREDENTIALS}

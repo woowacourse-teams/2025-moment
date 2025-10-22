@@ -1,11 +1,11 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
+import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { useLocation } from 'react-router';
 import * as S from './index.styles';
 
 export const CollectionHeader = () => {
   const currentpath = useLocation().pathname;
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications } = useReadNotificationsQuery();
 
   const isMomentNotificationExisting = notifications?.data.some(
     notification => notification.targetType === 'MOMENT',

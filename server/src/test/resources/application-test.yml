@@ -4,6 +4,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  main:
+    allow-bean-definition-overriding: true  # 테스트용 Bean override 허용
+
   datasource:
     url: jdbc:h2:mem:database-test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
 
@@ -69,3 +72,6 @@ auth:
 s3:
   bucket-name: test-bucket-1
   bucket-path: test/images
+
+fcm:
+  service-account-json: ""

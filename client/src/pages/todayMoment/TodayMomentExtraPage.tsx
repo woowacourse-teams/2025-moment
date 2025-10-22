@@ -2,6 +2,10 @@ import { useSendExtraMoments } from '@/features/moment/hook/useSendExtraMoments'
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
 import * as S from './index.styles';
+import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
+import { track } from '@/shared/lib/ga/track';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
 
 export default function TodayMomentExtraPage() {
   const {
@@ -12,6 +16,14 @@ export default function TodayMomentExtraPage() {
     content,
     tagNames,
   } = useSendExtraMoments();
+  const location = useLocation();
+  useEffect(() => {
+    track('open_composer', {
+      entry: location.state?.entry ?? 'nav',
+      composer: 'extra',
+    });
+  }, []);
+  useDwell({ item_type: 'moment', surface: 'composer' });
 
   return (
     <S.TodayPageWrapper>

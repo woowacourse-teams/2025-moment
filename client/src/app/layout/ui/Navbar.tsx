@@ -3,17 +3,16 @@ import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
-import { sendEvent } from '@/shared/lib/ga';
 import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
-import { HomePageAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import * as S from './Navbar.styles';
 import { ROUTES } from '@/app/routes/routes';
+import { track } from '@/shared/lib/ga/track';
 
 export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
@@ -26,7 +25,7 @@ export const Navbar = () => {
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications } = useReadNotificationsQuery();
 
   const isNotificationExisting =
     notifications?.data.length && notifications?.data.length > 0 ? true : false;
@@ -43,12 +42,12 @@ export const Navbar = () => {
   });
 
   const handleDesktopAuthButtonClick = () => {
-    sendEvent(HomePageAnalyticsEvent.ClickDesktopAuthButton);
+    track('click_auth', { device: 'desktop' });
   };
 
   const handleMobileAuthButtonClick = () => {
+    track('click_auth', { device: 'mobile' });
     toggleMobileMenu();
-    sendEvent(HomePageAnalyticsEvent.ClickMobileAuthButton);
   };
 
   const isActiveNavItem = (href: string) => {

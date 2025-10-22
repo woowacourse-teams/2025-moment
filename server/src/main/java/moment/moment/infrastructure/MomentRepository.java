@@ -2,13 +2,10 @@ package moment.moment.infrastructure;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,7 +26,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             WHERE m.id IN :ids
             ORDER BY m.createdAt DESC, m.id DESC
             """)
-    List<Moment> findMyUnreadMomentFirstPage(@Param("ids") Set<Long> ids, Pageable pageable);
+    List<Moment> findMyUnreadMomentFirstPage(@Param("ids") List<Long> ids, Pageable pageable);
 
     @Query("""
             SELECT m FROM moments m
@@ -46,7 +43,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             WHERE m.id IN :ids AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
-    List<Moment> findMyUnreadMomentNextPage(@Param("ids") Set<Long> ids,
+    List<Moment> findMyUnreadMomentNextPage(@Param("ids") List<Long> ids,
                                             @Param("cursorTime") LocalDateTime cursorDateTime,
                                             @Param("cursorId") Long cursorId,
                                             Pageable pageable);
@@ -61,39 +58,12 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
             SELECT m FROM moments m
             WHERE m.momenter <> :user
-              AND NOT EXISTS (
-                  SELECT 1 FROM comments c
-                  WHERE c.moment = m
-                    AND c.commenter = :user
-              )
               AND m.createdAt >= :someDaysAgo
               AND m.id NOT IN :reportedMoments
             """)
-    List<Moment> findCommentableMoments(@Param("user") User user,
-                                        @Param("someDaysAgo") LocalDateTime someDaysAgo,
-                                        @Param("reportedMoments") List<Long> reportedMoments);
+    List<Moment> findAllExceptUser(@Param("user") User user,
+                                   @Param("someDaysAgo") LocalDateTime someDaysAgo,
+                                   @Param("reportedMoments") List<Long> reportedMoments);
 
-    @Query("""
-            SELECT m FROM moments m
-            LEFT JOIN moment_tags mt ON mt.moment = m
-            LEFT JOIN tags t ON t = mt.tag
-            WHERE m.momenter <> :user
-              AND NOT EXISTS (
-                  SELECT 1 FROM comments c
-                  WHERE c.moment = m
-                    AND c.commenter = :user
-              )
-              AND m.createdAt >= :someDaysAgo
-              AND (t.name IN :tagNames)
-              AND m.id NOT IN :reportedMoments
-            """)
-    List<Moment> findCommentableMomentsByTagNames(@Param("user") User user,
-                                                  @Param("someDaysAgo") LocalDateTime someDaysAgo,
-                                                  @Param("tagNames") List<String> tagNames,
-                                                  @Param("reportedMoments") List<Long> reportedMoments);
-
-    List<Moment> findByMomenterAndCreatedAtAfter(User momenter, LocalDateTime dateTime);
-
-    @EntityGraph(attributePaths = {"momenter"})
-    Optional<Moment> findWithMomenterByid(Long id);
+    void deleteById(Long momentId);
 }

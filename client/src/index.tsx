@@ -2,22 +2,7 @@ import App from '@/app/App';
 import { createRoot } from 'react-dom/client';
 import '../instrument';
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return;
-  }
-
-  const { worker } = await import('./mocks/browser');
-
-  return worker.start({
-    onUnhandledRequest: 'warn',
-  });
-}
-
 async function startApp() {
-  // await enableMocking();
-  // cd
-
   const rootElement = document.getElementById('root');
   if (!rootElement) {
     throw new Error('Root element not found');

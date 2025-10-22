@@ -1,13 +1,12 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useNotificationsQuery } from '@/features/notification/hooks/useNotificationsQuery';
-import { sendEvent } from '@/shared/lib/ga';
-import { NavigatorsBarAnalyticsEvent } from '@/shared/lib/ga/analyticsEvent';
+import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
 import { Link, useLocation } from 'react-router';
 import * as S from './index.styles';
+import { track } from '@/shared/lib/ga/track';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications } = useReadNotificationsQuery();
   const location = useLocation();
 
   const isTodayMomentActive = location.pathname.startsWith('/today-moment');
@@ -18,20 +17,20 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
     notifications?.data.length && notifications?.data.length > 0 ? true : false;
 
   const handleTodayMomentClick = () => {
-    sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayMomentButton);
+    track('click_navigation', { destination: 'today_moment', source: 'navbar' });
   };
 
   const handleTodayCommentClick = () => {
-    sendEvent(NavigatorsBarAnalyticsEvent.ClickTodayCommentButton);
+    track('click_navigation', { destination: 'today_comment', source: 'navbar' });
   };
 
   const handleCollectionClick = () => {
-    sendEvent(NavigatorsBarAnalyticsEvent.ClickCollectionButton);
+    track('click_navigation', { destination: 'collection', source: 'navbar' });
   };
 
   return (
     <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
-      <Link to={ROUTES.TODAY_MOMENT} onClick={handleTodayMomentClick}>
+      <Link to={ROUTES.TODAY_MOMENT} state={{ entry: 'nav' }} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayMomentActive}>
           <LazyImage
             src="/images/bluePlanet.webp"
@@ -45,7 +44,7 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
         </S.LinkContainer>
       </Link>
 
-      <Link to={ROUTES.TODAY_COMMENT} onClick={handleTodayCommentClick}>
+      <Link to={ROUTES.TODAY_COMMENT} state={{ entry: 'nav' }} onClick={handleTodayCommentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayCommentActive}>
           <LazyImage
             src="/images/orangePlanet.webp"
@@ -59,7 +58,11 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
         </S.LinkContainer>
       </Link>
 
-      <Link to={ROUTES.COLLECTION_MYMOMENT} onClick={handleCollectionClick}>
+      <Link
+        to={ROUTES.COLLECTION_MYMOMENT}
+        state={{ entry: 'nav' }}
+        onClick={handleCollectionClick}
+      >
         <S.LinkContainer
           $isNavBar={$isNavBar}
           $isActive={isCollectionActive}

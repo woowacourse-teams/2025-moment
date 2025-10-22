@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -61,6 +62,7 @@ const config = {
   },
   optimization: {
     usedExports: true,
+    sideEffects: true,
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),
@@ -75,6 +77,7 @@ const config = {
       ),
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),
+      'process.env.FCM_VAPID_KEY': JSON.stringify(process.env.FCM_VAPID_KEY || ''),
     }),
   ],
 };

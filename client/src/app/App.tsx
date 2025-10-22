@@ -3,20 +3,31 @@ import { router } from '@/app/routes';
 import { ErrorBoundary } from '@/shared/ui';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
 import { theme } from './styles/theme';
+import { useInitializeFCM } from '@/shared/notifications/useInitializeFCM';
+
+const AppContent = () => {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <RouterProvider router={router} />
+      {/* {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />} */}
+    </ThemeProvider>
+  );
+};
+
+const AppContentWithFCM = () => {
+  useInitializeFCM();
+  return <AppContent />;
+};
 
 const App = () => {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles />
-          <RouterProvider router={router} />
-          {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
-        </ThemeProvider>
+        <AppContentWithFCM />
       </QueryClientProvider>
     </ErrorBoundary>
   );
