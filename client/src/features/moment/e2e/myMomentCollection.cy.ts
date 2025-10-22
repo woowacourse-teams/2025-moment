@@ -365,9 +365,16 @@ describe('나의 모멘트 모음집 페이지', () => {
       cy.contains(momentsData[0].content).should('be.visible');
       cy.contains(momentsData[1].content).should('be.visible');
 
-      cy.scrollTo('bottom');
+      // window를 스크롤하여 페이지 하단으로 이동
+      cy.window().then(win => {
+        win.scrollTo(0, win.document.body.scrollHeight);
+      });
 
-      cy.wait('@getMomentsWithPagination');
+      // IntersectionObserver가 트리거되도록 대기
+      cy.wait(1000);
+
+      // 두 번째 페이지 요청 대기
+      cy.wait('@getMomentsWithPagination', { timeout: 10000 });
 
       cy.contains(momentsData[2].content).should('be.visible');
     });
