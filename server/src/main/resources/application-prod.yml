@@ -96,6 +96,9 @@ management:
       http.server: true
       process.cpu: true
       process.uptime: true
+      tomcat: true
+      tomcat.threads: true
+      tomcat.sessions: true
 
     export:
       cloudwatch:
