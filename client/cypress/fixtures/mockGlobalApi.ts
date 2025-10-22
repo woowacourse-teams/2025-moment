@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import { userData } from './userData';
 
 export const mockGlobalAPIs = () => {
