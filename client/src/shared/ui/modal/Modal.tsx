@@ -48,6 +48,7 @@ export function Modal({
           externalVariant={externalVariant}
           role="dialog"
           aria-modal="true"
+          aria-labelledby="notification-modal-title"
           $position={position}
           $size={size}
           $height={height}
@@ -62,14 +63,14 @@ export function Modal({
   );
 }
 
-const Header = ({ title, showCloseButton = true }: ModalHeader) => {
+const Header = ({ title, showCloseButton = true, id }: ModalHeader) => {
   const context = useContext(ModalContext);
   if (!context) throw new Error('Modal.Header는 Modal 컴포넌트 내부에서 사용되어야 합니다.');
 
   const { handleClose } = context;
 
   return (
-    <S.ModalHeader $hasTitle={!!title}>
+    <S.ModalHeader $hasTitle={!!title} id={id}>
       {title}
       {showCloseButton && <S.ModalCloseButton onClick={handleClose}>X</S.ModalCloseButton>}
     </S.ModalHeader>

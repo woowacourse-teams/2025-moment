@@ -14,6 +14,7 @@ export interface ModalProps {
 export interface ModalHeader {
   title?: string;
   showCloseButton?: boolean;
+  id?: string;
 }
 
 export interface ModalContent {
