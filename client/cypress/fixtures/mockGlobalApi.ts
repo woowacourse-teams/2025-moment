@@ -31,4 +31,12 @@ export const mockGlobalAPIs = () => {
       data: [],
     },
   }).as('getNotifications');
+
+  cy.intercept('GET', '**/api/v1/notifications/subscribe', {
+    statusCode: 200,
+    headers: {
+      'content-type': 'text/event-stream',
+    },
+    body: '',
+  }).as('notificationSubscribe');
 };
