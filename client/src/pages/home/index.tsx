@@ -119,9 +119,9 @@ const ExplainSection = ({
     <S.ExplainSection>
       <S.ExplainImage src={image} alt="" />
       <S.ExplainContainer>
-        <S.ExplainTitle>{title}</S.ExplainTitle>
-        <S.ExplainText>{text1}</S.ExplainText>
-        <S.ExplainText>{text2}</S.ExplainText>
+        <S.ExplainTitle as="h2">{title}</S.ExplainTitle>
+        <S.ExplainText as="p">{text1}</S.ExplainText>
+        <S.ExplainText as="p">{text2}</S.ExplainText>
       </S.ExplainContainer>
     </S.ExplainSection>
   );
