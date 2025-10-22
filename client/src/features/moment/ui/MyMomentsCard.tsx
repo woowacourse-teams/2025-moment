@@ -183,7 +183,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                         <S.CommentNavigationButton
                           onClick={navigation.goToNext}
                           position="right"
-                          aria-labe="다음 코멘트 보기"
+                          aria-label="다음 코멘트 보기"
                         >
                           <ChevronRight size={16} />
                         </S.CommentNavigationButton>
