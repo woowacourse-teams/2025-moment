@@ -59,15 +59,12 @@ export default function HomePage() {
             />
           </S.ContentSection>
           <S.HighlightedTextContainer
-            as="blockquote"
             isVisible={isVisible}
             role="region"
             aria-label="서비스 핵심 가치"
           >
-            <S.HighlightedText as="p">" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
-            <S.HighlightedText as="p">
-              " 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "
-            </S.HighlightedText>
+            <S.HighlightedText>" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
+            <S.HighlightedText>" 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "</S.HighlightedText>
           </S.HighlightedTextContainer>
         </S.MainContainer>
         <AnimatedIntroSection>
@@ -76,7 +73,7 @@ export default function HomePage() {
             <h2 id="intro-title" style={{ position: 'absolute', left: '-10000px' }}>
               moment 소개
             </h2>
-            <S.IntroText as="p">
+            <S.IntroText>
               "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
               위로를 건네는 소셜 네트워크 서비스입니다. <br />
               힘든 순간, 뿌듯한 순간, 위로받고 싶은 순간, 칭찬받고 싶은 모든 순간을 짧은 기록으로
@@ -138,9 +135,9 @@ const ExplainSection = ({
     <S.ExplainSection>
       <S.ExplainImage src={image} alt="" />
       <S.ExplainContainer>
-        <S.ExplainTitle as="h2">{title}</S.ExplainTitle>
-        <S.ExplainText as="p">{text1}</S.ExplainText>
-        <S.ExplainText as="p">{text2}</S.ExplainText>
+        <S.ExplainTitle>{title}</S.ExplainTitle>
+        <S.ExplainText>{text1}</S.ExplainText>
+        <S.ExplainText>{text2}</S.ExplainText>
       </S.ExplainContainer>
     </S.ExplainSection>
   );
