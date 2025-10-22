@@ -11,8 +11,8 @@ spring:
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5  # 최대 커넥션 풀 크기 (기본값: 10)
-      minimum-idle: 5  # 최소 유휴 커넥션 수 (기본값: maximum-pool-size와 동일)
+      maximum-pool-size: 12  # 최대 커넥션 풀 크기 (기본값: 10)
+      minimum-idle: 12  # 최소 유휴 커넥션 수 (기본값: maximum-pool-size와 동일)
       connection-timeout: 30000  # 커넥션 획득 타임아웃 (기본값: 30초)
       idle-timeout: 600000  # 유휴 커넥션 제거 시간 (기본값: 10분)
       max-lifetime: 1800000  # 커넥션 최대 생명 주기 (기본값: 30분)
@@ -21,8 +21,8 @@ spring:
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5
-      minimum-idle: 5
+      maximum-pool-size: 12
+      minimum-idle: 12
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
