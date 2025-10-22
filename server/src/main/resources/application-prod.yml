@@ -86,6 +86,11 @@ auth:
   password_update:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
 management:
   endpoints:
     web:
@@ -110,6 +115,8 @@ management:
       tomcat: true
       tomcat.threads: true
       tomcat.sessions: true
+      tomcat.cache: true
+      tomcat.global: true
 
     export:
       cloudwatch:
