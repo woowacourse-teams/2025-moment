@@ -26,7 +26,7 @@ describe('이메일 유효성 검사', () => {
       'test@example.com',
       'user.name@example.com',
       'user123@example-site.co.kr',
-      'test_user@domain.org',
+      'userData@domain.org',
       'user+tag@example.com',
       'email123@test-domain.com',
     ];
