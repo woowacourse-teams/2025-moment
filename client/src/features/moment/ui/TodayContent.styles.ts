@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const TodayContentWrapper = styled.div`
+export const TodayContentForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 20px;

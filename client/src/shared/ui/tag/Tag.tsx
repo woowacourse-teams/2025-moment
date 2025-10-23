@@ -10,7 +10,12 @@ const Tag = ({
   selected?: boolean;
 }) => {
   return (
-    <TagStyles type="button" onClick={onClick} $selected={selected ?? false}>
+    <TagStyles
+      type="button"
+      onClick={onClick}
+      $selected={selected ?? false}
+      aria-pressed={selected ?? false}
+    >
       {tag}
     </TagStyles>
   );

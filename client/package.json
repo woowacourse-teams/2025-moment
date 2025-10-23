@@ -20,6 +20,8 @@
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:silent": "jest --silent",
     "test:debug": "jest --no-cache --verbose",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "converter:csv": "node src/converter/csv/csvToTs.js"
   },
   "license": "MIT",
@@ -66,6 +68,7 @@
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
     "csv-parser": "^3.2.0",
+    "cypress": "^15.3.0",
     "dotenv": "^17.2.0",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.5",

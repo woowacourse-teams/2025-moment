@@ -37,6 +37,7 @@ export function FileUpload({
 
         {canAddImage && (
           <S.FileUploadButton
+            type="button"
             onClick={() => !disabled && !uploading && triggerFileInput()}
             disabled={disabled || uploading}
           >
@@ -50,7 +51,12 @@ export function FileUpload({
         <S.PreviewContainer>
           <S.PreviewItem>
             <S.PreviewImage src={uploadedImage.previewUrl} alt="미리보기" />
-            <S.RemoveButton onClick={removeImage} disabled={disabled || uploading}>
+            <S.RemoveButton
+              type="button"
+              onClick={removeImage}
+              disabled={disabled || uploading}
+              aria-label="이미지 삭제"
+            >
               <X size={16} />
             </S.RemoveButton>
             <S.FileName>{uploadedImage.file.name}</S.FileName>
