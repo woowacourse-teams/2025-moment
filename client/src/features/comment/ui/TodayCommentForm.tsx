@@ -110,7 +110,7 @@ export function TodayCommentForm({
           height="small"
           content={
             <S.MyCommentsContentWrapper>
-              <S.MomentContent>{momentData.content}</S.MomentContent>
+              <S.MomentContent title={momentData.content}>{momentData.content}</S.MomentContent>
               {momentData.imageUrl && (
                 <S.MomentImageContainer>
                   <S.MomentImage
