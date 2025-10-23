@@ -110,7 +110,9 @@ export function TodayCommentForm({
           height="small"
           content={
             <S.MyCommentsContentWrapper>
-              <S.MomentContent title={momentData.content}>{momentData.content}</S.MomentContent>
+              <S.MomentContent aria-label={`모멘트 내용: ${momentData.content}`}>
+                {momentData.content}
+              </S.MomentContent>
               {momentData.imageUrl && (
                 <S.MomentImageContainer>
                   <S.MomentImage
