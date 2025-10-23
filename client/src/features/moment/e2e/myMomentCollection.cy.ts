@@ -188,12 +188,12 @@ describe('나의 모멘트 모음집 페이지', () => {
 
       cy.get('[role="dialog"]').should('be.visible');
 
-      cy.get('button[aria-label="닫기"], button[class*="CloseButton"]')
-        .should('be.visible')
-        .should('not.be.disabled')
-        .click({ force: true });
+      // 닫기 버튼 찾기 - 첫 번째 닫기 버튼만 클릭
+      cy.get('[role="dialog"]').within(() => {
+        cy.contains('X').first().click();
+      });
 
-      // 모달이 DOM에서 제거될 때까지 대기 (애니메이션 + 제거 시간 고려)
+      // 모달이 DOM에서 완전히 제거될 때까지 대기
       cy.get('[role="dialog"]').should('not.exist');
     });
   });
@@ -400,25 +400,25 @@ describe('나의 모멘트 모음집 페이지', () => {
 
       cy.contains('두 번째 페이지 모멘트 1').should('not.exist');
 
-      // 페이지를 여러 번 스크롤하여 확실하게 IntersectionObserver 트리거
-      for (let i = 0; i < 5; i++) {
-        cy.window().then(win => {
-          win.scrollBy(0, 300);
-        });
-        cy.wait(200);
-      }
+      // 스크롤하여 IntersectionObserver 트리거
+      cy.scrollTo('bottom', { duration: 1000 });
+      cy.wait(1000);
 
-      // 마지막으로 맨 아래까지 스크롤
+      // 추가로 스크롤을 여러 번 시도
       cy.window().then(win => {
         win.scrollTo(0, win.document.documentElement.scrollHeight);
       });
+      cy.wait(1000);
 
-      // IntersectionObserver가 트리거되도록 충분한 시간 대기
-      cy.wait(3000);
+      // 한 번 더 스크롤
+      cy.window().then(win => {
+        win.scrollTo(0, win.document.documentElement.scrollHeight + 100);
+      });
 
       // 두 번째 페이지 요청 대기
       cy.wait('@getMomentsWithPagination', { timeout: 15000 });
 
+      // 두 번째 페이지 데이터 확인
       cy.contains('두 번째 페이지 모멘트 1', { timeout: 10000 }).should('be.visible');
     });
   });
