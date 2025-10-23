@@ -76,7 +76,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <S.CommentContent area-label={`내가 쓴 코멘트 내용: ${myComment.content}`}>{myComment.content}</S.CommentContent>
+                  <S.CommentContent area-label={`내가 쓴 코멘트 내용: ${myComment.content}`}>
+                    {myComment.content}
+                  </S.CommentContent>
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
