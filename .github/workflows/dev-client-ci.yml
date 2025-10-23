@@ -61,10 +61,14 @@ jobs:
           install: false
           build: pnpm run build
           start: pnpm run dev
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 120
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
           browser: chrome
-          record: false  
+          record: false
+          config: video=true,screenshotOnRunFailure=true
+        env:
+          CI: true
+          DEBUG: 'cypress:*'
 
       - name: Build application
         run: pnpm run build
