@@ -83,19 +83,19 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         onKeyDown={
           hasComments
             ? e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleMomentClick();
-                }
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleMomentClick();
               }
+            }
             : undefined
         }
-        aria-label={hasComments ? '달린 코멘트 확인하기' : undefined}
+        aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
       >
         <S.MyMomentsTitleWrapper>
           <S.CommentCountWrapper>
             <Mail size={16} />
-            <span>{sortedComments?.length}</span>
+            <span aria-label="달린 코멘트 수:">{sortedComments?.length}</span>
           </S.CommentCountWrapper>
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
@@ -162,7 +162,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       )}
 
                       <S.CommentContent>
-                        <div>{currentComment.content}</div>
+                        <div area-label={`${currentComment.content}`}>{currentComment.content}</div>
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
                             <S.CommentImage

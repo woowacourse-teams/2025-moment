@@ -45,7 +45,9 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
           <S.ContentContainer>
             {myComment.moment ? (
               <S.MomentContentWrapper>
-                <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
+                <S.MyMomentContent aria-label={`모멘트 내용: ${myComment.moment.content}`}>
+                  {myComment.moment.content}
+                </S.MyMomentContent>
                 {myComment.moment?.imageUrl && (
                   <S.CommentImageContainer>
                     <S.CommentImage
@@ -74,7 +76,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <S.CommentContent>{myComment.content}</S.CommentContent>
+                  <S.CommentContent area-label={`내가 쓴 코멘트 내용: ${myComment.content}`}>{myComment.content}</S.CommentContent>
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage

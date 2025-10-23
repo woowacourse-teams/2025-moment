@@ -15,6 +15,7 @@ const Tag = ({
       onClick={onClick}
       $selected={selected ?? false}
       aria-pressed={selected ?? false}
+      aria-label={`태그: ${tag}`}
     >
       {tag}
     </TagStyles>
@@ -30,7 +31,7 @@ const TagStyles = styled.button<{ $selected: boolean }>`
     $selected ? theme.colors['yellow-300_10'] : theme.colors['gray-200_10']};
   border: 1px solid
     ${({ theme, $selected }) =>
-      $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
+    $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
   color: ${({ theme, $selected }) =>
     $selected ? theme.colors['yellow-500'] : theme.colors['gray-200']};
 `;
