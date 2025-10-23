@@ -321,8 +321,34 @@ describe('나의 모멘트 모음집 페이지', () => {
     beforeEach(() => {
       mockGlobalAPIs();
 
-      const firstPageData = momentsData.slice(0, 2);
-      const secondPageData = momentsData.slice(2);
+      // 더 많은 데이터를 생성하여 스크롤이 발생하도록 함
+      const firstPageData = Array.from({ length: 5 }, (_, i) => ({
+        id: i + 1,
+        momenterId: 1,
+        content: `첫 페이지 모멘트 ${i + 1}`,
+        createdAt: `2025-10-22T${10 + i}:00:00`,
+        imageUrl: null,
+        tagNames: ['테스트'],
+        comments: null,
+        momentNotification: {
+          isRead: true,
+          notificationIds: [],
+        },
+      }));
+
+      const secondPageData = Array.from({ length: 3 }, (_, i) => ({
+        id: i + 6,
+        momenterId: 1,
+        content: `두 번째 페이지 모멘트 ${i + 1}`,
+        createdAt: `2025-10-22T${15 + i}:00:00`,
+        imageUrl: null,
+        tagNames: ['테스트'],
+        comments: null,
+        momentNotification: {
+          isRead: true,
+          notificationIds: [],
+        },
+      }));
 
       cy.intercept('GET', '**/api/v1/moments/me?*', req => {
         const url = new URL(req.url);
@@ -357,26 +383,39 @@ describe('나의 모멘트 모음집 페이지', () => {
         }
       }).as('getMomentsWithPagination');
 
+      // 뷰포트를 작게 설정하여 스크롤이 확실히 생기도록
+      cy.viewport(1280, 600);
       cy.visit('/collection/my-moment');
       cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMomentsWithPagination']);
     });
 
     it('스크롤 시 추가 모멘트가 로드된다', () => {
-      cy.contains(momentsData[0].content).should('be.visible');
-      cy.contains(momentsData[1].content).should('be.visible');
+      // 첫 페이지 데이터 확인
+      cy.contains('첫 페이지 모멘트 1').should('be.visible');
+      cy.contains('첫 페이지 모멘트 5').should('be.visible');
 
-      // window를 스크롤하여 페이지 하단으로 이동
+      cy.contains('두 번째 페이지 모멘트 1').should('not.exist');
+
+      // 페이지를 여러 번 스크롤하여 확실하게 IntersectionObserver 트리거
+      for (let i = 0; i < 5; i++) {
+        cy.window().then(win => {
+          win.scrollBy(0, 300);
+        });
+        cy.wait(200);
+      }
+
+      // 마지막으로 맨 아래까지 스크롤
       cy.window().then(win => {
-        win.scrollTo(0, win.document.body.scrollHeight);
+        win.scrollTo(0, win.document.documentElement.scrollHeight);
       });
 
-      // IntersectionObserver가 트리거되도록 대기
-      cy.wait(1000);
+      // IntersectionObserver가 트리거되도록 충분한 시간 대기
+      cy.wait(3000);
 
       // 두 번째 페이지 요청 대기
-      cy.wait('@getMomentsWithPagination', { timeout: 10000 });
+      cy.wait('@getMomentsWithPagination', { timeout: 15000 });
 
-      cy.contains(momentsData[2].content).should('be.visible');
+      cy.contains('두 번째 페이지 모멘트 1', { timeout: 10000 }).should('be.visible');
     });
   });
 
