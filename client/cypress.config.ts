@@ -8,10 +8,6 @@ export default defineConfig({
     video: false,
     screenshotOnRunFailure: true,
     defaultCommandTimeout: 10000,
-    retries: {
-      runMode: 1,
-      openMode: 0,
-    },
 
     setupNodeEvents(on, config) {
       return config;
