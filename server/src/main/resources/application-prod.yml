@@ -11,22 +11,11 @@ spring:
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 30  # 최대 커넥션 풀 크기 (기본값: 10)
-      minimum-idle: 30  # 최소 유휴 커넥션 수 (기본값: maximum-pool-size와 동일)
-      connection-timeout: 30000  # 커넥션 획득 타임아웃 (기본값: 30초)
-      idle-timeout: 600000  # 유휴 커넥션 제거 시간 (기본값: 10분)
-      max-lifetime: 1800000  # 커넥션 최대 생명 주기 (기본값: 30분)
     read:
       jdbc-url: jdbc:mysql://${READ_DB_HOST}:${DB_PORT}/${DB_NAME}
       username: ${DB_USER}
       password: ${DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 30
-      minimum-idle: 30
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
-
 
   jpa:
     hibernate:
@@ -90,6 +79,10 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
+    threads:
+      max: 10       # (예시) 최대 스레드 수를 200개로 설정
+      min-spare: 10  # (예시) 최소 유휴 스레드 수를 20개로 설정
+      accept-count: 100  # (예시) 연결 대기 큐 크기를 100개로 설정
 
 management:
   endpoints:
