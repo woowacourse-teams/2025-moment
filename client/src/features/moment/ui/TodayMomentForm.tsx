@@ -29,6 +29,11 @@ export function TodayMomentForm({
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const { showError, showWarning } = useToast();
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleNavigateToTodayMomentSuccess();
+  };
+
   const handleNavigateToTodayMomentSuccess = () => {
     if (checkProfanityWord(content)) {
       showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
@@ -63,26 +68,33 @@ export function TodayMomentForm({
 
   return (
     <Card width="medium">
-      <S.TodayContentWrapper>
+      <S.TodayContentForm onSubmit={handleFormSubmit}>
+        <legend className="sr-only">오늘의 모멘트 작성</legend>
         <Card.TitleContainer
           Icon={Star}
           title="모멘트 공유하기"
           subtitle="뿌듯한 순간, 위로받고 싶은 순간, 기쁜 순간 모든 모멘트를 자유롭게 적어보세요"
         />
         <Card.Content>
-          <S.TagWrapper>
-            <S.TagLabel>태그: </S.TagLabel>
-            <TagList tags={TAGS} onTagClick={handleTagNameClick} selectedTag={tagNames} />
-          </S.TagWrapper>
-          <TextArea
-            maxLength={MAX_LENGTH}
-            placeholder="오늘 어떤 모멘트를 경험하셨나요? 솔직한 마음을 들려주세요..."
-            height="medium"
-            value={content}
-            onChange={handleContentChange}
-            onFocus={handleTextAreaFocus}
-          />
-          <FileUpload onImageChange={handleImageChange} disabled={false} />
+          <fieldset>
+            <legend className="sr-only">태그 선택(필수, 최대 3개)</legend>
+            <S.TagWrapper>
+              <S.TagLabel id="tag-label">태그: </S.TagLabel>
+              <TagList tags={TAGS} onTagClick={handleTagNameClick} selectedTag={tagNames} />
+            </S.TagWrapper>
+          </fieldset>
+          <fieldset>
+            <legend className="sr-only">모멘트 내용 작성</legend>
+            <TextArea
+              maxLength={MAX_LENGTH}
+              placeholder="오늘 어떤 모멘트를 경험하셨나요? 솔직한 마음을 들려주세요..."
+              height="medium"
+              value={content}
+              onChange={handleContentChange}
+              onFocus={handleTextAreaFocus}
+            />
+            <FileUpload onImageChange={handleImageChange} disabled={false} />
+          </fieldset>
         </Card.Content>
         <Card.Action position="space-between">
           <p>
@@ -95,7 +107,7 @@ export function TodayMomentForm({
             disabled={content.trim().length === 0}
           />
         </Card.Action>
-      </S.TodayContentWrapper>
+      </S.TodayContentForm>
     </Card>
   );
 }

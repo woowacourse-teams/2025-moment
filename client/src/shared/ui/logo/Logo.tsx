@@ -9,8 +9,8 @@ export const Logo = () => {
   };
 
   return (
-    <S.LogoButton onClick={handleClick}>
-      <S.LogoImage src="/images/logo.webp" alt="모멘트 메인페이지 이동" />
+    <S.LogoButton onClick={handleClick} aria-label="모멘트 메인페이지 이동">
+      <S.LogoImage src="/images/logo.webp" alt="" />
       <S.LogoText>Moment</S.LogoText>
     </S.LogoButton>
   );

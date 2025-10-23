@@ -63,7 +63,10 @@ export const LoginDescription = styled.p`
   color: ${({ theme }) => theme.colors['gray-200']};
 `;
 
-export const LoginFormContent = styled.div`
+export const LoginFormContent = styled.fieldset`
+  border: none;
+  padding: 0;
+  margin: 0;
   width: 100%;
   flex: 1;
   display: flex;
@@ -149,7 +152,7 @@ export const LoginSignupContainer = styled.div`
   gap: 10px;
 `;
 
-export const NewPasswordLink = styled.span`
+export const NewPasswordLink = styled.button`
   color: ${({ theme }) => theme.colors['gray-400']};
   cursor: pointer;
   &:hover {
@@ -157,7 +160,7 @@ export const NewPasswordLink = styled.span`
   }
 `;
 
-export const LoginSignupLink = styled.span`
+export const LoginSignupLink = styled.button`
   color: ${({ theme }) => theme.colors['yellow-500']};
   cursor: pointer;
   &:hover {

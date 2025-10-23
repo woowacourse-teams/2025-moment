@@ -42,7 +42,7 @@ export const TodayCommentWriteContent = ({
   };
 
   return (
-    <S.TodayContentWrapper onSubmit={handleFormSubmit}>
+    <S.TodayContentForm onSubmit={handleFormSubmit}>
       <Card.Content>
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."
@@ -66,6 +66,6 @@ export const TodayCommentWriteContent = ({
           disabled={isPending || isDisabled || !isLoggedIn}
         />
       </Card.Action>
-    </S.TodayContentWrapper>
+    </S.TodayContentForm>
   );
 };
