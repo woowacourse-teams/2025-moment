@@ -128,3 +128,10 @@ export const MomentContent = styled.p`
   text-align: left;
   word-break: break-all;
 `;
+
+export const CommentSection = styled.section`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;

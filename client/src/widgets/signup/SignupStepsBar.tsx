@@ -20,15 +20,23 @@ export const SignupStepBar = ({ step }: SignupStepBarProps) => {
 
   return (
     <S.StepsWrapper>
-      <S.StepsContainer>
-        <S.StepDot active={currentStepNumber === 1} completed={currentStepNumber > 1} />
-        <S.StepConnector completed={currentStepNumber > 1} />
-        <S.StepDot active={currentStepNumber === 2} completed={currentStepNumber > 2} />
-        <S.StepConnector completed={currentStepNumber > 2} />
-        <S.StepDot active={currentStepNumber === 3} completed={false} />
+      <S.StepsContainer aria-label={`회원가입 진행 단계: 3단계 중 ${currentStepNumber}단계`}>
+        <S.StepDot
+          active={currentStepNumber === 1}
+          completed={currentStepNumber > 1}
+          aria-hidden="true"
+        />
+        <S.StepConnector completed={currentStepNumber > 1} aria-hidden="true" />
+        <S.StepDot
+          active={currentStepNumber === 2}
+          completed={currentStepNumber > 2}
+          aria-hidden="true"
+        />
+        <S.StepConnector completed={currentStepNumber > 2} aria-hidden="true" />
+        <S.StepDot active={currentStepNumber === 3} completed={false} aria-hidden="true" />
       </S.StepsContainer>
       <S.SignupFormTitle>
-        <S.SignupFormIcon>{stepConfig.icon}</S.SignupFormIcon>
+        <S.SignupFormIcon aria-hidden="true">{stepConfig.icon}</S.SignupFormIcon>
         <S.StepTitle active={true}>{currentTitle}</S.StepTitle>
       </S.SignupFormTitle>
     </S.StepsWrapper>

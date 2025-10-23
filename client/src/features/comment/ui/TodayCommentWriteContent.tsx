@@ -34,8 +34,15 @@ export const TodayCommentWriteContent = ({
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isDisabled && !isPending && isLoggedIn) {
+      handleSubmit();
+    }
+  };
+
   return (
-    <S.TodayContentForm>
+    <S.TodayContentForm onSubmit={handleFormSubmit}>
       <Card.Content>
         <TextArea
           placeholder="따뜻한 위로의 말을 전해주세요..."
@@ -55,7 +62,7 @@ export const TodayCommentWriteContent = ({
         <YellowSquareButton
           Icon={Send}
           title="코멘트 보내기"
-          onClick={handleSubmit}
+          type="submit"
           disabled={isPending || isDisabled || !isLoggedIn}
         />
       </Card.Action>

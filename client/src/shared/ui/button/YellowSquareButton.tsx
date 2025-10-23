@@ -6,10 +6,24 @@ interface RequestButtonProps {
   title: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
-export const YellowSquareButton = ({ Icon, title, onClick, disabled }: RequestButtonProps) => {
+export const YellowSquareButton = ({
+  Icon,
+  title,
+  onClick,
+  disabled,
+  type,
+}: RequestButtonProps) => {
   return (
-    <Button Icon={Icon} title={title} variant="tertiary" onClick={onClick} disabled={disabled} />
+    <Button
+      Icon={Icon}
+      title={title}
+      variant="tertiary"
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    />
   );
 };

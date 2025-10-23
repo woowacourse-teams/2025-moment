@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Cypress binary
+        run: pnpm exec cypress install
+
       - name: TypeScript type check
         run: pnpm exec tsc --noEmit
 
@@ -50,6 +53,18 @@ jobs:
 
       - name: Run tests
         run: pnpm run test --coverage
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./client
+          install: false
+          build: pnpm run build
+          start: pnpm run dev
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+          record: false  
 
       - name: Build application
         run: pnpm run build
