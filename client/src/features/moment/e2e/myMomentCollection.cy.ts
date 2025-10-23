@@ -188,8 +188,12 @@ describe('나의 모멘트 모음집 페이지', () => {
 
       cy.get('[role="dialog"]').should('be.visible');
 
-      cy.get('button[aria-label="닫기"], button[class*="CloseButton"]').click();
+      cy.get('button[aria-label="닫기"], button[class*="CloseButton"]')
+        .should('be.visible')
+        .should('not.be.disabled')
+        .click({ force: true });
 
+      // 모달이 DOM에서 제거될 때까지 대기 (애니메이션 + 제거 시간 고려)
       cy.get('[role="dialog"]').should('not.exist');
     });
   });
