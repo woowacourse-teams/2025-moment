@@ -1,6 +1,7 @@
 package moment.global.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -25,8 +26,8 @@ public class DataSourceConfig {
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("write");
-        ds.setMaximumPoolSize(7);
-        ds.setMaximumPoolSize(7);
+        ds.setMaximumPoolSize(6);
+        ds.setMaximumPoolSize(6);
         ds.setConnectionTimeout(30000);
         ds.setIdleTimeout(600000);
         ds.setMaxLifetime(1800000);
@@ -40,8 +41,8 @@ public class DataSourceConfig {
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("read");
-        ds.setMaximumPoolSize(7);
-        ds.setMaximumPoolSize(7);
+        ds.setMaximumPoolSize(6);
+        ds.setMaximumPoolSize(6);
         ds.setConnectionTimeout(30000);
         ds.setIdleTimeout(600000);
         ds.setMaxLifetime(1800000);
@@ -71,5 +72,21 @@ public class DataSourceConfig {
     @DependsOn("routingDataSource")
     public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
+    }
+
+    @Bean
+    @DependsOn({"readDataSource", "writeDataSource"})
+    public MeterBinder hikariMetricsBinder(
+            @Qualifier("readDataSource") DataSource readDataSource,
+            @Qualifier("writeDataSource") DataSource writeDataSource
+    ) {
+        return registry -> {
+            if (readDataSource instanceof HikariDataSource readHikari) {
+                readHikari.setMetricRegistry(registry);
+            }
+            if (writeDataSource instanceof HikariDataSource writeHikari) {
+                writeHikari.setMetricRegistry(registry);
+            }
+        };
     }
 }
