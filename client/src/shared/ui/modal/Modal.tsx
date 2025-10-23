@@ -21,6 +21,7 @@ export function Modal({
   onClose: handleClose,
   variant = 'default',
   externalVariant,
+  titleId,
 }: ModalProps) {
   if (!isOpen) return null;
 
@@ -48,7 +49,7 @@ export function Modal({
           externalVariant={externalVariant}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="notification-modal-title"
+          aria-labelledby={titleId}
           $position={position}
           $size={size}
           $height={height}

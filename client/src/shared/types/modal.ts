@@ -9,6 +9,7 @@ export interface ModalProps {
   onClose: () => void;
   variant?: ModalVariant;
   externalVariant?: ExternalModalVariant;
+  titleId?: string;
 }
 
 export interface ModalHeader {

@@ -93,7 +93,7 @@ export default function HomePage() {
           </AnimatedIntroSection>
         ))}
       </S.HomePageWrapper>
-      <Modal size="small" isOpen={isOpen} onClose={handleClose}>
+      <Modal size="small" isOpen={isOpen} onClose={handleClose} titleId="notification-modal-title">
         <Modal.Header
           title="모멘트와 코멘트 알림을 받아보세요!"
           showCloseButton={true}
