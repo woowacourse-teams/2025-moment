@@ -93,9 +93,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
       >
         <S.MyMomentsTitleWrapper>
-          <S.CommentCountWrapper>
-            <Mail size={16} />
-            <span aria-label="달린 코멘트 수:">{sortedComments?.length}</span>
+          <S.CommentCountWrapper aria-label={`달린 코멘트 수: ${sortedComments?.length}개`}>
+            <Mail size={16} aria-hidden="true" />
+            <span aria-hidden="true">{sortedComments?.length}</span>
           </S.CommentCountWrapper>
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
