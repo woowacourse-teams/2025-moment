@@ -20,6 +20,12 @@ export const CollectionHeader = () => {
         to={ROUTES.COLLECTION_MYMOMENT}
         className={currentpath === ROUTES.COLLECTION_MYMOMENT ? 'active' : ''}
         $shadow={isMomentNotificationExisting}
+        aria-current={currentpath === ROUTES.COLLECTION_MYMOMENT ? 'page' : undefined}
+        aria-label={
+          isMomentNotificationExisting
+            ? '나의 모멘트 모음집 페이지 이동 (새 알림 있음)'
+            : '나의 모멘트 모음집 페이지 이동'
+        }
       >
         나의 모멘트 모음집
       </S.CollectionHeaderLinkContainer>
@@ -27,6 +33,12 @@ export const CollectionHeader = () => {
         to={ROUTES.COLLECTION_MYCOMMENT}
         className={currentpath === ROUTES.COLLECTION_MYCOMMENT ? 'active' : ''}
         $shadow={isCommentNotificationExisting}
+        aria-current={currentpath === ROUTES.COLLECTION_MYCOMMENT ? 'page' : undefined}
+        aria-label={
+          isCommentNotificationExisting
+            ? '나의 코멘트 모음집 페이지 이동 (새 알림 있음)'
+            : '나의 코멘트 모음집 페이지 이동'
+        }
       >
         나의 코멘트 모음집
       </S.CollectionHeaderLinkContainer>

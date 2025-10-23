@@ -51,9 +51,18 @@ export default function HomePage() {
             <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
           </S.ContentSection>
           <S.ContentSection isVisible={isVisible}>
-            <S.BottomArrow isVisible={isVisible} src="/images/belowAirplane.webp" alt="" />
+            <S.BottomArrow
+              isVisible={isVisible}
+              src="/images/belowAirplane.webp"
+              alt="아래로 스크롤하세요"
+              role="img"
+            />
           </S.ContentSection>
-          <S.HighlightedTextContainer isVisible={isVisible}>
+          <S.HighlightedTextContainer
+            isVisible={isVisible}
+            role="region"
+            aria-label="서비스 핵심 가치"
+          >
             <S.HighlightedText>" 비교 없는 따뜻한 소통의 공간 "</S.HighlightedText>
             <S.HighlightedText>" 익명 속에서 편안하게 마음을 나눌 수 있는 곳 "</S.HighlightedText>
           </S.HighlightedTextContainer>
@@ -61,6 +70,9 @@ export default function HomePage() {
         <AnimatedIntroSection>
           <S.IntroSection>
             <S.IntroTitleLogo src="/images/momentLogo.webp" alt="" />
+            <h2 id="intro-title" style={{ position: 'absolute', left: '-10000px' }}>
+              moment 소개
+            </h2>
             <S.IntroText>
               "모멘트(Moment)"는 사용자들이 삶의 모든 순간(Moment)을 공유하며 서로에게 따뜻한 칭찬과
               위로를 건네는 소셜 네트워크 서비스입니다. <br />
@@ -81,8 +93,12 @@ export default function HomePage() {
           </AnimatedIntroSection>
         ))}
       </S.HomePageWrapper>
-      <Modal size="small" isOpen={isOpen} onClose={handleClose}>
-        <Modal.Header title="모멘트와 코멘트 알림을 받아보세요!" showCloseButton={true} />
+      <Modal size="small" isOpen={isOpen} onClose={handleClose} titleId="notification-modal-title">
+        <Modal.Header
+          title="모멘트와 코멘트 알림을 받아보세요!"
+          showCloseButton={true}
+          id="notification-modal-title"
+        />
         <Modal.Content>
           <NotificationButton onClose={handleClose} />
         </Modal.Content>
