@@ -66,4 +66,12 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                    @Param("reportedMoments") List<Long> reportedMoments);
 
     void deleteById(Long momentId);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          WHERE m.id IN :momentIds
+           """)
+    List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
 }

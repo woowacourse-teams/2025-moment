@@ -14,7 +14,7 @@ public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
     @Query("""
             SELECT DISTINCT mt.moment.id
             FROM moment_tags mt
-            JOIN mt.tag t
+            JOIN FETCH mt.tag t
             WHERE t.name IN :tagNames
                 AND mt.moment.id IN :momentIds
             """)
