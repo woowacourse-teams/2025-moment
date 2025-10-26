@@ -28,7 +28,7 @@ public class MomentTagService {
     }
 
     public Map<Moment, List<MomentTag>> getMomentTagsByMoment(List<Moment> moments) {
-        return momentTagRepository.findAllByMomentIn(moments).stream()
+        return momentTagRepository.findAllWithTagsByMomentIn(moments).stream()
                 .collect(Collectors.groupingBy(MomentTag::getMoment));
     }
 
