@@ -80,8 +80,8 @@ server:
     mbeanregistry:
       enabled: true
     threads:
-      max: 7       # (예시) 최대 스레드 수를 200개로 설정
-      min-spare: 7  # (예시) 최소 유휴 스레드 수를 20개로 설정
+      max: 10       # (예시) 최대 스레드 수를 200개로 설정
+      min-spare: 10  # (예시) 최소 유휴 스레드 수를 20개로 설정
       accept-count: 100  # (예시) 연결 대기 큐 크기를 100개로 설정
 
 management:
