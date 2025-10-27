@@ -1,13 +1,13 @@
 package moment.comment.service.comment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
@@ -66,28 +66,28 @@ class CommentImageServiceTest {
     @Test
     void 이미지_정보가_있으면_코멘트_이미지를_생성한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("content", moment.getId(), "imageUrl", "imageName");
+        String imageUrl = "imageUrl.jpg";
+        int lastDotIndex = imageUrl.lastIndexOf('.');
+        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
 
         // when
-        Optional<CommentImage> resultOpt = commentImageService.create(request, comment);
+        Optional<CommentImage> resultOpt = commentImageService.create(comment, imageUrl, "imageName");
 
         // then
-        assertThat(resultOpt).isPresent();
-        CommentImage commentImage = resultOpt.get();
-        assertThat(commentImage.getId()).isNotNull();
-        assertThat(commentImage.getComment()).isEqualTo(comment);
-        assertThat(commentImage.getImageUrl()).isEqualTo("imageUrl");
-        assertThat(commentImage.getImageName()).isEqualTo("imageName");
-        assertThat(commentImageRepository.findById(commentImage.getId())).isPresent();
+        assertAll(
+                () -> assertThat(resultOpt).isPresent(),
+                () -> assertThat(resultOpt.get().getId()).isNotNull(),
+                () -> assertThat(resultOpt.get().getComment()).isEqualTo(comment),
+                () -> assertThat(resultOpt.get().getImageUrl()).isEqualTo(imageUrlWithoutExtension),
+                () -> assertThat(resultOpt.get().getImageName()).isEqualTo("imageName"),
+                () -> assertThat(commentImageRepository.findById(resultOpt.get().getId())).isPresent()
+        );
     }
 
     @Test
     void 이미지_정보가_없으면_코멘트_이미지를_생성하지_않는다() {
-        // given
-        CommentCreateRequest request = new CommentCreateRequest("content", moment.getId(), null, null);
-
-        // when
-        Optional<CommentImage> resultOpt = commentImageService.create(request, comment);
+        // given & when
+        Optional<CommentImage> resultOpt = commentImageService.create(comment, null, null);
 
         // then
         assertThat(resultOpt).isEmpty();
@@ -104,9 +104,11 @@ class CommentImageServiceTest {
         Map<Comment, CommentImage> result = commentImageService.getCommentImageByComment(List.of(comment, comment2));
 
         // then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(comment)).isEqualTo(commentImage1);
-        assertThat(result.get(comment2)).isEqualTo(commentImage2);
+        assertAll(
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result.get(comment)).isEqualTo(commentImage1),
+                () -> assertThat(result.get(comment2)).isEqualTo(commentImage2)
+        );
     }
 
     @Test
@@ -133,5 +135,23 @@ class CommentImageServiceTest {
 
         // then
         assertThat(commentImageRepository.findById(commentImage.getId())).isEmpty();
+    }
+
+    @Test
+    void 코멘트_이미지_조회_시_확장자를_제거하고_가져온다() {
+        // given
+        String imageUrl = "imageUrl.jpg";
+        int lastDotIndex = imageUrl.lastIndexOf('.');
+        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
+        commentImageService.create(comment, imageUrl, "imageName");
+
+        // when
+        Map<Comment, CommentImage> result = commentImageService.getCommentImageByComment(List.of(comment));
+
+        // then
+        assertAll(
+                () -> assertThat(result).hasSize(1),
+                () -> assertThat(result.get(comment).getImageUrl()).isEqualTo(imageUrlWithoutExtension)
+        );
     }
 }

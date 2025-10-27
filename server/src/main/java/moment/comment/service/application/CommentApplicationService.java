@@ -100,7 +100,10 @@ public class CommentApplicationService {
         Comment commentWithoutId = request.toComment(commenter, request.momentId());
         Comment savedComment = commentService.create(commentWithoutId);
 
-        Optional<CommentImage> commentImage = commentImageService.create(request, savedComment);
+        Optional<CommentImage> commentImage = commentImageService.create(
+                savedComment,
+                request.imageUrl(),
+                request.imageName());
 
         return commentImage.map(image -> CommentCreateResponse.of(savedComment, image))
                 .orElseGet(() -> CommentCreateResponse.from(savedComment));

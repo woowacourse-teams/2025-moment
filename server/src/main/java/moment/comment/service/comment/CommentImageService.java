@@ -1,6 +1,5 @@
 package moment.comment.service.comment;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,7 +7,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.infrastructure.CommentImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +19,11 @@ public class CommentImageService {
     private final CommentImageRepository commentImageRepository;
 
     @Transactional
-    public Optional<CommentImage> create(CommentCreateRequest request, Comment comment) {
-        if (request.imageName() == null || request.imageUrl() == null) {
-            return Optional.empty();
-        }
-        CommentImage commentImageWithoutId = new CommentImage(comment, request.imageUrl(), request.imageName());
-        return Optional.of(commentImageRepository.save(commentImageWithoutId));
+    public Optional<CommentImage> create(Comment comment, String imageUrl, String imageName) {
+        Optional<CommentImage> commentImage = CommentImage.createNew(comment, imageUrl, imageName);
+        commentImage.ifPresent(commentImageRepository::save);
+
+        return commentImage;
     }
 
     public Map<Comment, CommentImage> getCommentImageByComment(List<Comment> comments) {

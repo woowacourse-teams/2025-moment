@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,5 +49,23 @@ public class CommentImage extends BaseEntity {
         this.comment = comment;
         this.imageUrl = imageUrl;
         this.imageName = imageName;
+    }
+
+    public static Optional<CommentImage> createNew(Comment comment, String imageUrl, String imageName) {
+        if (imageUrl != null && imageName != null) {
+            String imageUrlWithoutExtension = removeExtension(imageUrl);
+            return Optional.of(new CommentImage(comment, imageUrlWithoutExtension, imageName));
+        }
+        return Optional.empty();
+    }
+
+    private static String removeExtension(String fullPath) {
+        int lastDotIndex = fullPath.lastIndexOf('.');
+
+        if (lastDotIndex == -1) {
+            return fullPath;
+        }
+
+        return fullPath.substring(0, lastDotIndex);
     }
 }
