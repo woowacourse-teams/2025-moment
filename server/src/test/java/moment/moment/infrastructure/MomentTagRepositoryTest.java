@@ -60,7 +60,7 @@ class MomentTagRepositoryTest {
         momentTagRepository.save(new MomentTag(moment3, tagTrip));
 
         // when
-        List<MomentTag> results = momentTagRepository.findAllByMomentIn(List.of(moment1, moment2));
+        List<MomentTag> results = momentTagRepository.findAllWithTagsByMomentIn(List.of(moment1, moment2));
 
         // then
         assertThat(results).hasSize(2)
@@ -101,5 +101,22 @@ class MomentTagRepositoryTest {
         List<MomentTag> allMomentTags = momentTagRepository.findAll();
         assertThat(allMomentTags).hasSize(1)
                 .containsExactly(momentTagToKeep);
+    }
+
+    @Test
+    void 모멘트리스트로_조회할때_tags가_fetch_join되어_즉시로딩되는지_확인한다() {
+        // given
+        MomentTag mt1 = momentTagRepository.save(new MomentTag(moment1, tagLife));
+        MomentTag mt2 = momentTagRepository.save(new MomentTag(moment2, tagHealth));
+        momentTagRepository.save(new MomentTag(moment3, tagTrip));
+
+        List<Moment> momentsToFetch = List.of(moment1, moment2);
+
+        // when
+        List<MomentTag> results = momentTagRepository.findAllWithTagsByMomentIn(momentsToFetch);
+
+        // then
+        assertThat(results).hasSize(2)
+                .allSatisfy(mt -> assertThat(mt.getTag()).isNotNull());
     }
 }

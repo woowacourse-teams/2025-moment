@@ -16,6 +16,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
+            JOIN FETCH m.momenter
             WHERE m.momenter = :momenter
             ORDER BY m.createdAt DESC, m.id DESC
             """)
@@ -23,6 +24,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
+            JOIN FETCH m.momenter
             WHERE m.id IN :ids
             ORDER BY m.createdAt DESC, m.id DESC
             """)
@@ -30,6 +32,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
+            JOIN FETCH m.momenter
             WHERE m.momenter = :momenter AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
@@ -40,6 +43,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
 
     @Query("""
             SELECT m FROM moments m
+            JOIN FETCH m.momenter
             WHERE m.id IN :ids AND (m.createdAt < :cursorTime OR (m.createdAt = :cursorTime AND m.id < :cursorId))
             ORDER BY m.createdAt DESC, m.id DESC
             """)
@@ -66,4 +70,12 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                    @Param("reportedMoments") List<Long> reportedMoments);
 
     void deleteById(Long momentId);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          WHERE m.id IN :momentIds
+           """)
+    List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
 }

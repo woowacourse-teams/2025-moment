@@ -9,7 +9,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface MomentTagRepository extends JpaRepository<MomentTag, Long> {
 
-    List<MomentTag> findAllByMomentIn(List<Moment> moments);
+    @Query("""
+            SELECT mt
+            FROM moment_tags mt
+            JOIN FETCH mt.tag
+            WHERE mt.moment IN :moments
+            """)
+    List<MomentTag> findAllWithTagsByMomentIn(@Param("moments")List<Moment> moments);
 
     @Query("""
             SELECT DISTINCT mt.moment.id
