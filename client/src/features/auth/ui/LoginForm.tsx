@@ -22,12 +22,13 @@ export const LoginForm = () => {
         <S.LoginFormTitleContainer>
           <S.LoginLogoTitleContainer>
             <S.LogoImage src="/images/logo.webp" alt="" />
-            <S.LogoTitle>모멘트</S.LogoTitle>
+            <S.LogoTitle>Moment</S.LogoTitle>
           </S.LoginLogoTitleContainer>
           <S.LoginTitle>로그인</S.LoginTitle>
           <S.LoginDescription>이메일과 비밀번호를 입력하여 로그인해주세요.</S.LoginDescription>
         </S.LoginFormTitleContainer>
         <S.LoginFormContent>
+          <legend className="sr-only">로그인 정보 입력</legend>
           <S.InputGroup>
             <S.Label htmlFor="email">이메일</S.Label>
             <Input
@@ -36,8 +37,16 @@ export const LoginForm = () => {
               placeholder="이메일을 입력해주세요"
               value={formData.email}
               onChange={handleChange('email')}
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              aria-invalid={!!errors.email}
             />
-            <S.ErrorMessage>{errors.email || ' '}</S.ErrorMessage>
+            <S.ErrorMessage
+              id="email-error"
+              role={errors.email ? 'alert' : undefined}
+              aria-live="polite"
+            >
+              {errors.email || ' '}
+            </S.ErrorMessage>
           </S.InputGroup>
           <S.InputGroup>
             <S.Label htmlFor="password">비밀번호</S.Label>
@@ -47,8 +56,16 @@ export const LoginForm = () => {
               placeholder="비밀번호를 입력해주세요"
               value={formData.password}
               onChange={handleChange('password')}
+              aria-describedby={errors.password ? 'password-error' : undefined}
+              aria-invalid={!!errors.password}
             />
-            <S.ErrorMessage>{errors.password || ' '}</S.ErrorMessage>
+            <S.ErrorMessage
+              id="password-error"
+              role={errors.password ? 'alert' : undefined}
+              aria-live="polite"
+            >
+              {errors.password || ' '}
+            </S.ErrorMessage>
           </S.InputGroup>
         </S.LoginFormContent>
         <S.LoginButton type="submit" disabled={isDisabled}>
@@ -59,11 +76,15 @@ export const LoginForm = () => {
         <GoogleLoginButton />
         <S.LoginFooterContent>
           <S.LoginSignupContainer>
-            <S.NewPasswordLink onClick={handleNewPassword}>비밀번호 찾기</S.NewPasswordLink>
+            <S.NewPasswordLink type="button" onClick={handleNewPassword}>
+              비밀번호 찾기
+            </S.NewPasswordLink>
           </S.LoginSignupContainer>
           <S.LoginSignupContainer>
             <p>아직 회원이 아니신가요?</p>
-            <S.LoginSignupLink onClick={handleSignupClick}>회원가입</S.LoginSignupLink>
+            <S.LoginSignupLink type="button" onClick={handleSignupClick}>
+              회원가입
+            </S.LoginSignupLink>
           </S.LoginSignupContainer>
         </S.LoginFooterContent>
       </S.LoginFooter>

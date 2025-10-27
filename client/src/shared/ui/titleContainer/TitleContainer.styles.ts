@@ -18,7 +18,7 @@ export const SubtitleStyles = {
     `,
 };
 
-export const TitleContainer = styled.div`
+export const TitleContainer = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,6 +29,6 @@ export const Title = styled.h1`
   ${({ theme }) => TitleStyles.title(theme)}
 `;
 
-export const Subtitle = styled.h2`
+export const Subtitle = styled.p`
   ${({ theme }) => SubtitleStyles.subtitle(theme)}
 `;

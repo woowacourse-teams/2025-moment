@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const SignupFormWrapper = styled.div`
+export const SignupFormWrapper = styled.form`
   width: 80%;
   max-width: 500px;
   min-height: 650px;
@@ -15,7 +15,7 @@ export const SignupFormWrapper = styled.div`
   gap: 28px;
 `;
 
-export const SignupFormContent = styled.div`
+export const SignupFormContent = styled.section`
   width: 100%;
   flex-grow: 1;
   display: flex;

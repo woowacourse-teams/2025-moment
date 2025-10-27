@@ -64,7 +64,7 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   }
 `;
 
-export const HighlightedTextContainer = styled.div<{ isVisible: boolean }>`
+export const HighlightedTextContainer = styled.blockquote<{ isVisible: boolean }>`
   margin: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -77,7 +77,7 @@ export const HighlightedTextContainer = styled.div<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
 `;
 
-export const HighlightedText = styled.div`
+export const HighlightedText = styled.p`
   position: relative;
   display: inline-block;
   padding: 0.8rem 2rem;
@@ -164,7 +164,7 @@ export const IntroSection = styled.section`
   }
 `;
 
-export const IntroText = styled.div`
+export const IntroText = styled.p`
   font-size: 1.5rem;
   font-weight: 600;
 
@@ -286,7 +286,7 @@ export const ExplainContainer = styled.div`
   }
 `;
 
-export const ExplainTitle = styled.div`
+export const ExplainTitle = styled.h2`
   font-size: 3rem;
   font-weight: 600;
 
@@ -299,7 +299,7 @@ export const ExplainTitle = styled.div`
   }
 `;
 
-export const ExplainText = styled.div`
+export const ExplainText = styled.p`
   font-size: 1.5rem;
   font-weight: 400;
   text-align: center;

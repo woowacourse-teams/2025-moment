@@ -290,6 +290,13 @@ const globalStyles = css`
     list-style: none;
   }
 
+  /* fieldset */
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
   /* Additional utility styles */
   .sr-only {
     position: absolute;

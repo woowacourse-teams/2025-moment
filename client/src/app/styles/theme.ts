@@ -7,6 +7,7 @@ export const theme = {
     'slate-800': '#1E293B',
     'slate-700': '#334155',
     white: '#FFFFFF',
+    white_70: 'color-mix(in srgb, #FFFFFF 70%, transparent)',
     black: '#000000',
     black_70: 'color-mix(in srgb, #000000 70%, transparent)',
     'yellow-600': '#92610a',

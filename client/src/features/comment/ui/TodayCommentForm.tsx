@@ -87,7 +87,7 @@ export function TodayCommentForm({
   }
 
   return (
-    <>
+    <S.CommentSection aria-label="코멘트 작성">
       <Card width="medium">
         <Card.TitleContainer
           title={
@@ -95,10 +95,10 @@ export function TodayCommentForm({
               <WriterInfo writer={momentData.nickname} level={momentData.level} />
               <S.ActionWrapper>
                 <WriteTime date={momentData.createdAt} />
-                <S.ComplaintButton onClick={handleComplaintOpen}>
+                <S.ComplaintButton onClick={handleComplaintOpen} aria-label="모멘트 신고">
                   <Siren size={28} color={theme.colors['red-500']} />
                 </S.ComplaintButton>
-                <S.RefreshButton onClick={() => refetch()}>
+                <S.RefreshButton onClick={() => refetch()} aria-label="다른 모멘트 보기">
                   <RotateCcw size={28} />
                 </S.RefreshButton>
               </S.ActionWrapper>
@@ -110,12 +110,14 @@ export function TodayCommentForm({
           height="small"
           content={
             <S.MyCommentsContentWrapper>
-              <S.MomentContent>{momentData.content}</S.MomentContent>
+              <S.MomentContent aria-label={`모멘트 내용: ${momentData.content}`}>
+                {momentData.content}
+              </S.MomentContent>
               {momentData.imageUrl && (
                 <S.MomentImageContainer>
                   <S.MomentImage
                     src={momentData.imageUrl}
-                    alt="코멘트 이미지"
+                    alt="모멘트 이미지"
                     onClick={e => handleImageClick(momentData.imageUrl!, e)}
                   />
                 </S.MomentImageContainer>
@@ -142,10 +144,10 @@ export function TodayCommentForm({
       {fullImageSrc && (
         <ImageOverlayPortal>
           <S.ImageOverlay onClick={closeFullImage}>
-            <S.FullscreenImage src={fullImageSrc} alt="전체 이미지" />
+            <S.FullscreenImage src={fullImageSrc} alt="모멘트 이미지 확대" />
           </S.ImageOverlay>
         </ImageOverlayPortal>
       )}
-    </>
+    </S.CommentSection>
   );
 }

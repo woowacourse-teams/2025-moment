@@ -9,6 +9,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   disabled?: boolean;
   Icon?: LucideIcon;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export const Button = ({
@@ -18,6 +19,7 @@ export const Button = ({
   onClick,
   disabled,
   Icon,
+  type = 'button',
   ...props
 }: ButtonProps) => {
   return (
@@ -26,6 +28,7 @@ export const Button = ({
       externalVariant={externalVariant}
       onClick={onClick}
       disabled={disabled}
+      type={type}
       {...props}
     >
       {Icon && <Icon size={16} />}

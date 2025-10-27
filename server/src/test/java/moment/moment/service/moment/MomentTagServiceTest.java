@@ -144,7 +144,7 @@ class MomentTagServiceTest {
         momentTagService.deleteBy(moment.getId());
 
         // then
-        List<MomentTag> momentTags = momentTagRepository.findAllByMomentIn(List.of(moment));
+        List<MomentTag> momentTags = momentTagRepository.findAllWithTagsByMomentIn(List.of(moment));
         assertThat(momentTags).isEmpty();
     }
 }
