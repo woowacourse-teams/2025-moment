@@ -57,13 +57,17 @@ class MomentImageServiceTest {
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
 
+        int lastDotIndex = imageUrl.lastIndexOf('.');
+        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
+
         // when
         Optional<MomentImage> momentImage = momentImageService.create(savedMoment, imageUrl, imageName);
 
         // then
         assertAll(
                 () -> assertThat(momentImage).isPresent(),
-                () -> assertThat(momentImage.get().getMoment()).isEqualTo(savedMoment)
+                () -> assertThat(momentImage.get().getMoment()).isEqualTo(savedMoment),
+                () -> assertThat(momentImage.get().getImageUrl()).isEqualTo(imageUrlWithoutExtension)
         );
     }
 
@@ -89,7 +93,11 @@ class MomentImageServiceTest {
 
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
-        momentImageRepository.save(new MomentImage(imageMoment, imageUrl, imageName));
+
+        int lastDotIndex = imageUrl.lastIndexOf('.');
+        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
+
+        momentImageRepository.save(MomentImage.createNew(imageMoment, imageUrl, imageName).get());
 
         List<Moment> moments = List.of(noImageMoment, imageMoment);
 
@@ -100,7 +108,8 @@ class MomentImageServiceTest {
         assertAll(
                 () -> assertThat(momentImageByMoment.size()).isEqualTo(1),
                 () -> assertThat(momentImageByMoment.get(imageMoment)).isNotNull(),
-                () -> assertThat(momentImageByMoment.get(noImageMoment)).isNull()
+                () -> assertThat(momentImageByMoment.get(noImageMoment)).isNull(),
+                () -> assertThat(momentImageByMoment.get(imageMoment).getImageUrl()).isEqualTo(imageUrlWithoutExtension)
         );
     }
 
@@ -122,6 +131,7 @@ class MomentImageServiceTest {
         Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter, WriteType.BASIC));
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
+
         momentImageRepository.save(new MomentImage(imageMoment, imageUrl, imageName));
 
         // when

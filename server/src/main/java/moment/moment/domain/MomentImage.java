@@ -53,8 +53,19 @@ public class MomentImage extends BaseEntity {
 
     public static Optional<MomentImage> createNew(Moment moment, String imageUrl, String imageName) {
         if (imageUrl != null && imageName != null) {
-            return Optional.of(new MomentImage(moment, imageUrl, imageName));
+            String imageUrlWithoutExtension = removeExtension(imageUrl);
+            return Optional.of(new MomentImage(moment, imageUrlWithoutExtension, imageName));
         }
         return Optional.empty();
+    }
+
+    private static String removeExtension(String fullPath) {
+        int lastDotIndex = fullPath.lastIndexOf('.');
+
+        if (lastDotIndex == -1) {
+            return fullPath;
+        }
+
+        return fullPath.substring(0, lastDotIndex);
     }
 }
