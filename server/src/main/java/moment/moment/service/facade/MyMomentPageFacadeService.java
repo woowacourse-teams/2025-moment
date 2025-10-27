@@ -1,5 +1,6 @@
 package moment.moment.service.facade;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,12 @@ public class MyMomentPageFacadeService {
     public MyMomentPageResponse getUnreadMyMomentsPage(String nextCursor, int limit, Long momenterId) {
         List<Long> unreadMomentIds = notificationApplicationService.getUnreadNotifications(momenterId,
                 TargetType.MOMENT);
+
+        if (unreadMomentIds == null || unreadMomentIds.isEmpty()) {
+            return createMyMomentPage(
+                    () -> MomentCompositions.of(Collections.emptyList(), null, false, 0)
+            );
+        }
 
         return createMyMomentPage(
                 () -> momentApplicationService.getUnreadMyMomentCompositions(
