@@ -22,6 +22,7 @@ import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.storage.application.PhotoUrlResolver;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class CommentApplicationService {
     private final CommentService commentService;
     private final CommentImageService commentImageService;
     private final EchoService echoService;
+    private final PhotoUrlResolver photoUrlResolver;
 
     public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
         List<Comment> comments = commentService.getAllByMomentIds(momentIds);
@@ -53,11 +55,17 @@ public class CommentApplicationService {
         Map<Comment, List<Echo>> echosByComments = echoService.getEchosOfComments(comments);
 
         return comments.stream()
-                .map(comment -> CommentComposition.of(
-                        comment,
-                        commentersByComments.get(comment),
-                        commentImageByComment.get(comment),
-                        echosByComments.get(comment)))
+                .map(comment -> {
+                    CommentImage image = commentImageByComment.get(comment);
+                    String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+
+                    return CommentComposition.of(
+                            comment,
+                            commentersByComments.get(comment),
+                            resolvedImageUrl,
+                            echosByComments.get(comment)
+                    );
+                })
                 .toList();
     }
 
@@ -133,13 +141,16 @@ public class CommentApplicationService {
         Map<Comment, List<Echo>> echoesByComments = echoService.getEchosOfComments(commentsWithoutCursor);
 
         return commentsWithoutCursor.stream()
-                .map(comment ->
-                        CommentComposition.of(
-                                comment,
-                                commenter,
-                                commentImagesByComment.get(comment),
-                                echoesByComments.getOrDefault(comment, Collections.emptyList()))
-                )
+                .map(comment -> {
+                    CommentImage image = commentImagesByComment.get(comment);
+                    String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+
+                    return CommentComposition.of(
+                            comment,
+                            commenter,
+                            resolvedImageUrl,
+                            echoesByComments.getOrDefault(comment, Collections.emptyList()));
+                })
                 .toList();
     }
 
