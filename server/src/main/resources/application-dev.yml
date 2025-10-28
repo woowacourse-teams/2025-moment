@@ -91,6 +91,7 @@ management:
 s3:
   bucket-name: ${S3_BUCKET_NAME}
   bucket-path: ${S3_DEV_BUCKET_PATH}
+  optimized-bucket-path: ${S3_DEV_BUCKET_OPTIMIZED_PATH}
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}
