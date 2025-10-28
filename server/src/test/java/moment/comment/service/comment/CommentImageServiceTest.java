@@ -67,8 +67,6 @@ class CommentImageServiceTest {
     void 이미지_정보가_있으면_코멘트_이미지를_생성한다() {
         // given
         String imageUrl = "imageUrl.jpg";
-        int lastDotIndex = imageUrl.lastIndexOf('.');
-        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
 
         // when
         Optional<CommentImage> resultOpt = commentImageService.create(comment, imageUrl, "imageName");
@@ -78,7 +76,7 @@ class CommentImageServiceTest {
                 () -> assertThat(resultOpt).isPresent(),
                 () -> assertThat(resultOpt.get().getId()).isNotNull(),
                 () -> assertThat(resultOpt.get().getComment()).isEqualTo(comment),
-                () -> assertThat(resultOpt.get().getImageUrl()).isEqualTo(imageUrlWithoutExtension),
+                () -> assertThat(resultOpt.get().getImageUrl()).isEqualTo(imageUrl),
                 () -> assertThat(resultOpt.get().getImageName()).isEqualTo("imageName"),
                 () -> assertThat(commentImageRepository.findById(resultOpt.get().getId())).isPresent()
         );
@@ -141,8 +139,6 @@ class CommentImageServiceTest {
     void 코멘트_이미지_조회_시_확장자를_제거하고_가져온다() {
         // given
         String imageUrl = "imageUrl.jpg";
-        int lastDotIndex = imageUrl.lastIndexOf('.');
-        String imageUrlWithoutExtension = imageUrl.substring(0, lastDotIndex);
         commentImageService.create(comment, imageUrl, "imageName");
 
         // when
@@ -151,7 +147,7 @@ class CommentImageServiceTest {
         // then
         assertAll(
                 () -> assertThat(result).hasSize(1),
-                () -> assertThat(result.get(comment).getImageUrl()).isEqualTo(imageUrlWithoutExtension)
+                () -> assertThat(result.get(comment).getImageUrl()).isEqualTo(imageUrl)
         );
     }
 }

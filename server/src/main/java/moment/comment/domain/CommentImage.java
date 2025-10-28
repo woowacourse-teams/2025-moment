@@ -53,19 +53,8 @@ public class CommentImage extends BaseEntity {
 
     public static Optional<CommentImage> createNew(Comment comment, String imageUrl, String imageName) {
         if (imageUrl != null && imageName != null) {
-            String imageUrlWithoutExtension = removeExtension(imageUrl);
-            return Optional.of(new CommentImage(comment, imageUrlWithoutExtension, imageName));
+            return Optional.of(new CommentImage(comment, imageUrl, imageName));
         }
         return Optional.empty();
-    }
-
-    private static String removeExtension(String fullPath) {
-        int lastDotIndex = fullPath.lastIndexOf('.');
-
-        if (lastDotIndex == -1) {
-            return fullPath;
-        }
-
-        return fullPath.substring(0, lastDotIndex);
     }
 }
