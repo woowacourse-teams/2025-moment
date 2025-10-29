@@ -130,7 +130,7 @@ class MomentRepositoryTest {
         List<Long> reportedMomentIds = List.of(reportedMoment.getId());
 
         // when
-        List<Moment> results = momentRepository.findAllExceptUser(user, start.minusDays(3), reportedMomentIds);
+        List<Moment> results = momentRepository.findRandomMomentExcludingReported(user.getId(), start.minusDays(3), reportedMomentIds);
 
         // then
         assertThat(results).containsExactly(recentMoment);
