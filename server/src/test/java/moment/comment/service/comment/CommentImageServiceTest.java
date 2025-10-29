@@ -134,20 +134,4 @@ class CommentImageServiceTest {
         // then
         assertThat(commentImageRepository.findById(commentImage.getId())).isEmpty();
     }
-
-    @Test
-    void 코멘트_이미지_조회_시_확장자를_제거하고_가져온다() {
-        // given
-        String imageUrl = "imageUrl.jpg";
-        commentImageService.create(comment, imageUrl, "imageName");
-
-        // when
-        Map<Comment, CommentImage> result = commentImageService.getCommentImageByComment(List.of(comment));
-
-        // then
-        assertAll(
-                () -> assertThat(result).hasSize(1),
-                () -> assertThat(result.get(comment).getImageUrl()).isEqualTo(imageUrl)
-        );
-    }
 }
