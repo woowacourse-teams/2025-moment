@@ -58,14 +58,15 @@ public class MomentService {
     public List<Moment> getCommentableMoments(User user, List<Long> reportedMomentIds) {
         LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
 
-        List<Long> momentIds = momentRepository.findMomentIdsExcludingReported(
-                user.getId(),
-                cutoffDateTime,
-                reportedMomentIds
-        );
-
+        List<Long> momentIds;
         if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
             momentIds = momentRepository.findMomentIdsWithoutReported(user.getId(), cutoffDateTime);
+        } else {
+            momentIds = momentRepository.findMomentIdsExcludingReported(
+                    user.getId(),
+                    cutoffDateTime,
+                    reportedMomentIds
+            );
         }
 
         if (momentIds.isEmpty()) {
