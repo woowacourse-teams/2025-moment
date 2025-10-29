@@ -59,28 +59,24 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             LocalDateTime endOfDay
     );
 
-    @Query(value = """
-        SELECT m.* FROM moments m
+    @Query("""
+        SELECT m.id FROM moments m
         WHERE 
-            m.momenter_id <> :userId
-            AND m.created_at >= :someDaysAgo
+            m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
             AND m.id NOT IN :reportedMoments 
-        ORDER BY RAND()
-        LIMIT 1
-    """, nativeQuery = true)
-    List<Moment> findRandomMomentExcludingReported(@Param("userId") Long userId,
-                                                   @Param("someDaysAgo") LocalDateTime someDaysAgo,
-                                                   @Param("reportedMoments") List<Long> reportedMoments);
+    """)
+    List<Long> findMomentIdsExcludingReported(@Param("userId") Long userId,
+                                              @Param("someDaysAgo") LocalDateTime someDaysAgo,
+                                              @Param("reportedMoments") List<Long> reportedMoments);
 
-    @Query(value = """
-    SELECT m.* FROM moments m
-    WHERE 
-        m.momenter_id <> :userId
-        AND m.created_at >= :someDaysAgo
-    ORDER BY RAND()
-    LIMIT 1
-    """, nativeQuery = true)
-    List<Moment> findRandomMomentWithoutReported(
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE 
+            m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+    """)
+    List<Long> findMomentIdsWithoutReported(
             @Param("userId") Long userId,
             @Param("someDaysAgo") LocalDateTime someDaysAgo);
 

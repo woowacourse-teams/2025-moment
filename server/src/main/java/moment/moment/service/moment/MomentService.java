@@ -1,7 +1,10 @@
 package moment.moment.service.moment;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MomentService {
 
     private static final int COMMENTABLE_PERIOD_IN_DAYS = 7;
+    private static final Random RANDOM = new Random();
 
     private final MomentRepository momentRepository;
 
@@ -54,11 +58,28 @@ public class MomentService {
     public List<Moment> getCommentableMoments(User user, List<Long> reportedMomentIds) {
         LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
 
-        if (reportedMomentIds.isEmpty()) {
-            return momentRepository.findRandomMomentWithoutReported(user.getId(), cutoffDateTime);
+        List<Long> momentIds = momentRepository.findMomentIdsExcludingReported(
+                user.getId(),
+                cutoffDateTime,
+                reportedMomentIds
+        );
+
+        if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
+            momentIds = momentRepository.findMomentIdsWithoutReported(user.getId(), cutoffDateTime);
         }
 
-        return momentRepository.findRandomMomentExcludingReported(user.getId(), cutoffDateTime, reportedMomentIds);
+        if (momentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        int randomIndex = RANDOM.nextInt(momentIds.size());
+        Long randomId = momentIds.get(randomIndex);
+
+        Optional<Moment> momentOptional = momentRepository.findById(randomId);
+
+        return momentOptional
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList());
     }
 
     public List<Moment> getMomentsBy(List<Long> momentIds) {
