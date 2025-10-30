@@ -26,8 +26,8 @@ public class DataSourceConfig {
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("write");
-        ds.setMaximumPoolSize(6);
-        ds.setMaximumPoolSize(6);
+        ds.setMaximumPoolSize(10);
+        ds.setMaximumPoolSize(10);
         ds.setConnectionTimeout(30000);
         ds.setIdleTimeout(600000);
         ds.setMaxLifetime(1800000);
@@ -41,8 +41,8 @@ public class DataSourceConfig {
                 .type(HikariDataSource.class)
                 .build();
         ds.setPoolName("read");
-        ds.setMaximumPoolSize(6);
-        ds.setMaximumPoolSize(6);
+        ds.setMaximumPoolSize(10);
+        ds.setMaximumPoolSize(10);
         ds.setConnectionTimeout(30000);
         ds.setIdleTimeout(600000);
         ds.setMaxLifetime(1800000);
