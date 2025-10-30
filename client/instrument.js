@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/react';
 
+const ERROR_SAMPLE_RATE = 1.0;
+
 function getEnvironmentFromDomain() {
   if (typeof window === 'undefined') return 'development'; // SSR 대응
   return window.location.hostname === 'connectingmoment.com' ? 'production' : 'development';
@@ -13,8 +15,7 @@ Sentry.init({
   integrations: [
     Sentry.replayIntegration({
       sessionSampleRate: 0,
-      errorSampleRate: 1.0,
-      // 개인정보 보호
+      errorSampleRate: ERROR_SAMPLE_RATE,
       maskAllText: true,
       maskAllInputs: true,
     }),
