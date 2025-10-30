@@ -24,6 +24,7 @@ public class NotificationService {
         return notificationRepository.findAllByUserIdAndIsReadAndTargetType(userId, isRead, targetType);
     }
 
+    @Transactional
     public Notification saveNotification(
             User user,
             Long targetId,

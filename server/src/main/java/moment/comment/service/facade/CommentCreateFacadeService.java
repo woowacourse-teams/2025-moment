@@ -1,18 +1,17 @@
 package moment.comment.service.facade;
 
 import lombok.RequiredArgsConstructor;
+import moment.comment.dto.event.CommentCreatedEvent;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.application.CommentApplicationService;
-import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
-import moment.notification.domain.NotificationType;
-import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.application.NotificationApplicationService;
 import moment.notification.service.application.PushNotificationApplicationService;
 import moment.reward.domain.Reason;
 import moment.reward.service.application.RewardApplicationService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +25,7 @@ public class CommentCreateFacadeService {
     private final NotificationApplicationService notificationApplicationService;
     private final PushNotificationApplicationService pushNotificationApplicationService;
     private final RewardApplicationService rewardApplicationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public CommentCreateResponse createComment(CommentCreateRequest request, Long userId) {
@@ -35,16 +35,19 @@ public class CommentCreateFacadeService {
 
         rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
 
-        notificationApplicationService.createNotificationAndSendSse(
-                moment.getMomenterId(),
-                moment.getId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT
-        );
+        // 여기서 이밴트 발행
+        applicationEventPublisher.publishEvent(new CommentCreatedEvent(moment.getMomenterId(), moment.getId()));
 
-        pushNotificationApplicationService.sendToDeviceEndpoint(
-                moment.getMomenterId(), PushNotificationMessage.REPLY_TO_MOMENT
-        );
+//        notificationApplicationService.createNotificationAndSendSse(
+//                moment.getMomenterId(),
+//                moment.getId(),
+//                NotificationType.NEW_COMMENT_ON_MOMENT,
+//                TargetType.MOMENT
+//        );
+//
+//        pushNotificationApplicationService.sendToDeviceEndpoint(
+//                moment.getMomenterId(), PushNotificationMessage.REPLY_TO_MOMENT
+//        );
 
         return createdComment;
     }

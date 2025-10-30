@@ -1,10 +1,7 @@
 package moment.notification.service.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +16,6 @@ import moment.notification.service.notification.SseNotificationService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -129,7 +125,7 @@ class NotificationApplicationServiceTest {
     }
 
     @Test
-    void 알림을_생성하고_SSE_이벤트를_전송한다() {
+    void 알림을_생성한다() {
         // given
         boolean unreadFlag = false;
         Long userId = user.getId();
@@ -138,15 +134,17 @@ class NotificationApplicationServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        notificationApplicationService.createNotificationAndSendSse(userId, contentId, reason, contentType);
+        notificationApplicationService.createNotification(userId, contentId, reason, contentType);
 
         // then
         List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
-        assertAll(
-                () -> assertThat(notifications).hasSize(1),
-                () -> verify(sseNotificationService).sendToClient(eq(userId), eq("notification"), any())
-        );
+        assertThat(notifications).hasSize(1);
     }
+
+//    @Test
+//    void Sse_알림을_전송한다() {
+//        assertThat(() -> verify(sseNotificationService).sendToClient(eq(userId), eq("notification"), any());
+//    }
 
     @Test
     void 읽지_않은_알림의_타겟_ID_목록을_조회한다() {

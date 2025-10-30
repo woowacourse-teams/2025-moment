@@ -3,12 +3,12 @@ package moment.comment.service.facade;
 
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.CommentForEcho;
+import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.domain.NotificationType;
 import moment.notification.service.application.NotificationApplicationService;
-import moment.comment.dto.request.EchoCreateRequest;
 import moment.reward.domain.Reason;
 import moment.reward.service.application.RewardApplicationService;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class EchoCreateFacadeService {
 
         commentApplicationService.createEcho(request.commentId(), momenterId, request.echoTypes());
 
-        notificationApplicationService.createNotificationAndSendSse(
+        notificationApplicationService.createNotification(
                 commentForEcho.commenterId(),
                 request.commentId(),
                 NotificationType.NEW_REPLY_ON_COMMENT,
