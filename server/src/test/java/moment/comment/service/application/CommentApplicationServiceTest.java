@@ -32,6 +32,7 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
+import moment.storage.application.PhotoUrlResolver;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -49,7 +50,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({DatabaseCleaner.class, AppConfig.class, CommentApplicationService.class, CommentService.class,
-        CommentImageService.class, EchoService.class, UserService.class, CommentCreatedAtHelper.class})
+        CommentImageService.class, EchoService.class, UserService.class, CommentCreatedAtHelper.class,
+        PhotoUrlResolver.class})
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentApplicationServiceTest {
 
@@ -259,7 +261,8 @@ class CommentApplicationServiceTest {
     void 모멘트_ID_목록으로_코멘트_구성_요소를_조회한다() {
         // given
         Comment comment = commentRepository.save(new Comment("comment", user, moment.getId()));
-        commentImageRepository.save(new CommentImage(comment, "url1", "name1"));
+        String originalImageUrl = "https://cdn.moment.com/test/images/comment_photo.jpg";
+        commentImageRepository.save(new CommentImage(comment, originalImageUrl, "name1"));
         echoRepository.save(new Echo("HAPPY", user, comment));
 
         Comment comment2 = commentRepository.save(new Comment("comment2", user, moment.getId()));
@@ -272,11 +275,12 @@ class CommentApplicationServiceTest {
                 .findFirst().orElseThrow();
 
         // then
+        String expectedResolvedUrl = "https://cdn.moment.com/test/optimized-images/comment_photo";
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(composition1.content()).isEqualTo(comment.getContent()),
                 () -> assertThat(composition1.nickname()).isEqualTo(user.getNickname()),
-                () -> assertThat(composition1.imageUrl()).isEqualTo("url1"),
+                () -> assertThat(composition1.imageUrl()).isEqualTo(expectedResolvedUrl),
                 () -> assertThat(composition1.echoDetails()).hasSize(1),
                 () -> assertThat(composition1.echoDetails().get(0).echoType()).isEqualTo("HAPPY"),
                 () -> assertThat(composition2.content()).isEqualTo(comment2.getContent()),
@@ -289,7 +293,7 @@ class CommentApplicationServiceTest {
     @Test
     void 나의_코멘트_구성_요소를_조회한다_첫_페이지() {
         // given
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
             createdAtHelper.saveCommentWithCreatedAt("comment " + i, user, moment.getId(), start.plusHours(i));
         });
@@ -311,7 +315,7 @@ class CommentApplicationServiceTest {
     @Test
     void 나의_코멘트_구성_요소를_조회한다_두_번째_페이지() {
         // given
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
             createdAtHelper.saveCommentWithCreatedAt("comment " + i, user, moment.getId(), start.plusHours(i));
         });

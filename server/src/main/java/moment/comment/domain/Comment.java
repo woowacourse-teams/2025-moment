@@ -79,5 +79,4 @@ public class Comment extends BaseEntity implements Cursorable {
             throw new IllegalArgumentException("momentId가 null이어서는 안 됩니다.");
         }
     }
-
 }

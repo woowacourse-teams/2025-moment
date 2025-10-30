@@ -63,7 +63,8 @@ class MomentImageServiceTest {
         // then
         assertAll(
                 () -> assertThat(momentImage).isPresent(),
-                () -> assertThat(momentImage.get().getMoment()).isEqualTo(savedMoment)
+                () -> assertThat(momentImage.get().getMoment()).isEqualTo(savedMoment),
+                () -> assertThat(momentImage.get().getImageUrl()).isEqualTo(imageUrl)
         );
     }
 
@@ -89,7 +90,8 @@ class MomentImageServiceTest {
 
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
-        momentImageRepository.save(new MomentImage(imageMoment, imageUrl, imageName));
+
+        momentImageRepository.save(MomentImage.createNew(imageMoment, imageUrl, imageName).get());
 
         List<Moment> moments = List.of(noImageMoment, imageMoment);
 
@@ -100,7 +102,8 @@ class MomentImageServiceTest {
         assertAll(
                 () -> assertThat(momentImageByMoment.size()).isEqualTo(1),
                 () -> assertThat(momentImageByMoment.get(imageMoment)).isNotNull(),
-                () -> assertThat(momentImageByMoment.get(noImageMoment)).isNull()
+                () -> assertThat(momentImageByMoment.get(noImageMoment)).isNull(),
+                () -> assertThat(momentImageByMoment.get(imageMoment).getImageUrl()).isEqualTo(imageUrl)
         );
     }
 
@@ -122,6 +125,7 @@ class MomentImageServiceTest {
         Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter, WriteType.BASIC));
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
+
         momentImageRepository.save(new MomentImage(imageMoment, imageUrl, imageName));
 
         // when

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
 import moment.moment.domain.MomentTag;
 import moment.user.domain.Level;
 
@@ -21,9 +20,8 @@ public record MomentComposition(
 
     public static MomentComposition of(Moment moment,
                                        List<MomentTag> momentTags,
-                                       MomentImage momentImage) {
+                                       String imageUrl) {
 
-        String imageUrl = momentImage == null ? null : momentImage.getImageUrl();
         momentTags = momentTags == null ? Collections.emptyList() : momentTags;
 
         List<String> tagNames = momentTags.stream()

@@ -72,6 +72,7 @@ auth:
 s3:
   bucket-name: test-bucket-1
   bucket-path: test/images
+  optimized-bucket-path: test/optimized-images
 
 fcm:
   service-account-json: ""
