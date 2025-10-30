@@ -76,7 +76,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             m.momenter.id <> :userId
             AND m.createdAt >= :someDaysAgo
     """)
-    List<Long> findMomentIdsWithoutReported(
+    List<Long> findMomentIds(
             @Param("userId") Long userId,
             @Param("someDaysAgo") LocalDateTime someDaysAgo);
 

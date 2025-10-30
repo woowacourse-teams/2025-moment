@@ -60,7 +60,7 @@ public class MomentService {
 
         List<Long> momentIds;
         if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
-            momentIds = momentRepository.findMomentIdsWithoutReported(user.getId(), cutoffDateTime);
+            momentIds = momentRepository.findMomentIds(user.getId(), cutoffDateTime);
         } else {
             momentIds = momentRepository.findMomentIdsExcludingReported(
                     user.getId(),
