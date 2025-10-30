@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.BasicMomentCreatePolicy;
@@ -28,6 +26,7 @@ import moment.moment.service.moment.MomentService;
 import moment.moment.service.moment.MomentTagService;
 import moment.moment.service.moment.TagService;
 import moment.report.application.report.ReportService;
+import moment.storage.application.PhotoUrlResolver;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -49,6 +48,7 @@ public class MomentApplicationService {
     private final MomentTagService momentTagService;
     private final TagService tagService;
     private final ReportService reportService;
+    private final PhotoUrlResolver photoUrlResolver;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -130,12 +130,15 @@ public class MomentApplicationService {
         Map<Moment, MomentImage> momentImageByMoment = momentImageService.getMomentImageByMoment(moments);
 
         return moments.stream()
-                .map(moment ->
-                        MomentComposition.of(
-                                moment, momentTagsByMoment.get(moment),
-                                momentImageByMoment.get(moment)
-                        )
-                )
+                .map(moment -> {
+                    MomentImage image = momentImageByMoment.get(moment);
+                    String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+
+                    return MomentComposition.of(
+                            moment, momentTagsByMoment.get(moment),
+                            resolvedImageUrl
+                    );
+                })
                 .toList();
     }
 

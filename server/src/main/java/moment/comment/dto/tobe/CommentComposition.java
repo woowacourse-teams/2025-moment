@@ -3,7 +3,6 @@ package moment.comment.dto.tobe;
 import java.time.LocalDateTime;
 import java.util.List;
 import moment.comment.domain.Comment;
-import moment.comment.domain.CommentImage;
 import moment.comment.domain.Echo;
 import moment.user.domain.Level;
 import moment.user.domain.User;
@@ -20,10 +19,8 @@ public record CommentComposition(
 ) {
     public static CommentComposition of(Comment comment,
                                         User commenter,
-                                        CommentImage commentImage,
+                                        String imageUrl,
                                         List<Echo> echos) {
-
-        String imageUrl = commentImage == null ? null : commentImage.getImageUrl();
 
         List<EchoDetail> echoDetails = echos.stream()
                 .map(EchoDetail::from)
