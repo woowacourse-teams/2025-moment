@@ -60,14 +60,25 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     );
 
     @Query("""
-            SELECT m FROM moments m
-            WHERE m.momenter <> :user
-              AND m.createdAt >= :someDaysAgo
-              AND m.id NOT IN :reportedMoments
-            """)
-    List<Moment> findAllExceptUser(@Param("user") User user,
-                                   @Param("someDaysAgo") LocalDateTime someDaysAgo,
-                                   @Param("reportedMoments") List<Long> reportedMoments);
+        SELECT m.id FROM moments m
+        WHERE 
+            m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+            AND m.id NOT IN :reportedMoments 
+    """)
+    List<Long> findMomentIdsExcludingReported(@Param("userId") Long userId,
+                                              @Param("someDaysAgo") LocalDateTime someDaysAgo,
+                                              @Param("reportedMoments") List<Long> reportedMoments);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE 
+            m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+    """)
+    List<Long> findMomentIds(
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo);
 
     void deleteById(Long momentId);
 
