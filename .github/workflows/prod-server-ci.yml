@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-arm64
     defaults:
       run:
         working-directory: ./server
