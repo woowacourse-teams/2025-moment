@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./server
@@ -46,7 +46,7 @@ jobs:
 
   build-and-push:
     if: github.event_name == 'push'
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./server
