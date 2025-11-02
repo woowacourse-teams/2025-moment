@@ -46,7 +46,7 @@ jobs:
 
   build-and-push:
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-arm64
     defaults:
       run:
         working-directory: ./server
