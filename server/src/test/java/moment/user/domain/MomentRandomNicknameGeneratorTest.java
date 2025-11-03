@@ -14,11 +14,6 @@ class MomentRandomNicknameGeneratorTest {
         // given
         NicknameGenerator nicknameGenerator = new MomentRandomNicknameGenerator();
 
-        for (int i = 0; i < 100; i++) {
-            String test = nicknameGenerator.generateNickname();
-            System.out.println(test);
-        }
-
         // when & then
         assertThatCode(nicknameGenerator::generateNickname).doesNotThrowAnyException();
     }
