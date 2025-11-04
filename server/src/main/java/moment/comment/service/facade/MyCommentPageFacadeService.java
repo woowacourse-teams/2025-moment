@@ -1,5 +1,6 @@
 package moment.comment.service.facade;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,15 @@ public class MyCommentPageFacadeService {
     public MyCommentPageResponse getUnreadMyCommentsPage(String nextCursor, int limit, Long commenterId) {
         List<Long> unreadCommentIds = notificationApplicationService.getUnreadNotifications(
                 commenterId, TargetType.COMMENT);
+
+        if (unreadCommentIds == null || unreadCommentIds.isEmpty()) {
+            return createMyCommentPage(() -> CommentCompositions.of(
+                    Collections.emptyList(),
+                    null,
+                    false,
+                    0)
+            );
+        }
 
         return createMyCommentPage(() -> commentApplicationService.getUnreadMyCommentCompositions(
                 new Cursor(nextCursor),

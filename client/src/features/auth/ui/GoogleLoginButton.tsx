@@ -8,8 +8,8 @@ const handleGoogleLogin = () => {
 
 export const GoogleLoginButton = () => {
   return (
-    <S.GoogleLoginButton onClick={handleGoogleLogin}>
-      <S.GoogleLoginButtonIcon src="/images/google.webp" alt="google" />
+    <S.GoogleLoginButton type="button" onClick={handleGoogleLogin} aria-label="Google 로그인">
+      <S.GoogleLoginButtonIcon src="/images/google.webp" alt="" />
       Sign in with Google
     </S.GoogleLoginButton>
   );

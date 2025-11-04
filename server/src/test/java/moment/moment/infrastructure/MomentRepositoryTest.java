@@ -130,11 +130,11 @@ class MomentRepositoryTest {
         List<Long> reportedMomentIds = List.of(reportedMoment.getId());
 
         // when
-        List<Moment> results = momentRepository.findAllExceptUser(user, start.minusDays(3), reportedMomentIds);
+        List<Long> results = momentRepository.findMomentIdsExcludingReported(user.getId(), start.minusDays(3), reportedMomentIds);
 
         // then
-        assertThat(results).containsExactly(recentMoment);
-        assertThat(results).doesNotContain(myMoment, oldMoment);
+        assertThat(results).containsExactly(recentMoment.getId());
+        assertThat(results).doesNotContain(myMoment.getId(), oldMoment.getId());
     }
 
     @Test
@@ -218,5 +218,29 @@ class MomentRepositoryTest {
                 () -> assertThat(momentRepository.findById(momentToDelete.getId())).isEmpty(),
                 () -> assertThat(momentRepository.findById(momentToKeep.getId())).isPresent()
         );
+    }
+
+    @Test
+    void 모멘트_ID로_조회할_때_momenter를_함께_조회한다() {
+        // given
+        User momenter1 = userRepository.save(new User("hippo1@gmail.com", "1234", "hippo1", ProviderType.EMAIL));
+        User momenter2 = userRepository.save(new User("hippo2@gmail.com", "1234", "hippo2", ProviderType.EMAIL));
+
+        Moment moment1 = momentRepository.save(new Moment("첫번째 모멘트", momenter1, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("두번째 모멘트", momenter2, WriteType.BASIC));
+        Moment moment3 = momentRepository.save(new Moment("세번째 모멘트", momenter1, WriteType.BASIC));
+
+        List<Long> idsToFetch = List.of(moment1.getId(), moment3.getId());
+
+        // when
+        List<Moment> results = momentRepository.findAllWithMomenterByIds(idsToFetch);
+
+        // then
+        assertThat(results).hasSize(2);
+        assertThat(results).extracting(Moment::getId).containsExactlyInAnyOrderElementsOf(idsToFetch);
+        assertThat(results).allSatisfy(m -> assertThat(m.getMomenter()).isNotNull());
+        assertThat(results)
+                .extracting(m -> m.getMomenter().getEmail())
+                .containsExactlyInAnyOrder("hippo1@gmail.com", "hippo1@gmail.com");
     }
 }

@@ -53,9 +53,9 @@ export const SignupForm = () => {
     !isCheckEmailCodeSuccess;
 
   return (
-    <S.SignupFormWrapper>
+    <S.SignupFormWrapper aria-label="회원가입">
       <SignupStepBar step={step as Step} />
-      <S.SignupFormContent>
+      <S.SignupFormContent aria-live="polite">
         <Funnel>
           <Step name="step1">
             <SignupStep1
@@ -93,8 +93,20 @@ export const SignupForm = () => {
       </S.SignupFormContent>
 
       <S.ButtonContainer>
-        <Button title="이전" onClick={handlePreviousStep} disabled={!beforeStep} />
-        <Button title="다음" onClick={handleNextStep} disabled={isDisabled} />
+        <Button
+          title="이전"
+          onClick={handlePreviousStep}
+          disabled={!beforeStep}
+          type="button"
+          aria-label="이전 단계로"
+        />
+        <Button
+          title="다음"
+          type="button"
+          onClick={handleNextStep}
+          disabled={isDisabled}
+          aria-label="다음 단계로"
+        />
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );

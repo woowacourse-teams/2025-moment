@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const StepsWrapper = styled.div`
+export const StepsWrapper = styled.header`
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -8,7 +8,7 @@ export const StepsWrapper = styled.div`
   width: 100%;
 `;
 
-export const StepsContainer = styled.div`
+export const StepsContainer = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;

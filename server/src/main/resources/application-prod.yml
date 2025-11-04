@@ -88,6 +88,15 @@ auth:
   password_update:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+    threads:
+      max: 17      # (예시) 최대 스레드 수를 200개로 설정
+      min-spare: 17  # (예시) 최소 유휴 스레드 수를 20개로 설정
+      accept-count: 100  # (예시) 연결 대기 큐 크기를 100개로 설정
+
 management:
   endpoints:
     web:
@@ -112,6 +121,8 @@ management:
       tomcat: true
       tomcat.threads: true
       tomcat.sessions: true
+      tomcat.cache: true
+      tomcat.global: true
 
     export:
       cloudwatch:
@@ -126,6 +137,7 @@ management:
 s3:
   bucket-name: ${S3_BUCKET_NAME}
   bucket-path: ${S3_PROD_BUCKET_PATH}
+  optimized-bucket-path: ${S3_PROD_BUCKET_OPTIMIZED_PATH}
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}

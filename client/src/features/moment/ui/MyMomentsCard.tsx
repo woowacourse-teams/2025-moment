@@ -78,11 +78,24 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         $hasComment={hasComments}
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.momentNotification.isRead}
+        role={hasComments ? 'button' : undefined}
+        tabIndex={hasComments ? 0 : undefined}
+        onKeyDown={
+          hasComments
+            ? e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleMomentClick();
+                }
+              }
+            : undefined
+        }
+        aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
       >
         <S.MyMomentsTitleWrapper>
-          <S.CommentCountWrapper>
-            <Mail size={16} />
-            <span>{sortedComments?.length}</span>
+          <S.CommentCountWrapper aria-label={`달린 코멘트 수: ${sortedComments?.length}개`}>
+            <Mail size={16} aria-hidden="true" />
+            <span aria-hidden="true">{sortedComments?.length}</span>
           </S.CommentCountWrapper>
           <WriteTime date={myMoment.createdAt} />
         </S.MyMomentsTitleWrapper>
@@ -113,6 +126,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           variant="memoji"
           position="center"
           size="small"
+          aria-labelledby="moment-modal-title"
+          aria-role="dialog"
+          aria-modal="true"
         >
           <Modal.Header showCloseButton={true} />
           <Modal.Content>
@@ -126,7 +142,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />
-                        <S.ComplaintButton onClick={handleComplaintOpen}>
+                        <S.ComplaintButton
+                          onClick={handleComplaintOpen}
+                          aria-label="코멘트 신고하기"
+                        >
                           <Siren size={28} color={theme.colors['red-500']} />
                         </S.ComplaintButton>
                       </S.TitleWrapper>
@@ -136,13 +155,14 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                         <S.CommentNavigationButton
                           onClick={navigation.goToPrevious}
                           position="left"
+                          aria-label="이전 코멘트 보기"
                         >
                           <ChevronLeft size={16} />
                         </S.CommentNavigationButton>
                       )}
 
                       <S.CommentContent>
-                        <div>{currentComment.content}</div>
+                        <div area-label={`${currentComment.content}`}>{currentComment.content}</div>
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
                             <S.CommentImage
@@ -160,7 +180,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       </S.CommentContent>
 
                       {navigation.hasNext && (
-                        <S.CommentNavigationButton onClick={navigation.goToNext} position="right">
+                        <S.CommentNavigationButton
+                          onClick={navigation.goToNext}
+                          position="right"
+                          aria-label="다음 코멘트 보기"
+                        >
                           <ChevronRight size={16} />
                         </S.CommentNavigationButton>
                       )}

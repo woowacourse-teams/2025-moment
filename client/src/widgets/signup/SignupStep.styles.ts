@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
 
-export const StepContainer = styled.div`
+export const StepContainer = styled.fieldset`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  border: none;
+  padding: 0;
+  margin: 0;
 `;
 
 export const EmailGroup = styled.div`
@@ -43,17 +46,17 @@ export const ErrorMessage = styled.span`
   line-height: 1.5;
 `;
 
-export const CheckExistContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
 export const SuccessMessage = styled.span`
   font-size: 12px;
-  color: ${({ theme }) => theme.colors['green-500']};
+  color: ${({ theme }) => theme.colors['emerald-500']};
   margin-top: 4px;
   height: 18px;
   display: block;
   line-height: 1.5;
+`;
+
+export const CheckExistContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;

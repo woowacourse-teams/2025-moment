@@ -1,23 +1,23 @@
 import * as Sentry from '@sentry/react';
 
+const ERROR_SAMPLE_RATE = 1.0;
+
 function getEnvironmentFromDomain() {
   if (typeof window === 'undefined') return 'development'; // SSR 대응
-
-  const hostname = window.location.hostname;
-
-  if (hostname === 'connectingmoment.com') {
-    return 'production';
-  }
-
-  return 'development';
+  return window.location.hostname === 'connectingmoment.com' ? 'production' : 'development';
 }
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
   enabled: getEnvironmentFromDomain() === 'production',
-  sendDefaultPii: true,
-  enableLogs: true,
   environment: getEnvironmentFromDomain(),
 
-  integrations: [],
+  integrations: [
+    Sentry.replayIntegration({
+      sessionSampleRate: 0,
+      errorSampleRate: ERROR_SAMPLE_RATE,
+      maskAllText: true,
+      maskAllInputs: true,
+    }),
+  ],
 });
