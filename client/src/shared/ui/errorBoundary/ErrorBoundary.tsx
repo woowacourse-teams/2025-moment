@@ -15,14 +15,23 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+
     Sentry.captureException(error, {
+      level: 'error',
+      tags: {
+        errorBoundary: true,
+        error_type: error.constructor.name,
+        priority: 'high',
+      },
       contexts: {
         react: {
           componentStack: errorInfo.componentStack,
         },
-      },
-      tags: {
-        errorBoundary: true,
+        error_details: {
+          message: error.message,
+          stack: error.stack?.split('\n').slice(0, 5).join('\n'),
+          component: this.constructor.name,
+        },
       },
     });
   }

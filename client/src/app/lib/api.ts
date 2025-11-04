@@ -49,7 +49,43 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const url = originalRequest?.url ?? '';
 
-    Sentry.captureException(error);
+    // 서버 에러 응답에서 에러 코드 추출
+    const serverError = error.response?.data;
+    const errorCode = (serverError as { code: string })?.code || 'unknown';
+    const errorMessage = (serverError as { message: string })?.message || error.message;
+
+    const domain = url.split('/')[4] || 'unknown';
+    const endpoint = url.replace(BASE_URL, '') || '/';
+    const httpMethod = originalRequest?.method?.toUpperCase() || 'UNKNOWN';
+
+    const level = 'error';
+
+    Sentry.captureException(error, {
+      level,
+      tags: {
+        domain,
+        http_method: httpMethod,
+        http_status: status?.toString() || 'unknown',
+        endpoint,
+        error_code: errorCode,
+      },
+      contexts: {
+        request: {
+          url: originalRequest?.url || url,
+          method: httpMethod,
+          baseURL: BASE_URL,
+        },
+        response: {
+          status: status || 0,
+          statusText: error.response?.statusText || 'Unknown Error',
+          serverError: serverError,
+        },
+        error_details: {
+          message: errorMessage,
+          code: errorCode,
+        },
+      },
+    });
 
     if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
       queryClient.setQueryData(['checkIfLoggedIn'], false);

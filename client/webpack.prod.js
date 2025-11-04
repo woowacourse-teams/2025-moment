@@ -7,6 +7,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { fileURLToPath } from 'url';
 import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +21,7 @@ export default merge(common, {
     publicPath: '/',
     clean: true,
   },
-  devtool: false,
+  devtool: 'hidden-source-map',
   optimization: {
     minimize: true,
     minimizer: [
@@ -80,6 +81,14 @@ export default merge(common, {
       test: /\.(js|css|html|svg)$/,
       threshold: 8192,
       minRatio: 0.8,
+    }),
+    sentryWebpackPlugin({
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['dist/**/*.map'],
+      },
     }),
   ],
   externals: {
