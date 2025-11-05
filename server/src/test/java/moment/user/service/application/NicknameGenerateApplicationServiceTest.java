@@ -3,9 +3,9 @@ package moment.user.service.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import moment.fixture.UserFixture;
 import moment.global.exception.MomentException;
 import moment.user.domain.NicknameGenerator;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.infrastructure.UserRepository;
@@ -42,8 +42,7 @@ class NicknameGenerateApplicationServiceTest {
     @Test
     void 랜덤_닉네임_생성_시_이미_존재하는_닉네임인_경우_예외가_발생한다() {
         // given
-        String password = "1234qwer!@";
-        User user = new User("test@email.com", password, RANDOM_NICKNAME, ProviderType.EMAIL);
+        User user = UserFixture.createUserByNickname(RANDOM_NICKNAME);
         userRepository.save(user);
 
         // when & then

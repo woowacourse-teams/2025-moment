@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Optional;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.WriteType;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class MomentImageRepositoryTest {
     @Test
     void 모멘트로_모멘트_이미지를_찾아온다() {
         // given
-        User momenter = new User("emial@meail.com", "1234!", "마아", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         Moment moment = new Moment("내용", savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
@@ -64,7 +64,7 @@ public class MomentImageRepositoryTest {
         String imageUrl = "https://s3:tech-course/moment-dev/images/cat.jpg";
         String imageName = "cat.jpg";
 
-        User momenter = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment1 = new Moment(momentContent1, savedMomenter, WriteType.BASIC);
@@ -95,7 +95,7 @@ public class MomentImageRepositoryTest {
     @Test
     void 모멘트id로_모멘트_이미지를_삭제한다() {
         // given
-        User momenter = new User("emial@meail.com", "1234!", "마아", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment1 = new Moment("내용1", savedMomenter, WriteType.BASIC);

@@ -28,7 +28,7 @@ import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.common.DatabaseCleaner;
-import moment.user.domain.ProviderType;
+import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
@@ -116,8 +116,9 @@ class AuthControllerTest {
     void 로그인에_성공한다() {
         // given
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
-        LoginRequest request = new LoginRequest("ekorea623@gmail.com", "1q2w3e4r!");
+        User user = UserFixture.createUserByPassword(encodedPassword);
+        User savedUser = userRepository.save(user);
+        LoginRequest request = new LoginRequest(user.getEmail(), "1q2w3e4r!");
 
         // when
         Response response = given().log().all()
@@ -135,17 +136,18 @@ class AuthControllerTest {
         assertAll(
                 () -> assertThat(accessToken).isNotNull().isNotBlank(),
                 () -> assertThat(refreshToken).isNotNull().isNotBlank(),
-                () -> assertThat(authentication.id()).isEqualTo(user.getId()));
+                () -> assertThat(authentication.id()).isEqualTo(savedUser.getId()));
     }
 
     @Test
     void 로그아웃에_성공한다() {
         // given
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
-        userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
+        User user = UserFixture.createUserByPassword(encodedPassword);
+        userRepository.save(user);
 
-        String accessToken = jwtTokenManager.createAccessToken(1L, "ekorea623@gmail.com");
-        String refreshToken = jwtTokenManager.createRefreshToken(1L, "ekorea623@gmail.com"); // Refresh Token 생성 로직이 필요
+        String accessToken = jwtTokenManager.createAccessToken(1L, user.getEmail());
+        String refreshToken = jwtTokenManager.createRefreshToken(1L, user.getEmail()); // Refresh Token 생성 로직이 필요
 
         // when
         Response response = given().log().all()
@@ -175,7 +177,7 @@ class AuthControllerTest {
     @Test
     void 구글로부터_인증_코드를_받으면_토큰을_발급하고_메인페이지로_리디렉션한다() {
         // given
-        User user = userRepository.save(new User("test@google.com", "password", "nickname", ProviderType.GOOGLE));
+        User user = userRepository.save(UserFixture.createGoogleUser());
         RefreshToken refreshToken = new RefreshToken("refresh-token-value", user, new Date(),
                 new Date(System.currentTimeMillis() + 100000));
         Tokens tokens = new Tokens("access-token-value", refreshToken);
@@ -259,7 +261,7 @@ class AuthControllerTest {
     void 엑세스_토큰을_재발급한다() throws InterruptedException {
         // given
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
-        User user = userRepository.save(new User("ekorea623@gmail.com", encodedPassword, "drago", ProviderType.EMAIL));
+        User user = userRepository.save(UserFixture.createUserByPassword(encodedPassword));
 
         String accessToken = createExpiredToken(user.getId(), user.getEmail());
         String refreshTokenValue = jwtTokenManager.createRefreshToken(user.getId(), user.getEmail());
@@ -316,10 +318,10 @@ class AuthControllerTest {
     @Test
     void 비밀번호_변경_요청에_성공한다() {
         // given
-        String email = "ekorea623@gmail.com";
         String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
-        userRepository.save(new User(email, encodedPassword, "drago", ProviderType.EMAIL));
-        PasswordUpdateRequest request = new PasswordUpdateRequest(email);
+        User user = UserFixture.createUserByPassword(encodedPassword);
+        userRepository.save(user);
+        PasswordUpdateRequest request = new PasswordUpdateRequest(user.getEmail());
 
         // when & then
         given().log().all()

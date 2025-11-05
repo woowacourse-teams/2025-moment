@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.support.MomentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -40,14 +40,18 @@ class MomentRepositoryTest {
     @Test
     void 내_모멘트를_생성시간_기준_내림차순으로_정렬하여_페이지를_조회한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment savedMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 행복해", savedMomenter, WriteType.BASIC, start);
-        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 즐거워", savedMomenter, WriteType.BASIC, start.plusHours(1));
-        Moment savedMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 짜릿해", savedMomenter, WriteType.BASIC, start.plusHours(2));
-        Moment savedMoment4 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 킥킥", savedMomenter, WriteType.BASIC, start.plusHours(3));
+        Moment savedMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 행복해", savedMomenter, WriteType.BASIC,
+                start);
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 즐거워", savedMomenter, WriteType.BASIC,
+                start.plusHours(1));
+        Moment savedMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 짜릿해", savedMomenter, WriteType.BASIC,
+                start.plusHours(2));
+        Moment savedMoment4 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 킥킥", savedMomenter, WriteType.BASIC,
+                start.plusHours(3));
 
         // when
         List<Moment> moments = momentRepository.findMyMomentsNextPage(momenter, savedMoment4.getCreatedAt(),
@@ -66,7 +70,7 @@ class MomentRepositoryTest {
     @Test
     void 유저가_오늘_기본적으로_생성한_모멘트_수를_카운트한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         WriteType basicWriteType = WriteType.BASIC;
 
@@ -91,7 +95,7 @@ class MomentRepositoryTest {
     @Test
     void 유저가_오늘_추가_리워드로_생성한_모멘트_수를_카운트한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         WriteType extraWriteType = WriteType.EXTRA;
 
@@ -116,21 +120,25 @@ class MomentRepositoryTest {
     @Test
     void 다른_사람이_작성한_3일이내의_모멘트를_조회한다() {
         // given
-        User user = userRepository.save(new User("mimi@icloud.com", "mimi1234!", "mimi", ProviderType.EMAIL));
-        User other = userRepository.save(new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL));
+        User user = userRepository.save(UserFixture.createUser());
+        User other = userRepository.save(UserFixture.createUser());
 
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
         Moment myMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("내가 쓴 모멘트", user, WriteType.BASIC, start);
 
-        Moment recentMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("다른 사람 최신 모멘트", other, WriteType.BASIC, start.minusDays(3));
+        Moment recentMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("다른 사람 최신 모멘트", other, WriteType.BASIC,
+                start.minusDays(3));
 
-        Moment oldMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("다른 사람 4일전 모멘트", other, WriteType.BASIC, start.minusDays(4));
+        Moment oldMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("다른 사람 4일전 모멘트", other, WriteType.BASIC,
+                start.minusDays(4));
 
-        Moment reportedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("신고한 모멘트", other, WriteType.BASIC, start.plusHours(2));
+        Moment reportedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("신고한 모멘트", other, WriteType.BASIC,
+                start.plusHours(2));
         List<Long> reportedMomentIds = List.of(reportedMoment.getId());
 
         // when
-        List<Long> results = momentRepository.findMomentIdsExcludingReported(user.getId(), start.minusDays(3), reportedMomentIds);
+        List<Long> results = momentRepository.findMomentIdsExcludingReported(user.getId(), start.minusDays(3),
+                reportedMomentIds);
 
         // then
         assertThat(results).containsExactly(recentMoment.getId());
@@ -140,13 +148,14 @@ class MomentRepositoryTest {
     @Test
     void 읽지_않은_모멘트_목록의_첫_페이지를_조회한다() {
         // given
-        User momenter = userRepository.save(new User("test@user.com", "password", "tester", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
         Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
         Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
         momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC)); // This one is not unread
 
         // when
-        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(List.of(moment1.getId(), moment2.getId()), PageRequest.of(0, 5));
+        List<Moment> result = momentRepository.findMyUnreadMomentFirstPage(List.of(moment1.getId(), moment2.getId()),
+                PageRequest.of(0, 5));
 
         // then
         assertThat(result).hasSize(2)
@@ -154,15 +163,18 @@ class MomentRepositoryTest {
     }
 
     @Test
-    void 읽지_않은_모멘트_목록의_두_번째_페이지를_조회한다() throws InterruptedException {
+    void 읽지_않은_모멘트_목록의_두_번째_페이지를_조회한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment savedMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 행복해", savedMomenter, WriteType.BASIC, start);
-        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 즐거워", savedMomenter, WriteType.BASIC, start.plusHours(1));
-        Moment savedMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 짜릿해", savedMomenter, WriteType.BASIC, start.plusHours(2));
+        Moment savedMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 행복해", savedMomenter, WriteType.BASIC,
+                start);
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 즐거워", savedMomenter, WriteType.BASIC,
+                start.plusHours(1));
+        Moment savedMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("아 짜릿해", savedMomenter, WriteType.BASIC,
+                start.plusHours(2));
 
         // when
         List<Moment> result = momentRepository.findMyUnreadMomentNextPage(
@@ -179,8 +191,8 @@ class MomentRepositoryTest {
     @Test
     void 내_모멘트_목록의_첫_페이지를_조회한다() throws InterruptedException {
         // given
-        User momenter = userRepository.save(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
-        User other = userRepository.save(new User("other@gmail.com", "1234", "other", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User other = userRepository.save(UserFixture.createUser());
 
         momentRepository.save(new Moment("다른 사람 모멘트", other, WriteType.BASIC));
         Moment moment1 = momentRepository.save(new Moment("아 행복해", momenter, WriteType.BASIC));
@@ -206,7 +218,7 @@ class MomentRepositoryTest {
     @Test
     void 모멘트_ID로_모멘트를_삭제한다() {
         // given
-        User momenter = userRepository.save(new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
         Moment momentToDelete = momentRepository.save(new Moment("삭제될 모멘트", momenter, WriteType.BASIC));
         Moment momentToKeep = momentRepository.save(new Moment("유지될 모멘트", momenter, WriteType.BASIC));
 
@@ -223,8 +235,8 @@ class MomentRepositoryTest {
     @Test
     void 모멘트_ID로_조회할_때_momenter를_함께_조회한다() {
         // given
-        User momenter1 = userRepository.save(new User("hippo1@gmail.com", "1234", "hippo1", ProviderType.EMAIL));
-        User momenter2 = userRepository.save(new User("hippo2@gmail.com", "1234", "hippo2", ProviderType.EMAIL));
+        User momenter1 = userRepository.save(UserFixture.createUser());
+        User momenter2 = userRepository.save(UserFixture.createUser());
 
         Moment moment1 = momentRepository.save(new Moment("첫번째 모멘트", momenter1, WriteType.BASIC));
         Moment moment2 = momentRepository.save(new Moment("두번째 모멘트", momenter2, WriteType.BASIC));
@@ -241,6 +253,6 @@ class MomentRepositoryTest {
         assertThat(results).allSatisfy(m -> assertThat(m.getMomenter()).isNotNull());
         assertThat(results)
                 .extracting(m -> m.getMomenter().getEmail())
-                .containsExactlyInAnyOrder("hippo1@gmail.com", "hippo1@gmail.com");
+                .containsExactlyInAnyOrder(momenter1.getEmail(), momenter1.getEmail());
     }
 }

@@ -9,12 +9,12 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.MyRewardHistoryResponse;
@@ -53,7 +53,7 @@ class StarRewardServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("test@email.com", "password", "nickName", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
 
         Clock fixedClock = Clock.fixed(Instant.parse("2025-10-13T10:00:00Z"), ZoneId.of("UTC"));

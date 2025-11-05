@@ -10,10 +10,10 @@ import moment.comment.domain.Comment;
 import moment.comment.domain.Echo;
 import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,8 +51,8 @@ class EchoServiceTest {
     @Test
     void 코멘트_목록에_대한_에코_목록을_조회한다() {
         // given
-        User user1 = userRepository.save(new User("user1@test.com", "pass", "user1", ProviderType.EMAIL));
-        User user2 = userRepository.save(new User("user2@test.com", "pass", "user2", ProviderType.EMAIL));
+        User user1 = userRepository.save(UserFixture.createUser());
+        User user2 = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", user1, WriteType.BASIC));
 
         Comment comment1 = commentRepository.save(new Comment("comment1", user2, moment.getId()));
@@ -78,8 +78,8 @@ class EchoServiceTest {
     @Test
     void 코멘트_ID로_에코를_삭제한다() {
         // given
-        User user1 = userRepository.save(new User("user1@test.com", "pass", "user1", ProviderType.EMAIL));
-        User user2 = userRepository.save(new User("user2@test.com", "pass", "user2", ProviderType.EMAIL));
+        User user1 = userRepository.save(UserFixture.createUser());
+        User user2 = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", user1, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment", user2, moment.getId()));
 
@@ -98,8 +98,8 @@ class EchoServiceTest {
     @Test
     void 새로운_에코만_저장한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment", commenter, moment.getId()));
 
@@ -121,8 +121,8 @@ class EchoServiceTest {
     @Test
     void 기존에_에코가_없을_때_모든_에코를_저장한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment", commenter, moment.getId()));
 
@@ -139,8 +139,8 @@ class EchoServiceTest {
     @Test
     void 이미_모든_에코가_존재할_때_저장하지_않는다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment", commenter, moment.getId()));
 
@@ -158,8 +158,8 @@ class EchoServiceTest {
     @Test
     void 코멘트로_에코_목록을_조회한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
         Comment comment1 = commentRepository.save(new Comment("comment1", commenter, moment.getId()));

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
@@ -20,7 +21,6 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
 import moment.moment.infrastructure.TagRepository;
 import moment.support.MomentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -62,7 +62,7 @@ class MomentApplicationServiceTest {
     @Test
     void 기본_모멘트를_작성한다() {
         // given
-        User user = new User("test@email.com", "password123", "nickname", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User momenter = userRepository.save(user);
 
         MomentCreateRequest request = new MomentCreateRequest(
@@ -85,7 +85,7 @@ class MomentApplicationServiceTest {
     @Test
     void 추가_모멘트를_작성한다() {
         // given
-        User user = new User("test@email.com", "password123", "nickname", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User momenter = userRepository.save(user);
         int startPoint = 10;
         momenter.addStarAndUpdateLevel(startPoint);
@@ -110,7 +110,7 @@ class MomentApplicationServiceTest {
     @Test
     void 나의_모멘트_조합을_조회한다() {
         // given
-        User user = new User("test@email.com", "password123", "nickname", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User momenter = userRepository.save(user);
         momenter.addStarAndUpdateLevel(40);
 
@@ -142,7 +142,7 @@ class MomentApplicationServiceTest {
 
         // then
         String expectedResolvedUrl = "https://test-bucket-1/test/optimized-images/photo2";
-        
+
         assertAll(
                 () -> assertThat(response.momentCompositionInfo()).hasSize(2),
                 () -> assertThat(response.nextCursor()).isNotNull(),

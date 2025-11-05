@@ -12,6 +12,7 @@ import java.util.Optional;
 import moment.auth.application.TokenManager;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
@@ -37,7 +38,6 @@ import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
 import moment.support.MomentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -88,7 +87,7 @@ class MomentControllerTest {
     @Test
     void 기본_모멘트를_등록한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
         List<String> tagNames = List.of("일상/여가");
@@ -118,7 +117,7 @@ class MomentControllerTest {
     @Test
     void 추가_모멘트를_등록한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
@@ -149,7 +148,7 @@ class MomentControllerTest {
     @Test
     void 이미지를_첨부한_기본_모멘트를_등록한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
         List<String> tagNames = List.of("일상/여가");
@@ -181,7 +180,7 @@ class MomentControllerTest {
     @Test
     void 이미지를_첨부한_추가_모멘트를_등록한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
@@ -214,7 +213,7 @@ class MomentControllerTest {
     @Test
     void 추가_모멘트를_등록_시_별조각을_차감한다() {
 
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(30);
         User savedMomenter = userRepository.saveAndFlush(momenter);
         String content = "재미있는 내용이네요~~?";
@@ -271,7 +270,7 @@ class MomentControllerTest {
     @Disabled
     void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -319,11 +318,11 @@ class MomentControllerTest {
     @Test
     void 내_모멘트_조회_시_읽음_상태를_함께_반환한다() {
         // given
-        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
-        User commenter = userRepository.save(new User("commenter@gmail.com", "1234", "commenter", ProviderType.EMAIL));
+        User commenter = userRepository.save(UserFixture.createUser());
 
         String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
         String commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
@@ -381,7 +380,7 @@ class MomentControllerTest {
     @Test
     void 내_모멘트_조회_시_모멘트_태그가_없는_경우도_조회된다() {
         // given
-        User momenter = new User("momenter@gmail.com", "1234", "momenter", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
@@ -413,7 +412,7 @@ class MomentControllerTest {
     @Disabled
     void DB에_저장된_Moment가_limit보다_적을_경우_남은_목록을_반환한다() throws InterruptedException {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -459,7 +458,7 @@ class MomentControllerTest {
     @Test
     void 기본_모멘트_작성_가능_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -481,7 +480,7 @@ class MomentControllerTest {
     @Test
     void 기본_모멘트_작성_불가능_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
@@ -506,10 +505,10 @@ class MomentControllerTest {
     @Test
     void 코멘트를_작성할_수_있는_모멘트를_조회한다() {
         // given
-        User user = new User("mimi@gmail.com", "mimi1234!", "mimi", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
-        User momenter = new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
@@ -536,10 +535,10 @@ class MomentControllerTest {
     @Test
     void 코멘트를_작성할_수_있는_이미지를_포함한_모멘트를_조회한다() {
         // given
-        User user = new User("mimi@gmail.com", "mimi1234!", "mimi", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
-        User momenter = new User("hippo@gmail.com", "hippo1234!", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
@@ -572,7 +571,7 @@ class MomentControllerTest {
     @Test
     void 추가_모멘트_작성_가능_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
@@ -595,7 +594,7 @@ class MomentControllerTest {
     @Test
     void 추가_모멘트_작성_불가능_상태를_가져온다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
@@ -618,7 +617,7 @@ class MomentControllerTest {
     @Test
     void 모멘트를_신고한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
@@ -648,15 +647,15 @@ class MomentControllerTest {
     @Test
     void 정해진_신고_횟수_넘긴_모멘트를_삭제한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
         Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
         Moment savedMoment = momentRepository.save(moment);
 
-        User reporter1 = new User("ddd@gmail.com", "1234!", "드라고", ProviderType.EMAIL);
-        User reporter2 = new User("hhh@gmail.com", "1234!", "히포", ProviderType.EMAIL);
+        User reporter1 = UserFixture.createUser();
+        User reporter2 = UserFixture.createUser();
         User savedReporter1 = userRepository.save(reporter1);
         User savedReporter2 = userRepository.save(reporter2);
 
@@ -688,7 +687,7 @@ class MomentControllerTest {
     @Test
     void 나의_Moment_목록을_조회한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());

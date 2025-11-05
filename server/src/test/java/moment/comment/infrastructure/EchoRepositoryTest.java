@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 import moment.comment.domain.Comment;
 import moment.comment.domain.Echo;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -41,8 +41,8 @@ class EchoRepositoryTest {
     @Test
     void 코멘트에_달린_모든_에코를_조회한다() {
         // given
-        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
 
@@ -62,9 +62,9 @@ class EchoRepositoryTest {
     @Test
     void 유저가_코멘트에_이미_에코_타입을_보낸_경우_조회하여_반환한다() {
         // given
-        User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         userRepository.save(momenter);
-        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        User commenter = UserFixture.createUser();
         userRepository.save(commenter);
         Moment moment = new Moment("하이", momenter, WriteType.BASIC);
         momentRepository.save(moment);
@@ -86,9 +86,9 @@ class EchoRepositoryTest {
     @Test
     void 유저가_코멘트에_다른_에코_타입을_보냈으면_조회하지_않는다() {
         // given
-        User momenter = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         userRepository.save(momenter);
-        User commenter = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        User commenter = UserFixture.createUser();
         userRepository.save(commenter);
         Moment moment = new Moment("하이", momenter, WriteType.BASIC);
         momentRepository.save(moment);
@@ -107,8 +107,8 @@ class EchoRepositoryTest {
     @Test
     void 코멘트_리스트에_포함된_모든_에코를_조회한다() {
         // given
-        User user1 = userRepository.save(new User("user1@gmail.com", "1234", "user1", ProviderType.EMAIL));
-        User user2 = userRepository.save(new User("user2@gmail.com", "1234", "user2", ProviderType.EMAIL));
+        User user1 = userRepository.save(UserFixture.createUser());
+        User user2 = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment content", true, user1, WriteType.BASIC));
         Comment comment1 = commentRepository.save(new Comment("comment 1", user1, moment.getId()));
         Comment comment2 = commentRepository.save(new Comment("comment 2", user2, moment.getId()));
@@ -131,8 +131,8 @@ class EchoRepositoryTest {
     @Test
     void 코멘트로_에코를_조회한다() {
         // given
-        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
 
@@ -151,8 +151,8 @@ class EchoRepositoryTest {
     @Test
     void 코멘트에_에코가_없으면_빈_Optional을_반환한다() {
         // given
-        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
 
@@ -166,8 +166,8 @@ class EchoRepositoryTest {
     @Test
     void 코멘트_ID로_에코를_삭제한다() {
         // given
-        User momenter = userRepository.save(new User("ekorea623@gmail.com", "1q2w3e4r", "drago", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("user@gmail.com", "1234", "user", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("오런완!", true, momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("수고 많으셨습니다.", commenter, moment.getId()));
         Long commentId = comment.getId();

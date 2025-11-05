@@ -3,10 +3,10 @@ package moment.report.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class ReportRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = userRepository.save(new User("test@email.com", "password", "nickname", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
     }
 
     @Test
@@ -44,7 +44,7 @@ class ReportRepositoryTest {
 
         reportRepository.save(new Report(user, TargetType.COMMENT, 3L, ReportReason.SPAM_OR_ADVERTISEMENT));
 
-        User otherUser = userRepository.save(new User("other@email.com", "password", "other", ProviderType.EMAIL));
+        User otherUser = userRepository.save(UserFixture.createUser());
         reportRepository.save(new Report(otherUser, TargetType.MOMENT, 4L, ReportReason.SPAM_OR_ADVERTISEMENT));
 
         // when

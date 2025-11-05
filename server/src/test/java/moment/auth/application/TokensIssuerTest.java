@@ -14,7 +14,7 @@ import java.util.Date;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
 import moment.auth.infrastructure.RefreshTokenRepository;
-import moment.user.domain.ProviderType;
+import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ class TokensIssuerTest {
 
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
-        user = new User("test@moment.com", "password123!", "tester", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         Field idField = User.class.getDeclaredField("id"); // User 클래스의 id 필드 가져오기
         idField.setAccessible(true);                       // private 접근 허용
         idField.set(user, 1L);

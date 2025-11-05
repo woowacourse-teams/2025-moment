@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Date;
 import java.util.Optional;
 import moment.auth.domain.RefreshToken;
-import moment.user.domain.ProviderType;
+import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class RefreshTokenRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("ekorea623@gmail.com", "moment1234!", "drago", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         refreshToken = new RefreshToken(
                 tokenValue,
                 user,

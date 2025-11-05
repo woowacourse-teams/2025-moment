@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,10 +44,10 @@ class NotificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
 
-        anotherUser = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        anotherUser = UserFixture.createUser();
         userRepository.save(anotherUser);
     }
 

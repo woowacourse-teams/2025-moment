@@ -8,10 +8,10 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
 import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.infrastructure.PushNotificationRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ class PushNotificationControllerTest {
     void setUp() {
         RestAssured.port = port;
         databaseCleaner.clean();
-        user = userRepository.save(new User("test@moment.com", "password", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
         accessToken = jwtTokenManager.createAccessToken(user.getId(), user.getEmail());
     }
 
@@ -65,18 +65,18 @@ class PushNotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .cookie("accessToken", accessToken)
-            .body(request)
-            .when().post("/api/v1/push-notifications")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", accessToken)
+                .body(request)
+                .when().post("/api/v1/push-notifications")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
         assertAll(
-            () -> assertThat(notifications).hasSize(1),
-            () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
+                () -> assertThat(notifications).hasSize(1),
+                () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
         );
     }
 
@@ -88,12 +88,12 @@ class PushNotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .cookie("accessToken", accessToken)
-            .body(request)
-            .when().delete("/api/v1/push-notifications")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", accessToken)
+                .body(request)
+                .when().delete("/api/v1/push-notifications")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());

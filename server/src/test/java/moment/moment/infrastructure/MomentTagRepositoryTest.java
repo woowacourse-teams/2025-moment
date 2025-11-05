@@ -3,11 +3,11 @@ package moment.moment.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
 import moment.moment.domain.WriteType;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class MomentTagRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = userRepository.save(new User("test@email.com", "1234", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
 
         moment1 = momentRepository.save(new Moment("moment1", user, WriteType.BASIC));
         moment2 = momentRepository.save(new Moment("moment2", user, WriteType.BASIC));
@@ -84,7 +84,6 @@ class MomentTagRepositoryTest {
         assertThat(results).hasSize(2)
                 .containsExactlyInAnyOrder(moment1.getId(), moment2.getId());
     }
-
 
 
     @Test

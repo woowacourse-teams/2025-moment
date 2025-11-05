@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Comparator;
+import moment.fixture.UserFixture;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -32,7 +32,7 @@ class RewardRepositoryTest {
     @Test
     void 이미_존재하는_포인트_증감_기록이면_true_반환한다() {
         // given
-        User user = userRepository.save(new User("drago@gmail.com", "1q2w3e4r!", "drago", ProviderType.EMAIL));
+        User user = userRepository.save(UserFixture.createUser());
         Reason reason = Reason.ECHO_RECEIVED;
         Long contentId = 1L;
 
@@ -48,7 +48,7 @@ class RewardRepositoryTest {
     @Test
     void 존재하지_않는_포인트_증감_기록이면_false_반환한다() {
         // given
-        User user = userRepository.save(new User("drago@gmail.com", "1q2w3e4r!", "drago", ProviderType.EMAIL));
+        User user = userRepository.save(UserFixture.createUser());
         Reason reason = Reason.ECHO_RECEIVED;
         Long contentId = 1L;
 
@@ -62,7 +62,7 @@ class RewardRepositoryTest {
     @Test
     void 유저의_보상_기록을_CreatedAt_내림차순으로_조회한다() {
         // given
-        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
 
         userRepository.save(user);
 

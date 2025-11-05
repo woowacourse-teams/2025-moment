@@ -23,7 +23,7 @@ import moment.comment.infrastructure.EchoRepository;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
-import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.global.config.AppConfig;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -34,7 +34,6 @@ import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.storage.application.PhotoUrlResolver;
 import moment.support.CommentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import moment.user.service.user.UserService;
@@ -49,14 +48,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @DataJpaTest
-@Import({DatabaseCleaner.class, AppConfig.class, CommentApplicationService.class, CommentService.class,
+@Import({AppConfig.class, CommentApplicationService.class, CommentService.class,
         CommentImageService.class, EchoService.class, UserService.class, CommentCreatedAtHelper.class,
         PhotoUrlResolver.class})
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentApplicationServiceTest {
-
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private CommentApplicationService commentApplicationService;
@@ -84,8 +80,7 @@ class CommentApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        databaseCleaner.clean();
-        user = userRepository.save(new User("test@email.com", "password", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
         moment = momentRepository.save(new Moment("moment content", user, WriteType.BASIC));
     }
 
@@ -185,7 +180,8 @@ class CommentApplicationServiceTest {
     @Test
     void 내가_코멘트하지_않은_모멘트_ID_목록을_조회한다() {
         // given
-        User otherUser = userRepository.save(new User("other@email.com", "pw", "other", ProviderType.EMAIL));
+        User otherUser = UserFixture.createUser();
+        userRepository.save(otherUser);
         Moment moment2 = momentRepository.save(new Moment("moment 2", user, WriteType.BASIC));
         commentRepository.save(new Comment("my comment", user, moment.getId()));
         commentRepository.save(new Comment("other's comment", otherUser, moment2.getId()));

@@ -1,7 +1,7 @@
 package moment.notification.service.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import java.util.Map;
 import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -16,10 +17,8 @@ import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.notification.service.notification.SseNotificationService;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -58,8 +57,8 @@ class NotificationApplicationServiceTest {
     @BeforeEach
     void setUp() {
         databaseCleaner.clean();
-        user = userRepository.save(new User("test@email.com", "password", "tester", ProviderType.EMAIL));
-        anotherUser = userRepository.save(new User("another@email.com", "password", "another", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
+        anotherUser = userRepository.save(UserFixture.createUser());
     }
 
     @Test

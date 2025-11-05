@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -36,10 +36,10 @@ public class CommentImageRepositoryTest {
     @Test
     void 코멘트로_코멘트_이미지를_조회한다() {
         // given
-        User momenter = new User("emial@meail.com", "1234!", "마아", ProviderType.EMAIL);
-        User commenter1 = new User("errr@meail.com", "1234!", "라고", ProviderType.EMAIL);
-        User commenter2 = new User("err@meail.com", "1234!", "포히", ProviderType.EMAIL);
-        User commenter3 = new User("er@meail.com", "1234!", "미미", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
+        User commenter1 = UserFixture.createUser();
+        User commenter2 = UserFixture.createUser();
+        User commenter3 = UserFixture.createUser();
 
         User savedMomenter = userRepository.save(momenter);
         User savedCommenter1 = userRepository.save(commenter1);
@@ -78,8 +78,8 @@ public class CommentImageRepositoryTest {
     @Test
     void 코멘트로_코멘트_이미지를_삭제한다() {
         // given
-        User momenter = userRepository.save(new User("momenter@email.com", "1234", "momenter", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@email.com", "1234", "commenter", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
@@ -100,8 +100,8 @@ public class CommentImageRepositoryTest {
     @Test
     void 코멘트로_코멘트_이미지가_있을_때_조회한다() {
         // given
-        User momenter = userRepository.save(new User("momenter@email.com", "1234", "momenter", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@email.com", "1234", "commenter", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
@@ -120,8 +120,8 @@ public class CommentImageRepositoryTest {
     @Test
     void 코멘트로_코멘트_이미지가_없을_때_빈_Optional을_반환한다() {
         // given
-        User momenter = userRepository.save(new User("momenter@email.com", "1234", "momenter", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@email.com", "1234", "commenter", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
@@ -135,8 +135,8 @@ public class CommentImageRepositoryTest {
     @Test
     void 코멘트_ID로_코멘트_이미지를_삭제한다() {
         // given
-        User momenter = userRepository.save(new User("momenter@email.com", "1234", "momenter", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@email.com", "1234", "commenter", ProviderType.EMAIL));
+        User momenter = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
         Long commentId = comment.getId();

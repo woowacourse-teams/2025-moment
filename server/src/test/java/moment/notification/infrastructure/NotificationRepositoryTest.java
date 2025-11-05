@@ -1,9 +1,13 @@
 package moment.notification.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.List;
+import moment.fixture.UserFixture;
+import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
-import moment.global.domain.TargetType;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,37 +18,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 @ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class NotificationRepositoryTest {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private User user;
-    private User anotherUser;
-
     private final boolean readFlag = true;
     private final boolean unReadFlag = false;
     private final long contentId = 1L;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private UserRepository userRepository;
+    private User user;
+    private User anotherUser;
     private long userId;
 
     @BeforeEach
     void setUp() {
-        user = new User("lebron@james.com", "lebron1234!", "르브론", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
         userId = user.getId();
 
-        anotherUser = new User("mimi@icloud.com", "mimi1234!", "밍밍", ProviderType.EMAIL);
+        anotherUser = UserFixture.createUser();
         userRepository.save(anotherUser);
     }
 
@@ -182,7 +178,7 @@ class NotificationRepositoryTest {
 
         TargetType anotherContentType = TargetType.COMMENT;
 
-        User user2 = new User("cookie@Email.com", "cookie1234!", "cookie",  ProviderType.EMAIL);
+        User user2 = UserFixture.createUser();
         userRepository.save(user2);
 
         Notification expectedNotification1 = new Notification(user, reason, contentType, contentId1);
@@ -224,7 +220,7 @@ class NotificationRepositoryTest {
 
         TargetType anotherContentType = TargetType.COMMENT;
 
-        User user2 = new User("cookie@Email.com", "cookie1234!", "cookie",  ProviderType.EMAIL);
+        User user2 = UserFixture.createUser();
         userRepository.save(user2);
 
         Notification expectedNotification1 = new Notification(user, reason, contentType, contentId1);

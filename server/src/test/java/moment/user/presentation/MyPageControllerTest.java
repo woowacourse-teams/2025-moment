@@ -9,12 +9,12 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.global.dto.response.SuccessResponse;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
 import moment.user.domain.Level;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
@@ -22,7 +22,10 @@ import moment.user.dto.response.MyPageProfileResponse;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +39,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MyPageControllerTest {
 
     @Autowired
@@ -57,10 +61,15 @@ class MyPageControllerTest {
         databaseCleaner.clean();
     }
 
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
+    }
+
     @Test
     void 유저_프로필_정보를_조회한다() {
         // given
-        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        User user = UserFixture.createUserByEmailAndNickname("test@gmail.com", "신비로운 행성의 지구");
         userRepository.save(user);
 
         String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
@@ -90,7 +99,7 @@ class MyPageControllerTest {
     @Test
     void 유저_보상_기록을_페이징_처리하여_조회한다() {
         // given
-        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        User user = UserFixture.createUserByEmailAndNickname("test@gmail.com", "신비로운 행성의 지구");
         userRepository.save(user);
 
         createTestRewardHistory(user);
@@ -130,7 +139,7 @@ class MyPageControllerTest {
     @Test
     void 마이페이지에서_유저_닉네임을_변경한다() {
         // given
-        User user = new User("test@gmail.com", "qwer1234!", "신비로운 행성의 지구", ProviderType.EMAIL);
+        User user = UserFixture.createUserByEmailAndNickname("test@gmail.com", "신비로운 행성의 지구");
         ReflectionTestUtils.setField(user, "availableStar", 150);
         User savedUser = userRepository.save(user);
 
@@ -162,11 +171,12 @@ class MyPageControllerTest {
     @Test
     void 마이페이지_내에서_유저_비밀번호를_변경한다() {
         // given
-        String nickname = "mimi";
         String encodePassword = passwordEncoder.encode("test123!@#");
-        User user = userRepository.save(new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL));
-        String accessToken = tokenManager.createAccessToken(user.getId(), "test123!@#");
-        String refreshToken = tokenManager.createRefreshToken(user.getId(), "test123!@#");
+        User user = userRepository.save(UserFixture.createUserByPassword(encodePassword));
+        String email = user.getEmail();
+
+        String accessToken = tokenManager.createAccessToken(user.getId(), email);
+        String refreshToken = tokenManager.createRefreshToken(user.getId(), email);
 
         ChangePasswordRequest request = new ChangePasswordRequest("change123!@#", "change123!@#");
 
@@ -202,13 +212,14 @@ class MyPageControllerTest {
     void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_변경된다() {
         // given
         String nickname = "신비로운 우주의 지구";
-        String encodePassword = passwordEncoder.encode("test123!@#");
-        User user = new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL);
+        User user = UserFixture.createUserByNickname(nickname);
+        String email = user.getEmail();
         ReflectionTestUtils.setField(user, "availableStar", 100);
+
         User savedUser = userRepository.save(user);
 
-        String accessToken = tokenManager.createAccessToken(savedUser.getId(), "test123!@#");
-        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), "test123!@#");
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), email);
+        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), email);
 
         NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 아이디");
 
@@ -238,13 +249,14 @@ class MyPageControllerTest {
     void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_별조각을_사용하면_몇번이던_변경된다() {
         // given
         String nickname = "신비로운 우주의 지구";
-        String encodePassword = passwordEncoder.encode("test123!@#");
-        User user = new User("mimi@icloud.com", encodePassword, nickname, ProviderType.EMAIL);
-        ReflectionTestUtils.setField(user, "availableStar", 200);
+        User user = UserFixture.createUserByNickname(nickname);
+        String email = user.getEmail();
+        ReflectionTestUtils.setField(user, "availableStar", 1000);
+
         User savedUser = userRepository.save(user);
 
-        String accessToken = tokenManager.createAccessToken(savedUser.getId(), "test123!@#");
-        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), "test123!@#");
+        String accessToken = tokenManager.createAccessToken(savedUser.getId(), email);
+        String refreshToken = tokenManager.createRefreshToken(savedUser.getId(), email);
 
         NicknameChangeRequest request = new NicknameChangeRequest("변경된 유저의 아이디");
 

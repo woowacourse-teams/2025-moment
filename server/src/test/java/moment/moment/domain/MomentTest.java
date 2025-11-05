@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import moment.user.domain.ProviderType;
+import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -22,7 +22,7 @@ class MomentTest {
     @EmptySource
     void 내용이_없는_경우_예외가_발생한다(String content) {
         // given
-        User user = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
 
         // when & then
         assertThatThrownBy(() -> new Moment(content, user, WriteType.BASIC))
@@ -33,7 +33,7 @@ class MomentTest {
     @Test
     void 모멘트_내용_길이가_200자가_넘는_경우_예외가_발생한다() {
         //given
-        User user = new User("lebron@gmail.com", "1234", "르브론", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         String longContent = "=".repeat(201);
 
         // when & then
@@ -53,10 +53,10 @@ class MomentTest {
     @Test
     void 모멘트_작성자인지_확인한다() {
         // given
-        User momenter = new User("drago@email.com", "1234", "drago", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         ReflectionTestUtils.setField(momenter, "id", 1L);
 
-        User unAuthorizedUser = new User("unAuth@email.com", "1234", "unAuth", ProviderType.EMAIL);
+        User unAuthorizedUser = UserFixture.createUser();
         ReflectionTestUtils.setField(unAuthorizedUser, "id", 2L);
 
         Moment moment = new Moment("오늘 달리기 완료!", momenter, WriteType.BASIC);

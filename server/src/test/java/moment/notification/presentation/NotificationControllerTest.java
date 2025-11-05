@@ -13,22 +13,22 @@ import java.util.Set;
 import moment.auth.application.TokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
+import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.notification.service.application.NotificationApplicationService;
-import moment.notification.service.notification.SseNotificationService;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.comment.dto.request.EchoCreateRequest;
-import moment.user.domain.ProviderType;
+import moment.notification.service.application.NotificationApplicationService;
+import moment.notification.service.notification.SseNotificationService;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -91,12 +91,12 @@ public class NotificationControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        momenter = userRepository.save(new User("lebron@james.com", "moment1234!", "르브론", ProviderType.EMAIL));
+        momenter = userRepository.save(UserFixture.createUser());
         moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
         moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
         moment3 = momentRepository.save(new Moment("반가워요", momenter, WriteType.BASIC));
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
-        commenter = userRepository.save(new User("curry@stephan.com", "moment1234!", "커리", ProviderType.EMAIL));
+        commenter = userRepository.save(UserFixture.createUser());
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
     }
 
@@ -341,7 +341,7 @@ public class NotificationControllerTest {
                 .statusCode(204);
 
         List<Notification> results = notificationRepository.findAllById(unReadNotificationsIds);
-        
+
         // then
         assertThat(results.stream().allMatch(Notification::isRead)).isTrue();
     }
