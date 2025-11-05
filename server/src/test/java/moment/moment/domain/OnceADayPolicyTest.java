@@ -5,15 +5,18 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Tag(TestTags.UNIT)
 @ExtendWith(MockitoExtension.class)
 class OnceADayPolicyTest {
 

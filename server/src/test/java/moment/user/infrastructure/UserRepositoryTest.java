@@ -6,16 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)

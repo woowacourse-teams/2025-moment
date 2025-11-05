@@ -23,6 +23,7 @@ import moment.comment.infrastructure.EchoRepository;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.comment.service.comment.EchoService;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.config.AppConfig;
 import moment.global.exception.ErrorCode;
@@ -40,12 +41,14 @@ import moment.user.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({AppConfig.class, CommentApplicationService.class, CommentService.class,

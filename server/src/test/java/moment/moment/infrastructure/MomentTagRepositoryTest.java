@@ -3,6 +3,7 @@ package moment.moment.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentTag;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+@org.junit.jupiter.api.Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)

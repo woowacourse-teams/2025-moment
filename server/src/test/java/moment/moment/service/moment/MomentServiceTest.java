@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.BaseEntity;
 import moment.global.exception.MomentException;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +33,7 @@ import org.springframework.data.util.ReflectionUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")

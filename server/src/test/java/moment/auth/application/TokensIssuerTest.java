@@ -14,18 +14,21 @@ import java.util.Date;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
 import moment.auth.infrastructure.RefreshTokenRepository;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@Tag(TestTags.UNIT)
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class TokensIssuerTest {

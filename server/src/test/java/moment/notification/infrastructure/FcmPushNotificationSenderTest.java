@@ -10,12 +10,14 @@ import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import java.util.List;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
 import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotificationMessage;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@Tag(TestTags.UNIT)
 @ExtendWith(MockitoExtension.class)
 class FcmPushNotificationSenderTest {
 

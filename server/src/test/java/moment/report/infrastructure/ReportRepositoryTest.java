@@ -3,6 +3,7 @@ package moment.report.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.report.domain.Report;
@@ -11,11 +12,13 @@ import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
 class ReportRepositoryTest {

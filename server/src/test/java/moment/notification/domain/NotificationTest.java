@@ -2,13 +2,16 @@ package moment.notification.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag(TestTags.UNIT)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class NotificationTest {
 

@@ -24,6 +24,7 @@ import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -51,6 +52,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@org.junit.jupiter.api.Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)

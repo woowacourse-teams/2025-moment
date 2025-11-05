@@ -15,6 +15,7 @@ import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
@@ -23,6 +24,7 @@ import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +35,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)

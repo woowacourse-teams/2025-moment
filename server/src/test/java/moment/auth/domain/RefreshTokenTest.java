@@ -4,12 +4,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag(TestTags.UNIT)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class RefreshTokenTest {
 

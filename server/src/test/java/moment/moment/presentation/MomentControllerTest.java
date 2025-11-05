@@ -12,6 +12,7 @@ import java.util.Optional;
 import moment.auth.application.TokenManager;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
@@ -52,6 +53,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@org.junit.jupiter.api.Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)

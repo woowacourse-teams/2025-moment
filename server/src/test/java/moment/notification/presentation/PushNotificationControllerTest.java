@@ -8,6 +8,7 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
 import moment.notification.dto.request.DeviceEndpointRequest;
@@ -17,6 +18,7 @@ import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)

@@ -3,13 +3,16 @@ package moment.comment.domain;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@Tag(TestTags.UNIT)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentTest {
 

@@ -5,10 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.UUID;
+import moment.config.TestTags;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.storage.infrastructure.AwsS3Client;
 import moment.user.service.user.UserService;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.UNIT)
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class FileStorageServiceTest {

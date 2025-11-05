@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
@@ -16,6 +17,7 @@ import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
 import moment.user.domain.User;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@Tag(TestTags.UNIT)
 @ExtendWith(MockitoExtension.class)
 class ReportServiceTest {
 

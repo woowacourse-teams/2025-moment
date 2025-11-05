@@ -4,6 +4,7 @@ package moment.comment.domain;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -12,9 +13,11 @@ import moment.moment.domain.WriteType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@Tag(TestTags.UNIT)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class EchoTest {
 
