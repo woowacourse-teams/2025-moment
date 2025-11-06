@@ -9,12 +9,13 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.MyRewardHistoryResponse;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +33,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -53,7 +56,7 @@ class StarRewardServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("test@email.com", "password", "nickName", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
 
         Clock fixedClock = Clock.fixed(Instant.parse("2025-10-13T10:00:00Z"), ZoneId.of("UTC"));

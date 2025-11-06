@@ -6,17 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -46,7 +49,7 @@ class MomentImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        User user = new User("test@email.com", "password123", "nickname", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         momenter = userRepository.save(user);
     }
 

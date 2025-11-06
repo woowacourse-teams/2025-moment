@@ -10,30 +10,29 @@ import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
-import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
-@DataJpaTest
-@Import(DatabaseCleaner.class)
+@Transactional
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentImageServiceTest {
-
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private CommentImageRepository commentImageRepository;
@@ -55,10 +54,9 @@ class CommentImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        databaseCleaner.clean();
         commentImageService = new CommentImageService(commentImageRepository);
 
-        user = userRepository.save(new User("test@email.com", "password", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
         moment = momentRepository.save(new Moment("moment content", user, WriteType.BASIC));
         comment = commentRepository.save(new Comment("comment content", user, moment.getId()));
     }

@@ -1,24 +1,29 @@
 package moment.notification.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Transactional
 @ActiveProfiles("test")
-@DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class PushNotificationRepositoryTest {
 
@@ -32,7 +37,7 @@ class PushNotificationRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("test@moment.com", "password123!", "tester", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
     }
 
@@ -83,7 +88,7 @@ class PushNotificationRepositoryTest {
     @Test
     void 사용자의_디바이스_엔드포인트_존재_여부를_판단한다() {
         // given
-        User anotherUser = new User("cookie@gmail.com",  "cookie123!", "cookie", ProviderType.EMAIL);
+        User anotherUser = UserFixture.createUser();
         userRepository.save(anotherUser);
 
         String existingDeviceEndpoint = "existing-device-endpoint";
@@ -97,7 +102,8 @@ class PushNotificationRepositoryTest {
 
         // when
         boolean shouldExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, existingDeviceEndpoint);
-        boolean shouldNotExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user, nonExistingDeviceEndpoint);
+        boolean shouldNotExist = pushNotificationRepository.existsByUserAndDeviceEndpoint(user,
+                nonExistingDeviceEndpoint);
 
         // then
         assertThat(shouldExist).isTrue();

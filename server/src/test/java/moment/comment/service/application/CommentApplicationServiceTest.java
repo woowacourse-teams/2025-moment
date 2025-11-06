@@ -20,11 +20,8 @@ import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
-import moment.comment.service.comment.CommentImageService;
-import moment.comment.service.comment.CommentService;
-import moment.comment.service.comment.EchoService;
-import moment.common.DatabaseCleaner;
-import moment.global.config.AppConfig;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -32,31 +29,25 @@ import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.storage.application.PhotoUrlResolver;
 import moment.support.CommentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
-import moment.user.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
-@DataJpaTest
-@Import({DatabaseCleaner.class, AppConfig.class, CommentApplicationService.class, CommentService.class,
-        CommentImageService.class, EchoService.class, UserService.class, CommentCreatedAtHelper.class,
-        PhotoUrlResolver.class})
+@Transactional
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentApplicationServiceTest {
-
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private CommentApplicationService commentApplicationService;
@@ -84,8 +75,7 @@ class CommentApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        databaseCleaner.clean();
-        user = userRepository.save(new User("test@email.com", "password", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
         moment = momentRepository.save(new Moment("moment content", user, WriteType.BASIC));
     }
 
@@ -185,7 +175,8 @@ class CommentApplicationServiceTest {
     @Test
     void 내가_코멘트하지_않은_모멘트_ID_목록을_조회한다() {
         // given
-        User otherUser = userRepository.save(new User("other@email.com", "pw", "other", ProviderType.EMAIL));
+        User otherUser = UserFixture.createUser();
+        userRepository.save(otherUser);
         Moment moment2 = momentRepository.save(new Moment("moment 2", user, WriteType.BASIC));
         commentRepository.save(new Comment("my comment", user, moment.getId()));
         commentRepository.save(new Comment("other's comment", otherUser, moment2.getId()));

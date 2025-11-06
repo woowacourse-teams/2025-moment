@@ -12,6 +12,8 @@ import java.util.stream.IntStream;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
@@ -20,21 +22,23 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
-@DataJpaTest
-@Import({DatabaseCleaner.class, CommentCreatedAtHelper.class})
+@Transactional
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentServiceTest {
 
@@ -50,9 +54,6 @@ class CommentServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CommentCreatedAtHelper createdAtHelper;
-
     private CommentService commentService;
     @Autowired
     private CommentCreatedAtHelper commentCreatedAtHelper;
@@ -63,11 +64,16 @@ class CommentServiceTest {
         commentService = new CommentService(commentRepository);
     }
 
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
+    }
+
     @Test
     void 모멘트_ID_목록으로_모든_코멘트를_조회한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
 
         Moment moment1 = momentRepository.save(new Moment("moment 1", momentOwner, WriteType.BASIC));
         Moment moment2 = momentRepository.save(new Moment("moment 2", momentOwner, WriteType.BASIC));
@@ -88,9 +94,9 @@ class CommentServiceTest {
     @Test
     void 모멘트_중_내가_코멘트하지_않은_모멘트ID_목록을_조회한다() {
         // given
-        User me = userRepository.save(new User("me@test.com", "pass", "me", ProviderType.EMAIL));
-        User other = userRepository.save(new User("other@test.com", "pass", "other", ProviderType.EMAIL));
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
+        User me = userRepository.save(UserFixture.createUser());
+        User other = userRepository.save(UserFixture.createUser());
+        User momentOwner = userRepository.save(UserFixture.createUser());
 
         Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC)); // me만 코멘트
         Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC)); // other만 코멘트
@@ -116,8 +122,8 @@ class CommentServiceTest {
     @Test
     void 코멘트_ID로_코멘트를_삭제한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("comment", commenter, moment.getId()));
 
@@ -133,8 +139,8 @@ class CommentServiceTest {
     @Test
     void 새로운_코멘트를_생성한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment newComment = new Comment("new comment", commenter, moment.getId());
 
@@ -149,8 +155,8 @@ class CommentServiceTest {
     @Test
     void 모멘트에_이미_코멘트를_남겼으면_예외가_발생한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         commentRepository.save(new Comment("existing comment", commenter, moment.getId()));
 
@@ -163,8 +169,8 @@ class CommentServiceTest {
     @Test
     void 모멘트에_코멘트를_남기지_않았으면_예외가_발생하지_않는다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
         // when & then
@@ -175,13 +181,14 @@ class CommentServiceTest {
     @Test
     void 작성자별로_코멘트_목록을_조회한다_첫_페이지() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(),
+                    start.plusHours(i));
         });
 
         PageSize pageSize = new PageSize(3);
@@ -203,13 +210,14 @@ class CommentServiceTest {
     @Test
     void 작성자별로_코멘트_목록을_조회한다_두_번째_페이지() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(),
+                    start.plusHours(i));
         });
 
         List<Comment> allComments = commentRepository.findAll().stream()
@@ -237,13 +245,14 @@ class CommentServiceTest {
     @Test
     void 코멘트_ID_목록으로_코멘트를_조회한다_첫_페이지() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(),
+                    start.plusHours(i));
         });
 
         List<Long> commentIds = commentRepository.findAll().stream().map(Comment::getId).toList();
@@ -266,13 +275,14 @@ class CommentServiceTest {
     @Test
     void 코멘트_ID_목록으로_코멘트를_조회한다_두_번째_페이지() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
 
-        LocalDateTime start = LocalDateTime.of(2025, 1 , 1, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
-            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(), start.plusHours(i));
+            commentCreatedAtHelper.saveCommentWithCreatedAt("comment " + i, commenter, moment.getId(),
+                    start.plusHours(i));
         });
 
         List<Long> commentIds = commentRepository.findAll().stream().map(Comment::getId).toList();
@@ -296,8 +306,8 @@ class CommentServiceTest {
     @Test
     void 코멘트_ID로_모멘트_ID를_조회한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
@@ -322,8 +332,8 @@ class CommentServiceTest {
     @Test
     void 코멘트_ID로_코멘트를_조회한다() {
         // given
-        User momentOwner = userRepository.save(new User("owner@test.com", "pass", "owner", ProviderType.EMAIL));
-        User commenter = userRepository.save(new User("commenter@test.com", "pass", "commenter", ProviderType.EMAIL));
+        User momentOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
         Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
         Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
