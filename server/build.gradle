@@ -58,6 +58,10 @@ dependencies {
 }
 
 tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.register('fastTest', Test) {
     useJUnitPlatform {
         excludeTags 'e2e'
     }
@@ -67,9 +71,5 @@ tasks.register('e2eTest', Test) {
     useJUnitPlatform {
         includeTags 'e2e'
     }
-}
-
-tasks.register('allTests', Test) {
-    useJUnitPlatform {}
 }
 

@@ -42,7 +42,7 @@ jobs:
           gradle-home-cache-cleanup: true
 
       - name: Run Unit & Integration Tests
-        run: ./gradlew test
+        run: ./gradlew fastTest
 
       - name: Run E2E Tests
         run: ./gradlew e2eTest
