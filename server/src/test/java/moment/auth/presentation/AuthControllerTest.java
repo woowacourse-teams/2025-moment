@@ -33,7 +33,10 @@ import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,15 +48,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class AuthControllerTest {
 
     @LocalServerPort
@@ -77,6 +78,11 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleaner.clean();
+    }
+
+    @AfterEach
+    void down() {
         databaseCleaner.clean();
     }
 

@@ -41,22 +41,23 @@ import moment.report.infrastructure.ReportRepository;
 import moment.support.MomentCreatedAtHelper;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
 @org.junit.jupiter.api.Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class MomentControllerTest {
 
     @LocalServerPort
@@ -86,11 +87,16 @@ class MomentControllerTest {
         databaseCleaner.clean();
     }
 
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
+    }
+
     @Test
     void 기본_모멘트를_등록한다() {
         // given
         User momenter = UserFixture.createUser();
-        User savedMomenter = userRepository.save(momenter);
+        User savedMomenter = userRepository.saveAndFlush(momenter);
         String content = "재미있는 내용이네요~~?";
         List<String> tagNames = List.of("일상/여가");
 
