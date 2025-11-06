@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.MomentException;
 import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
@@ -19,6 +21,7 @@ import moment.user.dto.response.UserProfileResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -31,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
 @Transactional
@@ -46,7 +50,7 @@ public class UserServiceTest {
     @Test
     void 일반_회원가입_유저를_추가한다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("test@email.com", "1234qwer!@", "1234qwer!@", "테스트 유저");
+        UserCreateRequest request = UserFixture.createUserCreateRequest();
 
         // when & then
         User savedUser = userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -58,7 +62,8 @@ public class UserServiceTest {
     @Test
     void 비밀번호와_확인용_비밀번호가_일치하지_않는_경우_유저를_추가할_수_없다() {
         // given
-        UserCreateRequest request = new UserCreateRequest("test@email.com", "1234qwer!@", "4567qwer!@", "테스트 유저");
+        UserCreateRequest request = UserFixture.createUserCreateRequestByPassword("1234qwer!@",
+                "4567qwer!@");
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -70,10 +75,10 @@ public class UserServiceTest {
     @Test
     void 중복된_닉네임이_존재하는_경우_일반_유저를_추가할_수_없다() {
         // given
-        User user = new User("test1@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
-        UserCreateRequest request = new UserCreateRequest("test2@email.com", "1234qwer!@", "1234qwer!@", "테스트 유저");
+        UserCreateRequest request = UserFixture.createUserCreateRequestByNickname(user.getNickname());
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -85,10 +90,10 @@ public class UserServiceTest {
     @Test
     void 이미_가입한_일반_유저를_추가하는_경우_예외가_발생한다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "먼저 가입한 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
-        UserCreateRequest request = new UserCreateRequest("test@email.com", "1234qwer!@", "1234qwer!@", "중복 이메일 유저");
+        UserCreateRequest request = UserFixture.createUserCreateRequestByEmail(user.getEmail());
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -100,7 +105,7 @@ public class UserServiceTest {
     @Test
     void 토큰으로부터_획득한_인증정보를_이용하여_유저_프로필_정보를_조회합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         Authentication authentication = new Authentication(savedUser.getId());
@@ -120,7 +125,7 @@ public class UserServiceTest {
     @Test
     void 토큰으로부터_획득한_인증정보를_이용하여_유저_프로필을_조회했을_때_유저가_존재하지_않으면_예외가_발생합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
         Authentication authentication = new Authentication(9999L);
@@ -134,12 +139,11 @@ public class UserServiceTest {
     @Test
     void 중복된_닉네임을_사용중인_유저가_있다면_isExists_true를_반환합니다() {
         // given
-        String nickname = "테스트 유저";
-
-        User user = new User("test@email.com", "1234qwer!@", nickname, ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
         // when
+        String nickname = user.getNickname();
         NicknameConflictCheckResponse nicknameConflictCheckResponse = userService.checkNicknameConflict(nickname);
 
         // then
@@ -149,12 +153,12 @@ public class UserServiceTest {
     @Test
     void 중복된_닉네임을_사용중인_유저가_없다면_isExists_false를_반환합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
         // when
-        NicknameConflictCheckResponse nicknameConflictCheckResponse = userService.checkNicknameConflict(
-                "새로운 유저");
+        String nickname = "새로운 유저";
+        NicknameConflictCheckResponse nicknameConflictCheckResponse = userService.checkNicknameConflict(nickname);
 
         // then
         assertThat(nicknameConflictCheckResponse.isExists()).isFalse();
@@ -163,7 +167,7 @@ public class UserServiceTest {
     @Test
     void ID를_이용하여_유저를_조회합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when & then
@@ -173,7 +177,7 @@ public class UserServiceTest {
     @Test
     void ID를_이용하여_유저를_조회하는_경우_존재하지_않으면_예외가_발생한다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when & then
@@ -185,7 +189,7 @@ public class UserServiceTest {
     @Test
     void 이메일과_가입_유형으로_유저를_조회합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when
@@ -202,7 +206,7 @@ public class UserServiceTest {
     @CsvSource(value = {"other@email.com,EMAIL", "test@email.com,GOOGLE"})
     void 이메일과_가입_유형으로_유저를_조회하는_경우_존재하지_않으면_빈_Optional을_반환한다(String email, ProviderType providerType) {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
         // when
@@ -215,40 +219,32 @@ public class UserServiceTest {
     @Test
     void ID_목록으로_유저_목록을_조회한다() {
         // given
+        int amount = 3;
+        List<User> users = UserFixture.createUsersByAmount(amount);
+
         List<Long> ids = new ArrayList<>();
-
-        User user1 = new User("test1@email.com", "1234qwer!@", "테스트 유저1", ProviderType.EMAIL);
-        User savedUser1 = userRepository.save(user1);
-        ids.add(savedUser1.getId());
-
-        User user2 = new User("test2@email.com", "1234qwer!@", "테스트 유저2", ProviderType.GOOGLE);
-        User savedUser2 = userRepository.save(user2);
-        ids.add(savedUser2.getId());
-
-        User user3 = new User("test3@email.com", "1234qwer!@", "테스트 유저3", ProviderType.EMAIL);
-        User savedUser3 = userRepository.save(user3);
-        ids.add(savedUser3.getId());
+        for (User user : users) {
+            User savedUser = userRepository.save(user);
+            ids.add(savedUser.getId());
+        }
 
         // when
         List<User> usersByIds = userService.getAllBy(ids);
 
         assertAll(
                 () -> assertThat(usersByIds).hasSize(3),
-                () -> assertThat(usersByIds).contains(savedUser1, savedUser2, savedUser3)
+                () -> assertThat(usersByIds).containsAll(users)
         );
     }
 
     @Test
     void ID_목록에_해당하는_유저가_없는_경우_빈_목록을_반환한다() {
         // given
-        User user1 = new User("test1@email.com", "1234qwer!@", "테스트 유저1", ProviderType.EMAIL);
-        userRepository.save(user1);
-
-        User user2 = new User("test2@email.com", "1234qwer!@", "테스트 유저2", ProviderType.GOOGLE);
-        userRepository.save(user2);
-
-        User user3 = new User("test3@email.com", "1234qwer!@", "테스트 유저3", ProviderType.EMAIL);
-        userRepository.save(user3);
+        int amount = 3;
+        List<User> users = UserFixture.createUsersByAmount(amount);
+        for (User user : users) {
+            userRepository.save(user);
+        }
 
         List<Long> ids = List.of(999L, 1000L, 1001L);
 
@@ -263,7 +259,7 @@ public class UserServiceTest {
     void 닉네임을_사용하는_유저가_존재하는_경우_true_반환한다() {
         // given
         String nickname = "테스트 유저";
-        User user = new User("test@email.com", "1234qwer!@", nickname, ProviderType.EMAIL);
+        User user = UserFixture.createUserByNickname(nickname);
         userRepository.save(user);
 
         // when & then
@@ -273,7 +269,7 @@ public class UserServiceTest {
     @Test
     void 닉네임을_사용하는_유저가_존재하지_않는_경우_true_반환한다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         userRepository.save(user);
 
         // when & then
@@ -283,7 +279,7 @@ public class UserServiceTest {
     @Test
     void 리워드를_소모하여_유저_닉네임을_변경합니다() throws NoSuchFieldException, IllegalAccessException {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         int availableStar = 1000;
@@ -307,20 +303,16 @@ public class UserServiceTest {
     @Test
     void 사용중인_닉네임으로_변경_시_예외가_발생합니다() throws NoSuchFieldException, IllegalAccessException {
         // given
-        String changedNickname = "변경된 닉네임";
-        User user1 = new User("test1@email.com", "1234qwer!@", changedNickname, ProviderType.EMAIL);
-        User savedUser1 = userRepository.save(user1);
-
-        User user2 = new User("test@email.com", "1234qwer!@", "테스트 유저2", ProviderType.EMAIL);
-        User savedUser2 = userRepository.save(user2);
+        User user = UserFixture.createUser();
+        User savedUser = userRepository.save(user);
 
         int availableStar = 1000;
         Field field = User.class.getDeclaredField("availableStar");
         field.setAccessible(true);
-        field.set(savedUser2, availableStar);
+        field.set(savedUser, availableStar);
 
         // when & then
-        assertThatThrownBy(() -> userService.changeNickname(changedNickname, savedUser2.getId()))
+        assertThatThrownBy(() -> userService.changeNickname(savedUser.getNickname(), savedUser.getId()))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("message", "이미 존재하는 닉네임입니다.");
     }
@@ -328,7 +320,7 @@ public class UserServiceTest {
     @Test
     void 닉네임_변경_시_사용_가능한_리워드가_부족한_경우_예외가_발생합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when & then
@@ -341,7 +333,7 @@ public class UserServiceTest {
     @Test
     void 유저_비밀번호를_변경합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when
@@ -356,7 +348,7 @@ public class UserServiceTest {
     @Test
     void 일반_회원이_아닌_경우_비밀번호_변경_시_예외가_발생합니다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.GOOGLE);
+        User user = UserFixture.createGoogleUser();
         User savedUser = userRepository.save(user);
 
         // when & then
@@ -369,7 +361,7 @@ public class UserServiceTest {
     @Test
     void 새_비밀번호와_확인용_비밀번호가_다른_경우_예외가_발생한다() {
         // given
-        User user = new User("test@email.com", "1234qwer!@", "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when & then
@@ -383,12 +375,11 @@ public class UserServiceTest {
     @Test
     void 새_비밀번호가_이전_비밀번호와_같은_경우_예외가_발생한다() {
         // given
-        String password = "1234qwer!@";
-        User user = new User("test@email.com", password, "테스트 유저", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         // when & then
-        assertThatThrownBy(() -> userService.changePassword(password, password, savedUser.getId()))
+        assertThatThrownBy(() -> userService.changePassword(user.getPassword(), user.getPassword(), savedUser.getId()))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("message", "새 비밀번호가 기존의 비밀번호와 동일합니다.");
     }

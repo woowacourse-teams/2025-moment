@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Map;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentTag;
 import moment.moment.domain.Tag;
@@ -12,7 +14,6 @@ import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
 import moment.moment.infrastructure.TagRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@org.junit.jupiter.api.Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -32,17 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 class MomentTagServiceTest {
 
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     private MomentTagService momentTagService;
-
     @Autowired
     private MomentRepository momentRepository;
-
     @Autowired
     private TagRepository tagRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
     @Autowired
     private MomentTagRepository momentTagRepository;
 
@@ -50,7 +48,7 @@ class MomentTagServiceTest {
 
     @BeforeEach
     void setUp() {
-        User user = new User("test@email.com", "password123", "nickname", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         momenter = userRepository.save(user);
     }
 

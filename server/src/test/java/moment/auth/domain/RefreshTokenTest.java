@@ -4,19 +4,22 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import moment.user.domain.ProviderType;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag(TestTags.UNIT)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 public class RefreshTokenTest {
 
     @Test
     void 리프레시_토큰이_만료됐는지_확인한다() {
         // given
-        User user = new User("ekorea623@gmail.com", "moment1234!", "drago", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         RefreshToken refreshToken = new RefreshToken(
                 "token",
                 user,
@@ -30,7 +33,7 @@ public class RefreshTokenTest {
     @Test
     void 리프레시_토큰을_갱신한다() {
         // given
-        User user = new User("ekorea623@gmail.com", "moment1234!", "drago", ProviderType.EMAIL);
+        User user = UserFixture.createUser();
         RefreshToken refreshToken = new RefreshToken(
                 "token",
                 user,

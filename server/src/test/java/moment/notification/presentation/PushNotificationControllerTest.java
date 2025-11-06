@@ -8,27 +8,28 @@ import io.restassured.http.ContentType;
 import java.util.List;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
 import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.infrastructure.PushNotificationRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class PushNotificationControllerTest {
 
@@ -54,8 +55,13 @@ class PushNotificationControllerTest {
     void setUp() {
         RestAssured.port = port;
         databaseCleaner.clean();
-        user = userRepository.save(new User("test@moment.com", "password", "tester", ProviderType.EMAIL));
+        user = userRepository.save(UserFixture.createUser());
         accessToken = jwtTokenManager.createAccessToken(user.getId(), user.getEmail());
+    }
+
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
     }
 
     @Test
@@ -65,18 +71,18 @@ class PushNotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .cookie("accessToken", accessToken)
-            .body(request)
-            .when().post("/api/v1/push-notifications")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", accessToken)
+                .body(request)
+                .when().post("/api/v1/push-notifications")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
         assertAll(
-            () -> assertThat(notifications).hasSize(1),
-            () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
+                () -> assertThat(notifications).hasSize(1),
+                () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo("test-endpoint-arn")
         );
     }
 
@@ -88,12 +94,12 @@ class PushNotificationControllerTest {
 
         // when
         RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .cookie("accessToken", accessToken)
-            .body(request)
-            .when().delete("/api/v1/push-notifications")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value());
+                .contentType(ContentType.JSON)
+                .cookie("accessToken", accessToken)
+                .body(request)
+                .when().delete("/api/v1/push-notifications")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
 
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());

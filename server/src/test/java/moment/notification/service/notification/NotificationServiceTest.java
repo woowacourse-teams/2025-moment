@@ -5,18 +5,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -44,10 +47,10 @@ class NotificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("mimi@icloud.com", "mimi1234!", "미미", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
 
-        anotherUser = new User("cookie@gmail.com", "cookie1234!", "쿠키", ProviderType.EMAIL);
+        anotherUser = UserFixture.createUser();
         userRepository.save(anotherUser);
     }
 

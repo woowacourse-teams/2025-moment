@@ -2,13 +2,16 @@ package moment.storage.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import moment.config.TestTags;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.UNIT)
 @ActiveProfiles("test")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class PhotoUrlResolverTest {

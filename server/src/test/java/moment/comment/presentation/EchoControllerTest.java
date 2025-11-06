@@ -9,32 +9,36 @@ import java.util.List;
 import java.util.Set;
 import moment.auth.application.TokenManager;
 import moment.comment.domain.Comment;
-import moment.comment.infrastructure.CommentRepository;
-import moment.common.DatabaseCleaner;
-import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
-import moment.moment.infrastructure.MomentRepository;
 import moment.comment.domain.Echo;
 import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.dto.tobe.EchoDetail;
+import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
-import moment.user.domain.ProviderType;
+import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
+import moment.moment.domain.Moment;
+import moment.moment.domain.WriteType;
+import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 public class EchoControllerTest {
 
     @LocalServerPort
@@ -69,12 +73,17 @@ public class EchoControllerTest {
     void setUp() {
         RestAssured.port = port;
         databaseCleaner.clean();
-        momenter = userRepository.save(new User("kiki@gmail.com", "1234", "kiki", ProviderType.EMAIL));
-        commenter = userRepository.save(new User("drago@gmail.com", "1234", "drago", ProviderType.EMAIL));
+        momenter = userRepository.save(UserFixture.createUser());
+        commenter = userRepository.save(UserFixture.createUser());
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
         moment = momentRepository.save(new Moment("아 행복해", true, momenter, WriteType.BASIC));
         comment = commentRepository.save(new Comment("행복하지마요~", commenter, moment.getId()));
+    }
+
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
     }
 
     @Test

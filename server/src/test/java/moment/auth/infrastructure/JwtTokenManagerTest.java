@@ -7,9 +7,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.spec.SecretKeySpec;
+import moment.config.TestTags;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag(TestTags.UNIT)
 class JwtTokenManagerTest {
 
     private final String testAccessSecretKey = "this-is-a-long-and-secure-secret-key-for-testing-moment-project";

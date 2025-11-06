@@ -4,14 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.notification.domain.PushNotification;
 import moment.notification.infrastructure.PushNotificationRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -38,7 +41,7 @@ class PushNotificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("test@moment.com", "password123!", "tester", ProviderType.EMAIL);
+        user = UserFixture.createUser();
         userRepository.save(user);
     }
 
@@ -53,8 +56,8 @@ class PushNotificationServiceTest {
         // then
         List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
         assertAll(
-            () -> assertThat(notifications).hasSize(1),
-            () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo(deviceEndpoint)
+                () -> assertThat(notifications).hasSize(1),
+                () -> assertThat(notifications.get(0).getDeviceEndpoint()).isEqualTo(deviceEndpoint)
         );
     }
 

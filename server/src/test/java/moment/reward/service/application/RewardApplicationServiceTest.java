@@ -4,18 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.reward.domain.Reason;
 import moment.reward.domain.RewardHistory;
 import moment.reward.infrastructure.RewardRepository;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
@@ -42,7 +45,7 @@ class RewardApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        User newUser = new User("test@email.com", "password", "nickName", ProviderType.EMAIL);
+        User newUser = UserFixture.createUser();
         user = userRepository.save(newUser);
     }
 
@@ -127,7 +130,8 @@ class RewardApplicationServiceTest {
         rewardRepository.save(new RewardHistory(user, Reason.ECHO_RECEIVED, 3L));
 
         // when
-        MyRewardHistoryPageResponse resultPage = rewardApplicationService.getRewardHistoryBy(user.getId(), pageNum, pageSize);
+        MyRewardHistoryPageResponse resultPage = rewardApplicationService.getRewardHistoryBy(user.getId(), pageNum,
+                pageSize);
 
         // then
         assertAll(

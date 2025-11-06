@@ -3,14 +3,16 @@ package moment.user.service.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.MomentException;
 import moment.user.domain.NicknameGenerator;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.response.MomentRandomNicknameResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+@Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
 @Transactional
@@ -42,8 +45,7 @@ class NicknameGenerateApplicationServiceTest {
     @Test
     void 랜덤_닉네임_생성_시_이미_존재하는_닉네임인_경우_예외가_발생한다() {
         // given
-        String password = "1234qwer!@";
-        User user = new User("test@email.com", password, RANDOM_NICKNAME, ProviderType.EMAIL);
+        User user = UserFixture.createUserByNickname(RANDOM_NICKNAME);
         userRepository.save(user);
 
         // when & then

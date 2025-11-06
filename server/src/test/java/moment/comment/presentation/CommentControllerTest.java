@@ -24,6 +24,8 @@ import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.comment.infrastructure.EchoRepository;
 import moment.common.DatabaseCleaner;
+import moment.config.TestTags;
+import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
@@ -34,9 +36,9 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.moment.infrastructure.MomentTagRepository;
 import moment.moment.infrastructure.TagRepository;
 import moment.support.CommentCreatedAtHelper;
-import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -46,13 +48,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 
+@org.junit.jupiter.api.Tag(TestTags.E2E)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentControllerTest {
 
@@ -76,6 +76,7 @@ class CommentControllerTest {
 
     @Autowired
     private DatabaseCleaner databaseCleaner;
+
     @Autowired
     private CommentImageRepository commentImageRepository;
 
@@ -92,19 +93,24 @@ class CommentControllerTest {
         databaseCleaner.clean();
     }
 
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
+    }
+
     @Test
     void Comment_생성에_성공한다() {
         // given
-        String token = jwtTokenManager.createAccessToken(1L, "hippo@gmail.com");
+        User user1 = UserFixture.createUser();
+        User savedUser1 = userRepository.saveAndFlush(user1);
 
-        User user1 = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        userRepository.saveAndFlush(user1);
-
-        User user2 = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
-        userRepository.saveAndFlush(user2);
+        User user2 = UserFixture.createUser();
+        User savedUser2 = userRepository.saveAndFlush(user2);
 
         Moment moment = new Moment("개발의 세계는 신비해요!", true, user2, WriteType.BASIC);
         momentRepository.saveAndFlush(moment);
+
+        String token = jwtTokenManager.createAccessToken(savedUser1.getId(), savedUser1.getEmail());
 
         CommentCreateRequest request = new CommentCreateRequest("정말 안타깝게 됐네요!", 1L, null, null);
 
@@ -129,10 +135,10 @@ class CommentControllerTest {
     @Test
     void 나의_Comment_목록을_조회한다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User commenter = UserFixture.createUser();
         User savedCommenter = userRepository.save(commenter);
 
         String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
@@ -143,7 +149,8 @@ class CommentControllerTest {
         momentTagRepository.save(new MomentTag(savedMoment, savedTag));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        Comment savedComment = commentCreatedAtHelper.saveCommentWithCreatedAt("첫 번째 댓글", savedCommenter, savedMoment.getId(), start);
+        Comment savedComment = commentCreatedAtHelper.saveCommentWithCreatedAt("첫 번째 댓글", savedCommenter,
+                savedMoment.getId(), start);
 
         Echo echo = new Echo("HEART", savedMomenter, savedComment);
         Echo savedEcho = echoRepository.save(echo);
@@ -152,7 +159,8 @@ class CommentControllerTest {
         Moment savedMoment2 = momentRepository.save(moment2);
         momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
 
-        Comment savedComment2 = commentCreatedAtHelper.saveCommentWithCreatedAt("즐거운 댓글", savedCommenter, savedMoment2.getId(), start.plusHours(1));
+        Comment savedComment2 = commentCreatedAtHelper.saveCommentWithCreatedAt("즐거운 댓글", savedCommenter,
+                savedMoment2.getId(), start.plusHours(1));
 
         Echo echo2 = new Echo("HEART", savedMomenter, savedComment2);
         Echo savedEcho2 = echoRepository.save(echo2);
@@ -190,10 +198,10 @@ class CommentControllerTest {
     @Test
     void 나의_Comment_목록을_조회시_삭제된_모멘트는_비어있다() {
         // given
-        User momenter = new User("kiki@icloud.com", "1234", "kiki", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.saveAndFlush(momenter);
 
-        User commenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
+        User commenter = UserFixture.createUser();
         User savedCommenter = userRepository.saveAndFlush(commenter);
 
         String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
@@ -230,8 +238,8 @@ class CommentControllerTest {
     @Test
     void 코멘트를_신고한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User commenter = new User("good@gmail.com", "1234", "lebron", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
+        User commenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         User savedCommenter = userRepository.save(commenter);
 
@@ -261,10 +269,10 @@ class CommentControllerTest {
     }
 
     @Test
-    void 신고된_코멘트를_삭제한다() throws InterruptedException {
+    void 신고된_코멘트를_삭제한다() {
         // given
-        User momenter = new User("hippo@gmail.com", "1234", "hippo", ProviderType.EMAIL);
-        User commenter = new User("good@gmail.com", "1234", "lebron", ProviderType.EMAIL);
+        User momenter = UserFixture.createUser();
+        User commenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         User savedCommenter = userRepository.save(commenter);
 
