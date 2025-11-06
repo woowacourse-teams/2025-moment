@@ -20,6 +20,7 @@ import moment.notification.infrastructure.NotificationRepository;
 import moment.notification.service.notification.SseNotificationService;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -62,6 +63,11 @@ class NotificationApplicationServiceTest {
         databaseCleaner.clean();
         user = userRepository.save(UserFixture.createUser());
         anotherUser = userRepository.save(UserFixture.createUser());
+    }
+
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
     }
 
     @Test

@@ -10,6 +10,8 @@ import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.storage.infrastructure.AwsS3Client;
 import moment.user.service.user.UserService;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Tag(TestTags.UNIT)
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class FileStorageServiceTest {
 
     @InjectMocks

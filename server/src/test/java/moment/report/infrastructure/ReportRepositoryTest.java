@@ -12,6 +12,8 @@ import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class ReportRepositoryTest {
 
     @Autowired

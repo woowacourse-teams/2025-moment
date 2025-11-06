@@ -24,20 +24,21 @@ import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 @Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
-@DataJpaTest
-@Import({DatabaseCleaner.class, CommentCreatedAtHelper.class})
+@Transactional
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentServiceTest {
 
@@ -53,9 +54,6 @@ class CommentServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CommentCreatedAtHelper createdAtHelper;
-
     private CommentService commentService;
     @Autowired
     private CommentCreatedAtHelper commentCreatedAtHelper;
@@ -64,6 +62,11 @@ class CommentServiceTest {
     void setUp() {
         databaseCleaner.clean();
         commentService = new CommentService(commentRepository);
+    }
+
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
     }
 
     @Test

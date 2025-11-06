@@ -17,6 +17,8 @@ import moment.notification.domain.PushNotificationCommand;
 import moment.notification.domain.PushNotificationMessage;
 import moment.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @Tag(TestTags.UNIT)
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class FcmPushNotificationSenderTest {
 
     @InjectMocks
