@@ -30,7 +30,8 @@ class MomentTest {
         // when & then
         assertThatThrownBy(() -> new Moment(content, user, WriteType.BASIC))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
+                .hasMessage("잘못된 메세지");
+//                .hasMessage("moment의 content는 null이거나 빈 값이어서는 안 됩니다.");
     }
 
     @Test
