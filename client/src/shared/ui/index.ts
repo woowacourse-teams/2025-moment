@@ -5,6 +5,6 @@ export { FileUpload } from './fileUpload/FileUpload';
 export { Logo } from './logo/Logo';
 export { NotFound } from './notFound/NotFound';
 export { SimpleCard } from './simpleCard/SimpleCard';
-export { CommonSkeletonCard } from './skeleton';
+export { CommonSkeletonCard, DeferredComponent } from './skeleton';
 export { TextArea } from './textArea/TextArea';
 export { Toast } from './toast';
