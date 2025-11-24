@@ -1,5 +1,5 @@
 import { useIntersectionObserver } from '@/shared/hooks';
-import { CommonSkeletonCard, NotFound } from '@/shared/ui';
+import { CommonSkeletonCard, DeferredComponent, NotFound } from '@/shared/ui';
 import { AlertCircle, Clock } from 'lucide-react';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
@@ -45,9 +45,11 @@ export const MyMomentsList = () => {
   if (isLoading) {
     return (
       <S.MomentsContainer $display={!!hasMoments || isLoading}>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <CommonSkeletonCard key={`moments-skeleton-card-${index}`} variant="moment" />
-        ))}
+        <DeferredComponent>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <CommonSkeletonCard key={`moments-skeleton-card-${index}`} variant="moment" />
+          ))}
+        </DeferredComponent>
       </S.MomentsContainer>
     );
   }
@@ -65,11 +67,11 @@ export const MyMomentsList = () => {
           <div ref={observerRef} style={{ height: '1px' }} />
 
           {isFetchingNextPage && (
-            <>
+            <DeferredComponent>
               {Array.from({ length: 3 }).map((_, index) => (
                 <CommonSkeletonCard key={`mymoments-loading-skeleton-${index}`} variant="moment" />
               ))}
-            </>
+            </DeferredComponent>
           )}
         </>
       ) : (

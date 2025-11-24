@@ -1,6 +1,6 @@
 import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { CommonSkeletonCard, NotFound } from '@/shared/ui';
+import { CommonSkeletonCard, DeferredComponent, NotFound } from '@/shared/ui';
 import { AlertCircle } from 'lucide-react';
 import * as S from './MyCommentsList.styles';
 import { CommentItem, FilterType } from '../types/comments';
@@ -73,9 +73,11 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
   if (isLoading) {
     return (
       <S.MyCommentsPageContainer>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <CommonSkeletonCard key={`myComments-skeleton-card-${index}`} variant="comment" />
-        ))}
+        <DeferredComponent>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <CommonSkeletonCard key={`myComments-skeleton-card-${index}`} variant="comment" />
+          ))}
+        </DeferredComponent>
       </S.MyCommentsPageContainer>
     );
   }
@@ -91,11 +93,11 @@ export const MyCommentsList = ({ filterType }: MyCommentsList) => {
           <div ref={observerRef} style={{ height: '1px' }} />
 
           {isFetchingNextPage && (
-            <>
+            <DeferredComponent>
               {Array.from({ length: 3 }).map((_, index) => (
                 <CommonSkeletonCard key={`mymoments-loading-skeleton-${index}`} variant="moment" />
               ))}
-            </>
+            </DeferredComponent>
           )}
         </>
       ) : (
