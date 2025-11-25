@@ -1,9 +1,13 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { api } from '@/app/lib/api';
 import { CommentsResponse, GetComments } from '../types/comments';
 
-export const useUnreadCommentsQuery = () => {
-  return useInfiniteQuery<CommentsResponse>({
+/**
+ * Suspense를 사용하는 unread comments query hook
+ * ErrorBoundary와 Suspense로 감싸진 컴포넌트에서 사용
+ */
+export const useUnreadCommentsSuspenseQuery = () => {
+  return useSuspenseInfiniteQuery<CommentsResponse>({
     queryKey: ['comments', 'unread'],
     queryFn: ({ pageParam }) => getUnreadComments({ pageParam: pageParam as string | null }),
     getNextPageParam: lastPage =>
