@@ -1,8 +1,9 @@
-import { MyCommentsList } from '@/features/comment/ui/MyCommentsList';
+import { MyCommentsListWithSuspense } from '@/features/comment/ui/MyCommentsListWithSuspense';
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
+import { ErrorBoundary, SuspenseSkeleton } from '@/shared/ui';
 import * as S from '../index.styles';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { FilterType } from '@/features/comment/types/comments';
 
 export default function MyCommentCollectionPage() {
@@ -23,7 +24,11 @@ export default function MyCommentCollectionPage() {
         />
       </S.FilterWrapper>
 
-      <MyCommentsList filterType={activeFilter} />
+      <ErrorBoundary>
+        <Suspense fallback={<SuspenseSkeleton variant="comment" count={3} />}>
+          <MyCommentsListWithSuspense filterType={activeFilter} />
+        </Suspense>
+      </ErrorBoundary>
     </S.CollectionContainer>
   );
 }
