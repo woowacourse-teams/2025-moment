@@ -1,26 +1,26 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 
 interface DeferredComponentProps {
-    delay?: number;
+  delay?: number;
 }
 
 export const DeferredComponent = ({
-    children,
-    delay = 200,
+  children,
+  delay = 200,
 }: PropsWithChildren<DeferredComponentProps>) => {
-    const [isDeferred, setIsDeferred] = useState(false);
+  const [isDeferred, setIsDeferred] = useState(false);
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            setIsDeferred(true);
-        }, delay);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsDeferred(true);
+    }, delay);
 
-        return () => clearTimeout(timeoutId);
-    }, [delay]);
+    return () => clearTimeout(timeoutId);
+  }, [delay]);
 
-    if (!isDeferred) {
-        return null;
-    }
+  if (!isDeferred) {
+    return null;
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 };
