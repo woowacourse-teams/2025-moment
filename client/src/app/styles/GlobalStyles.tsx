@@ -21,8 +21,9 @@ const globalStyles = css`
 
   @font-face {
     font-family: 'IanSui';
-    src: url('/fonts/ongeulip.woff2') format('woff2'),
-        url('/fonts/ongeulip.ttf') format('truetype');
+    src:
+      url('/fonts/ongeulip.woff2') format('woff2'),
+      url('/fonts/ongeulip.ttf') format('truetype');
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
