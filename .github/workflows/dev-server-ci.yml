@@ -54,6 +54,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Free disk space
+        run: |
+          echo "=== Docker / System cleanup ==="
+          docker system prune -af
+          docker builder prune -af
+          docker image prune -af
+          docker container prune -f
+          docker volume prune -f
+          sudo rm -rf /usr/local/lib/android
+          df -h
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -109,3 +120,8 @@ jobs:
         with:
           name: build-artifact
           path: server/image-tag.txt
+
+      - name: Clean Docker space
+        run: |
+          docker system prune -af
+          docker volume prune -f
