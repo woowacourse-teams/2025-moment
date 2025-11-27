@@ -1,6 +1,6 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
-import { LazyImage } from '@/shared/ui/lazyImage/LazyImage';
+import { Picture } from '@/shared/ui/picture';
 import { Link, useLocation } from 'react-router';
 import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';
@@ -32,13 +32,13 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
     <S.NavigatorsBarContainer $isNavBar={$isNavBar}>
       <Link to={ROUTES.TODAY_MOMENT} state={{ entry: 'nav' }} onClick={handleTodayMomentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayMomentActive}>
-          <LazyImage
-            src="/images/bluePlanet.webp"
+          <Picture
+            webpSrc="/images/bluePlanet.webp"
+            fallbackSrc="/images/fallback/bluePlanet.png"
             alt="오늘의 모멘트 페이지로 이동 버튼"
-            variant="icon"
-            width="40px"
-            height="40px"
-            borderRadius="50%"
+            width="40"
+            height="40"
+            style={{ borderRadius: '50%' }}
           />
           <S.IconText $isActive={isTodayMomentActive}>오늘의 모멘트</S.IconText>
         </S.LinkContainer>
@@ -46,13 +46,13 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
 
       <Link to={ROUTES.TODAY_COMMENT} state={{ entry: 'nav' }} onClick={handleTodayCommentClick}>
         <S.LinkContainer $isNavBar={$isNavBar} $isActive={isTodayCommentActive}>
-          <LazyImage
-            src="/images/orangePlanet.webp"
+          <Picture
+            webpSrc="/images/orangePlanet.webp"
+            fallbackSrc="/images/fallback/orangePlanet.png"
             alt="오늘의 코멘트 페이지로 이동 버튼"
-            variant="icon"
-            width="40px"
-            height="40px"
-            borderRadius="50%"
+            width="40"
+            height="40"
+            style={{ borderRadius: '50%' }}
           />
           <S.IconText $isActive={isTodayCommentActive}>오늘의 코멘트</S.IconText>
         </S.LinkContainer>
@@ -68,13 +68,13 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
           $isActive={isCollectionActive}
           $shadow={isNotificationExisting}
         >
-          <LazyImage
-            src="/images/starPlanet.webp"
+          <Picture
+            webpSrc="/images/starPlanet.webp"
+            fallbackSrc="/images/fallback/starPlanet.png"
             alt="나만의 모음집 페이지로 이동 버튼"
-            variant="icon"
-            width="40px"
-            height="40px"
-            borderRadius="50%"
+            width="40"
+            height="40"
+            style={{ borderRadius: '50%' }}
           />
           <S.IconText $isActive={isCollectionActive}>나만의 모음집</S.IconText>
         </S.LinkContainer>
