@@ -152,11 +152,7 @@ const ExplainSection = ({
 
   return (
     <S.ExplainSection>
-      <S.ExplainImage
-        webpSrc={image}
-        fallbackSrc={fallbackImage}
-        alt=""
-      />
+      <S.ExplainImage webpSrc={image} fallbackSrc={fallbackImage} alt="" />
       <S.ExplainContainer>
         <S.ExplainTitle>{title}</S.ExplainTitle>
         <S.ExplainText>{text1}</S.ExplainText>
