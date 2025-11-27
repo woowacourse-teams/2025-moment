@@ -41,11 +41,8 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
 
-      - name: Run Unit & Integration Tests
-        run: ./gradlew fastTest
-
-      - name: Run E2E Tests
-        run: ./gradlew e2eTest
+      - name: Run all tests
+        run: ./gradlew fastTest e2eTest
 
   build-and-push:
     if: github.event_name == 'push'
