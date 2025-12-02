@@ -1,0 +1,61 @@
+name: Moment Client CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client/**'
+      - '.github/workflows/prod-client-cd.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./client
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+          cache-dependency-path: './client/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        env:
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_PROD_BASE_URL }}
+          REACT_APP_GA_ID: ${{ secrets.REACT_APP_GA_ID }}
+          REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
+          REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL: ${{ secrets.REACT_APP_PROD_GOOGLE_LOGIN_REDIRECTION_URL }}
+          REACT_APP_FCM_VAPID_KEY: ${{ secrets.REACT_APP_FCM_VAPID_KEY }}
+        run: pnpm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Deploy to S3
+        run: aws s3 sync ./dist/ s3://${{ secrets.PROD_AWS_S3_BUCKET_NAME }}/client/ --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.PROD_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
