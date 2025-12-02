@@ -55,7 +55,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Deploy to S3
-        run: aws s3 sync ./dist/ s3://${{ secrets.DEV_AWS_S3_BUCKET_NAME }} --delete
+        run: aws s3 sync ./dist/ s3://${{ secrets.DEV_AWS_S3_BUCKET_NAME }}/client/ --delete
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
