@@ -73,12 +73,12 @@ auth:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: https://connectingmoment.com/api/v1/auth/callback/google
-    client-uri: https://www.connectingmoment.com
+    client-uri: https://connectingmoment.com
   password_update:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
 server:
-  forward-headers-strategy: none
+  forward-headers-strategy: native
   tomcat:
     mbeanregistry:
       enabled: true
