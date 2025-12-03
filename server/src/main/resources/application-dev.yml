@@ -70,7 +70,7 @@ auth:
     uri: http://dev.connectingmoment.com/passwordUpdate?token=
 
 server:
-  forward-headers-strategy: native
+  forward-headers-strategy: none
 
 management:
   metrics:

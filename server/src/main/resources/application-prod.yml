@@ -78,7 +78,7 @@ auth:
     uri: https://connectingmoment.com/passwordUpdate?token=
 
 server:
-  forward-headers-strategy: native
+  forward-headers-strategy: none
   tomcat:
     mbeanregistry:
       enabled: true
