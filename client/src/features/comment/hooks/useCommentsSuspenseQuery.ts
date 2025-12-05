@@ -1,8 +1,8 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getComments } from '../api/getComments';
 
-export const useCommentsQuery = () => {
-  return useInfiniteQuery({
+export const useCommentsSuspenseQuery = () => {
+  return useSuspenseInfiniteQuery({
     queryKey: ['comments'],
     queryFn: getComments,
     getNextPageParam: lastPage =>

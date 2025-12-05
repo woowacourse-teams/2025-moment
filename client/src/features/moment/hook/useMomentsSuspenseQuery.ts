@@ -1,8 +1,8 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getMoments } from '../api/getMoments';
 
-export const useMomentsQuery = () => {
-  return useInfiniteQuery({
+export const useMomentsSuspenseQuery = () => {
+  return useSuspenseInfiniteQuery({
     queryKey: ['moments'],
     queryFn: ({ pageParam }: { pageParam: string | null }) => getMoments({ pageParam }),
     getNextPageParam: lastPage =>

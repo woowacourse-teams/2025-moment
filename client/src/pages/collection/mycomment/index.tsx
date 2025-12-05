@@ -1,8 +1,9 @@
-import { MyCommentsList } from '@/features/comment/ui/MyCommentsList';
+import { MyCommentsListWithSuspense } from '@/features/comment/ui/MyCommentsListWithSuspense';
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
+import { ErrorBoundary, SuspenseSkeleton, NotFound } from '@/shared/ui';
 import * as S from '../index.styles';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { FilterType } from '@/features/comment/types/comments';
 
 export default function MyCommentCollectionPage() {
@@ -23,7 +24,15 @@ export default function MyCommentCollectionPage() {
         />
       </S.FilterWrapper>
 
-      <MyCommentsList filterType={activeFilter} />
+      <ErrorBoundary
+        fallback={() => (
+          <NotFound title="코멘트를 불러올 수 없습니다" subtitle="잠시 후 다시 시도해주세요" />
+        )}
+      >
+        <Suspense fallback={<SuspenseSkeleton variant="comment" count={3} />}>
+          <MyCommentsListWithSuspense filterType={activeFilter} />
+        </Suspense>
+      </ErrorBoundary>
     </S.CollectionContainer>
   );
 }
