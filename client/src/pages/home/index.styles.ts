@@ -1,5 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { Picture } from '@/shared/ui/picture';
 
 const fadeInUp = keyframes`
   from {
@@ -131,7 +132,7 @@ export const HighlightedText = styled.p`
   }
 `;
 
-export const BottomArrow = styled.img<{ isVisible: boolean }>`
+export const BottomArrow = styled(Picture)<{ isVisible: boolean }>`
   width: 100px;
   height: 100px;
   margin-top: 40px;
@@ -140,6 +141,11 @@ export const BottomArrow = styled.img<{ isVisible: boolean }>`
   animation: ${({ isVisible }) => (isVisible ? float : 'none')} 2s ease-in-out infinite;
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
     drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 45px rgba(255, 255, 255, 0.2));
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 
   @media (max-width: 768px) {
     width: 80px;
@@ -177,11 +183,13 @@ export const IntroText = styled.p`
   }
 `;
 
-export const IntroTitleLogo = styled.img`
+export const IntroTitleLogo = styled(Picture)`
   width: 300px;
-  @media (max-width: 768px) {
-    width: 200px;
+
+  & img {
+    width: 100%;
   }
+
   @media (max-width: 768px) {
     width: 200px;
   }
@@ -238,9 +246,14 @@ export const IntroImagesWrapper = styled.div`
   }
 `;
 
-export const IntroIcon = styled.img`
+export const IntroIcon = styled(Picture)`
   width: 120px;
   height: 120px;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 
   @media (max-width: 768px) {
     width: 80px;
@@ -265,12 +278,19 @@ export const ExplainSection = styled.section`
   }
 `;
 
-export const ExplainImage = styled.img`
-  object-fit: cover;
+export const ExplainImage = styled(Picture)`
+  & img {
+    object-fit: cover;
+  }
 
   @media screen and (max-width: 768px) {
     width: 90%;
     height: 90%;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 

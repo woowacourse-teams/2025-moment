@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Picture } from '@/shared/ui/picture';
 
 export const LogoButton = styled.button`
   background-color: transparent;
@@ -14,12 +15,17 @@ export const LogoButton = styled.button`
   }
 `;
 
-export const LogoImage = styled.img`
+export const LogoImage = styled(Picture)`
   width: clamp(30px, 3vw, 50px);
   height: clamp(30px, 3vw, 50px);
-  object-fit: contain;
-  object-position: center;
-  border-radius: 100%;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 100%;
+  }
 `;
 
 export const LogoText = styled.span`

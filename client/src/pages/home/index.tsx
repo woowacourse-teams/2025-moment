@@ -53,7 +53,8 @@ export default function HomePage() {
           <S.ContentSection isVisible={isVisible}>
             <S.BottomArrow
               isVisible={isVisible}
-              src="/images/belowAirplane.webp"
+              webpSrc="/images/belowAirplane.webp"
+              fallbackSrc="/images/fallback/belowAirplane.png"
               alt="아래로 스크롤하세요"
               role="img"
             />
@@ -69,7 +70,11 @@ export default function HomePage() {
         </S.MainContainer>
         <AnimatedIntroSection>
           <S.IntroSection>
-            <S.IntroTitleLogo src="/images/momentLogo.webp" alt="" />
+            <S.IntroTitleLogo
+              webpSrc="/images/momentLogo.webp"
+              fallbackSrc="/images/fallback/momentLogo.png"
+              alt=""
+            />
             <h2 id="intro-title" style={{ position: 'absolute', left: '-10000px' }}>
               moment 소개
             </h2>
@@ -81,9 +86,21 @@ export default function HomePage() {
               제공합니다.
             </S.IntroText>
             <S.IntroImagesWrapper>
-              <S.IntroIcon src="/images/rocket.webp" alt="" />
-              <S.IntroIcon src="/images/paperAirplane.webp" alt="" />
-              <S.IntroIcon src="/images/spaceMan.webp" alt="" />
+              <S.IntroIcon
+                webpSrc="/images/rocket.webp"
+                fallbackSrc="/images/fallback/rocket.png"
+                alt=""
+              />
+              <S.IntroIcon
+                webpSrc="/images/paperAirplane.webp"
+                fallbackSrc="/images/fallback/paperAirplane.png"
+                alt=""
+              />
+              <S.IntroIcon
+                webpSrc="/images/spaceMan.webp"
+                fallbackSrc="/images/fallback/spaceMan.png"
+                alt=""
+              />
             </S.IntroImagesWrapper>
           </S.IntroSection>
         </AnimatedIntroSection>
@@ -131,9 +148,11 @@ const ExplainSection = ({
   text1?: string;
   text2?: string;
 }) => {
+  const fallbackImage = image.replace('/images/', '/images/fallback/').replace('.webp', '.png');
+
   return (
     <S.ExplainSection>
-      <S.ExplainImage src={image} alt="" />
+      <S.ExplainImage webpSrc={image} fallbackSrc={fallbackImage} alt="" />
       <S.ExplainContainer>
         <S.ExplainTitle>{title}</S.ExplainTitle>
         <S.ExplainText>{text1}</S.ExplainText>
