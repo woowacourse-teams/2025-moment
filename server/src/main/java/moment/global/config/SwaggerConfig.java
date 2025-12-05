@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "https://api.dev.connectingmoment.com", description = "개발 서버"),
-                @Server(url = "https://api.connectingmoment.com", description = "운영 서버")
+                @Server(url = "https://dev.connectingmoment.com", description = "개발 서버"),
+                @Server(url = "https://connectingmoment.com", description = "운영 서버")
         }
 )
 public class SwaggerConfig {
