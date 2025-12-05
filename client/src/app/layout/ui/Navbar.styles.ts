@@ -27,29 +27,6 @@ export const LevelIconWrapper = styled.div`
   display: inline-block;
 `;
 
-export const LoadingSkeleton = styled.div`
-  width: 50px;
-  height: 40px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
-
-  @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-`;
-
 export const NavItem = styled.div<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;
