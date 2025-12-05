@@ -49,31 +49,6 @@ self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', event => {
-  // API 요청 또는 외부 도메인 요청은 Service Worker를 거치지 않고 바로 네트워크로 전달
-  if (
-    event.request.url.includes('api.dev.connectingmoment.com') ||
-    event.request.url.includes('api.connectingmoment.com') ||
-    !event.request.url.startsWith(self.location.origin)
-  ) {
-    return;
-  }
-
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/offline.html');
-      }),
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then(response => {
-        return response || fetch(event.request);
-      }),
-    );
-  }
-});
-
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const urlToOpen = event.notification.data?.redirectUrl || '/';

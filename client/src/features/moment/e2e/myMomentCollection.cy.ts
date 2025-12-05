@@ -463,8 +463,8 @@ describe('나의 모멘트 모음집 페이지', () => {
     });
 
     it('에러 발생 시 에러 메시지가 표시된다', () => {
-      cy.contains('문제가 발생했습니다').should('be.visible');
-      cy.contains('일시적인 문제가 발생했습니다. 다시 시도해 주세요.').should('be.visible');
+      cy.contains('모멘트를 불러올 수 없습니다').should('be.visible');
+      cy.contains('잠시 후 다시 시도해주세요').should('be.visible');
     });
   });
 });
