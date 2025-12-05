@@ -5,7 +5,6 @@ import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
-
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { useRef } from 'react';
