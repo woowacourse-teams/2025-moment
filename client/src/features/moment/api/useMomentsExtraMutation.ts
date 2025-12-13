@@ -1,23 +1,28 @@
+import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
-import { sendMoments } from '../api/sendMoments';
 import { track } from '@/shared/lib/ga/track';
 
-const MOMENTS_REWARD_POINT = 5;
+interface SendExtraMomentsData {
+  content: string;
+  tagNames: string[];
+  imageUrl?: string;
+  imageName?: string;
+}
 
-export const useMomentsMutation = () => {
+export const useMomentsExtraMutation = () => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: sendMoments,
+    mutationFn: sendExtraMoments,
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['moments'] });
-      queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
-      showSuccess(`별조각 ${MOMENTS_REWARD_POINT} 개를 획득했습니다!`);
+
+      showSuccess('추가 모멘트가 성공적으로 등록되었습니다!');
 
       const length = variables.content?.length ?? 0;
       const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
@@ -25,7 +30,6 @@ export const useMomentsMutation = () => {
       const mood_tag = variables.tagNames?.[0];
 
       const momentId = data?.data?.id ?? data?.data?.momentId ?? data?.id ?? data?.momentId;
-
       track('publish_moment', {
         item_id: momentId ?? '',
         has_media,
@@ -34,8 +38,23 @@ export const useMomentsMutation = () => {
       });
     },
     onError: () => {
-      const errorMessage = '모멘트 등록에 실패했습니다. 다시 시도해주세요.';
+      const errorMessage = '추가 모멘트 등록에 실패했습니다. 다시 시도해주세요.';
       showError(errorMessage);
     },
   });
+};
+
+const sendExtraMoments = async (data: SendExtraMomentsData) => {
+  const payload: { content: string; imageUrl?: string; imageName?: string; tagNames: string[] } = {
+    content: data.content,
+    tagNames: data.tagNames,
+  };
+
+  if (data.imageUrl && data.imageName) {
+    payload.imageUrl = data.imageUrl;
+    payload.imageName = data.imageName;
+  }
+
+  const response = await api.post('/moments/extra', payload);
+  return response.data;
 };

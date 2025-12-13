@@ -1,5 +1,5 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { getComments } from '../api/getComments';
+import { getComments } from './getComments';
 
 export const useCommentsSuspenseQuery = () => {
   return useSuspenseInfiniteQuery({

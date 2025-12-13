@@ -3,7 +3,7 @@ import { NotFound, SuspenseSkeleton } from '@/shared/ui';
 import { Clock } from 'lucide-react';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
-import { useMomentsSuspenseQuery } from '../hook/useMomentsSuspenseQuery';
+import { useMomentsSuspenseQuery } from '../api/useMomentsSuspenseQuery';
 import { MyMomentsItem } from '../types/moments';
 
 /**
