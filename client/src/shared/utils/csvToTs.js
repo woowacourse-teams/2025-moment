@@ -3,14 +3,14 @@ import { createReadStream, writeFile, mkdirSync, existsSync } from 'fs';
 import path from 'path';
 
 const dataArray = [];
-const outputDir = 'src/converter/ts';
+const outputDir = 'src/shared/data';
 const outputFile = path.join(outputDir, 'profanityWords.ts');
 
 if (!existsSync(outputDir)) {
   mkdirSync(outputDir, { recursive: true });
 }
 
-createReadStream('src/converter/csv/filteringList.csv')
+createReadStream('src/shared/data/filteringList.csv')
   .pipe(
     csv({
       headers: false,

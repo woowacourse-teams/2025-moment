@@ -4,6 +4,6 @@ export { useFileUpload } from './useFileUpload';
 export { useFunnel } from './useFunnel';
 export { useIntersectionObserver } from './useIntersectionObserver';
 export { useOutsideClick } from './useOutsideClick';
-export { usePresignedUrlMutation } from './usePresignedUrlMutation';
+export { usePresignedUrlMutation } from '../api/usePresignedUrlMutation';
 export { useToast } from './useToast';
 export { useToggle } from './useToggle';

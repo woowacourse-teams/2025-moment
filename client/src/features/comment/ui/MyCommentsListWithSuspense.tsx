@@ -3,7 +3,7 @@ import { useIntersectionObserver } from '@/shared/hooks';
 import { NotFound, SuspenseSkeleton } from '@/shared/ui';
 import * as S from './MyCommentsList.styles';
 import { CommentItem, FilterType } from '../types/comments';
-import { useCommentsSuspenseQuery } from '../hooks/useCommentsSuspenseQuery';
+import { useCommentsSuspenseQuery } from '../api/useCommentsSuspenseQuery';
 import { useUnreadCommentsSuspenseQuery } from '../api/useUnreadCommentsSuspenseQuery';
 
 interface MyCommentsListWithSuspenseProps {

@@ -1,5 +1,6 @@
+import { api } from '@/app/lib/api';
+import { EchoRequest, EchoResponse } from '@/features/echo/type/echos';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { sendEcho } from '../api/sendEcho';
 import { useToast } from '@/shared/hooks/useToast';
 import { track } from '@/shared/lib/ga/track';
 
@@ -21,4 +22,9 @@ export const useEchoMutation = () => {
       showError('에코 전송에 실패했습니다. 다시 시도해주세요.');
     },
   });
+};
+
+const sendEcho = async (echos: EchoRequest): Promise<EchoResponse> => {
+  const response = await api.post('/echos', echos);
+  return response.data;
 };

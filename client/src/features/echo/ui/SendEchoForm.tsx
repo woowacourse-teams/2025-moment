@@ -8,7 +8,7 @@ import type { EchoTypeKey } from '../type/echos';
 import type { Comment } from '@/features/moment/types/moments';
 import { Echo } from './Echo';
 import { useEchoSelection } from '../hooks/useEchoSelection';
-import { useEchoMutation } from '../hooks/useEchoMutation';
+import { useEchoMutation } from '../api/useEchoMutation';
 
 interface SendEchoForm {
   currentComment: Comment;

@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from '@/app/lib/queryClient';
 import { router } from '@/app/routes';
 import { ErrorBoundary } from '@/shared/ui';
@@ -13,7 +14,7 @@ const AppContent = () => {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <RouterProvider router={router} />
-      {/* {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />} */}
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </ThemeProvider>
   );
 };
