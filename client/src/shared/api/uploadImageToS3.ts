@@ -1,4 +1,4 @@
-import { FileType } from '@/types/file';
+import { FileType } from '@/shared/types/file';
 import axios from 'axios';
 
 export const uploadImageToS3 = async (presignedUrl: string, file: FileType): Promise<void> => {
