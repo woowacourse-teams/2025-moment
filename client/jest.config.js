@@ -44,7 +44,7 @@ const config = {
     '!src/**/*.d.ts',
     '!src/**/*.stories.{ts,tsx}',
     '!src/index.tsx',
-    '!src/mocks/**',
+    '!src/shared/mocks/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
