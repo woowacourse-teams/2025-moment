@@ -22,7 +22,7 @@
     "test:debug": "jest --no-cache --verbose",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "converter:csv": "node src/converter/csv/csvToTs.js"
+    "converter:csv": "node src/shared/utils/csvToTs.js"
   },
   "license": "MIT",
   "sideEffects": [
