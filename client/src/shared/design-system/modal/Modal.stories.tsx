@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Modal } from './Modal';
 import { useModal } from '@/shared/hooks/useModal';
-import { SimpleCard } from '@/shared/ui';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
+import { SimpleCard } from '../simpleCard';
 
 const meta: Meta<typeof Modal> = {
   title: 'Shared/Modal',

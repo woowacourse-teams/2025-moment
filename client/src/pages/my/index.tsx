@@ -9,8 +9,10 @@ import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPaginatio
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
 import { useModal } from '@/shared/hooks/useModal';
-import { Button, Card, CommonSkeletonCard } from '@/shared/ui';
-import { Modal } from '@/shared/ui/modal/Modal';
+import { Button } from '@/shared/design-system/button/Button';
+import { Card } from '@/shared/design-system/card/Card';
+import { CommonSkeletonCard } from '@/widgets/skeleton';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';

@@ -2,15 +2,17 @@ import { theme } from '@/app/styles/theme';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { Echo } from '@/features/echo/ui/Echo';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
-import { Button, Card, SimpleCard } from '@/shared/ui';
-import Tag from '@/shared/ui/tag/Tag';
-import { WriteTime } from '@/shared/ui/writeTime';
+import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { Heart, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 import type { CommentItem } from '../types/comments';
+import { Card } from '@/shared/design-system/card';
+import { SimpleCard } from '@/shared/design-system/simpleCard';
+import { Button } from '@/shared/design-system/button';
+import { Tag } from '@/shared/design-system/tag';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();

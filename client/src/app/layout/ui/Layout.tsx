@@ -1,7 +1,7 @@
 import { Navbar } from '@/app/layout/ui/Navbar';
 import { StarField } from '@/app/layout/ui/StarField';
 import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
-import { Toast } from '@/shared/ui/toast';
+import { Toast } from '@/widgets/toast';
 import { initGA, sendPageview } from '@/shared/lib/ga';
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';

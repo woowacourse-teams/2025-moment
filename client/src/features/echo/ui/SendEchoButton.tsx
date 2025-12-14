@@ -1,5 +1,5 @@
 import { CustomTheme, theme } from '@/app/styles/theme';
-import { Button } from '@/shared/ui';
+import { Button } from '@/shared/design-system/button';
 
 interface SendEchoButtonProps {
   isDisabled: boolean;

@@ -1,6 +1,6 @@
 import { MyCommentsListWithSuspense } from '@/features/comment/ui/MyCommentsListWithSuspense';
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
-import { SuspenseSkeleton } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/widgets/skeleton';
 import * as S from '../index.styles';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
 import { useState, Suspense } from 'react';

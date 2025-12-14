@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 

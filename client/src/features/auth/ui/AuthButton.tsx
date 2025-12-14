@@ -2,7 +2,7 @@ import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 import { Profile } from '@/features/auth/types/profile';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './AuthButton.styles';

@@ -4,7 +4,7 @@ import { useSignup } from '@/features/auth/hooks/useSignup';
 import { useFunnel } from '@/shared/hooks/useFunnel';
 import type { Step } from '@/shared/types/step';
 import { STEPS } from '@/shared/types/step';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
 import { SignupStep1, SignupStep2, SignupStep3, SignupStepBar } from '@/widgets/signup';
 import { AxiosError } from 'axios';
 import * as S from './SignupForm.styles';

@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui';
+import { Button } from '@/shared/design-system/button';
 import { LucideIcon } from 'lucide-react';
 
 interface RequestButtonProps {

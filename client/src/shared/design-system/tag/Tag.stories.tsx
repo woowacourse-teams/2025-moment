@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import Tag from './Tag';
 import { useState } from 'react';
+import { Tag } from './Tag';
 
 const meta: Meta<typeof Tag> = {
   title: 'Shared/Tag',

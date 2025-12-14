@@ -1,4 +1,4 @@
-import { ModalVariant, ExternalModalVariant } from '@/shared/ui/modal/Modal.styles';
+import { ModalVariant, ExternalModalVariant } from '@/shared/design-system/modal/Modal.styles';
 
 export interface ModalProps {
   children: React.ReactNode;

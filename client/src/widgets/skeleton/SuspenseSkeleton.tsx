@@ -1,5 +1,5 @@
 import { CommonSkeletonCard } from './CommonSkeletonCard';
-import { DeferredComponent } from './DeferredComponent';
+import { DeferredComponent } from '@/shared/design-system/skeleton';
 import styled from '@emotion/styled';
 
 interface SuspenseSkeletonProps {

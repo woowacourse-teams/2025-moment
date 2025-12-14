@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import Tag from './Tag';
+import { Tag } from './Tag';
 
 interface TagListProps {
   tags: string[];

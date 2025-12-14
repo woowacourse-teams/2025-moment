@@ -1,4 +1,3 @@
-import { Button, Card } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare, Plus } from 'lucide-react';
@@ -6,8 +5,10 @@ import { useNavigate } from 'react-router';
 import * as S from './TodayMomentSuccessContent.styles';
 import { useMomentExtraWritableQuery } from '../api/useMomentExtraWritableQuery';
 import { useModal } from '@/shared/hooks/useModal';
-import { Modal } from '@/shared/ui/modal/Modal';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { track } from '@/shared/lib/ga/track';
+import { Card } from '@/shared/design-system/card';
+import { Button } from '@/shared/design-system/button';
 
 export const TodayMomentSuccessContent = () => {
   const navigate = useNavigate();

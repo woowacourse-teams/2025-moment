@@ -1,5 +1,5 @@
 import { useIntersectionObserver } from '@/shared/hooks';
-import { SuspenseSkeleton } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/widgets/skeleton';
 import { Clock } from 'lucide-react';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';

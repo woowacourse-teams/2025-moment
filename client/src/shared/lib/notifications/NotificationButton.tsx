@@ -1,4 +1,4 @@
-import { Button } from '../../ui';
+import { Button } from '@/shared/design-system/button/Button';
 import { useNotification } from './useNotification';
 
 type NotificationButtonProps = {

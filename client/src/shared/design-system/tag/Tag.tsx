@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const Tag = ({
+export const Tag = ({
   tag,
   onClick,
   selected,
@@ -22,7 +22,6 @@ const Tag = ({
   );
 };
 
-export default Tag;
 
 const TagStyles = styled.button<{ $selected: boolean }>`
   padding: 2px 12px;
@@ -31,7 +30,7 @@ const TagStyles = styled.button<{ $selected: boolean }>`
     $selected ? theme.colors['yellow-300_10'] : theme.colors['gray-200_10']};
   border: 1px solid
     ${({ theme, $selected }) =>
-      $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
+    $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
   color: ${({ theme, $selected }) =>
     $selected ? theme.colors['yellow-500'] : theme.colors['gray-200']};
 `;

@@ -1,7 +1,7 @@
 import { SignupErrors, SignupFormData } from '@/features/auth/types/signup';
 import { CheckButton } from '@/features/auth/ui/CheckButton';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
-import { Input } from '@/shared/ui/input/Input';
+import { Input } from '@/shared/design-system/input/Input';
 import * as S from './SignupStep.styles';
 
 interface SignupStep1Props {

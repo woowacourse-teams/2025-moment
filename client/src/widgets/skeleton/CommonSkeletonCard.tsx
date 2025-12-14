@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonText } from '@/shared/ui/skeleton/Skeleton';
+import { Skeleton, SkeletonText } from '@/shared/design-system/skeleton';
 import React from 'react';
 import * as S from './CommonSkeletonCard.styles';
 

@@ -1,10 +1,9 @@
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 import { useModal } from '@/shared/hooks/useModal';
-import { Modal } from '@/shared/ui/modal/Modal';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
-import Tag from '@/shared/ui/tag/Tag';
-import { WriteTime } from '@/shared/ui/writeTime';
+import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { useMemo, useState } from 'react';
 import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
@@ -16,6 +15,7 @@ import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 import { MyMomentsItem } from '../types/moments';
+import { Tag } from '@/shared/design-system/tag';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
@@ -83,11 +83,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         onKeyDown={
           hasComments
             ? e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleMomentClick();
-                }
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleMomentClick();
               }
+            }
             : undefined
         }
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
