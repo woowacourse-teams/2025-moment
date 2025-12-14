@@ -1,10 +1,11 @@
 import { MyCommentsCard } from '@/features/comment/ui/MyCommentsCard';
 import { useIntersectionObserver } from '@/shared/hooks';
-import { NotFound, SuspenseSkeleton } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/shared/ui';
 import * as S from './MyCommentsList.styles';
 import { CommentItem, FilterType } from '../types/comments';
 import { useCommentsSuspenseQuery } from '../api/useCommentsSuspenseQuery';
 import { useUnreadCommentsSuspenseQuery } from '../api/useUnreadCommentsSuspenseQuery';
+import { NotFound } from '@/widgets/notFound/NotFound';
 
 interface MyCommentsListWithSuspenseProps {
   filterType: FilterType;

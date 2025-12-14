@@ -1,4 +1,4 @@
-import { Card, NotFound, SimpleCard } from '@/shared/ui';
+import { Card, SimpleCard } from '@/shared/ui';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { AlertCircle, Loader, RotateCcw, Siren } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
@@ -11,6 +11,7 @@ import { useModal } from '@/shared/hooks/useModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
+import { NotFound } from '@/widgets/notFound/NotFound';
 
 export function TodayCommentForm({
   momentData,

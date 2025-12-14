@@ -1,10 +1,12 @@
 import { MyCommentsListWithSuspense } from '@/features/comment/ui/MyCommentsListWithSuspense';
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
-import { ErrorBoundary, SuspenseSkeleton, NotFound } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/shared/ui';
 import * as S from '../index.styles';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
 import { useState, Suspense } from 'react';
 import { FilterType } from '@/features/comment/types/comments';
+import { ErrorBoundary } from '@sentry/react';
+import { NotFound } from '@/widgets/notFound/NotFound';
 
 export default function MyCommentCollectionPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
