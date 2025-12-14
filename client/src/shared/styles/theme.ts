@@ -1,130 +1,13 @@
+import { colors } from './tokens/colors';
+import { typography } from './tokens/typography';
+import { spacing } from './tokens/spacing';
+import { breakpoints } from './tokens/breakpoints';
+
 export const theme = {
-  colors: {
-    'slate-900_90': 'color-mix(in srgb, #2B3546 90%, transparent)',
-    'slate-900_60': 'color-mix(in srgb, #2B3546 60%, transparent)',
-    'slate-900': '#0F172A',
-    'slate-800_60': 'color-mix(in srgb, #1E293B 60%, transparent)',
-    'slate-800': '#1E293B',
-    'slate-700': '#334155',
-    white: '#FFFFFF',
-    white_70: 'color-mix(in srgb, #FFFFFF 70%, transparent)',
-    black: '#000000',
-    black_70: 'color-mix(in srgb, #000000 70%, transparent)',
-    'yellow-600': '#92610a',
-    'yellow-500': '#F1C40F',
-    'yellow-300': '#F4D03F',
-    'yellow-300_10': 'color-mix(in srgb, #F4D03F 10%, transparent)',
-    'yellow-300_30': 'color-mix(in srgb, #F4D03F 30%, transparent)',
-    'yellow-300_50': 'color-mix(in srgb, #F4D03F 50%, transparent)',
-    'yellow-300_80': 'color-mix(in srgb, #F4D03F 80%, transparent)',
-    'orange-500': '#F59E0B',
-    'orange-500_10': 'color-mix(in srgb, #F5B70B 10%, transparent)',
-    'orange-500_30': 'color-mix(in srgb, #F5B70B 30%, transparent)',
-    'orange-500_50': 'color-mix(in srgb, #F5B70B 50%, transparent)',
-    'orange-500_80': 'color-mix(in srgb, #F5B70B 80%, transparent)',
-    'emerald-500': '#10B981',
-    'emerald-600': '#059669',
-    'emerald-50': '#ECFDF5',
-    'emerald-200': '#A7F3D0',
-    'amber-500': '#F59E0B',
-    'red-500': '#EF4444',
-    'navy-900': '#0a0a0f',
-    'navy-900_20': 'color-mix(in srgb, #0a0a0f 20%, transparent)',
-    'navy-900_40': 'color-mix(in srgb, #0a0a0f 40%, transparent)',
-    'indigo-950': '#0d162b',
-    'gray-200': '#CBD5E1',
-    'gray-200_10': 'color-mix(in srgb, #CBD5E1 10%, transparent)',
-    'gray-200_40': 'color-mix(in srgb, #CBD5E1 40%, transparent)',
-    'gray-200_70': 'color-mix(in srgb, #CBD5E1 70%, transparent)',
-    'gray-400': '#93A1B7',
-    'gray-600': '#536872',
-    'gray-600_20': 'color-mix(in srgb, #536872 20%, transparent)',
-    'gray-700': '#334155',
-    'gray-800': '#1E293B',
-    'gray-800_80': 'color-mix(in srgb, #1E293B 80%, transparent)',
-    'gray-800_90': 'color-mix(in srgb, #1E293B 90%, transparent)',
-    'blue-600': '#497CBC',
-    'green-500': '#059669',
-    'green-700_20': 'color-mix(in srgb, #99CC00 20%, transparent)',
-  },
-  typography: {
-    fontSize: {
-      title: {
-        small: '2rem',
-        medium: '2.5rem',
-        large: '3.5rem',
-      },
-      subTitle: {
-        small: '1.1rem',
-        medium: '1.3rem',
-        large: '1.5rem',
-      },
-      content: {
-        small: '1.1rem',
-        medium: '1.3rem',
-        large: '1.5rem',
-      },
-      mobileTitle: {
-        small: '1.5rem',
-        medium: '2rem',
-        large: '2.5rem',
-      },
-      mobileSubTitle: {
-        small: '1rem',
-        medium: '1.2rem',
-        large: '1.4rem',
-      },
-      mobileContent: {
-        small: '1rem',
-        medium: '1.2rem',
-        large: '1.4rem',
-      },
-    },
-
-    fontWeight: {
-      small: '400',
-      medium: '500',
-      large: '600',
-    },
-
-    textAreaHeight: {
-      small: '100px',
-      medium: '200px',
-      large: '300px',
-    },
-
-    cardWidth: {
-      small: '30%',
-      medium: '60%',
-      large: '90%',
-      full: '100%',
-    },
-
-    modalWidth: {
-      small: {
-        desktop: '30%',
-        tablet: '50%',
-        mobile: '70%',
-      },
-      medium: {
-        desktop: '60%',
-        tablet: '70%',
-        mobile: '90%',
-      },
-      large: {
-        desktop: '90%',
-        tablet: '95%',
-        mobile: '100%',
-      },
-    },
-  },
-
-  mediaQueries: {
-    mobile: '@media (max-width: 767px)',
-    tablet: '@media (min-width: 768px) and (max-width: 1023px)',
-    desktop: '@media (min-width: 1024px)',
-    largeDesktop: '@media (min-width: 1440px)',
-  },
+  colors,
+  typography,
+  spacing,
+  breakpoints,
 } as const;
 
 export type CustomTheme = typeof theme;
