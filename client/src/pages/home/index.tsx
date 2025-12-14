@@ -11,10 +11,10 @@ import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
-import { NotificationButton } from '@/shared/notifications/NotificationButton';
+import { NotificationButton } from '@/shared/lib/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isDevice, isPWA } from '@/shared/utils/device';
-import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
+import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
 
 export default function HomePage() {
   useScrollDepth();

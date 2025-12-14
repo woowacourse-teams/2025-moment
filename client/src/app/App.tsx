@@ -7,7 +7,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
 import { theme } from './styles/theme';
-import { useInitializeFCM } from '@/shared/notifications/useInitializeFCM';
+import { useInitializeFCM } from '@/shared/lib/notifications/useInitializeFCM';
 
 const AppContent = () => {
   return (

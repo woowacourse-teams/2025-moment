@@ -1,4 +1,4 @@
-import { Button } from '../ui';
+import { Button } from '../../ui';
 import { useNotification } from './useNotification';
 
 type NotificationButtonProps = {

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import * as Sentry from '@sentry/react';
 
-import { isDevice, isPWA } from '../utils/device';
+import { isDevice, isPWA } from '../../utils/device';
 
 import { requestFCMPermission, setupForegroundMessage } from './firebase';
 
