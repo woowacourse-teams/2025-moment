@@ -1,6 +1,6 @@
 import * as S from './SendEchoForm.styles';
 import { Heart } from 'lucide-react';
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { ECHO_TYPE } from '../const/echoType';
 import { EchoButton } from './EchoButton';
 import { SendEchoButton } from './SendEchoButton';

@@ -1,4 +1,4 @@
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
 export const SkeletonCard = styled.div<{ variant?: 'moment' | 'comment' | 'rewardHistory' }>`

@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import * as S from './MyMomentsCard.styles';
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
@@ -83,11 +83,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         onKeyDown={
           hasComments
             ? e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleMomentClick();
-                }
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleMomentClick();
               }
+            }
             : undefined
         }
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}

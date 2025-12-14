@@ -1,4 +1,4 @@
-import { CustomTheme } from '@/app/styles/theme';
+import { CustomTheme } from '@/shared/styles/theme';
 import { Button } from '@/shared/design-system/button';
 
 interface CheckButton {

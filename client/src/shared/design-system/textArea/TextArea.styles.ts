@@ -1,4 +1,4 @@
-import { CustomTheme } from '@/app/styles/theme';
+import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
 export type textAreaHeight = 'small' | 'medium' | 'large';

@@ -1,4 +1,4 @@
-import { CustomTheme } from '@/app/styles/theme';
+import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary';

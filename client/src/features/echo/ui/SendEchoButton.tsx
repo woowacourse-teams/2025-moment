@@ -1,4 +1,4 @@
-import { CustomTheme, theme } from '@/app/styles/theme';
+import { CustomTheme, theme } from '@/shared/styles/theme';
 import { Button } from '@/shared/design-system/button';
 
 interface SendEchoButtonProps {

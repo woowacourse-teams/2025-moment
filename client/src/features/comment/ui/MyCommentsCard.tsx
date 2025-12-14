@@ -1,4 +1,4 @@
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { EchoTypeKey } from '@/features/echo/type/echos';
 import { Echo } from '@/features/echo/ui/Echo';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';

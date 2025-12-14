@@ -5,7 +5,7 @@ import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
-import { theme } from './styles/theme';
+import { theme } from '../shared/styles/theme';
 import { useInitializeFCM } from '@/shared/lib/notifications/useInitializeFCM';
 import { ErrorBoundary } from '@sentry/react';
 

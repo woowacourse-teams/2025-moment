@@ -1,4 +1,4 @@
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 

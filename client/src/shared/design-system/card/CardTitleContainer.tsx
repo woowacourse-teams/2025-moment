@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 import * as S from './CardTitleContainer.styles';
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 
 interface CardTitleContainerProps {
   Icon?: LucideIcon;
