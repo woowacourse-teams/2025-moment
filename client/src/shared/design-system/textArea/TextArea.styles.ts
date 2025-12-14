@@ -9,12 +9,12 @@ const TextAreaStyles = {
     padding: 20px;
     background-color: ${theme.colors['gray-600_20']};
     border-radius: 5px;
-    height: ${theme.typography.textAreaHeight[$height]};
+    height: ${theme.spacing.textAreaHeight[$height]};
     color: ${theme.colors.white};
     border: 1px solid ${theme.colors['gray-700']};
     resize: none;
     font-size: ${theme.typography.fontSize.content.medium};
-    ${theme.mediaQueries.mobile} {
+    ${theme.breakpoints.mobile} {
       font-size: ${theme.typography.fontSize.mobileContent.medium};
     }
     
