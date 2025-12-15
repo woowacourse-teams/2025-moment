@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Modal } from './Modal';
-import { useModal } from '@/shared/hooks/useModal';
+import { useModal } from './useModal';
 import { Button } from '@/shared/design-system/button/Button';
 import { SimpleCard } from '../simpleCard';
 

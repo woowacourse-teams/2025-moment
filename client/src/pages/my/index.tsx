@@ -8,7 +8,7 @@ import { NotificationSettings } from '@/features/my/ui/NotificationSettings';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
-import { useModal } from '@/shared/hooks/useModal';
+import { useModal } from '@/shared/design-system/modal';
 import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';

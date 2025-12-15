@@ -7,8 +7,8 @@ import {
   ModalContextType,
   ModalFooter,
   ModalHeader,
-} from '@/shared/types/modal';
-import useModalFocus from '@/shared/hooks/useModalFocus';
+} from './Modal.types';
+import { useModalFocus } from './useModalFocus';
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 

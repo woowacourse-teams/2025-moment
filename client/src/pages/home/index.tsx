@@ -9,7 +9,7 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
-import { useModal } from '@/shared/hooks/useModal';
+import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { NotificationButton } from '@/shared/lib/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';

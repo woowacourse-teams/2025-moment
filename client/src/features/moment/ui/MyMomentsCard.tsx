@@ -1,6 +1,6 @@
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
-import { useModal } from '@/shared/hooks/useModal';
+import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
@@ -83,11 +83,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         onKeyDown={
           hasComments
             ? e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleMomentClick();
-                }
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleMomentClick();
               }
+            }
             : undefined
         }
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
