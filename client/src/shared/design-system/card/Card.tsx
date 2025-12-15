@@ -4,7 +4,7 @@ import { CardAction } from './CardAction';
 import { CardContent } from './CardContent';
 import { CardTitleContainer } from './CardTitleContainer';
 
-interface CardProps {
+export interface CardProps {
   children: React.ReactNode;
   width: cardWidth;
   shadow?: boolean;

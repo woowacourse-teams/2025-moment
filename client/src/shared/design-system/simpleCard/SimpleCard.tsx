@@ -1,7 +1,7 @@
 import { SimpleCardHeight, ColorKey } from './SimpleCard.styles';
 import * as S from './SimpleCard.styles';
 
-interface SimpleCardProps {
+export interface SimpleCardProps {
   height: SimpleCardHeight;
   content: React.ReactNode;
   backgroundColor?: ColorKey;

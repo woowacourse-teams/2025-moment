@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Tag } from './Tag';
 
-interface TagListProps {
+export interface TagListProps {
   tags: string[];
   onTagClick: (tagName: string) => void;
   selectedTag?: string[];

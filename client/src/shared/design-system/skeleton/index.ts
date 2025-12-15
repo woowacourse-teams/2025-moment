@@ -1,2 +1,2 @@
-export { DeferredComponent } from './DeferredComponent';
-export { Skeleton, SkeletonText } from './Skeleton';
+export { DeferredComponent, DeferredComponentProps } from './DeferredComponent';
+export { Skeleton, SkeletonText, SkeletonProps } from './Skeleton';

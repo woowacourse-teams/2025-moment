@@ -1,6 +1,6 @@
 import { ImgHTMLAttributes } from 'react';
 
-interface PictureProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
+export interface PictureProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   webpSrc: string;
   fallbackSrc: string;
   alt: string;

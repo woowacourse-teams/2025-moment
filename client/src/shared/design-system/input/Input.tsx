@@ -1,6 +1,6 @@
 import * as S from './Input.styles';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder: string;
   type: 'text' | 'password' | 'email';
 }

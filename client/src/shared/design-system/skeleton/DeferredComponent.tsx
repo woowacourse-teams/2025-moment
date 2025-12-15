@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 
-interface DeferredComponentProps {
+export interface DeferredComponentProps {
   delay?: number;
 }
 

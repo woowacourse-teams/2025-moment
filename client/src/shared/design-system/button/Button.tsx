@@ -2,7 +2,7 @@ import { LucideIcon } from 'lucide-react';
 import * as S from './Button.styles';
 import { ButtonVariant, ExternalVariant } from './Button.styles';
 
-interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   externalVariant?: ExternalVariant;
   title: string;

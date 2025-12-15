@@ -1,7 +1,7 @@
 import React from 'react';
 import * as S from './Skeleton.styles';
 
-interface SkeletonProps {
+export interface SkeletonProps {
   width?: string | number;
   height?: string | number;
   borderRadius?: string | number;
