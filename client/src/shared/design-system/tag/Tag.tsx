@@ -4,13 +4,9 @@ export interface TagProps {
   tag: string;
   onClick?: () => void;
   selected?: boolean;
-};
+}
 
-export const Tag = ({
-  tag,
-  onClick,
-  selected,
-}: TagProps) => {
+export const Tag = ({ tag, onClick, selected }: TagProps) => {
   return (
     <TagStyles
       type="button"
@@ -31,7 +27,7 @@ const TagStyles = styled.button<{ $selected: boolean }>`
     $selected ? theme.colors['yellow-300_10'] : theme.colors['gray-200_10']};
   border: 1px solid
     ${({ theme, $selected }) =>
-    $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
+      $selected ? theme.colors['yellow-500'] : theme.colors['gray-200_40']};
   color: ${({ theme, $selected }) =>
     $selected ? theme.colors['yellow-500'] : theme.colors['gray-200']};
 `;
