@@ -1,1 +1,1 @@
-export { TitleContainer, TitleContainerProps } from './TitleContainer';
+export { TitleContainer, type TitleContainerProps } from './TitleContainer';
