@@ -5,11 +5,11 @@ import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
 import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
-
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router';
+import { useToast } from '@/shared/hooks/useToast';
 import * as S from './Navbar.styles';
 import { ROUTES } from '@/app/routes/routes';
 import { track } from '@/shared/lib/ga/track';
@@ -20,8 +20,13 @@ export const Navbar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
+  const { showError } = useToast();
   const { data: isLoggedIn, isError, error } = useCheckIfLoggedInQuery();
-  const { data: profile } = useProfileQuery({ enabled: isLoggedIn ?? false });
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useProfileQuery({ enabled: isLoggedIn ?? false });
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useToggle(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -33,6 +38,12 @@ export const Navbar = () => {
   if (isError) {
     console.error('checkIfLoggedInQuery error', error);
   }
+
+  useEffect(() => {
+    if (isProfileError && isLoggedIn) {
+      showError('사용자 정보를 불러오지 못했습니다. 다시 로그인해 주세요.');
+    }
+  }, [isProfileError, isLoggedIn, showError]);
 
   useOutsideClick({
     ref: mobileMenuRef,
@@ -64,7 +75,11 @@ export const Navbar = () => {
       <S.DesktopNavItems>{!isHomePage && <NavigatorsBar $isNavBar={true} />}</S.DesktopNavItems>
 
       <S.DesktopAuthButton>
-        {profile?.level ? (
+        {isProfileLoading && isLoggedIn ? (
+          <S.LevelIconWrapper>
+            <S.LoadingSkeleton />
+          </S.LevelIconWrapper>
+        ) : profile?.level ? (
           <S.LevelIconWrapper>
             <S.LevelIcon
               src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
@@ -72,7 +87,10 @@ export const Navbar = () => {
             />
           </S.LevelIconWrapper>
         ) : null}
-        <AuthButton onClick={handleDesktopAuthButtonClick} profile={profile} />
+        <AuthButton
+          onClick={handleDesktopAuthButtonClick}
+          profile={isProfileError ? undefined : profile}
+        />
       </S.DesktopAuthButton>
 
       <S.DropdownButton
@@ -97,7 +115,10 @@ export const Navbar = () => {
                 </Link>
               </S.MobileNavItem>
             ))}
-            <AuthButton onClick={handleMobileAuthButtonClick} profile={profile} />
+            <AuthButton
+              onClick={handleMobileAuthButtonClick}
+              profile={isProfileError ? undefined : profile}
+            />
           </S.MobileNavItems>
         </S.MobileMenuContent>
       </S.MobileMenu>

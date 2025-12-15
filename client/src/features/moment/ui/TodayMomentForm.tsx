@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { checkProfanityWord } from '@/converter/util/checkProfanityWord';
+import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { Card, FileUpload, TextArea } from '@/shared/ui';

@@ -1,5 +1,5 @@
 import { useToast } from '@/shared/hooks';
-import { useDeleteEmojiMutation } from './useDeleteEmojiMutation';
+import { useDeleteEmojiMutation } from '../api/useDeleteEmojiMutation';
 
 export const useDeleteEmoji = () => {
   const { showError } = useToast();

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMomentsMutation } from './useMomentsMutation';
+import { useMomentsMutation } from '../api/useMomentsMutation';
 import { track } from '@/shared/lib/ga/track';
 import { useEffect } from 'react';
 
