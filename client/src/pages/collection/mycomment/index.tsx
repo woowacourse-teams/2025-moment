@@ -5,8 +5,8 @@ import * as S from '../index.styles';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
 import { useState, Suspense } from 'react';
 import { FilterType } from '@/features/comment/types/comments';
-import { ErrorBoundary } from '@sentry/react';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 export default function MyCommentCollectionPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');

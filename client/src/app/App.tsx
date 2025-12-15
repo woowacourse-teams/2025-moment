@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import GlobalStyles from './styles/GlobalStyles';
 import { theme } from '../shared/styles/theme';
 import { useInitializeFCM } from '@/shared/lib/notifications/useInitializeFCM';
-import { ErrorBoundary } from '@sentry/react';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 const AppContent = () => {
   return (

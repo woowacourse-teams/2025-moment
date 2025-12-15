@@ -3,8 +3,8 @@ import { CollectionHeader } from '@/pages/collection/CollectionHeader';
 import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 import { Suspense } from 'react';
 import * as S from '../index.styles';
-import { ErrorBoundary } from '@sentry/react';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 export default function MyMomentCollectionPage() {
   return (
