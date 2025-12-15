@@ -4,8 +4,8 @@ import * as S from './MyCommentsList.styles';
 import { CommentItem, FilterType } from '../types/comments';
 import { useCommentsSuspenseQuery } from '../api/useCommentsSuspenseQuery';
 import { useUnreadCommentsSuspenseQuery } from '../api/useUnreadCommentsSuspenseQuery';
-import { NotFound } from '@/widgets/notFound/NotFound';
-import { SuspenseSkeleton } from '@/widgets/skeleton';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 
 interface MyCommentsListWithSuspenseProps {
   filterType: FilterType;

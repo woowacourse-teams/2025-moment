@@ -11,14 +11,14 @@ import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
 import { useModal } from '@/shared/hooks/useModal';
 import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
-import { CommonSkeletonCard } from '@/widgets/skeleton';
+import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './index.styles';
-import { NotFound } from '@/widgets/notFound/NotFound';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
 
 export const DEFAULT_PAGE_SIZE = 10;
 

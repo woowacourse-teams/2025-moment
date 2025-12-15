@@ -1,5 +1,5 @@
 import { Eye, LucideIcon } from 'lucide-react';
-import { LazyImage } from '../../shared/ui/lazyImage/LazyImage';
+import { LazyImage } from '../lazyImage/LazyImage';
 import * as S from './NotFound.styles';
 import { Card } from '@/shared/design-system/card';
 
