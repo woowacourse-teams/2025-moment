@@ -7,7 +7,7 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import * as S from './Layout.styles';
 import { Footer } from './Footer';
-import { ErrorBoundary } from '@sentry/react';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 const GATracker = () => {
   const location = useLocation();
