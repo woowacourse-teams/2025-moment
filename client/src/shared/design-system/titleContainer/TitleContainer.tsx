@@ -1,6 +1,6 @@
 import * as S from './TitleContainer.styles';
 
-interface TitleContainerProps {
+export interface TitleContainerProps {
   title: string;
   subtitle: string;
 }
