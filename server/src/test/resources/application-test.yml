@@ -73,6 +73,7 @@ s3:
   bucket-name: test-bucket-1
   bucket-path: test/images
   optimized-bucket-path: test/optimized-images
+  cloudfront-domain: https://test-cloudfront.example.com
 
 fcm:
   service-account-json: ""
