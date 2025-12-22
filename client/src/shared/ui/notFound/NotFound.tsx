@@ -1,7 +1,7 @@
 import { Eye, LucideIcon } from 'lucide-react';
-import { Card } from '../';
 import { LazyImage } from '../lazyImage/LazyImage';
 import * as S from './NotFound.styles';
+import { Card } from '@/shared/design-system/card';
 
 interface NotFoundProps {
   title: string;

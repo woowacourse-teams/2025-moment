@@ -2,7 +2,7 @@ import { ROUTES } from '@/app/routes/routes';
 import { useMomentWritingStatusQuery } from '@/features/moment/api/useMomentWritingStatusQuery';
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import * as S from './index.styles';

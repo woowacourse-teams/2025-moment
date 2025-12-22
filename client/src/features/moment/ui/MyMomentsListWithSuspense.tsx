@@ -1,10 +1,11 @@
 import { useIntersectionObserver } from '@/shared/hooks';
-import { NotFound, SuspenseSkeleton } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 import { Clock } from 'lucide-react';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
 import { useMomentsSuspenseQuery } from '../api/useMomentsSuspenseQuery';
 import { MyMomentsItem } from '../types/moments';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
 
 /**
  * @example

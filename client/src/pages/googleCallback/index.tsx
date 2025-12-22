@@ -3,8 +3,8 @@ import { useToast } from '@/shared/hooks/useToast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { registerFCMToken } from '@/shared/notifications/registerFCMToken';
-import { requestFCMPermission } from '@/shared/notifications/firebase';
+import { registerFCMToken } from '@/shared/lib/notifications/registerFCMToken';
+import { requestFCMPermission } from '@/shared/lib/notifications/firebase';
 
 export default function GoogleCallbackPage() {
   const queryClient = useQueryClient();

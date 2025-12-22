@@ -8,14 +8,17 @@ import { NotificationSettings } from '@/features/my/ui/NotificationSettings';
 import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
 import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
 import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
-import { useModal } from '@/shared/hooks/useModal';
-import { Button, Card, CommonSkeletonCard, NotFound } from '@/shared/ui';
-import { Modal } from '@/shared/ui/modal/Modal';
+import { useModal } from '@/shared/design-system/modal';
+import { Button } from '@/shared/design-system/button/Button';
+import { Card } from '@/shared/design-system/card/Card';
+import { CommonSkeletonCard } from '@/shared/ui/skeleton';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { EXPBar } from '@/widgets/EXPBar/EXPBar';
 import { LevelTable } from '@/widgets/levelTable/LevelTable';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './index.styles';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
 
 export const DEFAULT_PAGE_SIZE = 10;
 

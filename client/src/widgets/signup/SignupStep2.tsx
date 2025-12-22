@@ -1,7 +1,7 @@
 import { useRandomNicknameQuery } from '@/features/auth/api/useRandomNicknameQuery';
 import { SignupFormData } from '@/features/auth/types/signup';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
-import { Input } from '@/shared/ui/input/Input';
+import { Input } from '@/shared/design-system/input/Input';
 import styled from '@emotion/styled';
 import { RotateCw } from 'lucide-react';
 import { useEffect } from 'react';

@@ -122,7 +122,7 @@ export const FullscreenImage = styled.img`
 
 export const MomentContent = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
-  ${({ theme }) => theme.mediaQueries.mobile} {
+  ${({ theme }) => theme.breakpoints.mobile} {
     font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
   }
   text-align: left;

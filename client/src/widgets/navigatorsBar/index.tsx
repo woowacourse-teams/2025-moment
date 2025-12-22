@@ -1,6 +1,6 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
-import { Picture } from '@/shared/ui/picture';
+import { Picture } from '@/shared/design-system/picture';
 import { Link, useLocation } from 'react-router';
 import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';

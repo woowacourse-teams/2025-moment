@@ -1,6 +1,6 @@
 import { useSendExtraMoments } from '@/features/moment/hook/useSendExtraMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import * as S from './index.styles';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 import { track } from '@/shared/lib/ga/track';

@@ -1,11 +1,13 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useToast } from '@/shared/hooks/useToast';
-import { Card, FileUpload, TextArea } from '@/shared/ui';
+import { FileUpload } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
+import { Card } from '@/shared/design-system/card/Card';
+import { TextArea } from '@/shared/design-system/textArea';
 
 export const TodayCommentWriteContent = ({
   isLoggedIn,

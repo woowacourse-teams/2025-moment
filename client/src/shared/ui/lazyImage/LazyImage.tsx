@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Skeleton } from '../skeleton/Skeleton';
+import { Skeleton } from '../../design-system/skeleton/Skeleton';
 import * as S from './LazyImage.styles';
 
 interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> {

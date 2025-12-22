@@ -6,8 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { LoginFormData, LoginResponse } from '../types/login';
 import { isAxiosError } from 'axios';
-import { requestFCMPermission } from '@/shared/notifications/firebase';
-import { registerFCMToken } from '@/shared/notifications/registerFCMToken';
+import { requestFCMPermission } from '@/shared/lib/notifications/firebase';
+import { registerFCMToken } from '@/shared/lib/notifications/registerFCMToken';
 
 export const useLoginMutation = () => {
   const navigate = useNavigate();

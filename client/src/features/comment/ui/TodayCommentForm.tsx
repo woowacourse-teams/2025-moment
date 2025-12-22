@@ -1,16 +1,18 @@
-import { Card, NotFound, SimpleCard } from '@/shared/ui';
+import { Card } from '@/shared/design-system/card/Card';
+import { SimpleCard } from '@/shared/design-system/simpleCard/SimpleCard';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { AlertCircle, Loader, RotateCcw, Siren } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
 import { TodayCommentWriteContent } from './TodayCommentWriteContent';
-import { WriteTime } from '@/shared/ui/writeTime';
+import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
-import { useModal } from '@/shared/hooks/useModal';
+import { useModal } from '@/shared/design-system/modal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
 
 export function TodayCommentForm({
   momentData,
