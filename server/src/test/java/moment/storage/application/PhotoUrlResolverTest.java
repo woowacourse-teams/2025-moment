@@ -32,7 +32,7 @@ class PhotoUrlResolverTest {
         String resolvedUrl = photoUrlResolver.resolve(originalUrl);
 
         // then
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo");
+        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo.jpg");
     }
 
     @Test
@@ -45,7 +45,7 @@ class PhotoUrlResolverTest {
 
         // then
         // Only extension should be removed
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/other/my-photo");
+        assertThat(resolvedUrl).isEqualTo("https://example.com/images/other/my-photo.jpg");
     }
 
     @Test

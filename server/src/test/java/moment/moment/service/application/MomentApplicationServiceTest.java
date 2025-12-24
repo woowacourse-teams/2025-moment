@@ -143,7 +143,7 @@ class MomentApplicationServiceTest {
                 momenter.getId());
 
         // then
-        String expectedResolvedUrl = "https://test-bucket-1/test/optimized-images/photo2";
+        String expectedResolvedUrl = "https://test-bucket-1/test/optimized-images/photo2.png";
 
         assertAll(
                 () -> assertThat(response.momentCompositionInfo()).hasSize(2),
