@@ -47,6 +47,7 @@ public class NotificationApplicationService {
         notificationService.markAllAsRead(notificationIds);
     }
 
+    @Transactional
     public void createNotificationAndSendSse(
             Long userId,
             Long targetId,
@@ -60,7 +61,6 @@ public class NotificationApplicationService {
                 targetId,
                 notificationType,
                 targetType);
-
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 savedNotification.getId(),
                 notificationType,
