@@ -56,10 +56,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                       src={convertToWebp(myComment.moment.imageUrl)}
                       alt="모멘트 이미지"
                       onClick={e => {
-                        handleImageClick(
-                          (myComment.moment!.imageUrl!),
-                          e,
-                        );
+                        handleImageClick(myComment.moment!.imageUrl!, e);
                       }}
                     />
                   </S.CommentImageContainer>
@@ -86,9 +83,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                       <S.CommentImage
                         src={convertToWebp(myComment.imageUrl)}
                         alt="코멘트 이미지"
-                        onClick={e =>
-                          handleImageClick((myComment.imageUrl!), e)
-                        }
+                        onClick={e => handleImageClick(myComment.imageUrl!, e)}
                       />
                     </S.CommentImageContainer>
                   )}
