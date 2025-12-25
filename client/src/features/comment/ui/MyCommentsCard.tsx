@@ -7,12 +7,12 @@ import { WriterInfo } from '@/widgets/writerInfo';
 import { Heart, Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
-import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 import type { CommentItem } from '../types/comments';
 import { Card } from '@/shared/design-system/card';
 import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { Button } from '@/shared/design-system/button';
 import { Tag } from '@/shared/design-system/tag';
+import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
@@ -53,11 +53,11 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                 {myComment.moment?.imageUrl && (
                   <S.CommentImageContainer>
                     <S.CommentImage
-                      src={changeToCloudfrontUrlFromS3(myComment.moment.imageUrl)}
+                      src={convertToWebp(myComment.moment.imageUrl)}
                       alt="모멘트 이미지"
                       onClick={e => {
                         handleImageClick(
-                          changeToCloudfrontUrlFromS3(myComment.moment!.imageUrl!),
+                          (myComment.moment!.imageUrl!),
                           e,
                         );
                       }}
@@ -84,10 +84,10 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                   {myComment.imageUrl && (
                     <S.CommentImageContainer>
                       <S.CommentImage
-                        src={changeToCloudfrontUrlFromS3(myComment.imageUrl)}
+                        src={convertToWebp(myComment.imageUrl)}
                         alt="코멘트 이미지"
                         onClick={e =>
-                          handleImageClick(changeToCloudfrontUrlFromS3(myComment.imageUrl!), e)
+                          handleImageClick((myComment.imageUrl!), e)
                         }
                       />
                     </S.CommentImageContainer>
