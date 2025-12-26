@@ -6,7 +6,6 @@ import moment.comment.dto.EchoCreateEvent;
 import moment.global.domain.TargetType;
 import moment.notification.domain.NotificationType;
 import moment.notification.service.application.NotificationApplicationService;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -17,7 +16,6 @@ public class NotificationEventHandler {
 
     private final NotificationApplicationService notificationApplicationService;
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
         notificationApplicationService.createNotificationAndSendSse(
@@ -27,7 +25,6 @@ public class NotificationEventHandler {
                 TargetType.MOMENT);
     }
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEchoCreateEvent(EchoCreateEvent event) {
         notificationApplicationService.createNotificationAndSendSse(
