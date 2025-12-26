@@ -36,7 +36,7 @@ public class CommentCreateFacadeService {
 
         rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
 
-        publisher.publishEvent(CommentCreateEvent.of(createdComment, userId, moment));
+        publisher.publishEvent(CommentCreateEvent.of(moment));
 
         pushNotificationApplicationService.sendToDeviceEndpoint(
                 moment.getMomenterId(), PushNotificationMessage.REPLY_TO_MOMENT
