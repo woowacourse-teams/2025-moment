@@ -2,6 +2,7 @@ package moment.notification.service.eventHandler;
 
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.CommentCreateEvent;
+import moment.comment.dto.EchoCreateEvent;
 import moment.global.domain.TargetType;
 import moment.notification.domain.NotificationType;
 import moment.notification.service.application.NotificationApplicationService;
@@ -27,5 +28,16 @@ public class NotificationEventHandler {
                 event.momentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleEchoCreateEvent(EchoCreateEvent event) {
+        notificationApplicationService.createNotificationAndSendSse(
+                event.commenterId(),
+                event.commentId(),
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                TargetType.COMMENT);
     }
 }
