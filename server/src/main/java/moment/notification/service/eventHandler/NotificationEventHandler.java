@@ -8,8 +8,6 @@ import moment.notification.domain.NotificationType;
 import moment.notification.service.application.NotificationApplicationService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -21,7 +19,6 @@ public class NotificationEventHandler {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
         notificationApplicationService.createNotificationAndSendSse(
                 event.momenterId(),
@@ -32,7 +29,6 @@ public class NotificationEventHandler {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleEchoCreateEvent(EchoCreateEvent event) {
         notificationApplicationService.createNotificationAndSendSse(
                 event.commenterId(),

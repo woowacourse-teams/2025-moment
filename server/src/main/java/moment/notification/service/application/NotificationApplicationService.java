@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class NotificationApplicationService {
 
     private final SseNotificationService sseNotificationService;
@@ -47,7 +46,7 @@ public class NotificationApplicationService {
         notificationService.markAllAsRead(notificationIds);
     }
 
-    @Transactional
+    // 트랜잭션 달지 마세요. SSE 때문에 달면 안됩니다.
     public void createNotificationAndSendSse(
             Long userId,
             Long targetId,
@@ -56,7 +55,7 @@ public class NotificationApplicationService {
     ) {
         User user = userService.getUserBy(userId);
 
-        Notification savedNotification = notificationService.saveNotification(
+        Notification savedNotification = notificationService.saveNotificationWithNewTransaction(
                 user,
                 targetId,
                 notificationType,
@@ -70,10 +69,12 @@ public class NotificationApplicationService {
         sseNotificationService.sendToClient(user.getId(), "notification", response);
     }
 
+    @Transactional(readOnly = true)
     public List<Long> getUnreadNotifications(Long userId, TargetType targetType) {
         return notificationService.getUnreadTargetIdsBy(userId, targetType);
     }
 
+    @Transactional(readOnly = true)
     public Map<Long, List<Long>> getNotificationsByTargetIdsAndTargetType(List<Long> targetIds, TargetType targetType) {
         List<Notification> unreadNotificationIds = notificationService.getNotificationsBy(targetIds, false, targetType);
 

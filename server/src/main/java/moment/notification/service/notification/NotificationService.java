@@ -10,6 +10,7 @@ import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -23,9 +24,9 @@ public class NotificationService {
         boolean isRead = false;
         return notificationRepository.findAllByUserIdAndIsReadAndTargetType(userId, isRead, targetType);
     }
-
-    @Transactional
-    public Notification saveNotification(
+    
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Notification saveNotificationWithNewTransaction(
             User user,
             Long targetId,
             NotificationType notificationType,
