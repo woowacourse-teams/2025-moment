@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
@@ -15,6 +16,7 @@ import moment.notification.domain.NotificationType;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -24,14 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 @Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-@Transactional
 @ActiveProfiles("test")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class NotificationServiceTest {
+
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
 
     @Autowired
     private NotificationService notificationService;
@@ -47,11 +50,17 @@ class NotificationServiceTest {
 
     @BeforeEach
     void setUp() {
+        databaseCleaner.clean();
         user = UserFixture.createUser();
         userRepository.save(user);
 
         anotherUser = UserFixture.createUser();
         userRepository.save(anotherUser);
+    }
+
+    @AfterEach
+    void down() {
+        databaseCleaner.clean();
     }
 
     @Test
@@ -62,7 +71,8 @@ class NotificationServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        Notification savedNotification = notificationService.saveNotification(user, contentId, reason, contentType);
+        Notification savedNotification = notificationService.saveNotificationWithNewTransaction(user, contentId, reason,
+                contentType);
 
         // then
         assertAll(

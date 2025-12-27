@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -80,6 +81,9 @@ class MomentControllerTest {
     private MomentTagRepository momentTagRepository;
     @Autowired
     private MomentCreatedAtHelper momentCreatedAtHelper;
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @BeforeEach
     void setUp() {
@@ -361,11 +365,11 @@ class MomentControllerTest {
                 .then().statusCode(HttpStatus.CREATED.value());
 
         // when
-        MyMomentPageResponse response = RestAssured.given().log().all()
+        MyMomentPageResponse response = RestAssured.given()
                 .param("limit", 5)
                 .cookie("accessToken", momenterToken)
                 .when().get("/api/v1/moments/me")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .jsonPath()
