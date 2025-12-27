@@ -7,7 +7,6 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
-import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.application.PushNotificationApplicationService;
 import moment.reward.domain.Reason;
 import moment.reward.service.application.RewardApplicationService;
@@ -37,10 +36,6 @@ public class CommentCreateFacadeService {
         rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
 
         publisher.publishEvent(CommentCreateEvent.of(moment));
-
-        pushNotificationApplicationService.sendToDeviceEndpoint(
-                moment.getMomenterId(), PushNotificationMessage.REPLY_TO_MOMENT
-        );
 
         return createdComment;
     }

@@ -5,6 +5,7 @@ import moment.comment.dto.CommentCreateEvent;
 import moment.comment.dto.EchoCreateEvent;
 import moment.global.domain.TargetType;
 import moment.notification.domain.NotificationType;
+import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.facade.NotificationFacadeService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -20,11 +21,13 @@ public class NotificationEventHandler {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
-        notificationFacadeService.createNotificationAndSendSse(
+        notificationFacadeService.createNotificationAndSendSseAndSendToDeviceEndpoint(
                 event.momenterId(),
                 event.momentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
-                TargetType.MOMENT);
+                TargetType.MOMENT,
+                PushNotificationMessage.REPLY_TO_MOMENT
+        );
     }
 
     @Async
