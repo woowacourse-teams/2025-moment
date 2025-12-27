@@ -2,9 +2,6 @@ package moment.notification.service.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Map;
@@ -135,8 +132,7 @@ class NotificationApplicationServiceTest {
     }
 
     @Test
-    void 알림을_생성하고_SSE_이벤트를_전송한다() {
-        // given
+    void 알림을_생성한다() {
         boolean unreadFlag = false;
         Long userId = user.getId();
         Long contentId = 10L;
@@ -144,14 +140,11 @@ class NotificationApplicationServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        notificationApplicationService.createNotificationAndSendSse(userId, contentId, reason, contentType);
+        notificationApplicationService.createNotificationWithNewTransaction(userId, contentId, reason, contentType);
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
 
         // then
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
-        assertAll(
-                () -> assertThat(notifications).hasSize(1),
-                () -> verify(sseNotificationService).sendToClient(eq(userId), eq("notification"), any())
-        );
+        assertThat(notifications).hasSize(1);
     }
 
     @Test
