@@ -13,9 +13,9 @@ import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
-import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 import { MyMomentsItem } from '../types/moments';
 import { Tag } from '@/shared/design-system/tag';
+import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
@@ -104,9 +104,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           {myMoment.imageUrl ? (
             <S.MomentImageContainer>
               <S.MomentImage
-                src={changeToCloudfrontUrlFromS3(myMoment.imageUrl)}
+                src={convertToWebp(myMoment.imageUrl)}
                 alt="모멘트 이미지"
-                onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(myMoment.imageUrl!), e)}
+                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
               />
             </S.MomentImageContainer>
           ) : (
@@ -166,14 +166,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
                             <S.CommentImage
-                              src={changeToCloudfrontUrlFromS3(currentComment.imageUrl)}
+                              src={convertToWebp(currentComment.imageUrl)}
                               alt="코멘트 이미지"
-                              onClick={e =>
-                                handleImageClick(
-                                  changeToCloudfrontUrlFromS3(currentComment.imageUrl!),
-                                  e,
-                                )
-                              }
+                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
                             />
                           </S.CommentImageContainer>
                         )}
