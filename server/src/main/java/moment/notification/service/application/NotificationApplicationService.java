@@ -13,7 +13,6 @@ import moment.notification.service.notification.NotificationService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -45,7 +44,7 @@ public class NotificationApplicationService {
         notificationService.markAllAsRead(notificationIds);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Notification createNotificationWithNewTransaction(
             Long userId,
             Long targetId,
@@ -60,7 +59,7 @@ public class NotificationApplicationService {
                 notificationType,
                 targetType);
     }
-    
+
     public List<Long> getUnreadNotifications(Long userId, TargetType targetType) {
         return notificationService.getUnreadTargetIdsBy(userId, targetType);
     }

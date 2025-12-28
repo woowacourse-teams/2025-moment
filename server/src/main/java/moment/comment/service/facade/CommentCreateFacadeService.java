@@ -7,7 +7,6 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
-import moment.notification.service.application.PushNotificationApplicationService;
 import moment.reward.domain.Reason;
 import moment.reward.service.application.RewardApplicationService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,7 +20,6 @@ public class CommentCreateFacadeService {
 
     private final CommentApplicationService commentApplicationService;
     private final MomentApplicationService momentApplicationService;
-    private final PushNotificationApplicationService pushNotificationApplicationService;
     private final RewardApplicationService rewardApplicationService;
 
     private final ApplicationEventPublisher publisher;
