@@ -3,7 +3,6 @@ import { useIntersectionObserver } from '@/shared/hooks';
 import { NotFound, SuspenseSkeleton } from '@/shared/ui';
 import * as S from './MyCommentsList.styles';
 import { CommentItem, FilterType } from '../types/comments';
-import { useCommentsSuspenseQuery } from '../hooks/useCommentsSuspenseQuery';
 import { useUnreadCommentsSuspenseQuery } from '../api/useUnreadCommentsSuspenseQuery';
 
 interface MyCommentsListWithSuspenseProps {
@@ -22,7 +21,7 @@ export const MyCommentsListWithSuspense = ({ filterType }: MyCommentsListWithSus
   const isUnreadFilter = filterType === 'unread';
 
   // 필터에 따라 필요한 쿼리만 호출
-  const allCommentsQuery = useCommentsSuspenseQuery();
+  const allCommentsQuery = useUnreadCommentsSuspenseQuery();
   const unreadCommentsQuery = useUnreadCommentsSuspenseQuery();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = isUnreadFilter

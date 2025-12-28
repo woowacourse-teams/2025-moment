@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useMomentWritingStatusQuery } from '@/features/moment/hook/useMomentWritingStatusQuery';
+import { useMomentWritingStatusQuery } from '@/features/moment/api/useMomentWritingStatusQuery';
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';

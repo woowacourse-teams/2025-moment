@@ -4,7 +4,7 @@ import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from './TodayMomentSuccessContent.styles';
-import { useMomentExtraWritableQuery } from '../hook/useMomentExtraWritableQuery';
+import { useMomentExtraWritableQuery } from '../api/useMomentExtraWritableQuery';
 import { useModal } from '@/shared/hooks/useModal';
 import { Modal } from '@/shared/ui/modal/Modal';
 import { track } from '@/shared/lib/ga/track';

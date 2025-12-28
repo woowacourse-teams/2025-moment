@@ -1,4 +1,4 @@
-import { PROFANITY_WORDS } from '../ts/profanityWords';
+import { PROFANITY_WORDS } from '@/shared/data/profanityWords';
 
 export const checkProfanityWord = (content: string): boolean => {
   if (!content || !content.trim()) return false;

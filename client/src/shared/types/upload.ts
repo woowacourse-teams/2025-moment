@@ -1,4 +1,4 @@
-import { FileType } from '@/types/file';
+import { FileType } from '@/shared/types/file';
 
 export interface UploadedImage {
   file: FileType;

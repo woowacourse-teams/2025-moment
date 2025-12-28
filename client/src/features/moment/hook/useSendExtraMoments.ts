@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMomentsExtraMutation } from './useMomentsExtraMutation';
+import { useMomentsExtraMutation } from '../api/useMomentsExtraMutation';
 
 export const useSendExtraMoments = () => {
   const [content, setContent] = useState('');

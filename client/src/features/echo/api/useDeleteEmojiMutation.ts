@@ -1,7 +1,8 @@
+import { api } from '@/app/lib/api';
+import { EchoResponse } from '../type/echos';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
-import { deleteEcho } from '../api/deleteEcho';
 
 export const useDeleteEmojiMutation = () => {
   const { showSuccess, showError } = useToast();
@@ -17,4 +18,9 @@ export const useDeleteEmojiMutation = () => {
       showError(errorMessage);
     },
   });
+};
+
+const deleteEcho = async (echoId: number): Promise<EchoResponse> => {
+  const response = await api.delete(`/echos/${echoId}`);
+  return response.data;
 };

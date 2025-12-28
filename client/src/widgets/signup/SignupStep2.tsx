@@ -44,7 +44,11 @@ export const SignupStep2 = ({ signupData, onNext, updateNickname }: SignupStep2P
             disabled
             aria-describedby="nickname-error"
           />
-          <RotateNicknameButton onClick={handleRotateNickname} aria-label="다른 닉네임으로 변경">
+          <RotateNicknameButton
+            type="button"
+            onClick={handleRotateNickname}
+            aria-label="다른 닉네임으로 변경"
+          >
             <RotateCw size={25} color="white" />
           </RotateNicknameButton>
         </S.CheckExistContainer>
