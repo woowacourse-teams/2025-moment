@@ -25,7 +25,7 @@ public class NotificationFacadeService {
             NotificationType notificationType,
             TargetType targetType
     ) {
-        Notification savedNotification = notificationApplicationService.createNotificationWithNewTransaction(
+        Notification savedNotification = notificationApplicationService.createNotification(
                 userId,
                 targetId,
                 notificationType,

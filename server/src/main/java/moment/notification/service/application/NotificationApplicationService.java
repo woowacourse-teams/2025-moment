@@ -45,7 +45,7 @@ public class NotificationApplicationService {
     }
 
     @Transactional
-    public Notification createNotificationWithNewTransaction(
+    public Notification createNotification(
             Long userId,
             Long targetId,
             NotificationType notificationType,
