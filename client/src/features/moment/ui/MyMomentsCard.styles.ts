@@ -61,7 +61,7 @@ export const MyMomentsContent = styled.p`
   align-items: center;
   justify-content: center;
   font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
-  ${({ theme }) => theme.mediaQueries.mobile} {
+  ${({ theme }) => theme.breakpoints.mobile} {
     font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
   }
   text-align: center;
@@ -133,7 +133,7 @@ export const CommentContent = styled.div`
   & > div {
     word-break: break-all;
     font-size: ${({ theme }) => theme.typography.fontSize.content.medium};
-    ${({ theme }) => theme.mediaQueries.mobile} {
+    ${({ theme }) => theme.breakpoints.mobile} {
       font-size: ${({ theme }) => theme.typography.fontSize.mobileContent.medium};
     }
   }

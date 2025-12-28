@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Component
@@ -20,12 +21,20 @@ public class AwsS3Client {
     @Value("${s3.bucket-name}")
     private String bucketName;
 
+    @Value("${s3.cloudfront-domain}")
+    private String cloudfrontDomain;
+
     public UploadUrlResponse getUploadUrl(String filePath) {
         PutObjectPresignRequest presignRequest = buildPresignedRequest(filePath);
 
-        String presignedUrl = s3Presigner.presignPutObject(presignRequest).url().toString();
+        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
 
-        return new UploadUrlResponse(presignedUrl, presignedUrl.split("\\?")[0]);
+        String presignedUrl = presignedRequest.url().toString();
+        String path = presignedRequest.url().getPath();
+
+        String cloudfrontUrl = cloudfrontDomain + path;
+
+        return new UploadUrlResponse(presignedUrl, cloudfrontUrl);
     }
 
     private PutObjectPresignRequest buildPresignedRequest(String filePath) {

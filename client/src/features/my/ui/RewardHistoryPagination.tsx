@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui';
+import { Button } from '@/shared/design-system/button';
 import * as S from './RewardHistoryPagination.styles';
 
 interface RewardHistoryPaginationProps {

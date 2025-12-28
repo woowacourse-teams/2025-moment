@@ -128,6 +128,7 @@ s3:
   bucket-name: ${S3_BUCKET_NAME}
   bucket-path: ${S3_PROD_BUCKET_PATH}
   optimized-bucket-path: ${S3_PROD_BUCKET_OPTIMIZED_PATH}
+  cloudfront-domain: ${CLOUDFRONT_DOMAIN}
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}

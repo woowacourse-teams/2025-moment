@@ -1,6 +1,6 @@
-import { Button } from '@/shared/ui';
 import styled from '@emotion/styled';
 import { FilterType } from '../types/comments';
+import { Button } from '@/shared/design-system/button';
 
 interface TodayCommentFilter {
   activeFilter: FilterType;

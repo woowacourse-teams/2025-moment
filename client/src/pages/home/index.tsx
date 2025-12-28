@@ -1,6 +1,6 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
 import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
@@ -9,12 +9,12 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
-import { useModal } from '@/shared/hooks/useModal';
-import { Modal } from '@/shared/ui/modal/Modal';
-import { NotificationButton } from '@/shared/notifications/NotificationButton';
+import { useModal } from '@/shared/design-system/modal';
+import { Modal } from '@/shared/design-system/modal/Modal';
+import { NotificationButton } from '@/shared/lib/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isDevice, isPWA } from '@/shared/utils/device';
-import { IOSBrowserWarning } from '@/shared/ui/IOSBrowserWarning';
+import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
 
 export default function HomePage() {
   useScrollDepth();

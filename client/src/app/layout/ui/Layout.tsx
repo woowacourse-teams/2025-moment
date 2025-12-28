@@ -3,11 +3,11 @@ import { StarField } from '@/app/layout/ui/StarField';
 import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
 import { Toast } from '@/shared/ui/toast';
 import { initGA, sendPageview } from '@/shared/lib/ga';
-import { ErrorBoundary } from '@/shared/ui';
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import * as S from './Layout.styles';
 import { Footer } from './Footer';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 const GATracker = () => {
   const location = useLocation();

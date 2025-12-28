@@ -1,6 +1,6 @@
 import { useChangePassword } from '@/features/auth/hooks/useChangePassword';
-import { Button } from '@/shared/ui';
 import * as S from './ChangePasswordForm.styles';
+import { Button } from '@/shared/design-system/button';
 
 export const ChangePasswordForm = () => {
   const { changePasswordData, errors, handleChange, handleSubmit, isSubmitDisabled } =

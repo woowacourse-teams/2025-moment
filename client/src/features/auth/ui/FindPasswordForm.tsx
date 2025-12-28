@@ -1,5 +1,5 @@
 import { useFindPasswordEmail } from '@/features/auth/hooks/useFindPasswordEmail';
-import { Input } from '@/shared/ui/input/Input';
+import { Input } from '@/shared/design-system/input/Input';
 import * as S from './LoginForm.styles';
 
 export const FindPasswordForm = () => {

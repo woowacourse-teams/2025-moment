@@ -1,8 +1,10 @@
 import { MyMomentsListWithSuspense } from '@/features/moment/ui/MyMomentsListWithSuspense';
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
-import { ErrorBoundary, SuspenseSkeleton, NotFound } from '@/shared/ui';
+import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 import { Suspense } from 'react';
 import * as S from '../index.styles';
+import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
 export default function MyMomentCollectionPage() {
   return (

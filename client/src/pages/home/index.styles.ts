@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Picture } from '@/shared/ui/picture';
+import { Picture } from '@/shared/design-system/picture';
 
 const fadeInUp = keyframes`
   from {
