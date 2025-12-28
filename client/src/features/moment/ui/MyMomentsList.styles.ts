@@ -20,12 +20,12 @@ export const MomentsContainer = styled.section<{ $display?: boolean }>`
   margin: 0 auto;
   padding: 0 16px;
 
-  ${({ theme }) => theme.mediaQueries.tablet} {
+  ${({ theme }) => theme.breakpoints.tablet} {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
 
-  ${({ theme }) => theme.mediaQueries.mobile} {
+  ${({ theme }) => theme.breakpoints.mobile} {
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 0 12px;

@@ -266,7 +266,7 @@ class CommentApplicationServiceTest {
                 .findFirst().orElseThrow();
 
         // then
-        String expectedResolvedUrl = "https://cdn.moment.com/test/optimized-images/comment_photo";
+        String expectedResolvedUrl = "https://cdn.moment.com/test/optimized-images/comment_photo.jpg";
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(composition1.content()).isEqualTo(comment.getContent()),

@@ -1,11 +1,11 @@
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
 export const SkeletonCard = styled.div<{ variant?: 'moment' | 'comment' | 'rewardHistory' }>`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: ${({ variant }) => (variant === 'moment' ? '100%' : theme.typography.cardWidth.medium)};
+  width: ${({ variant }) => (variant === 'moment' ? '100%' : theme.spacing.cardWidth.medium)};
   height: ${({ variant }) => (variant === 'moment' ? '350px' : 'auto')};
   padding: 20px 30px;
   background-color: ${theme.colors['slate-800_60']};
@@ -67,7 +67,7 @@ export const SkeletonSimpleCard = styled.div`
   padding: 10px 16px;
   background-color: ${theme.colors['gray-600_20']};
   border-radius: 5px;
-  height: ${theme.typography.textAreaHeight.small};
+  height: ${theme.spacing.textAreaHeight.small};
   border: 1px solid ${theme.colors['gray-700']};
   align-items: center;
 `;
@@ -78,7 +78,7 @@ export const SkeletonYellowCard = styled.div`
   padding: 10px 16px;
   background-color: ${theme.colors['yellow-300_10']};
   border-radius: 5px;
-  height: ${theme.typography.textAreaHeight.small};
+  height: ${theme.spacing.textAreaHeight.small};
   border: 1px solid ${theme.colors['gray-700']};
   align-items: center;
 `;

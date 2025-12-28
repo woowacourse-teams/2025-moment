@@ -25,11 +25,11 @@ public class PhotoUrlResolver {
 
         int lastSlashIndex = urlWithChangedPath.lastIndexOf('/');
         int lastDotIndex = urlWithChangedPath.lastIndexOf('.');
-        
-        if (lastDotIndex > lastSlashIndex) {
-            return urlWithChangedPath.substring(0, lastDotIndex);
-        }
 
+        /*if (lastDotIndex > lastSlashIndex) {
+            return urlWithChangedPath.substring(0, lastDotIndex);
+        }*/
+        // todo 확장자 제거 로직 disable
         return urlWithChangedPath;
     }
 }

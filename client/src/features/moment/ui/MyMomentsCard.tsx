@@ -1,21 +1,21 @@
 import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
 import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
-import { useModal } from '@/shared/hooks/useModal';
-import { Modal } from '@/shared/ui/modal/Modal';
+import { useModal } from '@/shared/design-system/modal';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
-import Tag from '@/shared/ui/tag/Tag';
-import { WriteTime } from '@/shared/ui/writeTime';
+import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { useMemo, useState } from 'react';
 import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
 import { useCommentNavigation } from '../hook/useCommentNavigation';
 import * as S from './MyMomentsCard.styles';
-import { theme } from '@/app/styles/theme';
+import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
-import { changeToCloudfrontUrlFromS3 } from '@/shared/utils/changeToCloudfrontUrlFromS3';
 import { MyMomentsItem } from '../types/moments';
+import { Tag } from '@/shared/design-system/tag';
+import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
@@ -104,9 +104,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           {myMoment.imageUrl ? (
             <S.MomentImageContainer>
               <S.MomentImage
-                src={changeToCloudfrontUrlFromS3(myMoment.imageUrl)}
+                src={convertToWebp(myMoment.imageUrl)}
                 alt="모멘트 이미지"
-                onClick={e => handleImageClick(changeToCloudfrontUrlFromS3(myMoment.imageUrl!), e)}
+                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
               />
             </S.MomentImageContainer>
           ) : (
@@ -166,14 +166,9 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                         {currentComment.imageUrl && (
                           <S.CommentImageContainer>
                             <S.CommentImage
-                              src={changeToCloudfrontUrlFromS3(currentComment.imageUrl)}
+                              src={convertToWebp(currentComment.imageUrl)}
                               alt="코멘트 이미지"
-                              onClick={e =>
-                                handleImageClick(
-                                  changeToCloudfrontUrlFromS3(currentComment.imageUrl!),
-                                  e,
-                                )
-                              }
+                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
                             />
                           </S.CommentImageContainer>
                         )}

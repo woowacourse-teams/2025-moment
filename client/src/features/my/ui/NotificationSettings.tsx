@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { requestFCMPermissionAndToken } from '@/shared/utils/firebase';
 import { Bell, BellOff, AlertCircle, Smartphone } from 'lucide-react';
 import * as S from './NotificationSettings.styles';
-import { registerFCMToken } from '@/shared/notifications/registerFCMToken';
+import { registerFCMToken } from '@/shared/lib/notifications/registerFCMToken';
 import { isPWA } from '@/shared/utils/device';
 
 type PermissionStatus = 'default' | 'granted' | 'denied';

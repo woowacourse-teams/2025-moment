@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Modal } from '@/shared/ui/modal/Modal';
-import { Button } from '@/shared/ui';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { ComplaintReasonSelector } from './ComplaintReasonSelector';
 import * as S from './ComplaintModal.styles';
 import { ComplaintFormData, ComplaintReason } from '@/features/complaint/types/complaintType';
+import { Button } from '@/shared/design-system/button';
 
 interface ComplaintModal {
   isOpen: boolean;

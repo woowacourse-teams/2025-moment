@@ -1,5 +1,5 @@
 import { SignupFormData } from '@/features/auth/types/signup';
-import { Button } from '@/shared/ui/button/Button';
+import { Button } from '@/shared/design-system/button/Button';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import * as S from './SignupStep3.styles';
 

@@ -1,7 +1,7 @@
-import { Card } from '@/shared/ui';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import * as S from './index.styles';
 import { TodayMomentSuccessContent } from '@/features/moment/ui/TodayMomentSuccessContent';
+import { Card } from '@/shared/design-system/card';
 
 export default function TodayMomentSuccessPage() {
   return (

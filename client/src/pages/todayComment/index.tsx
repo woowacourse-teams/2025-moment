@@ -1,7 +1,7 @@
 import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
-import { TitleContainer } from '@/shared/ui/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import * as S from '../todayMoment/index.styles';
-import { TagList } from '@/shared/ui/tag/TagList';
+import { TagList } from '@/shared/design-system/tag/TagList';
 import { useState } from 'react';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';

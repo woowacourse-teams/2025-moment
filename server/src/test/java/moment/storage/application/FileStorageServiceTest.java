@@ -45,7 +45,7 @@ class FileStorageServiceTest {
         String originalFilename = "test-image.jpg";
         UploadUrlRequest request = new UploadUrlRequest(originalFilename, "jpg");
         String expectedUrl = "http://ap2-northest-s3/test-bucket/images/test-image.jpg";
-        String expectedFilePath = "test-bucket/images/test-image.jpg";
+        String expectedFilePath = "https://test-cloudfront.example.com/test/images/test-image.jpg";
         UploadUrlResponse expected = new UploadUrlResponse(expectedUrl, expectedFilePath);
         UploadUrlResponse uploadUrl;
         given(awsS3Client.getUploadUrl(any(String.class))).willReturn(expected);

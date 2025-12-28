@@ -2,13 +2,15 @@ import { ROUTES } from '@/app/routes/routes';
 import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
-import { Card, FileUpload, TextArea } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
-import { TagList } from '@/shared/ui/tag/TagList';
+import { TagList } from '@/shared/design-system/tag/TagList';
 import { Send, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { TAGS } from '../const/tags';
 import * as S from './TodayContent.styles';
+import { Card } from '@/shared/design-system/card';
+import { FileUpload } from '@/shared/ui';
+import { TextArea } from '@/shared/design-system/textArea';
 
 export function TodayMomentForm({
   handleContentChange,
