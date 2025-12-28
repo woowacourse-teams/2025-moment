@@ -1,9 +1,6 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-<<<<<<<< HEAD:client/src/features/comment/hooks/useCommentsSuspenseQuery.ts
-import { getComments } from '../api/getComments';
-========
-import { getComments } from './getComments';
->>>>>>>> 03f6b0e106125c90d2113ffc22fb18550b309f0e:client/src/features/comment/api/useCommentsSuspenseQuery.ts
+import { api } from '@/app/lib/api';
+import { CommentsResponse, GetComments } from '../types/comments';
 
 export const useCommentsSuspenseQuery = () => {
   return useSuspenseInfiniteQuery({
@@ -13,4 +10,15 @@ export const useCommentsSuspenseQuery = () => {
       lastPage.data.hasNextPage ? lastPage.data.nextCursor : undefined,
     initialPageParam: null,
   });
+};
+
+export const getComments = async ({ pageParam }: GetComments): Promise<CommentsResponse> => {
+  const params = new URLSearchParams();
+  if (pageParam) {
+    params.append('nextCursor', pageParam);
+  }
+  params.append('pageSize', '10');
+
+  const response = await api.get<CommentsResponse>(`/comments/me?${params.toString()}`);
+  return response.data;
 };
