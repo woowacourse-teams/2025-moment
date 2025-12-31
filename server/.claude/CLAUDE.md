@@ -219,6 +219,61 @@ public class UserService {
 
 **해야 할 것**: 서비스 레이어에서 트랜잭션
 **하지 말아야 할 것**: 리포지토리나 컨트롤러 레이어에서 트랜잭션
+
+### 7. 환경 변수 보안 (절대 민감 정보 노출 금지)
+
+⛔ **CRITICAL**: 환경 변수의 실제 값을 문서나 코드에 절대 노출하지 않습니다.
+
+**환경 변수 관리 원칙**:
+1. **코드에서 민감 정보 제거**
+   - 데이터베이스 비밀번호, API 키, 초기 관리자 계정 등은 절대 코드에 하드코딩하지 않음
+   - `@Value("${변수명}")` 또는 `@ConfigurationProperties`로 주입받아 사용
+
+2. **문서에서 실제 값 제외**
+   - `.md` 파일, 주석, 커밋 메시지 등 모든 문서에서 환경 변수의 실제 값을 명시하지 않음
+   - ✅ 올바른 예: "다음 환경 변수를 `.env` 파일에 추가: `DB_PASSWORD`, `ADMIN_INITIAL_PASSWORD`"
+   - ❌ 잘못된 예: "`DB_PASSWORD=mypassword123`를 `.env`에 추가"
+
+3. **`.env` 파일 관리**
+   - `.env` 파일은 `.gitignore`에 포함되어 절대 커밋되지 않음
+   - `.env.example` 파일로 필요한 환경 변수 목록만 제공 (값은 빈 문자열 또는 예시 형식만)
+   - 프로덕션 환경에서는 강력한 비밀번호와 실제 값으로 교체 필수
+
+**예시**:
+
+```java
+// ✅ 올바른 방법: 환경 변수로 주입
+@Value("${admin.initial.email}")
+private String initialEmail;
+
+@Value("${admin.initial.password}")
+private String initialPassword;
+
+// ❌ 절대 하지 말아야 할 것: 하드코딩
+private String initialEmail = "admin@moment.com";
+private String initialPassword = "admin123";
+```
+
+**문서 작성 시**:
+```markdown
+# ✅ 올바른 문서화
+다음 환경 변수를 설정해야 합니다:
+- `ADMIN_INITIAL_EMAIL`: 초기 관리자 이메일
+- `ADMIN_INITIAL_PASSWORD`: 초기 관리자 비밀번호 (최소 8자)
+- `ADMIN_SESSION_TIMEOUT`: 세션 타임아웃 (예: `1h`, `3600s`)
+
+# ❌ 절대 하지 말아야 할 문서화
+다음을 `.env`에 추가하세요:
+ADMIN_INITIAL_EMAIL=admin@moment.com
+ADMIN_INITIAL_PASSWORD=admin123
+ADMIN_SESSION_TIMEOUT=1h
+```
+
+**검증 체크리스트**:
+- [ ] 코드에 하드코딩된 민감 정보가 없는가?
+- [ ] `.md` 파일에 실제 환경 변수 값이 노출되지 않았는가?
+- [ ] `.env` 파일이 `.gitignore`에 포함되어 있는가?
+- [ ] 프로덕션 배포 전 강력한 비밀번호로 변경 안내가 명확한가?
 </critical_rules>
 
 <domain_rules>

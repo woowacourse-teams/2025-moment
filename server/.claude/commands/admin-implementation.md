@@ -8,7 +8,9 @@
 
 ## 📋 개요
 
-Moment 프로젝트에 **별도의 Admin 시스템**을 추가합니다. 기존 User 도메인과 완전히 독립된 Admin 계정 시스템을 구축하고, Thymeleaf + Bootstrap 5.3 기반의 관리자 페이지를 제공합니다.
+Moment 프로젝트에 **별도의 Admin 시스템**을 추가합니다. 기존 User 도메인과 완전히 독립된 Admin 계정 시스템을 구축하고, Thymeleaf + Tailwind CSS 기반의 모던한 관리자 페이지를 제공합니다.
+
+**기술 스택**: Thymeleaf (SSR) + Tailwind CSS 3.4+ + Lucide Icons
 
 **우선순위**: 사용자 관리 > 콘텐츠 관리 > 신고 관리
 
@@ -45,8 +47,6 @@ dependencies {
     // 기존 dependencies...
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
-}
-```
 
 #### 1-2. 디렉토리 구조 생성
 ```
@@ -219,24 +219,40 @@ public void addInterceptors(InterceptorRegistry registry) {
 **파일**: `server/src/main/resources/templates/admin/layout.html`
 
 **구성요소**:
-- Bootstrap 5.3 CDN
-- Bootstrap Icons CDN
-- Noto Sans KR 폰트 (optional)
-- 상단 네비게이션 바 (Moment Admin 로고, 로그아웃 버튼)
-- 좌측 사이드바 (사용자 관리 링크)
-- `layout:fragment="content"` 영역
-- `layout:fragment="scripts"` 영역
+- Tailwind CSS 3.4+ CDN
+- Lucide Icons (웹 컴포넌트)
+- 고정 좌측 사이드바 (다크 테마, 250px 너비)
+  - "Moment Admin" 로고
+  - 사용자 관리 링크
+  - 로그아웃 버튼
+- 메인 영역 (`ml-64` 클래스로 사이드바 여백 확보)
+  - Sticky 상단 헤더
+  - `layout:fragment="content"` 영역
+  - `layout:fragment="scripts"` 영역
 
-**가이드라인 준수**: `.claude/rules/thymeleaf.md`
+**디자인 스타일**: Soft Glass & Light Mode (권장) - `.claude/rules/thymeleaf.md` 준수
+
+**핵심 Tailwind 클래스**:
+- 사이드바: `fixed left-0 top-0 h-screen w-64 bg-slate-900 text-white`
+- 메인 영역: `ml-64`
+- 헤더: `sticky top-0 bg-white shadow-sm z-40`
+- 콘텐츠: `p-6 lg:p-8`
 
 #### 2-10. 템플릿: 로그인 페이지
 **파일**: `server/src/main/resources/templates/admin/login.html`
 
 **기능**:
 - 독립 페이지 (layout 상속 안 함)
-- Bootstrap 5.3 스타일
+- Tailwind CSS 스타일
+- 중앙 정렬 카드 레이아웃
 - 에러 메시지 표시 (`th:if="${error}"`)
 - POST → `/admin/api/login`
+
+**디자인**:
+- 배경: `bg-slate-50`
+- 카드: `rounded-2xl bg-white shadow-sm border border-slate-200/50`
+- 입력 필드: `px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-indigo-500`
+- 버튼: `px-6 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700`
 
 ---
 
@@ -295,12 +311,19 @@ Optional<User> findByIdIncludingDeleted(@Param("userId") Long userId);
 
 **기능**:
 - `layout:decorate="~{admin/layout}"` 상속
-- 검색 바 (keyword 입력)
-- 사용자 테이블 (`.table .table-hover .table-bordered .align-middle`)
-- 페이지네이션 (Bootstrap pagination)
+- 검색 바 (Tailwind 스타일)
+- 사용자 테이블 (Tailwind 기반)
+- 페이지네이션 (Tailwind 스타일)
 - 빈 상태 처리 (`th:if="${#lists.isEmpty(users.content)}"`)
-- 성공/에러 알림 (`alert-success`, `alert-danger`)
+- 성공/에러 알림 (Tailwind Alert)
 - 날짜 포맷: `yyyy-MM-dd HH:mm`
+
+**디자인 요소**:
+- 검색 바: `flex gap-3 mb-6`
+- 테이블: `overflow-x-auto rounded-lg border border-slate-200`
+- 테이블 헤더: `bg-slate-100 border-b border-slate-200`
+- 테이블 행: `border-b border-slate-100 hover:bg-slate-50 transition-colors`
+- 작업 버튼: `text-indigo-600 hover:text-indigo-800 text-sm font-medium`
 
 **테이블 컬럼**:
 - ID, 이메일, 닉네임, 가입 유형, 레벨, 별조각, 가입일, 작업 버튼
@@ -309,36 +332,82 @@ Optional<User> findByIdIncludingDeleted(@Param("userId") Long userId);
 **파일**: `server/src/main/resources/templates/admin/users/detail.html`
 
 **기능**:
-- 사용자 정보 테이블 형태로 표시
-- 삭제 버튼 (확인 대화상자)
-- 복원 버튼 (deletedAt이 있을 경우만 표시)
-- 목록으로 돌아가기 버튼
+- `layout:decorate="~{admin/layout}"` 상속
+- 사용자 정보 카드 형태로 표시
+- 삭제 버튼 (확인 대화상자, Danger 스타일)
+- 복원 버튼 (deletedAt이 있을 경우만 표시, Success 스타일)
+- 목록으로 돌아가기 버튼 (Secondary 스타일)
+
+**디자인 요소**:
+- 카드: `rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50`
+- 정보 테이블: `divide-y divide-slate-200`
+- 버튼 그룹: `flex gap-3 mt-6`
 
 ---
 
 ### Phase 4: 초기 관리자 계정 생성
 
-#### 4-1. CommandLineRunner (개발용)
+#### 4-1. 환경 변수 설정
+**파일**: `.env`
+
+다음 환경 변수를 `.env` 파일에 추가합니다:
+- `ADMIN_INITIAL_EMAIL`: 초기 관리자 이메일
+- `ADMIN_INITIAL_PASSWORD`: 초기 관리자 비밀번호
+- `ADMIN_INITIAL_NAME`: 초기 관리자 이름
+- `ADMIN_SESSION_TIMEOUT`: 관리자 세션 타임아웃 (예: `1h`, `3600s`)
+
+**파일**: `src/main/resources/application-dev.yml`
+
+```yaml
+# 세션 타임아웃 설정
+server:
+  servlet:
+    session:
+      timeout: ${ADMIN_SESSION_TIMEOUT}
+
+# 초기 관리자 계정 설정
+admin:
+  initial:
+    email: ${ADMIN_INITIAL_EMAIL}
+    password: ${ADMIN_INITIAL_PASSWORD}
+    name: ${ADMIN_INITIAL_NAME}
+```
+
+#### 4-2. CommandLineRunner 구현
 **파일**: `server/src/main/java/moment/admin/config/AdminInitializer.java`
 
 ```java
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AdminInitializer implements CommandLineRunner {
     private final AdminService adminService;
 
+    @Value("${admin.initial.email}")
+    private String initialEmail;
+
+    @Value("${admin.initial.password}")
+    private String initialPassword;
+
+    @Value("${admin.initial.name}")
+    private String initialName;
+
     @Override
     public void run(String... args) throws Exception {
-        if (!adminService.existsByUsername("admin")) {
-            adminService.createAdmin("admin", "admin123",
-                                    "System Admin", "admin@moment.com");
-            log.info("초기 관리자 계정 생성: admin / admin123");
+        if (!adminService.existsByEmail(initialEmail)) {
+            adminService.createAdmin(initialEmail, initialName, initialPassword);
+            log.info("✅ 초기 관리자 계정 생성: {}", initialEmail);
+            log.warn("⚠️  프로덕션 환경에서는 반드시 초기 비밀번호를 변경하세요!");
         }
     }
 }
 ```
 
-**주의**: 프로덕션에서는 SQL로 직접 생성하고 강력한 비밀번호 사용
+**보안 원칙**:
+- ⛔ 초기 관리자 정보를 절대 코드에 하드코딩하지 않음
+- ✅ 환경 변수로 관리하여 리포지토리 노출 방지
+- ✅ 프로덕션 배포 전 강력한 비밀번호로 변경 필수
+- ✅ 세션 타임아웃도 환경 변수로 관리하여 환경별 유연한 설정 가능
 
 ---
 
@@ -518,7 +587,7 @@ public class AdminInitializer implements CommandLineRunner {
 
 1. **세션 보안**
    - HttpOnly 쿠키 사용
-   - 세션 타임아웃: 1시간
+   - 세션 타임아웃: 환경 변수(`ADMIN_SESSION_TIMEOUT`)로 관리
    - 로그아웃 시 세션 완전 무효화
 
 2. **비밀번호**
@@ -527,7 +596,7 @@ public class AdminInitializer implements CommandLineRunner {
 
 3. **XSS 방지**
    - Thymeleaf 자동 이스케이프
-   - Bootstrap 5.3 사용
+   - Tailwind CSS 기본 보안 설정 사용
 
 4. **접근 제어**
    - 인터셉터로 모든 `/admin/**` 경로 보호
@@ -543,7 +612,7 @@ public class AdminInitializer implements CommandLineRunner {
 4. **서비스**: AdminService → AdminUserApplicationService
 5. **인프라**: AdminAuthInterceptor → WebConfig 수정
 6. **컨트롤러**: AdminAuthController → AdminUserController
-7. **템플릿**: layout.html → login.html → users/*.html
+7. **템플릿**: layout.html → login.html → users/*.html (Tailwind CSS + Lucide Icons)
 8. **테스트**: 단위 테스트 → E2E 테스트
 9. **초기화**: AdminInitializer 작성
 
@@ -553,9 +622,10 @@ public class AdminInitializer implements CommandLineRunner {
 
 1. **SSR 우선**: 관리자 페이지는 Thymeleaf의 `Model`을 통한 서버 사이드 렌더링을 우선함
 2. **보안**: 모든 관리자 페이지는 반드시 세션 체크를 거쳐야 함
-3. **UI 컨벤션**: `.claude/rules/thymeleaf.md`에 정의된 Bootstrap 스타일 가이드를 준수함
+3. **UI 컨벤션**: `.claude/rules/thymeleaf.md`에 정의된 Tailwind CSS 디자인 가이드를 준수함 (Soft Glass & Light Mode 권장)
 4. **Clean Architecture**: 기존 프로젝트의 레이어 구조와 패턴을 따름
 5. **Soft Delete**: 모든 삭제는 Soft Delete로 처리
+6. **모던 디자인**: Lucide Icons 사용, 부드러운 전환 효과, 반응형 레이아웃
 
 ---
 
