@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>관리자 등록</title>
+</head>
+<body>
+<h2 layout:fragment="page-title">새 관리자 등록</h2>
+
+<div layout:fragment="content">
+    <div class="max-w-2xl mx-auto">
+        <div class="rounded-2xl bg-white shadow-sm border border-slate-200/50 p-8">
+            <!-- 에러 메시지 -->
+            <div th:if="${error}" class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- 성공 메시지 -->
+            <div th:if="${message}" class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                <span th:text="${message}"></span>
+            </div>
+
+            <!-- 관리자 등록 폼 -->
+            <form th:action="@{/admin/admins}" th:object="${request}" method="post" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        이메일 *
+                    </label>
+                    <input type="email"
+                           id="email"
+                           th:field="*{email}"
+                           placeholder="admin@example.com"
+                           required
+                           class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                                  transition-all duration-150">
+                    <p class="mt-2 text-sm text-gray-500">새 관리자가 로그인 시 사용할 이메일입니다.</p>
+                </div>
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        이름 *
+                    </label>
+                    <input type="text"
+                           id="name"
+                           th:field="*{name}"
+                           placeholder="홍길동"
+                           required
+                           class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                                  transition-all duration-150">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                        초기 비밀번호 *
+                    </label>
+                    <input type="password"
+                           id="password"
+                           th:field="*{password}"
+                           required
+                           class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                                  transition-all duration-150">
+                    <p class="mt-2 text-sm text-gray-500">최소 8자 이상이어야 합니다.</p>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="submit"
+                            class="px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-medium
+                                   hover:bg-indigo-700 active:scale-95 transition-all duration-150 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-5 h-5"></i>
+                        등록
+                    </button>
+                    <a th:href="@{/admin/login}"
+                       class="px-6 py-2.5 rounded-lg bg-slate-200 text-slate-700 font-medium
+                              hover:bg-slate-300 active:scale-95 transition-all duration-150 flex items-center gap-2">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                        취소
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="scripts">
+    <script>
+        lucide.createIcons();
+    </script>
+</div>
+</body>
+</html>
