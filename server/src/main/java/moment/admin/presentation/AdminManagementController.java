@@ -20,33 +20,33 @@ public class AdminManagementController {
 
     private final AdminService adminService;
 
-    @GetMapping("/admin/admins/create")
-    public String createAdminPage(Model model) {
+    @GetMapping("/admin/accounts/new")
+    public String newAccountPage(Model model) {
         model.addAttribute("request", new AdminCreateRequest("", "", ""));
-        return "admin/admins/create";
+        return "admin/accounts/new";
     }
 
-    @PostMapping("/admin/admins")
-    public String createAdmin(@Valid @ModelAttribute("request") AdminCreateRequest request,
-                              BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
+    @PostMapping("/admin/accounts/new")
+    public String createAccount(@Valid @ModelAttribute("request") AdminCreateRequest request,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("error", "입력 정보를 확인해주세요.");
-            return "admin/admins/create";
+            return "admin/accounts/new";
         }
 
         try {
             adminService.createAdmin(request.email(), request.name(), request.password());
             redirectAttributes.addFlashAttribute("message", "관리자가 성공적으로 등록되었습니다.");
-            return "redirect:/admin/users";
+            return "redirect:/admin/accounts";
         } catch (MomentException e) {
             if (e.getErrorCode() == ErrorCode.ADMIN_EMAIL_CONFLICT) {
                 model.addAttribute("error", "이미 등록된 이메일입니다.");
             } else {
                 model.addAttribute("error", "관리자 등록에 실패했습니다.");
             }
-            return "admin/admins/create";
+            return "admin/accounts/new";
         }
     }
 }

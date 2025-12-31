@@ -349,6 +349,156 @@ Admin 페이지는 다음 3가지 스타일 중 **하나를 선택하여 전체 
 
 ## Thymeleaf 코딩 컨벤션
 
+### 0. 컨트롤러 경로 규칙 (SSR 환경)
+
+#### `@Controller` vs `@RestController`
+- **SSR (Thymeleaf) 환경에서는 반드시 `@Controller`를 사용**합니다.
+- `@RestController`는 JSON/XML을 반환하는 REST API 전용입니다.
+- Admin 페이지는 Thymeleaf 뷰를 렌더링하므로 `@Controller`를 사용해야 합니다.
+
+```java
+// ✅ 올바른 방법: SSR 환경
+@Controller
+@RequiredArgsConstructor
+public class AdminAuthController {
+    @GetMapping("/admin/login")
+    public String loginPage(Model model) {
+        return "admin/login";  // 뷰 이름 반환
+    }
+
+    @PostMapping("/admin/login")
+    public String login(@Valid @ModelAttribute AdminLoginRequest request) {
+        // 폼 처리 후 리다이렉트
+        return "redirect:/admin/dashboard";
+    }
+}
+
+// ❌ 잘못된 방법: SSR 환경에서 RestController 사용
+@RestController  // JSON을 반환하므로 SSR에 부적합
+public class AdminAuthController {
+    @PostMapping("/admin/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        // ...
+    }
+}
+```
+
+#### 경로 네이밍 규칙
+1. **SSR 폼 처리는 같은 경로에 GET/POST 매핑**
+   - GET: 폼 페이지 표시
+   - POST: 폼 제출 처리
+   - 예: `/admin/login` (GET & POST 모두)
+
+2. **`/api/` 경로는 REST API 전용으로 예약**
+   - SSR 폼 처리에 `/api/` 경로를 사용하지 않습니다.
+   - `/admin/api/login` ❌ → `/admin/login` ✅
+
+3. **일관된 경로 패턴 유지**
+   - 리소스별로 resource-oriented URL 적용
+   - 예: `/admin/accounts/new` (GET & POST)
+   - **`/new` 사용** (명사) - `/create` (동사) 사용 지양
+
+```java
+// ✅ 올바른 경로 패턴
+@Controller
+public class AdminManagementController {
+    // 새 리소스 등록 폼: /new 사용 (명사)
+    @GetMapping("/admin/accounts/new")
+    public String newAccountPage(Model model) {
+        model.addAttribute("request", new AdminCreateRequest("", "", ""));
+        return "admin/accounts/new";
+    }
+
+    @PostMapping("/admin/accounts/new")  // 같은 경로 사용 (GET과 일치)
+    public String createAccount(@Valid @ModelAttribute("request") AdminCreateRequest request,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            return "admin/accounts/new";  // 에러 시 같은 경로 유지
+        }
+        adminService.create(request);
+        return "redirect:/admin/accounts";  // 성공 시 목록으로
+    }
+}
+
+// ❌ 잘못된 경로 패턴
+@Controller
+public class AdminManagementController {
+    @GetMapping("/admin/accounts/new")
+    public String newAccountPage(Model model) {
+        return "admin/accounts/new";
+    }
+
+    @PostMapping("/admin/api/accounts")  // ❌ /api/ 사용 금지 & 경로 불일치
+    public String createAccount(@Valid @ModelAttribute AdminCreateRequest request) {
+        return "redirect:/admin/accounts";
+    }
+}
+
+// ⚠️ 피해야 할 패턴 (동사 사용)
+@Controller
+public class AdminManagementController {
+    @GetMapping("/admin/accounts/create")  // create는 동사
+    @PostMapping("/admin/accounts/create")
+    // /new (명사)를 사용하는 것이 더 resource-oriented
+}
+```
+
+#### 인터셉터 제외 경로 설정
+- GET과 POST가 같은 경로를 사용하므로, 인터셉터 제외 경로는 **하나만 지정**하면 됩니다.
+
+```java
+// ✅ 올바른 방법: 같은 경로에 GET/POST 매핑
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(adminAuthInterceptor)
+            .addPathPatterns("/admin/**")
+            .excludePathPatterns("/admin/login");  // GET, POST 모두 제외됨
+}
+
+// ❌ 잘못된 방법: 불필요하게 두 경로를 제외
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(adminAuthInterceptor)
+            .addPathPatterns("/admin/**")
+            .excludePathPatterns("/admin/login", "/admin/api/login");  // 중복
+}
+```
+
+#### 반환 타입 규칙
+- **뷰 이름 반환**: `return "admin/login";`
+- **리다이렉트**: `return "redirect:/admin/dashboard";`
+- **포워드**: `return "forward:/admin/error";` (드물게 사용)
+
+```java
+@Controller
+public class AdminController {
+    // 뷰 렌더링
+    @GetMapping("/admin/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("stats", stats);
+        return "admin/dashboard";  // templates/admin/dashboard.html
+    }
+
+    // PRG 패턴 (Post-Redirect-Get)
+    @PostMapping("/admin/accounts/new")
+    public String createAccount(@Valid @ModelAttribute AdminCreateRequest request,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            return "admin/accounts/new";  // 에러 시 같은 폼 유지
+        }
+        adminService.create(request);
+        redirectAttributes.addFlashAttribute("message", "등록 성공");
+        return "redirect:/admin/accounts";  // 리다이렉트로 중복 제출 방지
+    }
+}
+```
+
+---
+
 ### 1. 폼 처리
 
 #### DTO 바인딩 (Model Object)

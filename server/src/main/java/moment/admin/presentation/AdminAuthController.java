@@ -30,14 +30,14 @@ public class AdminAuthController {
         return "admin/login";
     }
 
-    @PostMapping("/admin/api/login")
+    @PostMapping("/admin/login")
     public String login(@Valid @ModelAttribute AdminLoginRequest request,
                         HttpSession session,
                         RedirectAttributes redirectAttributes) {
         try {
             Admin admin = adminService.authenticateAdmin(request.email(), request.password());
             session.setAttribute(AdminAuthInterceptor.ADMIN_SESSION_KEY, admin.getId());
-            return "redirect:/admin/admins/create";
+            return "redirect:/admin/accounts/new";
         } catch (MomentException e) {
             redirectAttributes.addAttribute("error", e.getMessage());
             return "redirect:/admin/login";

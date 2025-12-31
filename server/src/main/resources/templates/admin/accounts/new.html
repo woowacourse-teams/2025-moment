@@ -24,7 +24,7 @@
             </div>
 
             <!-- 관리자 등록 폼 -->
-            <form th:action="@{/admin/admins}" th:object="${request}" method="post" class="space-y-6">
+            <form th:action="@{/admin/accounts/new}" th:object="${request}" method="post" class="space-y-6">
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                         <i data-lucide="mail" class="w-4 h-4"></i>
@@ -78,7 +78,7 @@
                         <i data-lucide="user-plus" class="w-5 h-5"></i>
                         등록
                     </button>
-                    <a th:href="@{/admin/login}"
+                    <a th:href="@{/admin/accounts}"
                        class="px-6 py-2.5 rounded-lg bg-slate-200 text-slate-700 font-medium
                               hover:bg-slate-300 active:scale-95 transition-all duration-150 flex items-center gap-2">
                         <i data-lucide="x" class="w-5 h-5"></i>
