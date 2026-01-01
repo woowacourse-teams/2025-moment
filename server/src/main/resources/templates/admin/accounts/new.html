@@ -33,12 +33,18 @@
                     <input type="email"
                            id="email"
                            th:field="*{email}"
+                           th:classappend="${#fields.hasErrors('email')} ? 'border-red-500 focus:ring-red-500' : ''"
                            placeholder="admin@example.com"
                            required
                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
                                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                   transition-all duration-150">
-                    <p class="mt-2 text-sm text-gray-500">새 관리자가 로그인 시 사용할 이메일입니다.</p>
+                    <p th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"
+                       class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3 h-3"></i>
+                    </p>
+                    <p th:unless="${#fields.hasErrors('email')}" class="mt-2 text-sm text-gray-500">새 관리자가 로그인 시 사용할 이메일입니다.</p>
                 </div>
 
                 <div>
@@ -49,11 +55,17 @@
                     <input type="text"
                            id="name"
                            th:field="*{name}"
+                           th:classappend="${#fields.hasErrors('name')} ? 'border-red-500 focus:ring-red-500' : ''"
                            placeholder="홍길동"
                            required
                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
                                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                   transition-all duration-150">
+                    <p th:if="${#fields.hasErrors('name')}"
+                       th:errors="*{name}"
+                       class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3 h-3"></i>
+                    </p>
                 </div>
 
                 <div>
@@ -64,11 +76,17 @@
                     <input type="password"
                            id="password"
                            th:field="*{password}"
+                           th:classappend="${#fields.hasErrors('password')} ? 'border-red-500 focus:ring-red-500' : ''"
                            required
                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white
                                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                   transition-all duration-150">
-                    <p class="mt-2 text-sm text-gray-500">최소 8자 이상이어야 합니다.</p>
+                    <p th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"
+                       class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3 h-3"></i>
+                    </p>
+                    <p th:unless="${#fields.hasErrors('password')}" class="mt-2 text-sm text-gray-500">최소 8자 이상이어야 합니다.</p>
                 </div>
 
                 <div class="flex gap-3 pt-4">

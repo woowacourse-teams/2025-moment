@@ -58,7 +58,6 @@ public enum ErrorCode {
     EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST),
 
-    // Admin errors (A-xxx)
     ADMIN_LOGIN_FAILED("A-001", "관리자 로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
     ADMIN_NOT_FOUND("A-002", "존재하지 않는 관리자입니다.", HttpStatus.NOT_FOUND),
     ADMIN_UNAUTHORIZED("A-003", "관리자 권한이 없습니다.", HttpStatus.FORBIDDEN),

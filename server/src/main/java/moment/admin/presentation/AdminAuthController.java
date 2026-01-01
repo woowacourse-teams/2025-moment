@@ -25,7 +25,7 @@ public class AdminAuthController {
     @GetMapping("/admin/login")
     public String loginPage(@RequestParam(required = false) String error, Model model) {
         if (error != null) {
-            model.addAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("error", error);
         }
         return "admin/login";
     }
@@ -39,7 +39,7 @@ public class AdminAuthController {
             session.setAttribute(AdminAuthInterceptor.ADMIN_SESSION_KEY, admin.getId());
             return "redirect:/admin/accounts/new";
         } catch (MomentException e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            redirectAttributes.addAttribute("error", e.getErrorCode().getMessage());
             return "redirect:/admin/login";
         }
     }

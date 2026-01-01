@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.admin.dto.request.AdminCreateRequest;
 import moment.admin.service.admin.AdminService;
-import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +31,6 @@ public class AdminManagementController {
                                 RedirectAttributes redirectAttributes,
                                 Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("error", "입력 정보를 확인해주세요.");
             return "admin/accounts/new";
         }
 
@@ -41,11 +39,7 @@ public class AdminManagementController {
             redirectAttributes.addFlashAttribute("message", "관리자가 성공적으로 등록되었습니다.");
             return "redirect:/admin/accounts";
         } catch (MomentException e) {
-            if (e.getErrorCode() == ErrorCode.ADMIN_EMAIL_CONFLICT) {
-                model.addAttribute("error", "이미 등록된 이메일입니다.");
-            } else {
-                model.addAttribute("error", "관리자 등록에 실패했습니다.");
-            }
+            model.addAttribute("error", e.getErrorCode().getMessage());
             return "admin/accounts/new";
         }
     }
