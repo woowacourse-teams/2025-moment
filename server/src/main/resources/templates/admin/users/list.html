@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>사용자 관리</title>
+</head>
+<body>
+<h2 layout:fragment="page-title">사용자 관리</h2>
+
+<div layout:fragment="content">
+    <div class="max-w-7xl mx-auto">
+        <div th:if="${message}"
+             class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <span th:text="${message}"></span>
+        </div>
+
+        <div th:if="${error}"
+             class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center gap-2">
+            <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="rounded-2xl bg-white shadow-sm border border-slate-200/50 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">전체 사용자 목록</h3>
+                <div class="text-sm text-gray-500">
+                    <span>총 </span>
+                    <span th:text="${totalElements}">0</span>
+                    <span>명</span>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <table class="w-full text-sm text-left text-gray-700">
+                    <thead class="bg-slate-100 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 font-semibold text-gray-900">ID</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">이메일</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">닉네임</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">제공자</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">보유 별조각</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">경험치</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">레벨</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">가입일</th>
+                            <th class="px-6 py-3 font-semibold text-gray-900">작업</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="9" class="px-6 py-12 text-center text-gray-500">
+                                <i data-lucide="users" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
+                                <p>표시할 사용자가 없습니다.</p>
+                            </td>
+                        </tr>
+                        <tr th:each="user : ${users}"
+                            class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-3" th:text="${user.id}">1</td>
+                            <td class="px-6 py-3" th:text="${user.email}">user@example.com</td>
+                            <td class="px-6 py-3" th:text="${user.nickname}">닉네임</td>
+                            <td class="px-6 py-3">
+                                <span th:text="${user.providerType}"
+                                      th:class="'px-2 py-1 text-xs rounded ' +
+                                               (${user.providerType.name() == 'EMAIL'} ?
+                                                'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800')">
+                                    EMAIL
+                                </span>
+                            </td>
+                            <td class="px-6 py-3" th:text="${#numbers.formatInteger(user.availableStar, 0, 'COMMA')}">
+                                0
+                            </td>
+                            <td class="px-6 py-3" th:text="${#numbers.formatInteger(user.expStar, 0, 'COMMA')}">0</td>
+                            <td class="px-6 py-3">
+                                <span class="text-xs font-medium"
+                                      th:text="${#strings.replace(user.level, '_', ' ')}">LEVEL</span>
+                            </td>
+                            <td class="px-6 py-3 text-sm text-gray-600"
+                                th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                2024-01-01 12:00
+                            </td>
+                            <td class="px-6 py-3">
+                                <a th:href="@{/admin/users/{id}/edit(id=${user.id})}"
+                                   class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                    수정
+                                </a>
+                                <span class="text-gray-300 mx-2">|</span>
+                                <form th:action="@{/admin/users/{id}/delete(id=${user.id})}"
+                                      method="post"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('정말로 이 사용자를 차단하시겠습니까?');">
+                                    <button type="submit"
+                                            class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                        차단
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${totalPages > 0}" class="flex justify-center items-center gap-2 mt-6">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/admin/users(page=${currentPage - 1}, size=${size})}"
+                   class="px-4 py-2 rounded-lg bg-slate-200 text-gray-800 font-medium hover:bg-slate-300 transition-colors flex items-center gap-1">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    이전
+                </a>
+                <span th:unless="${currentPage > 0}"
+                      class="px-4 py-2 rounded-lg bg-slate-100 text-gray-400 cursor-not-allowed flex items-center gap-1">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    이전
+                </span>
+
+                <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                   th:href="@{/admin/users(page=${i}, size=${size})}"
+                   th:text="${i + 1}"
+                   th:class="${i == currentPage} ?
+                              'px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium' :
+                              'px-4 py-2 rounded-lg bg-slate-200 text-gray-800 font-medium hover:bg-slate-300 transition-colors'">
+                    1
+                </a>
+
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/admin/users(page=${currentPage + 1}, size=${size})}"
+                   class="px-4 py-2 rounded-lg bg-slate-200 text-gray-800 font-medium hover:bg-slate-300 transition-colors flex items-center gap-1">
+                    다음
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+                <span th:unless="${currentPage < totalPages - 1}"
+                      class="px-4 py-2 rounded-lg bg-slate-100 text-gray-400 cursor-not-allowed flex items-center gap-1">
+                    다음
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="scripts">
+    <script>
+        lucide.createIcons();
+    </script>
+</div>
+</body>
+</html>

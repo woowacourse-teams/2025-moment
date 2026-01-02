@@ -30,7 +30,8 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
+      data-locations: classpath:sql/test-users.sql
 
   mail:
     host: smtp.gmail.com
@@ -71,6 +72,9 @@ auth:
 
 server:
   forward-headers-strategy: native
+  servlet:
+    session:
+      timeout: ${ADMIN_SESSION_TIMEOUT}
 
 management:
   metrics:
@@ -99,3 +103,9 @@ s3:
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}
+
+admin:
+  initial:
+    email: ${ADMIN_INITIAL_EMAIL}
+    password: ${ADMIN_INITIAL_PASSWORD}
+    name: ${ADMIN_INITIAL_NAME}

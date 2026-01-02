@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>오류 발생</title>
+</head>
+<body>
+<h2 layout:fragment="page-title">오류 발생</h2>
+
+<div layout:fragment="content">
+    <div class="max-w-2xl mx-auto">
+        <div class="rounded-2xl bg-white shadow-sm border border-slate-200/50 p-8 text-center">
+            <!-- 에러 아이콘 -->
+            <div class="flex justify-center mb-4">
+                <i data-lucide="alert-triangle" class="w-16 h-16 text-yellow-500"></i>
+            </div>
+
+            <!-- 에러 제목 -->
+            <h3 class="text-xl font-bold text-gray-900 mb-2">오류가 발생했습니다</h3>
+
+            <!-- 에러 메시지 -->
+            <p class="text-gray-600 mb-6" th:text="${errorMessage}">오류 메시지</p>
+
+            <!-- 에러 코드 (있는 경우만 표시) -->
+            <p th:if="${errorCode}" class="text-sm text-gray-500 mb-2">
+                오류 코드: <span class="font-mono font-semibold" th:text="${errorCode}"></span>
+            </p>
+
+            <!-- 상태 코드 (있는 경우만 표시) -->
+            <p th:if="${statusCode}" class="text-sm text-gray-500 mb-6">
+                HTTP 상태: <span class="font-mono font-semibold" th:text="${statusCode}"></span>
+            </p>
+
+            <!-- 홈으로 버튼 -->
+            <a th:href="@{/admin/accounts/new}"
+               class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-medium
+                      hover:bg-indigo-700 active:scale-95 transition-all duration-150">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                관리자 홈으로
+            </a>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="scripts">
+    <script>
+        lucide.createIcons();
+    </script>
+</div>
+</body>
+</html>
