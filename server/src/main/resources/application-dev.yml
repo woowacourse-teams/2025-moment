@@ -30,7 +30,8 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
+      data-locations: classpath:sql/test-users.sql
 
   mail:
     host: smtp.gmail.com

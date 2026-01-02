@@ -115,6 +115,12 @@ public class User extends BaseEntity {
         this.level = Level.getLevel(this.expStar);
     }
 
+    public void updateStarsDirectly(int newAvailableStar, int newExpStar) {
+        this.availableStar = newAvailableStar;
+        this.expStar = newExpStar;
+        this.level = Level.getLevel(this.expStar);
+    }
+
     public boolean canNotUseStars(int requiredStars) {
         return (availableStar + requiredStars) < 0;
     }

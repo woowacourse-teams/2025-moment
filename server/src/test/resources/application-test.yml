@@ -77,3 +77,11 @@ s3:
 
 fcm:
   service-account-json: ""
+
+admin:
+  initial:
+    email: test-admin@test.com
+    password: test-password-123
+    name: Test Admin
+  session:
+    timeout: 1h

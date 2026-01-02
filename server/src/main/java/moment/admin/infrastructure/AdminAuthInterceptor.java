@@ -22,6 +22,9 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        // Thymeleaf 템플릿에서 현재 URL을 확인하기 위해 추가
+        request.setAttribute("requestURI", request.getRequestURI());
+
         return true;
     }
 }
