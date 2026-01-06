@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./firebase-credentials.json)",
+      "Read(./secrets/**)",
+      "Read(./build)"
+    ]
+  }
+}
