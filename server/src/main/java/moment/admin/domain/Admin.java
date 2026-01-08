@@ -2,6 +2,8 @@ package moment.admin.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,13 +39,22 @@ public class Admin extends BaseEntity {
     @Column(nullable = false, length = 15)
     private String name;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AdminRole role;
+
     private LocalDateTime deletedAt;
 
     public Admin(String email, String name, String password) {
+        this(email, name, password, AdminRole.ADMIN);
+    }
+
+    public Admin(String email, String name, String password, AdminRole role) {
         validate(email, password, name);
         this.email = email;
         this.name = name;
         this.password = password;
+        this.role = role;
     }
 
 
@@ -78,5 +89,13 @@ public class Admin extends BaseEntity {
         if (name.length() > 15 || name.length() < 2) {
             throw new IllegalArgumentException("유효하지 않은 name 형식입니다.");
         }
+    }
+
+    public boolean isSuperAdmin() {
+        return this.role == AdminRole.SUPER_ADMIN;
+    }
+
+    public boolean canRegisterAdmin() {
+        return this.role.canRegisterAdmin();
     }
 }

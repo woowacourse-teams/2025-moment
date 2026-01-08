@@ -2,6 +2,7 @@ package moment.admin.service.admin;
 
 import lombok.RequiredArgsConstructor;
 import moment.admin.domain.Admin;
+import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -35,16 +36,28 @@ public class AdminService {
 
     @Transactional
     public Admin createAdmin(String email, String name, String password) {
+        return createAdmin(email, name, password, AdminRole.ADMIN);
+    }
+
+    @Transactional
+    public Admin createAdmin(String email, String name, String password, AdminRole role) {
         if (adminRepository.existsByEmail(email)) {
             throw new MomentException(ErrorCode.ADMIN_EMAIL_CONFLICT);
         }
 
         String hashedPassword = passwordEncoder.encode(password);
-        Admin admin = new Admin(email, name, hashedPassword);
+        Admin admin = new Admin(email, name, hashedPassword, role);
         return adminRepository.save(admin);
     }
 
     public boolean existsByEmail(String email) {
         return adminRepository.existsByEmail(email);
+    }
+
+    public void validateAdminRegistrationPermission(Long adminId) {
+        Admin admin = getAdminById(adminId);
+        if (!admin.canRegisterAdmin()) {
+            throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        }
     }
 }

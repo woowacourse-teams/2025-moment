@@ -3,8 +3,7 @@ CREATE TABLE admins (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'ADMIN',
     created_at DATETIME NOT NULL,
-    deleted_at DATETIME,
-    INDEX idx_email (email),
-    INDEX idx_deleted_at (deleted_at)
+    deleted_at DATETIME
 )

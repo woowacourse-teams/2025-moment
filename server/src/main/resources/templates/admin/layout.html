@@ -30,7 +30,9 @@
                     <i data-lucide="users" class="w-5 h-5"></i>
                     <span>사용자 관리</span>
                 </a>
-                <a th:href="@{/admin/accounts/new}"
+                <!-- SUPER_ADMIN만 표시 -->
+                <a th:if="${adminRole != null && adminRole.name() == 'SUPER_ADMIN'}"
+                   th:href="@{/admin/accounts/new}"
                    th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
                             (${requestURI != null && requestURI.contains('/accounts')} ?
                              'bg-indigo-600 text-white' : 'hover:bg-slate-800')">

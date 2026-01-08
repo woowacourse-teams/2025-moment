@@ -37,7 +37,8 @@ public class AdminAuthController {
         try {
             Admin admin = adminService.authenticateAdmin(request.email(), request.password());
             session.setAttribute(AdminAuthInterceptor.ADMIN_SESSION_KEY, admin.getId());
-            return "redirect:/admin/accounts/new";
+            session.setAttribute(AdminAuthInterceptor.ADMIN_ROLE_KEY, admin.getRole());
+            return "redirect:/admin/users";
         } catch (MomentException e) {
             redirectAttributes.addAttribute("error", e.getErrorCode().getMessage());
             return "redirect:/admin/login";
