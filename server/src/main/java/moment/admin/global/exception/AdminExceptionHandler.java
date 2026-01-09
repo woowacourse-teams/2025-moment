@@ -1,4 +1,4 @@
-package moment.admin.infrastructure;
+package moment.admin.global.exception;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -18,21 +18,18 @@ public class AdminExceptionHandler {
     public String handleMomentException(MomentException e, Model model, HttpServletRequest request) {
         ErrorCode errorCode = e.getErrorCode();
 
-        // 로깅
         log.warn("Admin MomentException",
                 kv("path", request.getRequestURI()),
                 kv("errorCode", errorCode.name()),
                 kv("message", errorCode.getMessage())
         );
 
-        // 인증 관련 에러는 로그인 페이지로 리다이렉트
         if (errorCode == ErrorCode.ADMIN_UNAUTHORIZED ||
                 errorCode == ErrorCode.ADMIN_NOT_FOUND ||
                 errorCode == ErrorCode.ADMIN_LOGIN_FAILED) {
             return "redirect:/admin/login?error=" + errorCode.getMessage();
         }
 
-        // 그 외 비즈니스 에러는 에러 페이지
         model.addAttribute("errorCode", errorCode.getCode());
         model.addAttribute("errorMessage", errorCode.getMessage());
         model.addAttribute("statusCode", e.getStatus().value());

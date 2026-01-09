@@ -2,7 +2,7 @@ package moment.global.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import moment.admin.infrastructure.AdminAuthInterceptor;
+import moment.admin.global.interceptor.AdminAuthInterceptor;
 import moment.auth.application.AuthService;
 import moment.auth.presentation.LoginUserArgumentResolver;
 import org.springframework.context.annotation.Configuration;

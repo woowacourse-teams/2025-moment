@@ -74,7 +74,7 @@ server:
   forward-headers-strategy: native
   servlet:
     session:
-      timeout: ${ADMIN_SESSION_TIMEOUT}
+      timeout: ${ADMIN_SESSION_TIMEOUT:3600}
 
 management:
   metrics:
@@ -109,3 +109,5 @@ admin:
     email: ${ADMIN_INITIAL_EMAIL}
     password: ${ADMIN_INITIAL_PASSWORD}
     name: ${ADMIN_INITIAL_NAME}
+  session:
+    timeout: ${ADMIN_SESSION_TIMEOUT}

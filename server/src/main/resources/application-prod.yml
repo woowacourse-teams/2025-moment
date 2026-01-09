@@ -132,3 +132,11 @@ s3:
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}
+
+admin:
+  initial:
+    email: ${ADMIN_INITIAL_EMAIL}
+    password: ${ADMIN_INITIAL_PASSWORD}
+    name: ${ADMIN_INITIAL_NAME}
+  session:
+    timeout: ${ADMIN_SESSION_TIMEOUT}

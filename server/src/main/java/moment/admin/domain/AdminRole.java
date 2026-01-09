@@ -16,4 +16,8 @@ public enum AdminRole {
     public boolean canRegisterAdmin() {
         return this.canManageAdmins;
     }
+
+    public boolean isSuperAdmin() {
+        return this == SUPER_ADMIN;
+    }
 }

@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.admin.dto.request.AdminCreateRequest;
-import moment.admin.infrastructure.AdminAuthInterceptor;
+import moment.admin.global.util.AdminSessionManager;
 import moment.admin.service.admin.AdminService;
 import moment.global.exception.MomentException;
 import org.springframework.stereotype.Controller;
@@ -20,11 +20,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminManagementController {
 
     private final AdminService adminService;
+    private final AdminSessionManager sessionManager;
 
     @GetMapping("/admin/accounts/new")
     public String newAccountPage(HttpSession session, Model model) {
-        // 이중 권한 검증 (방어적 프로그래밍)
-        Long adminId = (Long) session.getAttribute(AdminAuthInterceptor.ADMIN_SESSION_KEY);
+
+        Long adminId = sessionManager.getId(session);
         adminService.validateAdminRegistrationPermission(adminId);
 
         model.addAttribute("request", new AdminCreateRequest("", "", ""));
@@ -37,8 +38,8 @@ public class AdminManagementController {
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes,
                                 Model model) {
-        // 이중 권한 검증 (방어적 프로그래밍)
-        Long adminId = (Long) session.getAttribute(AdminAuthInterceptor.ADMIN_SESSION_KEY);
+
+        Long adminId = sessionManager.getId(session);
         adminService.validateAdminRegistrationPermission(adminId);
 
         if (bindingResult.hasErrors()) {

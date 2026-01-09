@@ -84,4 +84,4 @@ admin:
     password: test-password-123
     name: Test Admin
   session:
-    timeout: 1h
+    timeout: 3600
