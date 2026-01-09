@@ -9,7 +9,7 @@ export const Footer = () => {
           카카오톡 오픈 채팅
         </S.InquiryLink>
       </div>
-      <div>Copyright © 우아한테크코스 모멘트 팀 All Rights Reserved.</div>
+      <div>Copyright © 모멘트 All Rights Reserved.</div>
     </S.FooterWrapper>
   );
 };
