@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
-import { useWebView } from "@/hooks/use-webview";
+import { useWebView } from "@/hooks/useWebview";
 
 const BG = "#0a0a0f";
 const WEB_URL = "https://connectingmoment.com";
@@ -22,7 +22,6 @@ export default function HomeScreen() {
       style={[styles.container, { backgroundColor: BG }]}
       edges={["top", "bottom"]}
     >
-      {/* WebView는 에러 발생 시 숨김 */}
       {!error && (
         <WebView
           ref={webViewRef}
@@ -40,7 +39,6 @@ export default function HomeScreen() {
         />
       )}
 
-      {/* ✅ 로딩 오버레이 */}
       {isLoading && !error && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#ffffff" />
@@ -48,7 +46,6 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* ✅ 에러 화면 */}
       {error && (
         <View style={styles.errorWrap}>
           <Text style={styles.errorTitle}>{error.title}</Text>
