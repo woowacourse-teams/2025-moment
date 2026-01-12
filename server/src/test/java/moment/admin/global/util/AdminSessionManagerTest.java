@@ -3,9 +3,11 @@ package moment.admin.global.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 import moment.admin.domain.AdminRole;
+import moment.admin.infrastructure.AdminSessionRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +27,8 @@ class AdminSessionManagerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        sessionManager = new AdminSessionManager();
+        AdminSessionRepository adminSessionRepository = mock(AdminSessionRepository.class);
+        sessionManager = new AdminSessionManager(adminSessionRepository);
 
         Field sessionTimeoutField = AdminSessionManager.class.getDeclaredField("sessionTimeout");
         sessionTimeoutField.setAccessible(true);
