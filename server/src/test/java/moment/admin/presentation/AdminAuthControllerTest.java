@@ -91,6 +91,7 @@ class AdminAuthControllerTest {
 
         // when
         Response response = RestAssured.given().log().all()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "admin@test.com")
                 .formParam("password", rawPassword)
@@ -122,26 +123,30 @@ class AdminAuthControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "admin@test.com")
                 .formParam("password", "wrongpassword")
                 .when().post("/admin/login")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
-                .header("Location", containsString("/admin/login?error="));
+                .header("Location", containsString("/admin/login"))
+                .header("Location", containsString("error="));
     }
 
     @Test
     void 존재하지_않는_이메일로_로그인_시_로그인_페이지로_리다이렉트된다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "nonexistent@test.com")
                 .formParam("password", "password123!@#")
                 .when().post("/admin/login")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
-                .header("Location", containsString("/admin/login?error="));
+                .header("Location", containsString("/admin/login"))
+                .header("Location", containsString("error="));
     }
 
     @Test
@@ -154,6 +159,7 @@ class AdminAuthControllerTest {
 
         // 로그인하여 세션 ID 획득
         String sessionId = RestAssured.given()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "admin@test.com")
                 .formParam("password", rawPassword)
@@ -164,6 +170,7 @@ class AdminAuthControllerTest {
 
         // when
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(sessionId)
                 .when().post("/admin/logout")
                 .then().log().all()
@@ -172,6 +179,7 @@ class AdminAuthControllerTest {
 
         // then - 로그아웃 후 세션 무효화 확인
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(sessionId)
                 .when().get("/admin/users")
                 .then().log().all()
@@ -189,6 +197,7 @@ class AdminAuthControllerTest {
 
         // when
         Response response = RestAssured.given().log().all()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "super@test.com")
                 .formParam("password", rawPassword)

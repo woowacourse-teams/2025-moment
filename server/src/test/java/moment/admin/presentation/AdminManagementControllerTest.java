@@ -56,13 +56,17 @@ class AdminManagementControllerTest {
     }
 
     private String loginAsSuperAdmin() {
-        Admin superAdmin = AdminFixture.createAdminByRole(AdminRole.SUPER_ADMIN);
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin temp = AdminFixture.createAdminByRole(AdminRole.SUPER_ADMIN);
+        Admin superAdmin = new Admin(temp.getEmail(), temp.getName(), encodedPassword, AdminRole.SUPER_ADMIN);
         Admin savedAdmin = adminRepository.save(superAdmin);
 
         return RestAssured.given()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", savedAdmin.getEmail())
-                .formParam("password", "password123!@#")
+                .formParam("password", rawPassword)
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
@@ -70,13 +74,17 @@ class AdminManagementControllerTest {
     }
 
     private String loginAsAdmin() {
-        Admin admin = AdminFixture.createAdminByRole(AdminRole.ADMIN);
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin temp = AdminFixture.createAdminByRole(AdminRole.ADMIN);
+        Admin admin = new Admin(temp.getEmail(), temp.getName(), encodedPassword, AdminRole.ADMIN);
         Admin savedAdmin = adminRepository.save(admin);
 
         return RestAssured.given()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", savedAdmin.getEmail())
-                .formParam("password", "password123!@#")
+                .formParam("password", rawPassword)
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
@@ -104,6 +112,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(sessionId)
                 .when().get("/admin/accounts/new")
                 .then().log().all()
@@ -115,6 +124,7 @@ class AdminManagementControllerTest {
     void 세션_없이_관리자_등록_페이지에_접근하면_권한_없음_예외가_발생한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .when().get("/admin/accounts/new")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -132,6 +142,7 @@ class AdminManagementControllerTest {
 
         // when
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", newEmail)
@@ -159,6 +170,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "newadmin@test.com")
@@ -190,7 +202,7 @@ class AdminManagementControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.HTML)
-                .body(containsString("error"));
+                .body(containsString("이미 등록된"));
     }
 
     @Test

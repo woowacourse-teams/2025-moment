@@ -48,6 +48,9 @@ class AdminUserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     private String adminSessionId;
 
     @BeforeEach
@@ -55,13 +58,17 @@ class AdminUserControllerTest {
         RestAssured.port = port;
         databaseCleaner.clean();
 
-        Admin admin = AdminFixture.createAdmin();
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin temp = AdminFixture.createAdmin();
+        Admin admin = new Admin(temp.getEmail(), temp.getName(), encodedPassword, temp.getRole());
         Admin savedAdmin = adminRepository.save(admin);
 
         adminSessionId = RestAssured.given()
+                .redirects().follow(false)
                 .contentType(ContentType.URLENC)
                 .formParam("email", savedAdmin.getEmail())
-                .formParam("password", "password123!@#")
+                .formParam("password", rawPassword)
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
@@ -81,6 +88,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().get("/admin/users")
                 .then().log().all()
@@ -96,6 +104,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .param("page", "1")
                 .param("size", "10")
@@ -109,6 +118,7 @@ class AdminUserControllerTest {
     void 사용자가_없을_때_빈_목록을_조회한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().get("/admin/users")
                 .then().log().all()
@@ -120,6 +130,7 @@ class AdminUserControllerTest {
     void 세션_없이_사용자_목록_조회_시_권한_없음_예외가_발생한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .when().get("/admin/users")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -134,6 +145,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().get("/admin/users/{id}/edit", savedUser.getId())
                 .then().log().all()
@@ -145,6 +157,7 @@ class AdminUserControllerTest {
     void 존재하지_않는_사용자_수정_페이지_조회_시_에러_페이지로_이동한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().get("/admin/users/{id}/edit", 999L)
                 .then().log().all()
@@ -164,6 +177,7 @@ class AdminUserControllerTest {
 
         // when
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
@@ -196,6 +210,7 @@ class AdminUserControllerTest {
 
         // when
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
@@ -219,6 +234,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "")
@@ -238,6 +254,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
@@ -257,6 +274,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
@@ -272,6 +290,7 @@ class AdminUserControllerTest {
     void 존재하지_않는_사용자_수정_시_에러_페이지로_이동한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
@@ -291,6 +310,7 @@ class AdminUserControllerTest {
 
         // when
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().post("/admin/users/{id}/delete", savedUser.getId())
                 .then().log().all()
@@ -305,6 +325,7 @@ class AdminUserControllerTest {
     void 존재하지_않는_사용자_차단_시_예외가_발생한다() {
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .sessionId(adminSessionId)
                 .when().post("/admin/users/{id}/delete", 999L)
                 .then().log().all()
@@ -320,6 +341,7 @@ class AdminUserControllerTest {
 
         // when & then
         RestAssured.given().log().all()
+                .redirects().follow(false)
                 .when().post("/admin/users/{id}/delete", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())

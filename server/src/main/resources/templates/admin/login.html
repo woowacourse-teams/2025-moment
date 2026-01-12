@@ -26,7 +26,7 @@
                 <!-- 에러 메시지 -->
                 <div th:if="${error}" class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center gap-2">
                     <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                    <span>이메일 또는 비밀번호가 일치하지 않습니다.</span>
+                    <span th:text="${error}">에러 메시지</span>
                 </div>
 
                 <!-- 로그인 폼 -->
