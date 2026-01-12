@@ -2,10 +2,18 @@ package moment.admin.service.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moment.admin.domain.Admin;
+import moment.admin.dto.response.AdminResponse;
+import moment.admin.dto.response.AdminSessionResponse;
 import moment.admin.global.util.AdminSessionManager;
 import moment.admin.service.admin.AdminService;
+import moment.admin.service.session.AdminSessionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 관리자 관리 애플리케이션 서비스
@@ -17,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminManagementApplicationService {
 
     private final AdminService adminService;
+    private final AdminSessionService adminSessionService;
     private final AdminSessionManager sessionManager;
 
     /**
@@ -46,6 +55,33 @@ public class AdminManagementApplicationService {
     public void unblockAdmin(Long adminId) {
         adminService.unblockAdmin(adminId);
         log.info("Admin unblocked: adminId={}", adminId);
+    }
+
+    /**
+     * 모든 관리자 조회 (상태 포함)
+     * @param pageable 페이징 정보
+     * @return 관리자 응답 페이지
+     */
+    public Page<AdminResponse> getAllAdminsWithStatus(Pageable pageable) {
+        Page<Admin> admins = adminService.getAllAdmins(pageable);
+        return admins.map(AdminResponse::from);
+    }
+
+    /**
+     * 모든 활성 세션 조회
+     * @return 활성 세션 응답 목록
+     */
+    public List<AdminSessionResponse> getAllActiveSessions() {
+        return adminSessionService.getAllActiveSessions();
+    }
+
+    /**
+     * 특정 세션 강제 로그아웃 (invalidateSessionBySessionId)
+     * @param sessionId HTTP 세션 ID
+     */
+    @Transactional
+    public void invalidateSessionBySessionId(String sessionId) {
+        forceLogoutSession(sessionId);
     }
 
     /**
