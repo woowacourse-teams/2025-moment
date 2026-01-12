@@ -98,4 +98,12 @@ public class Admin extends BaseEntity {
     public boolean canRegisterAdmin() {
         return this.role.canRegisterAdmin();
     }
+
+    /**
+     * 관리자가 차단되었는지 확인
+     * @return deletedAt이 NULL이 아니면 true
+     */
+    public boolean isBlocked() {
+        return this.getDeletedAt() != null;
+    }
 }

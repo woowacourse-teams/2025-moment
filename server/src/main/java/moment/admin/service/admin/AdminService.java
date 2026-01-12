@@ -1,15 +1,19 @@
 package moment.admin.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import moment.admin.domain.Admin;
 import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -22,7 +26,15 @@ public class AdminService {
         Admin admin = adminRepository.findByEmail(email)
                 .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_LOGIN_FAILED));
 
+        // 비밀번호 검증
         if (!passwordEncoder.matches(password, admin.getPassword())) {
+            throw new MomentException(ErrorCode.ADMIN_LOGIN_FAILED);
+        }
+
+        // 차단된 관리자 검증 (방어적 프로그래밍)
+        // @SQLRestriction으로 인해 이미 차단된 관리자는 조회되지 않지만, 명시적으로 검증
+        if (admin.isBlocked()) {
+            log.warn("Blocked admin login attempt: email={}", email);
             throw new MomentException(ErrorCode.ADMIN_LOGIN_FAILED);
         }
 
@@ -58,6 +70,77 @@ public class AdminService {
         Admin admin = getAdminById(adminId);
         if (!admin.canRegisterAdmin()) {
             throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        }
+    }
+
+    // ===== 새로 추가된 메서드 =====
+
+    /**
+     * 모든 관리자 조회 (차단된 것 포함, 페이징)
+     * @param pageable 페이징 정보
+     * @return 관리자 페이지
+     */
+    public Page<Admin> getAllAdmins(Pageable pageable) {
+        return adminRepository.findAllIncludingDeleted(pageable);
+    }
+
+    /**
+     * 활성 관리자만 조회 (차단된 것 제외, 페이징)
+     * @param pageable 페이징 정보
+     * @return 관리자 페이지
+     */
+    public Page<Admin> getAllActiveAdmins(Pageable pageable) {
+        return adminRepository.findAll(pageable);  // @SQLRestriction으로 deletedAt IS NULL 자동 적용
+    }
+
+    /**
+     * 관리자 차단 (Soft Delete)
+     * @param adminId 차단할 관리자 ID
+     */
+    @Transactional
+    public void blockAdmin(Long adminId) {
+        Admin admin = getAdminById(adminId);
+
+        // 마지막 SUPER_ADMIN 차단 방지
+        validateNotLastSuperAdmin(adminId);
+
+        adminRepository.delete(admin);  // Soft Delete
+        log.info("Admin blocked: adminId={}, email={}", adminId, admin.getEmail());
+    }
+
+    /**
+     * 관리자 차단 해제
+     * @param adminId 차단 해제할 관리자 ID
+     */
+    @Transactional
+    public void unblockAdmin(Long adminId) {
+        adminRepository.restoreDeleted(adminId);
+        log.info("Admin unblocked: adminId={}", adminId);
+    }
+
+    /**
+     * 자기 자신 차단 방지 검증
+     * @param currentAdminId 현재 로그인한 관리자 ID
+     * @param targetAdminId 차단 대상 관리자 ID
+     */
+    public void validateNotSelfBlock(Long currentAdminId, Long targetAdminId) {
+        if (currentAdminId.equals(targetAdminId)) {
+            throw new MomentException(ErrorCode.ADMIN_CANNOT_BLOCK_SELF);
+        }
+    }
+
+    /**
+     * 마지막 SUPER_ADMIN 차단 방지 검증
+     * @param adminId 차단 대상 관리자 ID
+     */
+    public void validateNotLastSuperAdmin(Long adminId) {
+        Admin admin = getAdminById(adminId);
+
+        if (admin.isSuperAdmin()) {
+            long superAdminCount = adminRepository.countByRole(AdminRole.SUPER_ADMIN);
+            if (superAdminCount <= 1) {
+                throw new MomentException(ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+            }
         }
     }
 }

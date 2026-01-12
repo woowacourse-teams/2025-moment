@@ -63,6 +63,10 @@ public enum ErrorCode {
     ADMIN_UNAUTHORIZED("A-003", "관리자 권한이 없습니다.", HttpStatus.FORBIDDEN),
     ADMIN_EMAIL_CONFLICT("A-004", "이미 등록된 관리자 이메일입니다.", HttpStatus.CONFLICT),
     ADMIN_INVALID_INFO("A-005", "유효하지 않은 입력 정보입니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_CANNOT_BLOCK_SELF("A-006", "자기 자신을 차단할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_LAST_SUPER_ADMIN_DELETE("A-007", "마지막 SUPER_ADMIN은 차단할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_SESSION_NOT_FOUND("A-008", "세션을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    ADMIN_SESSION_INVALIDATED("A-009", "세션이 만료되었습니다. 다시 로그인해 주세요.", HttpStatus.UNAUTHORIZED),
     ;
 
     private final String code;
