@@ -37,21 +37,33 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        String sessionId = session.getId();
+
         // 기존 인증 확인 (HTTP 세션 속성)
         try {
             sessionManager.validateAuthorized(session);
+            log.debug("Session authorized in HTTP session: sessionId={}", sessionId);
         } catch (MomentException e) {
-            log.warn("Admin unauthorized, redirecting to login");
-            response.sendRedirect("/admin/login");
-            return false;
+            // HTTP 세션에 인증 정보가 없음 → DB에서 세션 복원 시도
+            log.info("No auth info in HTTP session, attempting to restore from DB: sessionId={}", sessionId);
+
+            boolean restored = sessionManager.restoreSessionFromDb(session);
+            if (!restored) {
+                // 복원 실패 → 로그인 페이지로 리다이렉트
+                log.warn("Failed to restore session from DB, redirecting to login: sessionId={}", sessionId);
+                response.sendRedirect("/admin/login");
+                return false;
+            }
+
+            log.info("Session successfully restored from DB: sessionId={}", sessionId);
+            // 복원 성공 → 아래로 계속 진행
         }
 
-        // ===== 새로 추가: DB에서 세션 상태 확인 =====
-        String sessionId = session.getId();
+        // DB에서 세션 상태 확인 (차단된 관리자 또는 강제 로그아웃 감지)
         boolean isActiveInDb = sessionManager.isSessionActiveInDb(sessionId);
 
         if (!isActiveInDb) {
-            // DB에서 세션이 비활성화된 경우 (차단된 관리자 또는 강제 로그아웃)
+            // DB에서 세션이 비활성화된 경우
             log.warn("Session invalidated in database: sessionId={}", sessionId);
             sessionManager.invalidate(session);  // HTTP 세션도 무효화
             response.sendRedirect("/admin/login?error=SESSION_INVALIDATED");
@@ -71,9 +83,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // Request 속성에 역할 정보 저장 (Thymeleaf에서 사용)
-        request.setAttribute("adminRole", role);
-        request.setAttribute("requestURI", requestURI);
+        // Note: adminRole과 requestURI는 AdminControllerAdvice에서 Model에 추가됩니다.
 
         return true;
     }

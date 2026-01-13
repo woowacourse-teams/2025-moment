@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 import moment.admin.domain.AdminRole;
+import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -28,7 +29,8 @@ class AdminSessionManagerTest {
     @BeforeEach
     void setUp() throws Exception {
         AdminSessionRepository adminSessionRepository = mock(AdminSessionRepository.class);
-        sessionManager = new AdminSessionManager(adminSessionRepository);
+        AdminRepository adminRepository = mock(AdminRepository.class);
+        sessionManager = new AdminSessionManager(adminSessionRepository, adminRepository);
 
         Field sessionTimeoutField = AdminSessionManager.class.getDeclaredField("sessionTimeout");
         sessionTimeoutField.setAccessible(true);

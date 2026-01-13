@@ -1,1 +1,107 @@
-<html><body><h1>세션 관리</h1></body></html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout.html}">
+<head>
+    <title>활성 세션 - Moment Admin</title>
+    <!-- 30초마다 자동 새로고침 -->
+    <meta http-equiv="refresh" content="30">
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="py-8 px-6 max-w-7xl mx-auto">
+        <!-- 헤더 -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">활성 세션</h1>
+                <p class="text-sm text-gray-500 mt-1">
+                    현재 로그인 중인 관리자 세션을 모니터링합니다. (총 <span th:text="${totalSessions}">0</span>개)
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    <i data-lucide="refresh-cw" class="w-3 h-3 inline"></i>
+                    30초마다 자동으로 새로고침됩니다.
+                </p>
+            </div>
+            <button onclick="location.reload()"
+                    class="px-4 py-2.5 rounded-lg bg-slate-200 text-gray-800 font-medium hover:bg-slate-300 active:scale-95 transition-all duration-150 flex items-center gap-2">
+                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                새로고침
+            </button>
+        </div>
+
+        <!-- 플래시 메시지 -->
+        <div th:if="${message}" class="mb-4 p-4 rounded-lg bg-green-50 border border-green-200">
+            <p class="text-green-800 text-sm" th:text="${message}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200">
+            <p class="text-red-800 text-sm" th:text="${errorMessage}"></p>
+        </div>
+
+        <!-- 세션 목록 테이블 -->
+        <div class="rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-700">
+                    <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-3 font-semibold text-gray-900">관리자</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">이메일</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">역할</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">로그인 시간</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">마지막 활동</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">IP 주소</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">세션 ID</th>
+                        <th class="px-6 py-3 font-semibold text-gray-900">액션</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="session : ${sessions}"
+                        class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-3 font-medium" th:text="${session.adminName}">홍길동</td>
+                        <td class="px-6 py-3" th:text="${session.adminEmail}">admin@example.com</td>
+                        <td class="px-6 py-3">
+                            <span th:if="${session.adminRole.name() == 'SUPER_ADMIN'}"
+                                  class="px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                SUPER_ADMIN
+                            </span>
+                            <span th:if="${session.adminRole.name() == 'ADMIN'}"
+                                  class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                ADMIN
+                            </span>
+                        </td>
+                        <td class="px-6 py-3" th:text="${#temporals.format(session.loginTime, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 14:30:00</td>
+                        <td class="px-6 py-3" th:text="${#temporals.format(session.lastAccessTime, 'HH:mm:ss')}">14:35:20</td>
+                        <td class="px-6 py-3 font-mono text-xs" th:text="${session.ipAddress}">127.0.0.1</td>
+                        <td class="px-6 py-3 font-mono text-xs" th:text="${session.getShortSessionId()}">abc12345...</td>
+                        <td class="px-6 py-3">
+                            <form th:action="@{/admin/sessions/{sessionId}/invalidate(sessionId=${session.sessionId})}"
+                                  method="post"
+                                  onsubmit="return confirm('이 세션을 강제로 로그아웃하시겠습니까?');"
+                                  class="inline">
+                                <button type="submit"
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    강제 로그아웃
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 빈 상태 -->
+            <div th:if="${#lists.isEmpty(sessions)}" class="text-center py-12">
+                <i data-lucide="activity" class="w-12 h-12 text-gray-400 mx-auto mb-3"></i>
+                <p class="text-gray-500">활성 세션이 없습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lucide Icons 초기화 (레이아웃에 없으면 추가) -->
+    <script th:fragment="scripts">
+        lucide.createIcons();
+    </script>
+</main>
+</body>
+</html>

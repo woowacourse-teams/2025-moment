@@ -27,7 +27,23 @@ public class AdminAuthController {
     private final AdminSessionManager sessionManager;
 
     @GetMapping("/admin/login")
-    public String loginPage(@RequestParam(required = false) String error, Model model) {
+    public String loginPage(@RequestParam(required = false) String error,
+                            HttpSession session,
+                            Model model) {
+        // 이미 로그인된 사용자는 메인 페이지로 리다이렉트
+        // (인터셉터에서 세션 복원이 이루어지므로 여기서는 단순 체크만)
+        if (session != null) {
+            try {
+                sessionManager.validateAuthorized(session);
+                log.debug("Already logged in user accessing login page, redirecting to main");
+                return "redirect:/admin/users";
+            } catch (MomentException e) {
+                // 세션이 유효하지 않으면 로그인 페이지 표시
+                log.debug("No valid session, showing login page");
+            }
+        }
+
+        // 로그인 페이지 표시
         if (error != null) {
             model.addAttribute("error", error);
         }

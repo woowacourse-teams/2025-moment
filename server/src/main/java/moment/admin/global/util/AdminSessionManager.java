@@ -3,8 +3,10 @@ package moment.admin.global.util;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moment.admin.domain.Admin;
 import moment.admin.domain.AdminRole;
 import moment.admin.domain.AdminSession;
+import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -22,6 +24,7 @@ public class AdminSessionManager {
     private static final String ADMIN_ROLE_KEY = "ADMIN_ROLE";
 
     private final AdminSessionRepository adminSessionRepository;
+    private final AdminRepository adminRepository;
 
     @Value("${admin.session.timeout}")
     private int sessionTimeout;
@@ -150,5 +153,44 @@ public class AdminSessionManager {
         return adminSessionRepository.findBySessionId(sessionId)
                 .map(AdminSession::isActive)
                 .orElse(false);
+    }
+
+    /**
+     * DB에서 세션을 조회하여 HTTP 세션을 복원
+     * 서버 재시작 후에도 브라우저 쿠키의 세션 ID로 로그인 상태 유지
+     *
+     * @param session HTTP 세션
+     * @return 복원 성공 시 true, 실패 시 false
+     */
+    public boolean restoreSessionFromDb(HttpSession session) {
+        String sessionId = session.getId();
+
+        // DB에서 세션 조회
+        return adminSessionRepository.findBySessionId(sessionId)
+                .filter(AdminSession::isActive)  // 활성 세션만
+                .flatMap(adminSession -> {
+                    Long adminId = adminSession.getAdminId();
+
+                    // Admin 엔티티 조회하여 role 가져오기
+                    return adminRepository.findById(adminId)
+                            .filter(admin -> !admin.isBlocked())  // 차단되지 않은 관리자만
+                            .map(admin -> {
+                                try {
+                                    // HTTP 세션에 인증 정보 복원
+                                    setAuth(session, admin.getId(), admin.getRole());
+
+                                    log.info("✅ Session restored from DB: adminId={}, role={}, sessionId={}",
+                                            admin.getId(), admin.getRole(), sessionId);
+                                    return true;
+                                } catch (Exception e) {
+                                    log.error("Failed to restore session from DB: sessionId={}", sessionId, e);
+                                    return false;
+                                }
+                            });
+                })
+                .orElseGet(() -> {
+                    log.info("❌ Failed to restore session from DB: session not found or inactive, sessionId={}", sessionId);
+                    return false;
+                });
     }
 }

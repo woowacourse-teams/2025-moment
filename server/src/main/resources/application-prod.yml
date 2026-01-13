@@ -36,6 +36,13 @@ spring:
     password: ${FLYWAY_DB_PASSWORD}
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
 
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: never
+      table-name: SPRING_SESSION
+    timeout: ${ADMIN_SESSION_TIMEOUT:3600s}
+
   sql:
     init:
       mode: never
@@ -140,3 +147,4 @@ admin:
     name: ${ADMIN_INITIAL_NAME}
   session:
     timeout: ${ADMIN_SESSION_TIMEOUT}
+    cookie-name: SESSION
