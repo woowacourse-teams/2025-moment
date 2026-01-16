@@ -10,5 +10,18 @@
       "Read(./secrets/**)",
       "Read(./build)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-env-files.py\""
+          }
+        ]
+      }
+    ]
   }
 }
