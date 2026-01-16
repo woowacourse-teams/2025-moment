@@ -72,7 +72,7 @@ class AdminUserControllerTest {
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .extract().cookie("JSESSIONID");
+                .extract().cookie("SESSION");
     }
 
     @AfterEach
@@ -89,7 +89,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().get("/admin/users")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -105,7 +105,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .param("page", "1")
                 .param("size", "10")
                 .when().get("/admin/users")
@@ -119,7 +119,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().get("/admin/users")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -146,7 +146,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().get("/admin/users/{id}/edit", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -158,7 +158,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().get("/admin/users/{id}/edit", 999L)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -178,7 +178,7 @@ class AdminUserControllerTest {
         // when
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
                 .formParam("availableStar", String.valueOf(newAvailableStar))
@@ -211,7 +211,7 @@ class AdminUserControllerTest {
         // when
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
                 .formParam("availableStar", String.valueOf(originalAvailableStar))
@@ -235,7 +235,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "")
                 .formParam("availableStar", "1000")
@@ -255,7 +255,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
                 .formParam("availableStar", "-100")
@@ -275,7 +275,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
                 .formParam("availableStar", "1000")
@@ -291,7 +291,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
                 .formParam("availableStar", "1000")
@@ -311,7 +311,7 @@ class AdminUserControllerTest {
         // when
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().post("/admin/users/{id}/delete", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -326,7 +326,7 @@ class AdminUserControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(adminSessionId)
+                .cookie("SESSION", adminSessionId)
                 .when().post("/admin/users/{id}/delete", 999L)
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())

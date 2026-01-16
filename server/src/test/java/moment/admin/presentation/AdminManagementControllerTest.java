@@ -70,7 +70,7 @@ class AdminManagementControllerTest {
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .extract().cookie("JSESSIONID");
+                .extract().cookie("SESSION");
     }
 
     private String loginAsAdmin() {
@@ -88,7 +88,7 @@ class AdminManagementControllerTest {
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .extract().cookie("JSESSIONID");
+                .extract().cookie("SESSION");
     }
 
     @Test
@@ -98,7 +98,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .when().get("/admin/accounts/new")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -113,7 +113,7 @@ class AdminManagementControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .when().get("/admin/accounts/new")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -143,7 +143,7 @@ class AdminManagementControllerTest {
         // when
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", newEmail)
                 .formParam("name", newName)
@@ -171,7 +171,7 @@ class AdminManagementControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "newadmin@test.com")
                 .formParam("name", "NewAdmin")
@@ -194,7 +194,7 @@ class AdminManagementControllerTest {
         // when & then
         // 템플릿이 구현되기 전이므로 상태 코드와 content type만 검증
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", duplicateEmail)
                 .formParam("name", "NewAdmin")
@@ -214,7 +214,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "")
                 .formParam("name", "NewAdmin")
@@ -232,7 +232,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "invalidemail")
                 .formParam("name", "NewAdmin")
@@ -250,7 +250,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "newadmin@test.com")
                 .formParam("name", "")
@@ -268,7 +268,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("email", "newadmin@test.com")
                 .formParam("name", "NewAdmin")
@@ -286,7 +286,7 @@ class AdminManagementControllerTest {
 
         // when & then
         RestAssured.given().log().all()
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .when().get("/admin/accounts")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -301,7 +301,7 @@ class AdminManagementControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .redirects().follow(false)
-                .sessionId(sessionId)
+                .cookie("SESSION", sessionId)
                 .when().get("/admin/accounts")
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -312,13 +312,13 @@ class AdminManagementControllerTest {
     void 관리자_차단_후_세션_무효화() {
         // given
         String superAdminSession = loginAsSuperAdmin();
-        
+
         // Target Admin setup
         String rawPassword = "password123!@#";
         String encodedPassword = passwordEncoder.encode(rawPassword);
         Admin targetAdmin = new Admin("target@example.com", "Target", encodedPassword, AdminRole.ADMIN);
         targetAdmin = adminRepository.save(targetAdmin);
-        
+
         // Target Admin Login
         String targetAdminSession = RestAssured.given()
                 .redirects().follow(false)
@@ -328,7 +328,7 @@ class AdminManagementControllerTest {
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .extract().cookie("JSESSIONID");
+                .extract().cookie("SESSION");
 
         // when - SUPER_ADMIN blocks Target Admin
         RestAssured.given().log().all()
@@ -346,5 +346,164 @@ class AdminManagementControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
                 .header("Location", containsString("/admin/login"));
+    }
+
+    @Test
+    void 자기_자신을_차단하려고_하면_차단이_실패하고_리다이렉트된다() {
+        // given
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin superAdmin = new Admin("super@example.com", "SuperAdmin", encodedPassword, AdminRole.SUPER_ADMIN);
+        superAdmin = adminRepository.save(superAdmin);
+
+        String sessionId = RestAssured.given()
+                .redirects().follow(false)
+                .contentType(ContentType.URLENC)
+                .formParam("email", superAdmin.getEmail())
+                .formParam("password", rawPassword)
+                .when().post("/admin/login")
+                .then()
+                .statusCode(HttpStatus.FOUND.value())
+                .extract().cookie("SESSION");
+
+        // when - 자기 자신을 차단하려고 시도
+        RestAssured.given().log().all()
+                .redirects().follow(false)
+                .cookie("SESSION", sessionId)
+                .post("/admin/accounts/{id}/block", superAdmin.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", containsString("/admin/accounts"));
+
+        // then - 본인은 여전히 차단되지 않음 (로그인 상태 유지)
+        RestAssured.given()
+                .cookie("SESSION", sessionId)
+                .when().get("/admin/accounts")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(containsString("관리자 관리"));
+    }
+
+    @Test
+    void 마지막_SUPER_ADMIN을_차단하려고_하면_차단이_실패하고_리다이렉트된다() {
+        // given - 단 하나의 SUPER_ADMIN만 존재
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin superAdmin = new Admin("super@example.com", "SuperAdmin", encodedPassword, AdminRole.SUPER_ADMIN);
+        superAdmin = adminRepository.save(superAdmin);
+
+        // 일반 ADMIN 추가 (SUPER_ADMIN이 아닌)
+        Admin normalAdmin = new Admin("normal@example.com", "NormalAdmin", encodedPassword, AdminRole.ADMIN);
+        adminRepository.save(normalAdmin);
+
+        String sessionId = RestAssured.given()
+                .redirects().follow(false)
+                .contentType(ContentType.URLENC)
+                .formParam("email", superAdmin.getEmail())
+                .formParam("password", rawPassword)
+                .when().post("/admin/login")
+                .then()
+                .statusCode(HttpStatus.FOUND.value())
+                .extract().cookie("SESSION");
+
+        // when - 마지막 SUPER_ADMIN을 차단하려고 시도
+        RestAssured.given().log().all()
+                .redirects().follow(false)
+                .cookie("SESSION", sessionId)
+                .post("/admin/accounts/{id}/block", superAdmin.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", containsString("/admin/accounts"));
+
+        // then - 본인은 여전히 차단되지 않음 (로그인 상태 유지)
+        RestAssured.given()
+                .cookie("SESSION", sessionId)
+                .when().get("/admin/accounts")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(containsString("관리자 관리"));
+    }
+
+    @Test
+    void 차단_해제_후_재로그인이_가능하다() {
+        // given
+        String superAdminSession = loginAsSuperAdmin();
+
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Admin targetAdmin = new Admin("target@example.com", "Target", encodedPassword, AdminRole.ADMIN);
+        targetAdmin = adminRepository.save(targetAdmin);
+
+        // 먼저 차단
+        RestAssured.given()
+                .redirects().follow(false)
+                .cookie("SESSION", superAdminSession)
+                .post("/admin/accounts/{id}/block", targetAdmin.getId())
+                .then()
+                .statusCode(HttpStatus.FOUND.value());
+
+        // 차단된 상태에서 로그인 시도 - 실패해야 함 (리다이렉트로 로그인 페이지 유지)
+        RestAssured.given()
+                .redirects().follow(false)
+                .contentType(ContentType.URLENC)
+                .formParam("email", targetAdmin.getEmail())
+                .formParam("password", rawPassword)
+                .when().post("/admin/login")
+                .then()
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", containsString("/admin/login"));
+
+        // when - 차단 해제
+        RestAssured.given()
+                .redirects().follow(false)
+                .cookie("SESSION", superAdminSession)
+                .post("/admin/accounts/{id}/unblock", targetAdmin.getId())
+                .then()
+                .statusCode(HttpStatus.FOUND.value());
+
+        // then - 재로그인 성공
+        RestAssured.given()
+                .redirects().follow(false)
+                .contentType(ContentType.URLENC)
+                .formParam("email", targetAdmin.getEmail())
+                .formParam("password", rawPassword)
+                .when().post("/admin/login")
+                .then()
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", containsString("/admin/users"));
+    }
+
+    @Test
+    void 페이징_동작_검증_21개_이상의_관리자() {
+        // given - 21개의 관리자 생성 (기본 페이지 크기 20을 초과)
+        String rawPassword = "password123!@#";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        for (int i = 1; i <= 21; i++) {
+            Admin admin = new Admin("admin" + i + "@example.com", "Admin" + i, encodedPassword, AdminRole.ADMIN);
+            adminRepository.save(admin);
+        }
+
+        String sessionId = loginAsSuperAdmin();
+
+        // when & then - 첫 번째 페이지 (20개)
+        RestAssured.given().log().all()
+                .cookie("SESSION", sessionId)
+                .queryParam("page", 0)
+                .queryParam("size", 20)
+                .when().get("/admin/accounts")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body(containsString("다음"));
+
+        // when & then - 두 번째 페이지 (나머지)
+        RestAssured.given().log().all()
+                .cookie("SESSION", sessionId)
+                .queryParam("page", 1)
+                .queryParam("size", 20)
+                .when().get("/admin/accounts")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body(containsString("이전"));
     }
 }

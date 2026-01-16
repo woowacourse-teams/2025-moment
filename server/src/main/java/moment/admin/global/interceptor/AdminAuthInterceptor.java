@@ -31,6 +31,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(false);
 
         // 세션이 없으면 로그인 페이지로 리다이렉트
+        // Spring Session이 자동으로 복원하므로, 여기서 null이면 진짜 세션이 없는 것
         if (session == null) {
             log.warn("No session found, redirecting to login");
             response.sendRedirect("/admin/login");
@@ -44,19 +45,9 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             sessionManager.validateAuthorized(session);
             log.debug("Session authorized in HTTP session: sessionId={}", sessionId);
         } catch (MomentException e) {
-            // HTTP 세션에 인증 정보가 없음 → DB에서 세션 복원 시도
-            log.info("No auth info in HTTP session, attempting to restore from DB: sessionId={}", sessionId);
-
-            boolean restored = sessionManager.restoreSessionFromDb(session);
-            if (!restored) {
-                // 복원 실패 → 로그인 페이지로 리다이렉트
-                log.warn("Failed to restore session from DB, redirecting to login: sessionId={}", sessionId);
-                response.sendRedirect("/admin/login");
-                return false;
-            }
-
-            log.info("Session successfully restored from DB: sessionId={}", sessionId);
-            // 복원 성공 → 아래로 계속 진행
+            log.warn("Admin unauthorized, redirecting to login");
+            response.sendRedirect("/admin/login");
+            return false;
         }
 
         // DB에서 세션 상태 확인 (차단된 관리자 또는 강제 로그아웃 감지)

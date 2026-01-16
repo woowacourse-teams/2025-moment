@@ -29,17 +29,22 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     /**
      * 모든 관리자 조회 (차단된 것 포함, 페이징)
+     * Native Query로 @SQLRestriction 우회
      * @param pageable 페이징 정보
      * @return 관리자 페이지
      */
-    @Query("SELECT a FROM admins a WHERE a.deletedAt IS NULL OR a.deletedAt IS NOT NULL ORDER BY a.createdAt DESC")
+    @Query(
+            value = "SELECT * FROM admins ORDER BY created_at DESC, id DESC",
+            countQuery = "SELECT COUNT(*) FROM admins",
+            nativeQuery = true
+    )
     Page<Admin> findAllIncludingDeleted(Pageable pageable);
 
     /**
      * 차단된 관리자 복원 (Soft Delete 해제)
      * @param id 관리자 ID
      */
-    @Modifying
-    @Query("UPDATE admins a SET a.deletedAt = NULL WHERE a.id = :id")
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE admins SET deleted_at = NULL WHERE id = :id", nativeQuery = true)
     void restoreDeleted(@Param("id") Long id);
 }

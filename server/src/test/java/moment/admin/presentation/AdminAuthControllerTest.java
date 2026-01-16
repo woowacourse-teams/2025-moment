@@ -102,7 +102,7 @@ class AdminAuthControllerTest {
                 .extract().response();
 
         // then
-        String sessionId = response.getCookie("JSESSIONID");
+        String sessionId = response.getCookie("SESSION");
         assertThat(sessionId).isNotNull();
 
         // 세션 ID로 인증된 요청 검증
@@ -166,7 +166,7 @@ class AdminAuthControllerTest {
                 .when().post("/admin/login")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .extract().cookie("JSESSIONID");
+                .extract().cookie("SESSION");
 
         // when
         RestAssured.given().log().all()
@@ -208,7 +208,7 @@ class AdminAuthControllerTest {
                 .extract().response();
 
         // then
-        String sessionId = response.getCookie("JSESSIONID");
+        String sessionId = response.getCookie("SESSION");
         assertThat(sessionId).isNotNull();
 
         // 세션 ID로 인증된 요청 검증

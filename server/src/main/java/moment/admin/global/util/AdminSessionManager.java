@@ -155,42 +155,7 @@ public class AdminSessionManager {
                 .orElse(false);
     }
 
-    /**
-     * DB에서 세션을 조회하여 HTTP 세션을 복원
-     * 서버 재시작 후에도 브라우저 쿠키의 세션 ID로 로그인 상태 유지
-     *
-     * @param session HTTP 세션
-     * @return 복원 성공 시 true, 실패 시 false
-     */
-    public boolean restoreSessionFromDb(HttpSession session) {
-        String sessionId = session.getId();
-
-        // DB에서 세션 조회
-        return adminSessionRepository.findBySessionId(sessionId)
-                .filter(AdminSession::isActive)  // 활성 세션만
-                .flatMap(adminSession -> {
-                    Long adminId = adminSession.getAdminId();
-
-                    // Admin 엔티티 조회하여 role 가져오기
-                    return adminRepository.findById(adminId)
-                            .filter(admin -> !admin.isBlocked())  // 차단되지 않은 관리자만
-                            .map(admin -> {
-                                try {
-                                    // HTTP 세션에 인증 정보 복원
-                                    setAuth(session, admin.getId(), admin.getRole());
-
-                                    log.info("✅ Session restored from DB: adminId={}, role={}, sessionId={}",
-                                            admin.getId(), admin.getRole(), sessionId);
-                                    return true;
-                                } catch (Exception e) {
-                                    log.error("Failed to restore session from DB: sessionId={}", sessionId, e);
-                                    return false;
-                                }
-                            });
-                })
-                .orElseGet(() -> {
-                    log.info("❌ Failed to restore session from DB: session not found or inactive, sessionId={}", sessionId);
-                    return false;
-                });
-    }
+    // ===== 제거된 메서드 =====
+    // - restoreSessionFromDb(HttpSession session)
+    // → Spring Session이 자동으로 세션을 복원하므로 불필요
 }

@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -283,5 +285,151 @@ class AdminServiceTest {
                 .filter(admin -> admin.getEmail().equals(email))
                 .count();
         assertThat(count).isEqualTo(1);
+    }
+
+    // ===== validateNotSelfBlock 테스트 =====
+
+    @Test
+    void 자기_자신을_차단하려고_하면_ADMIN_CANNOT_BLOCK_SELF_예외를_던진다() {
+        // given
+        Long adminId = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> adminService.validateNotSelfBlock(adminId, adminId))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_CANNOT_BLOCK_SELF);
+    }
+
+    @Test
+    void 다른_관리자를_차단하려고_하면_예외가_발생하지_않는다() {
+        // given
+        Long currentAdminId = 1L;
+        Long targetAdminId = 2L;
+
+        // when & then
+        assertDoesNotThrow(() -> adminService.validateNotSelfBlock(currentAdminId, targetAdminId));
+    }
+
+    // ===== validateNotLastSuperAdmin 테스트 =====
+
+    @Test
+    void 마지막_SUPER_ADMIN을_차단하려고_하면_ADMIN_LAST_SUPER_ADMIN_DELETE_예외를_던진다() {
+        // given - 단 하나의 SUPER_ADMIN만 존재
+        Admin superAdmin = adminService.createAdmin(
+                "super@test.com",
+                "SuperAdmin",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+
+        // when & then
+        assertThatThrownBy(() -> adminService.validateNotLastSuperAdmin(superAdmin.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+    }
+
+    @Test
+    void 두_명_이상의_SUPER_ADMIN이_있을_때_차단하면_예외가_발생하지_않는다() {
+        // given - 두 명의 SUPER_ADMIN 존재
+        Admin superAdmin1 = adminService.createAdmin(
+                "super1@test.com",
+                "SuperAdmin1",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+        adminService.createAdmin(
+                "super2@test.com",
+                "SuperAdmin2",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+
+        // when & then - 첫 번째 SUPER_ADMIN 차단 시도
+        assertDoesNotThrow(() -> adminService.validateNotLastSuperAdmin(superAdmin1.getId()));
+    }
+
+    @Test
+    void 일반_ADMIN을_차단할_때는_마지막_SUPER_ADMIN_검증이_통과한다() {
+        // given - 하나의 SUPER_ADMIN과 일반 ADMIN
+        adminService.createAdmin(
+                "super@test.com",
+                "SuperAdmin",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+        Admin normalAdmin = adminService.createAdmin(
+                "admin@test.com",
+                "Admin",
+                "password123!@#",
+                AdminRole.ADMIN
+        );
+
+        // when & then - 일반 ADMIN 차단 시도
+        assertDoesNotThrow(() -> adminService.validateNotLastSuperAdmin(normalAdmin.getId()));
+    }
+
+    // ===== blockAdmin 테스트 =====
+
+    @Test
+    void 관리자_차단시_마지막_SUPER_ADMIN은_차단할_수_없다() {
+        // given - 단 하나의 SUPER_ADMIN만 존재
+        Admin superAdmin = adminService.createAdmin(
+                "super@test.com",
+                "SuperAdmin",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+
+        // when & then
+        assertThatThrownBy(() -> adminService.blockAdmin(superAdmin.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+    }
+
+    @Test
+    void 일반_ADMIN_차단은_정상적으로_동작한다() {
+        // given
+        adminService.createAdmin(
+                "super@test.com",
+                "SuperAdmin",
+                "password123!@#",
+                AdminRole.SUPER_ADMIN
+        );
+        Admin targetAdmin = adminService.createAdmin(
+                "admin@test.com",
+                "Admin",
+                "password123!@#",
+                AdminRole.ADMIN
+        );
+
+        // when
+        adminService.blockAdmin(targetAdmin.getId());
+
+        // then - 차단된 관리자는 일반 조회에서 제외됨 (Soft Delete)
+        // @SQLRestriction으로 인해 findById로는 조회되지 않음
+        assertThat(adminRepository.findById(targetAdmin.getId())).isEmpty();
+    }
+
+    // ===== getAllAdmins 테스트 =====
+
+    @Test
+    void getAllAdmins_차단된_관리자도_포함하여_반환한다() {
+        // given - 활성 관리자와 차단된 관리자 생성
+        Admin activeAdmin = adminService.createAdmin(
+                "active@test.com", "ActiveAdmin", "password123!@#", AdminRole.ADMIN);
+        Admin blockedAdmin = adminService.createAdmin(
+                "blocked@test.com", "BlockedAdmin", "password123!@#", AdminRole.ADMIN);
+        adminService.blockAdmin(blockedAdmin.getId());
+
+        // when
+        Page<Admin> result = adminService.getAllAdmins(PageRequest.of(0, 20));
+
+        // then
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getContent()).hasSize(2);
+        // 차단된 관리자가 포함되어 있는지 확인
+        assertThat(result.getContent())
+                .extracting(Admin::getEmail)
+                .containsExactlyInAnyOrder("active@test.com", "blocked@test.com");
     }
 }
