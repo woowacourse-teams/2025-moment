@@ -16,7 +16,7 @@ public record AdminCreateRequest(
 
         @NotBlank(message = "ADMIN_INVALID_INFO")
         @Size(min = 8, max = 16, message = "ADMIN_INVALID_INFO")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-zA-Z\\d!@#$%^&*()].{8,16}$", message = "ADMIN_INVALID_INFO")
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-zA-Z\\d!@#$%^&*()]{8,16}$", message = "ADMIN_INVALID_INFO")
         String password
 ) {
 }
