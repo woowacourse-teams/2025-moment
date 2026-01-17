@@ -59,6 +59,9 @@ public class AdminAuthController {
         try {
             Admin admin = adminService.authenticateAdmin(request.email(), request.password());
 
+            // 세션 고정 공격 방지: 인증 성공 후 세션 ID 변경
+            httpRequest.changeSessionId();
+
             String ipAddress = ClientIpExtractor.extract(httpRequest);
             String userAgent = extractUserAgent(httpRequest);
 
