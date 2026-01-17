@@ -47,10 +47,19 @@
                     <!-- 활성 세션 -->
                     <a th:href="@{/admin/sessions}"
                        th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
-                                (${requestURI != null && requestURI.contains('/sessions')} ?
+                                (${requestURI != null && requestURI == '/admin/sessions'} ?
                                  'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
                         <i data-lucide="activity" class="w-5 h-5"></i>
                         <span>활성 세션</span>
+                    </a>
+
+                    <!-- 세션 히스토리 -->
+                    <a th:href="@{/admin/sessions/history}"
+                       th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
+                                (${requestURI != null && requestURI.contains('/sessions/history')} ?
+                                 'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                        <span>세션 히스토리</span>
                     </a>
                 </div>
             </nav>

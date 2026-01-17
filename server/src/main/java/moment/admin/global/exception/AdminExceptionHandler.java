@@ -3,6 +3,7 @@ package moment.admin.global.exception;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AdminExceptionHandler {
 
     @ExceptionHandler(MomentException.class)
-    public String handleMomentException(MomentException e, Model model, HttpServletRequest request) {
+    public String handleMomentException(MomentException e, Model model,
+                                         HttpServletRequest request, HttpServletResponse response) {
         ErrorCode errorCode = e.getErrorCode();
 
         log.warn("Admin MomentException",
@@ -29,6 +31,9 @@ public class AdminExceptionHandler {
                 errorCode == ErrorCode.ADMIN_LOGIN_FAILED) {
             return "redirect:/admin/login?error=" + errorCode.getMessage();
         }
+
+        // HTTP 상태 코드 설정
+        response.setStatus(e.getStatus().value());
 
         model.addAttribute("errorCode", errorCode.getCode());
         model.addAttribute("errorMessage", errorCode.getMessage());

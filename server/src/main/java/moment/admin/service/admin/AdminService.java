@@ -94,6 +94,15 @@ public class AdminService {
     }
 
     /**
+     * 모든 활성 관리자 조회 (페이징 없이)
+     * 필터 드롭다운 등에서 사용
+     * @return 관리자 목록
+     */
+    public java.util.List<Admin> getAllAdminsWithoutPaging() {
+        return adminRepository.findAll();  // @SQLRestriction으로 deletedAt IS NULL 자동 적용
+    }
+
+    /**
      * 관리자 차단 (Soft Delete)
      * @param adminId 차단할 관리자 ID
      */

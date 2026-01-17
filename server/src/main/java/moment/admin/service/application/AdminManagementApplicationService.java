@@ -93,4 +93,20 @@ public class AdminManagementApplicationService {
         sessionManager.invalidateSessionById(sessionId);
         log.info("Session force logged out: sessionId={}", sessionId);
     }
+
+    /**
+     * 특정 관리자의 모든 세션 강제 로그아웃
+     * @param currentAdminId 현재 로그인한 관리자 ID
+     * @param targetAdminId 강제 로그아웃 대상 관리자 ID
+     */
+    @Transactional
+    public void forceLogoutAllSessionsForAdmin(Long currentAdminId, Long targetAdminId) {
+        // 자기 자신 차단 방지
+        adminService.validateNotSelfBlock(currentAdminId, targetAdminId);
+
+        // 모든 세션 무효화
+        sessionManager.invalidateAllSessionsForAdmin(targetAdminId);
+
+        log.info("All sessions force logged out for adminId={}, executor={}", targetAdminId, currentAdminId);
+    }
 }

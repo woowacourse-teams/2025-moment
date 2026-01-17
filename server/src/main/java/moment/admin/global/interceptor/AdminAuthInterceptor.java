@@ -20,7 +20,8 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
     private static final List<String> SUPER_ADMIN_ONLY_PATHS = List.of(
             "/admin/accounts/new",
             "/admin/accounts",
-            "/admin/sessions"
+            "/admin/sessions",
+            "/admin/sessions/history"
     );
     private final AdminSessionManager sessionManager;
 
