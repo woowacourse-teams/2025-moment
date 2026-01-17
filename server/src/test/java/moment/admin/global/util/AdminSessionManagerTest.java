@@ -98,6 +98,7 @@ class AdminSessionManagerTest {
     void 세션에서_관리자_ID를_정상적으로_반환한다() {
         // given
         session.setAttribute(ADMIN_SESSION_KEY, 123L);
+        session.setAttribute(ADMIN_ROLE_KEY, AdminRole.ADMIN);
 
         // when
         Long adminId = sessionManager.getId(session);
@@ -117,6 +118,7 @@ class AdminSessionManagerTest {
     @Test
     void 세션에서_관리자_역할을_정상적으로_반환한다() {
         // given
+        session.setAttribute(ADMIN_SESSION_KEY, 1L);
         session.setAttribute(ADMIN_ROLE_KEY, AdminRole.SUPER_ADMIN);
 
         // when
@@ -137,6 +139,7 @@ class AdminSessionManagerTest {
     @Test
     void SUPER_ADMIN_역할이면_true를_반환한다() {
         // given
+        session.setAttribute(ADMIN_SESSION_KEY, 1L);
         session.setAttribute(ADMIN_ROLE_KEY, AdminRole.SUPER_ADMIN);
 
         // when
@@ -149,6 +152,7 @@ class AdminSessionManagerTest {
     @Test
     void 일반_ADMIN_역할이면_false를_반환한다() {
         // given
+        session.setAttribute(ADMIN_SESSION_KEY, 1L);
         session.setAttribute(ADMIN_ROLE_KEY, AdminRole.ADMIN);
 
         // when
@@ -161,6 +165,7 @@ class AdminSessionManagerTest {
     @Test
     void 관리자_관리_권한은_SUPER_ADMIN만_true를_반환한다() {
         // given
+        session.setAttribute(ADMIN_SESSION_KEY, 1L);
         session.setAttribute(ADMIN_ROLE_KEY, AdminRole.SUPER_ADMIN);
 
         // when
@@ -173,6 +178,7 @@ class AdminSessionManagerTest {
     @Test
     void 관리자_관리_권한은_일반_ADMIN이면_false를_반환한다() {
         // given
+        session.setAttribute(ADMIN_SESSION_KEY, 1L);
         session.setAttribute(ADMIN_ROLE_KEY, AdminRole.ADMIN);
 
         // when

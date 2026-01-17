@@ -43,27 +43,21 @@ public class AdminSessionManager {
     }
 
     public Long getId(HttpSession session) {
-        try {
-            Object adminId = session.getAttribute(ADMIN_SESSION_KEY);
-            if (adminId == null) {
-                throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
-            }
-            return (Long) adminId;
-        } catch (ClassCastException e) {
-            throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        validateAuthorized(session);
+        Object adminId = session.getAttribute(ADMIN_SESSION_KEY);
+        if (adminId instanceof Long id) {
+            return id;
         }
+        throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
     }
 
     public AdminRole getRole(HttpSession session) {
-        try {
-            Object role = session.getAttribute(ADMIN_ROLE_KEY);
-            if (role == null) {
-                throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
-            }
-            return (AdminRole) role;
-        } catch (ClassCastException e) {
-            throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        validateAuthorized(session);
+        Object role = session.getAttribute(ADMIN_ROLE_KEY);
+        if (role instanceof AdminRole adminRole) {
+            return adminRole;
         }
+        throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
     }
 
     public boolean isSuperAdmin(HttpSession session) {
