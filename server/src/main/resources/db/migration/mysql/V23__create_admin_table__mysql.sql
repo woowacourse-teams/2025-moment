@@ -6,4 +6,4 @@ CREATE TABLE admins (
     role VARCHAR(20) NOT NULL DEFAULT 'ADMIN',
     created_at DATETIME NOT NULL,
     deleted_at DATETIME
-)
+);
