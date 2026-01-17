@@ -42,9 +42,11 @@ public class AdminExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public String handleIllegalArgumentException(IllegalArgumentException e, Model model, HttpServletRequest request) {
+    public String handleIllegalArgumentException(IllegalArgumentException e, Model model,
+                                                  HttpServletRequest request, HttpServletResponse response) {
 
         ErrorCode errorCode = ErrorCode.REQUEST_INVALID;
+        response.setStatus(errorCode.getStatus().value());
 
         log.error("Admin IllegalArgumentException",
                 kv("path", request.getRequestURI()),
@@ -58,9 +60,11 @@ public class AdminExceptionHandler {
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public String handleNullPointerException(NullPointerException e, Model model, HttpServletRequest request) {
+    public String handleNullPointerException(NullPointerException e, Model model,
+                                              HttpServletRequest request, HttpServletResponse response) {
 
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        response.setStatus(errorCode.getStatus().value());
 
         log.error("Admin NullPointerException",
                 kv("path", request.getRequestURI()),
@@ -75,9 +79,11 @@ public class AdminExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model, HttpServletRequest request) {
+    public String handleException(Exception e, Model model,
+                                   HttpServletRequest request, HttpServletResponse response) {
 
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        response.setStatus(errorCode.getStatus().value());
 
         log.error("Admin Unhandled Exception",
                 kv("path", request.getRequestURI()),
