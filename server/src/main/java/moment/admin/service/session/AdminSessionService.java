@@ -37,6 +37,8 @@ public class AdminSessionService {
      * 모든 활성 세션 조회 (관리자 정보 포함)
      * @return 세션 목록 (AdminSessionResponse)
      */
+    // TODO: 세션 수가 증가하면 N+1 쿼리 최적화 필요 (batch loading 또는 join fetch)
+    // 현재는 관리자 수가 적어 허용 가능한 수준
     public List<AdminSessionResponse> getAllActiveSessions() {
         List<AdminSession> activeSessions = adminSessionRepository.findAllByLogoutTimeIsNullOrderByLoginTimeDesc();
         return toSessionResponses(activeSessions);
