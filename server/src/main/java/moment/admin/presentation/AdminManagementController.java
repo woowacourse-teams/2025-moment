@@ -112,9 +112,11 @@ public class AdminManagementController {
      */
     @PostMapping("/admin/accounts/{id}/unblock")
     public String unblockAdmin(@PathVariable Long id,
+                                HttpSession session,
                                 RedirectAttributes redirectAttributes) {
         try {
-            applicationService.unblockAdmin(id);
+            Long currentAdminId = sessionManager.getId(session);
+            applicationService.unblockAdmin(currentAdminId, id);
             redirectAttributes.addFlashAttribute("message", "관리자 차단이 해제되었습니다.");
         } catch (MomentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

@@ -49,12 +49,16 @@ public class AdminManagementApplicationService {
 
     /**
      * 관리자 차단 해제
-     * @param adminId 차단 해제할 관리자 ID
+     * @param currentAdminId 현재 로그인한 관리자 ID (차단 해제 실행자)
+     * @param targetAdminId 차단 해제할 관리자 ID
      */
     @Transactional
-    public void unblockAdmin(Long adminId) {
-        adminService.unblockAdmin(adminId);
-        log.info("Admin unblocked: adminId={}", adminId);
+    public void unblockAdmin(Long currentAdminId, Long targetAdminId) {
+        // SUPER_ADMIN 권한 검증
+        adminService.validateAdminRegistrationPermission(currentAdminId);
+
+        adminService.unblockAdmin(targetAdminId);
+        log.info("Admin unblocked: targetAdminId={}, executor={}", targetAdminId, currentAdminId);
     }
 
     /**
