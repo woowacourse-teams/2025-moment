@@ -161,7 +161,7 @@ class AdminUserControllerTest {
                 .cookie("SESSION", adminSessionId)
                 .when().get("/admin/users/{id}/edit", 999L)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(ContentType.HTML);
     }
 
@@ -298,7 +298,7 @@ class AdminUserControllerTest {
                 .formParam("expStar", "5000")
                 .when().post("/admin/users/{id}/edit", 999L)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(ContentType.HTML);
     }
 

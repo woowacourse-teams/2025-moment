@@ -76,15 +76,6 @@ public class AdminManagementApplicationService {
     }
 
     /**
-     * 특정 세션 강제 로그아웃 (invalidateSessionBySessionId)
-     * @param sessionId HTTP 세션 ID
-     */
-    @Transactional
-    public void invalidateSessionBySessionId(String sessionId) {
-        forceLogoutSession(sessionId);
-    }
-
-    /**
      * 특정 세션 강제 로그아웃
      * @param sessionId HTTP 세션 ID
      */

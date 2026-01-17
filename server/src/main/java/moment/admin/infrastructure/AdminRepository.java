@@ -9,9 +9,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface AdminRepository extends JpaRepository<Admin, Long> {
+
+    /**
+     * 여러 ID로 관리자 목록 조회 (N+1 문제 해결용)
+     * @param ids 관리자 ID 목록
+     * @return 관리자 목록
+     */
+    List<Admin> findAllByIdIn(Collection<Long> ids);
 
     // 기존 메서드
     Optional<Admin> findByEmail(String email);

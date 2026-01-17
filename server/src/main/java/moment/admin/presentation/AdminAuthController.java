@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import moment.admin.domain.Admin;
 import moment.admin.dto.request.AdminLoginRequest;
 import moment.admin.global.util.AdminSessionManager;
+import moment.admin.global.util.ClientIpExtractor;
 import moment.admin.service.admin.AdminService;
 import moment.global.exception.MomentException;
 import org.springframework.stereotype.Controller;
@@ -56,19 +57,11 @@ public class AdminAuthController {
                         HttpServletRequest httpRequest,
                         RedirectAttributes redirectAttributes) {
         try {
-            // 인증
             Admin admin = adminService.authenticateAdmin(request.email(), request.password());
 
-            // 클라이언트 IP 주소 추출
-            String ipAddress = getClientIpAddress(httpRequest);
+            String ipAddress = ClientIpExtractor.extract(httpRequest);
+            String userAgent = extractUserAgent(httpRequest);
 
-            // User-Agent 추출
-            String userAgent = httpRequest.getHeader("User-Agent");
-            if (userAgent == null || userAgent.isBlank()) {
-                userAgent = "Unknown";
-            }
-
-            // 세션 등록 (DB 저장 포함)
             sessionManager.registerSession(session, admin.getId(), admin.getRole(), ipAddress, userAgent);
 
             log.info("Admin login successful: email={}, ip={}", admin.getEmail(), ipAddress);
@@ -81,6 +74,11 @@ public class AdminAuthController {
         }
     }
 
+    private String extractUserAgent(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent");
+        return (userAgent == null || userAgent.isBlank()) ? "Unknown" : userAgent;
+    }
+
     @PostMapping("/admin/logout")
     public String logout(HttpSession session) {
         Long adminId = sessionManager.getId(session);
@@ -90,34 +88,4 @@ public class AdminAuthController {
         return "redirect:/admin/login";
     }
 
-    /**
-     * 클라이언트 IP 주소 추출
-     * 프록시/로드밸런서를 거친 경우 X-Forwarded-For 헤더에서 추출
-     */
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-
-        if (ip == null || ip.isBlank() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.isBlank() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.isBlank() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.isBlank() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.isBlank() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-
-        // X-Forwarded-For는 여러 IP를 포함할 수 있음 (쉼표로 구분)
-        if (ip != null && ip.contains(",")) {
-            ip = ip.split(",")[0].trim();
-        }
-
-        return ip;
-    }
 }

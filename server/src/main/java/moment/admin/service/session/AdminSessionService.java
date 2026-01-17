@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,14 +39,7 @@ public class AdminSessionService {
      */
     public List<AdminSessionResponse> getAllActiveSessions() {
         List<AdminSession> activeSessions = adminSessionRepository.findAllByLogoutTimeIsNullOrderByLoginTimeDesc();
-
-        return activeSessions.stream()
-                .map(session -> {
-                    Admin admin = adminRepository.findById(session.getAdminId())
-                            .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_NOT_FOUND));
-                    return AdminSessionResponse.from(session, admin);
-                })
-                .collect(Collectors.toList());
+        return toSessionResponses(activeSessions);
     }
 
     /**
@@ -53,12 +49,7 @@ public class AdminSessionService {
      */
     public List<AdminSessionResponse> getActiveSessionsByAdminId(Long adminId) {
         List<AdminSession> activeSessions = adminSessionRepository.findByAdminIdAndLogoutTimeIsNull(adminId);
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_NOT_FOUND));
-
-        return activeSessions.stream()
-                .map(session -> AdminSessionResponse.from(session, admin))
-                .collect(Collectors.toList());
+        return toSessionResponses(activeSessions);
     }
 
     /**
@@ -93,25 +84,24 @@ public class AdminSessionService {
      * @return 필터링된 세션 목록
      */
     public List<AdminSessionResponse> getFilteredActiveSessions(Long adminId, String ipAddress) {
-        List<AdminSession> activeSessions;
+        List<AdminSession> activeSessions = findActiveSessionsByFilter(adminId, ipAddress);
+        return toSessionResponses(activeSessions);
+    }
 
-        if (adminId != null && ipAddress != null && !ipAddress.isBlank()) {
-            activeSessions = adminSessionRepository.findByAdminIdAndIpAddressAndLogoutTimeIsNullOrderByLoginTimeDesc(adminId, ipAddress);
-        } else if (adminId != null) {
-            activeSessions = adminSessionRepository.findByAdminIdAndLogoutTimeIsNullOrderByLoginTimeDesc(adminId);
-        } else if (ipAddress != null && !ipAddress.isBlank()) {
-            activeSessions = adminSessionRepository.findByIpAddressAndLogoutTimeIsNullOrderByLoginTimeDesc(ipAddress);
-        } else {
-            activeSessions = adminSessionRepository.findAllByLogoutTimeIsNullOrderByLoginTimeDesc();
+    private List<AdminSession> findActiveSessionsByFilter(Long adminId, String ipAddress) {
+        boolean hasAdminId = adminId != null;
+        boolean hasIpAddress = ipAddress != null && !ipAddress.isBlank();
+
+        if (hasAdminId && hasIpAddress) {
+            return adminSessionRepository.findByAdminIdAndIpAddressAndLogoutTimeIsNullOrderByLoginTimeDesc(adminId, ipAddress);
         }
-
-        return activeSessions.stream()
-                .map(session -> {
-                    Admin admin = adminRepository.findById(session.getAdminId())
-                            .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_NOT_FOUND));
-                    return AdminSessionResponse.from(session, admin);
-                })
-                .collect(Collectors.toList());
+        if (hasAdminId) {
+            return adminSessionRepository.findByAdminIdAndLogoutTimeIsNullOrderByLoginTimeDesc(adminId);
+        }
+        if (hasIpAddress) {
+            return adminSessionRepository.findByIpAddressAndLogoutTimeIsNullOrderByLoginTimeDesc(ipAddress);
+        }
+        return adminSessionRepository.findAllByLogoutTimeIsNullOrderByLoginTimeDesc();
     }
 
     /**
@@ -128,39 +118,76 @@ public class AdminSessionService {
             LocalDate endDate,
             Pageable pageable) {
 
-        Page<AdminSession> sessionPage;
+        Page<AdminSession> sessionPage = findSessionHistoryByFilter(adminId, startDate, endDate, pageable);
 
+        // 배치로 Admin 조회 (N+1 해결)
+        Set<Long> adminIds = sessionPage.getContent().stream()
+                .map(AdminSession::getAdminId)
+                .collect(Collectors.toSet());
+
+        Map<Long, Admin> adminMap = adminRepository.findAllByIdIn(adminIds).stream()
+                .collect(Collectors.toMap(Admin::getId, Function.identity()));
+
+        return sessionPage.map(session -> toHistoryResponse(session, adminMap.get(session.getAdminId())));
+    }
+
+    private Page<AdminSession> findSessionHistoryByFilter(Long adminId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.plusDays(1).atStartOfDay() : null;
 
-        if (adminId != null && startDateTime != null && endDateTime != null) {
-            sessionPage = adminSessionRepository.findSessionHistoryByAdminIdAndDateRange(
-                    adminId, startDateTime, endDateTime, pageable);
-        } else if (adminId != null) {
-            sessionPage = adminSessionRepository.findSessionHistoryByAdminId(adminId, pageable);
-        } else if (startDateTime != null && endDateTime != null) {
-            sessionPage = adminSessionRepository.findSessionHistoryByDateRange(
-                    startDateTime, endDateTime, pageable);
-        } else {
-            sessionPage = adminSessionRepository.findAllSessionHistory(pageable);
+        boolean hasAdminId = adminId != null;
+        boolean hasDateRange = startDateTime != null && endDateTime != null;
+
+        if (hasAdminId && hasDateRange) {
+            return adminSessionRepository.findSessionHistoryByAdminIdAndDateRange(adminId, startDateTime, endDateTime, pageable);
+        }
+        if (hasAdminId) {
+            return adminSessionRepository.findSessionHistoryByAdminId(adminId, pageable);
+        }
+        if (hasDateRange) {
+            return adminSessionRepository.findSessionHistoryByDateRange(startDateTime, endDateTime, pageable);
+        }
+        return adminSessionRepository.findAllSessionHistory(pageable);
+    }
+
+    private AdminSessionHistoryResponse toHistoryResponse(AdminSession session, Admin admin) {
+        if (admin == null) {
+            return new AdminSessionHistoryResponse(
+                    session.getId(),
+                    "삭제된 관리자",
+                    "-",
+                    session.getLoginTime(),
+                    session.getLogoutTime(),
+                    session.getIpAddress(),
+                    session.getLogoutTime() == null ? "ACTIVE" : "LOGGED_OUT"
+            );
+        }
+        return AdminSessionHistoryResponse.from(session, admin);
+    }
+
+    /**
+     * 세션 목록을 AdminSessionResponse로 변환 (N+1 해결)
+     */
+    private List<AdminSessionResponse> toSessionResponses(List<AdminSession> sessions) {
+        if (sessions.isEmpty()) {
+            return List.of();
         }
 
-        return sessionPage.map(session -> {
-            Admin admin = adminRepository.findById(session.getAdminId())
-                    .orElse(null);
-            if (admin == null) {
-                // 관리자가 삭제된 경우 기본 정보로 생성
-                return new AdminSessionHistoryResponse(
-                        session.getId(),
-                        "삭제된 관리자",
-                        "-",
-                        session.getLoginTime(),
-                        session.getLogoutTime(),
-                        session.getIpAddress(),
-                        session.getLogoutTime() == null ? "ACTIVE" : "LOGGED_OUT"
-                );
-            }
-            return AdminSessionHistoryResponse.from(session, admin);
-        });
+        Set<Long> adminIds = sessions.stream()
+                .map(AdminSession::getAdminId)
+                .collect(Collectors.toSet());
+
+        Map<Long, Admin> adminMap = adminRepository.findAllByIdIn(adminIds).stream()
+                .collect(Collectors.toMap(Admin::getId, Function.identity()));
+
+        return sessions.stream()
+                .map(session -> {
+                    Admin admin = adminMap.get(session.getAdminId());
+                    if (admin == null) {
+                        throw new MomentException(ErrorCode.ADMIN_NOT_FOUND);
+                    }
+                    return AdminSessionResponse.from(session, admin);
+                })
+                .collect(Collectors.toList());
     }
 }
