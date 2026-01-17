@@ -22,6 +22,7 @@ public class AdminSessionManager {
 
     private static final String ADMIN_SESSION_KEY = "ADMIN_ID";
     private static final String ADMIN_ROLE_KEY = "ADMIN_ROLE";
+    private static final int SESSION_ID_MASK_LENGTH = 8;
 
     private final AdminSessionRepository adminSessionRepository;
     private final AdminRepository adminRepository;
@@ -94,7 +95,7 @@ public class AdminSessionManager {
         AdminSession adminSession = new AdminSession(adminId, sessionId, ipAddress, userAgent);
         adminSessionRepository.save(adminSession);
 
-        log.info("Admin session registered: sessionId={}, adminId={}, ip={}", sessionId, adminId, ipAddress);
+        log.info("Admin session registered: sessionId={}, adminId={}, ip={}", maskSessionId(sessionId), adminId, ipAddress);
     }
 
     /**
@@ -118,7 +119,7 @@ public class AdminSessionManager {
         activeSessions.forEach(session -> {
             session.markLoggedOut();
             adminSessionRepository.save(session);
-            log.info("Admin session invalidated: sessionId={}, adminId={}", session.getSessionId(), adminId);
+            log.info("Admin session invalidated: sessionId={}, adminId={}", maskSessionId(session.getSessionId()), adminId);
         });
 
         log.info("All active sessions invalidated for adminId={}, count={}", adminId, activeSessions.size());
@@ -133,7 +134,7 @@ public class AdminSessionManager {
             if (session.isActive()) {
                 session.markLoggedOut();
                 adminSessionRepository.save(session);
-                log.info("Admin session invalidated: sessionId={}, adminId={}", sessionId, session.getAdminId());
+                log.info("Admin session invalidated: sessionId={}, adminId={}", maskSessionId(sessionId), session.getAdminId());
             }
         });
     }
@@ -152,4 +153,16 @@ public class AdminSessionManager {
     // ===== 제거된 메서드 =====
     // - restoreSessionFromDb(HttpSession session)
     // → Spring Session이 자동으로 세션을 복원하므로 불필요
+
+    /**
+     * 로그에 세션 ID 노출 방지를 위한 마스킹
+     * @param sessionId 원본 세션 ID
+     * @return 앞 8자리만 남기고 마스킹된 세션 ID (예: "abc12345...")
+     */
+    private String maskSessionId(String sessionId) {
+        if (sessionId == null || sessionId.length() <= SESSION_ID_MASK_LENGTH) {
+            return sessionId;
+        }
+        return sessionId.substring(0, SESSION_ID_MASK_LENGTH) + "...";
+    }
 }
