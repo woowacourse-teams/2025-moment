@@ -1,13 +1,42 @@
-version: "3.8"
-
 services:
-  app:
-    container_name: moment-app-server
-    image: ${IMAGE_URI}
-    ports:
-      - "8080:8080"
-    volumes:
-      - /home/ubuntu/moment/logs:/app/logs
-      - /home/ubuntu/moment/firebase-credentials.json:/app/firebase-credentials.json
+  mysql:
+    container_name: moment-dev-mysql
+    image: mysql:8.0
+    restart: always
     env_file:
       - .env
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  app:
+    container_name: moment-app-server
+    build: .
+    image: moment:local
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    volumes:
+      - ./logs:/app/logs
+      - ./firebase-credentials.json:/app/firebase-credentials.json
+
+volumes:
+  mysql_data:

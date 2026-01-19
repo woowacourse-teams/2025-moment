@@ -28,9 +28,17 @@ spring:
     password: ${FLYWAY_DB_PASSWORD}
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
 
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: never
+      table-name: SPRING_SESSION
+    timeout: ${ADMIN_SESSION_TIMEOUT:3600s}
+
   sql:
     init:
-      mode: never
+      mode: always
+      data-locations: classpath:sql/test-users.sql
 
   mail:
     host: smtp.gmail.com
@@ -71,6 +79,9 @@ auth:
 
 server:
   forward-headers-strategy: native
+  servlet:
+    session:
+      timeout: ${ADMIN_SESSION_TIMEOUT:3600}
 
 management:
   metrics:
@@ -99,3 +110,12 @@ s3:
 
 fcm:
   service-account-json: ${FCM_CREDENTIALS}
+
+admin:
+  initial:
+    email: ${ADMIN_INITIAL_EMAIL}
+    password: ${ADMIN_INITIAL_PASSWORD}
+    name: ${ADMIN_INITIAL_NAME}
+  session:
+    timeout: ${ADMIN_SESSION_TIMEOUT}
+    cookie-name: SESSION
