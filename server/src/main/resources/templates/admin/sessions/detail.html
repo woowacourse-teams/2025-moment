@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout.html}">
+<head>
+    <title>세션 상세 정보 - Moment Admin</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="py-8 px-6 max-w-4xl mx-auto">
+        <!-- 헤더 -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">세션 상세 정보</h1>
+                <p class="text-sm text-gray-500 mt-1">
+                    세션 ID: <span class="font-mono" th:text="${adminSession.getShortSessionId()}">abc12345...</span>
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <a th:href="@{/admin/sessions}"
+                   class="px-4 py-2.5 rounded-lg bg-slate-200 text-gray-800 font-medium hover:bg-slate-300 active:scale-95 transition-all duration-150 flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    목록으로
+                </a>
+                <form th:if="${adminSession.isActive()}"
+                      th:action="@{/admin/sessions/{sessionId}/invalidate(sessionId=${adminSession.sessionId})}"
+                      method="post"
+                      onsubmit="return confirm('이 세션을 강제로 로그아웃하시겠습니까?');"
+                      class="inline">
+                    <button type="submit"
+                            class="px-4 py-2.5 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 active:scale-95 transition-all duration-150 flex items-center gap-2">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        강제 로그아웃
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 세션 상태 배지 -->
+        <div class="mb-6">
+            <span th:if="${adminSession.isActive()}"
+                  class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                <i data-lucide="circle" class="w-3 h-3 inline fill-current"></i>
+                활성 세션
+            </span>
+            <span th:if="${!adminSession.isActive()}"
+                  class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-800">
+                <i data-lucide="circle" class="w-3 h-3 inline"></i>
+                만료된 세션
+            </span>
+        </div>
+
+        <!-- 관리자 정보 카드 -->
+        <div class="rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50 mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="user" class="w-5 h-5 text-indigo-600"></i>
+                관리자 정보
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">이름</p>
+                    <p class="font-medium text-gray-900" th:text="${adminSession.adminName}">홍길동</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">이메일</p>
+                    <p class="font-medium text-gray-900" th:text="${adminSession.adminEmail}">admin@example.com</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">역할</p>
+                    <span th:if="${adminSession.adminRole.name() == 'SUPER_ADMIN'}"
+                          class="px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                        SUPER_ADMIN
+                    </span>
+                    <span th:if="${adminSession.adminRole.name() == 'ADMIN'}"
+                          class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                        ADMIN
+                    </span>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">관리자 ID</p>
+                    <p class="font-medium text-gray-900 font-mono" th:text="${adminSession.adminId}">1</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 세션 시간 정보 카드 -->
+        <div class="rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50 mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-indigo-600"></i>
+                시간 정보
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">로그인 시간</p>
+                    <p class="font-medium text-gray-900" th:text="${#temporals.format(adminSession.loginTime, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 14:30:00</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">마지막 활동</p>
+                    <p class="font-medium text-gray-900" th:text="${#temporals.format(adminSession.lastAccessTime, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 14:35:20</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">로그아웃 시간</p>
+                    <p class="font-medium text-gray-900"
+                       th:text="${adminSession.logoutTime != null ? #temporals.format(adminSession.logoutTime, 'yyyy-MM-dd HH:mm:ss') : '-'}">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 접속 정보 카드 -->
+        <div class="rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50 mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="globe" class="w-5 h-5 text-indigo-600"></i>
+                접속 정보
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">IP 주소</p>
+                    <p class="font-medium text-gray-900 font-mono" th:text="${adminSession.ipAddress}">127.0.0.1</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">세션 ID</p>
+                    <p class="font-medium text-gray-900 font-mono text-xs break-all" th:text="${adminSession.sessionId}">abc12345...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 기기/브라우저 정보 카드 -->
+        <div class="rounded-2xl bg-slate-50 p-6 shadow-sm border border-slate-200/50 mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="monitor" class="w-5 h-5 text-indigo-600"></i>
+                기기 정보
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">브라우저</p>
+                    <p class="font-medium text-gray-900" th:text="${adminSession.browser}">Chrome</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">운영체제</p>
+                    <p class="font-medium text-gray-900" th:text="${adminSession.os}">Windows</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">기기 유형</p>
+                    <span th:switch="${adminSession.deviceType}">
+                        <span th:case="'Desktop'" class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            <i data-lucide="monitor" class="w-3 h-3 inline"></i> Desktop
+                        </span>
+                        <span th:case="'Mobile'" class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                            <i data-lucide="smartphone" class="w-3 h-3 inline"></i> Mobile
+                        </span>
+                        <span th:case="'Tablet'" class="px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                            <i data-lucide="tablet" class="w-3 h-3 inline"></i> Tablet
+                        </span>
+                        <span th:case="*" class="px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                            Unknown
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 mb-1">User-Agent (원문)</p>
+                <p class="font-mono text-xs text-gray-700 bg-white p-3 rounded-lg border border-slate-200 break-all"
+                   th:text="${adminSession.userAgent}">Mozilla/5.0 ...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lucide Icons 초기화 -->
+    <script th:fragment="scripts">
+        lucide.createIcons();
+    </script>
+</main>
+</body>
+</html>

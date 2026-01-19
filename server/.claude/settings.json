@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./firebase-credentials.json)",
+      "Read(./secrets/**)",
+      "Read(./build)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-env-files.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Moment Admin</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50">
+    <!-- 고정 좌측 사이드바 (다크 테마) -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-slate-900 text-white overflow-y-auto">
+        <div class="p-6">
+            <!-- 로고 -->
+            <div class="flex items-center gap-3 mb-8">
+                <i data-lucide="sparkles" class="w-8 h-8 text-indigo-400"></i>
+                <h1 class="text-xl font-bold">Moment Admin</h1>
+            </div>
+
+            <!-- 네비게이션 메뉴 -->
+            <nav class="space-y-2">
+                <a th:href="@{/admin/users}"
+                   th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
+                            (${requestURI != null && requestURI.contains('/users')} ?
+                             'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <span>사용자 관리</span>
+                </a>
+
+                <!-- SUPER_ADMIN 전용 메뉴 -->
+                <div th:if="${adminRole != null and adminRole.isSuperAdmin()}" class="border-t border-slate-800 mt-4 pt-4">
+                    <p class="px-4 text-xs text-slate-500 mb-2 font-semibold">관리</p>
+
+                    <!-- 관리자 관리 -->
+                    <a th:href="@{/admin/accounts}"
+                       th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
+                                (${requestURI != null && requestURI.contains('/accounts')} ?
+                                 'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
+                        <i data-lucide="shield" class="w-5 h-5"></i>
+                        <span>관리자 관리</span>
+                    </a>
+
+                    <!-- 활성 세션 -->
+                    <a th:href="@{/admin/sessions}"
+                       th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
+                                (${requestURI != null && requestURI == '/admin/sessions'} ?
+                                 'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                        <span>활성 세션</span>
+                    </a>
+
+                    <!-- 세션 히스토리 -->
+                    <a th:href="@{/admin/sessions/history}"
+                       th:class="'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ' +
+                                (${requestURI != null && requestURI.contains('/sessions/history')} ?
+                                 'bg-indigo-600 text-white' : 'hover:bg-slate-800')">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                        <span>세션 히스토리</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 로그아웃 버튼 (하단 고정) -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-800">
+            <form th:action="@{/admin/logout}" method="post">
+                <button type="submit"
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition-colors duration-150 w-full">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span>로그아웃</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- 메인 콘텐츠 영역 (사이드바 여백 확보) -->
+    <div class="ml-64">
+        <!-- Sticky 헤더 -->
+        <header class="sticky top-0 bg-white shadow-sm z-40 px-6 lg:px-8 py-4">
+            <h2 class="text-2xl font-bold text-gray-900" layout:fragment="page-title">
+                <!-- 페이지별 제목 -->
+            </h2>
+        </header>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="p-6 lg:p-8">
+            <div layout:fragment="content">
+                <!-- 페이지별 콘텐츠가 여기에 삽입됩니다 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Lucide Icons 초기화 -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- 페이지별 스크립트 -->
+    <div layout:fragment="scripts">
+        <!-- 페이지별 JavaScript가 여기에 삽입됩니다 -->
+    </div>
+</body>
+</html>
