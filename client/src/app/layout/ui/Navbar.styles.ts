@@ -84,6 +84,8 @@ export const DesktopAuthButton = styled.div`
   display: flex;
   align-items: center;
   margin-right: 24px;
+  min-width: 150px;
+  justify-content: flex-end;
 
   @media (max-width: 768px) {
     display: none;
