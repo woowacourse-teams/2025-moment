@@ -8,21 +8,34 @@ interface SuspenseSkeletonProps {
 }
 
 const SkeletonContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 12px;
+  }
 `;
 
 export const SuspenseSkeleton = ({ variant = 'moment', count = 3 }: SuspenseSkeletonProps) => {
   return (
-    <SkeletonContainer>
-      <DeferredComponent>
+    <DeferredComponent>
+      <SkeletonContainer>
         {Array.from({ length: count }).map((_, index) => (
           <CommonSkeletonCard key={`skeleton-${variant}-${index}`} variant={variant} />
         ))}
-      </DeferredComponent>
-    </SkeletonContainer>
+      </SkeletonContainer>
+    </DeferredComponent>
   );
 };

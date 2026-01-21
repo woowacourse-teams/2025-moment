@@ -18,9 +18,20 @@ export const CommonSkeletonCard: React.FC<CommonSkeletonCardProps> = ({ variant 
       </S.SkeletonCardTitle>
 
       {variant === 'moment' && (
-        <S.SkeletonMomentContent>
-          <SkeletonText lines={3} lineHeight="18px" />
-        </S.SkeletonMomentContent>
+        <>
+          <S.SkeletonMomentContent>
+            <SkeletonText lines={3} lineHeight="18px" />
+          </S.SkeletonMomentContent>
+          <S.SkeletonMomentBottom>
+            <S.SkeletonImageArea>
+              <Skeleton width="80px" height="80px" borderRadius="6px" />
+            </S.SkeletonImageArea>
+            <S.SkeletonTagArea>
+              <Skeleton width="60px" height="24px" borderRadius="12px" />
+              <Skeleton width="70px" height="24px" borderRadius="12px" />
+            </S.SkeletonTagArea>
+          </S.SkeletonMomentBottom>
+        </>
       )}
 
       {variant === 'comment' && (

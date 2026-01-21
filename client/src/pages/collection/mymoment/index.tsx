@@ -17,7 +17,7 @@ export default function MyMomentCollectionPage() {
           <NotFound title="모멘트를 불러올 수 없습니다" subtitle="잠시 후 다시 시도해주세요" />
         )}
       >
-        <Suspense fallback={<SuspenseSkeleton variant="moment" count={3} />}>
+        <Suspense fallback={<SuspenseSkeleton variant="moment" count={6} />}>
           <MyMomentsListWithSuspense />
         </Suspense>
       </ErrorBoundary>
