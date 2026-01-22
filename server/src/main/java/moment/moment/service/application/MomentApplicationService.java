@@ -10,8 +10,14 @@ import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
+import moment.comment.service.comment.CommentService;
+import moment.group.domain.GroupMember;
+import moment.group.service.group.GroupMemberService;
+import moment.like.service.MomentLikeService;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
+import moment.moment.dto.response.GroupFeedResponse;
+import moment.moment.dto.response.GroupMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
@@ -33,11 +39,16 @@ public class MomentApplicationService {
     private final static Random RANDOM = new Random();
     private static final int MOMENT_DELETE_THRESHOLD = 3;
 
+    private static final int DEFAULT_PAGE_SIZE = 20;
+
     private final UserService userService;
     private final MomentService momentService;
     private final MomentImageService momentImageService;
     private final ReportService reportService;
     private final PhotoUrlResolver photoUrlResolver;
+    private final GroupMemberService memberService;
+    private final MomentLikeService momentLikeService;
+    private final CommentService commentService;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -167,5 +178,39 @@ public class MomentApplicationService {
     public void validateMomenter(Long momentId, Long momenterId) {
         User momenter = userService.getUserBy(momenterId);
         momentService.validateMomenter(momentId, momenter);
+    }
+
+    public GroupFeedResponse getGroupFeed(Long groupId, Long userId, Long cursor) {
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE);
+
+        List<GroupMomentResponse> responses = moments.stream()
+            .map(moment -> {
+                long likeCount = momentLikeService.getCount(moment.getId());
+                boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                long commentCount = commentService.countByMomentId(moment.getId());
+                return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+            })
+            .toList();
+
+        Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
+        return GroupFeedResponse.of(responses, nextCursor);
+    }
+
+    public GroupFeedResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        List<Moment> moments = momentService.getMyMomentsInGroup(groupId, member.getId(), cursor, DEFAULT_PAGE_SIZE);
+
+        List<GroupMomentResponse> responses = moments.stream()
+            .map(moment -> {
+                long likeCount = momentLikeService.getCount(moment.getId());
+                boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                long commentCount = commentService.countByMomentId(moment.getId());
+                return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+            })
+            .toList();
+
+        Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
+        return GroupFeedResponse.of(responses, nextCursor);
     }
 }

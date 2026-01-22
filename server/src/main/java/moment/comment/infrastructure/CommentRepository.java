@@ -77,4 +77,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT c.momentId FROM comments c WHERE c.id = :commentId")
     Optional<Long> findMomentIdById(Long commentId);
+
+    long countByMomentId(Long momentId);
 }

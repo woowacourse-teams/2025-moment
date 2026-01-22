@@ -8,6 +8,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.GroupMember;
+import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -76,5 +78,15 @@ public class CommentService {
     public Comment getCommentBy(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new MomentException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    @Transactional
+    public Comment createWithMember(Moment moment, User commenter, GroupMember member, String content) {
+        Comment comment = new Comment(moment, commenter, member, content);
+        return commentRepository.save(comment);
+    }
+
+    public long countByMomentId(Long momentId) {
+        return commentRepository.countByMomentId(momentId);
     }
 }

@@ -10,6 +10,8 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
@@ -106,5 +108,29 @@ public class MomentService {
     public Moment getMomentBy(Long momentId) {
         return momentRepository.findById(momentId)
                 .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+    }
+
+    @Transactional
+    public Moment createInGroup(User momenter, Group group, GroupMember member, String content) {
+        Moment moment = new Moment(momenter, group, member, content);
+        return momentRepository.save(moment);
+    }
+
+    public List<Moment> getByGroup(Long groupId, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdOrderByIdDesc(groupId, pageable);
+        }
+        return momentRepository.findByGroupIdAndIdLessThanOrderByIdDesc(groupId, cursor, pageable);
+    }
+
+    public List<Moment> getMyMomentsInGroup(Long groupId, Long memberId, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdAndMemberIdOrderByIdDesc(groupId, memberId, pageable);
+        }
+        return momentRepository.findByGroupIdAndMemberIdAndIdLessThanOrderByIdDesc(
+            groupId, memberId, cursor, pageable
+        );
     }
 }

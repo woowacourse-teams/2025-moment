@@ -81,4 +81,54 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
           WHERE m.id IN :momentIds
            """)
     List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdOrderByIdDesc(@Param("groupId") Long groupId, Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndIdLessThanOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("cursor") Long cursor,
+        Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.member.id = :memberId
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("memberId") Long memberId,
+        Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.member.id = :memberId AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdLessThanOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("memberId") Long memberId,
+        @Param("cursor") Long cursor,
+        Pageable pageable);
 }
