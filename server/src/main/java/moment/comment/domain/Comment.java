@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
 import moment.global.page.Cursorable;
+import moment.group.domain.GroupMember;
+import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -43,6 +45,10 @@ public class Comment extends BaseEntity implements Cursorable {
 
     private Long momentId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private GroupMember member;
+
     private LocalDateTime deletedAt;
 
     public Comment(String content, User commenter, Long momentId) {
@@ -50,6 +56,14 @@ public class Comment extends BaseEntity implements Cursorable {
         this.content = content;
         this.commenter = commenter;
         this.momentId = momentId;
+    }
+
+    public Comment(Moment moment, User commenter, GroupMember member, String content) {
+        validate(content, commenter, moment.getId());
+        this.content = content;
+        this.commenter = commenter;
+        this.momentId = moment.getId();
+        this.member = member;
     }
 
     private void validate(String content, User commenter, Long momentId) {

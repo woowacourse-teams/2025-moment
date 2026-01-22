@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
 import moment.global.page.Cursorable;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -41,12 +43,28 @@ public class Moment extends BaseEntity implements Cursorable {
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private GroupMember member;
+
     private LocalDateTime deletedAt;
 
     public Moment(String content, User momenter) {
         validate(content, momenter);
         this.content = content;
         this.momenter = momenter;
+    }
+
+    public Moment(User momenter, Group group, GroupMember member, String content) {
+        validate(content, momenter);
+        this.momenter = momenter;
+        this.group = group;
+        this.member = member;
+        this.content = content;
     }
 
     private void validate(String content, User momenter) {
