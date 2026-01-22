@@ -60,6 +60,25 @@ public enum ErrorCode {
     ADMIN_LAST_SUPER_ADMIN_DELETE("A-007", "마지막 SUPER_ADMIN은 차단할 수 없습니다.", HttpStatus.BAD_REQUEST),
     ADMIN_SESSION_NOT_FOUND("A-008", "세션을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     ADMIN_SESSION_INVALIDATED("A-009", "세션이 만료되었습니다. 다시 로그인해 주세요.", HttpStatus.UNAUTHORIZED),
+
+    // Group (GR)
+    GROUP_NOT_FOUND("GR-001", "존재하지 않는 그룹입니다.", HttpStatus.NOT_FOUND),
+    NOT_GROUP_OWNER("GR-002", "그룹 소유자가 아닙니다.", HttpStatus.FORBIDDEN),
+    CANNOT_DELETE_GROUP_WITH_MEMBERS("GR-003", "멤버가 있는 그룹은 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST),
+
+    // GroupMember (GM)
+    MEMBER_NOT_FOUND("GM-001", "존재하지 않는 멤버입니다.", HttpStatus.NOT_FOUND),
+    NOT_GROUP_MEMBER("GM-002", "그룹 멤버가 아닙니다.", HttpStatus.FORBIDDEN),
+    ALREADY_GROUP_MEMBER("GM-003", "이미 그룹 멤버입니다.", HttpStatus.CONFLICT),
+    MEMBER_NOT_PENDING("GM-004", "대기 중인 멤버가 아닙니다.", HttpStatus.BAD_REQUEST),
+    MEMBER_NOT_APPROVED("GM-005", "승인된 멤버가 아닙니다.", HttpStatus.BAD_REQUEST),
+    CANNOT_KICK_OWNER("GM-006", "그룹 소유자는 강퇴할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    OWNER_CANNOT_LEAVE("GM-007", "그룹 소유자는 탈퇴할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    NICKNAME_ALREADY_USED("GM-008", "이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT),
+
+    // InviteLink (IL)
+    INVITE_LINK_INVALID("IL-001", "유효하지 않은 초대 링크입니다.", HttpStatus.NOT_FOUND),
+    INVITE_LINK_EXPIRED("IL-002", "만료된 초대 링크입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;
