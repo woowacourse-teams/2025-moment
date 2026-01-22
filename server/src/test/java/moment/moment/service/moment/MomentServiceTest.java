@@ -15,7 +15,6 @@ import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.MomentCreatedAtHelper;
 import moment.user.domain.User;
@@ -64,16 +63,14 @@ class MomentServiceTest {
     void 모멘트를_생성한다() {
         // given
         String content = "hello!";
-        WriteType writeType = WriteType.BASIC;
 
         // when
-        Moment moment = momentService.create(content, momenter, writeType);
+        Moment moment = momentService.create(content, momenter);
 
         // then
         assertAll(
                 () -> assertThat(moment.getContent()).isEqualTo(content),
-                () -> assertThat(moment.getMomenter()).isEqualTo(momenter),
-                () -> assertThat(moment.getWriteType()).isEqualTo(writeType)
+                () -> assertThat(moment.getMomenter()).isEqualTo(momenter)
         );
     }
 
@@ -81,10 +78,10 @@ class MomentServiceTest {
     void 나의_모멘트_첫_페이지를_조회한다() {
         // given
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start);
-        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC,
+        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, start);
+        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter,
                 start.plusHours(1));
-        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC,
+        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter,
                 start.plusHours(2));
 
         Cursor cursor = new Cursor(null);
@@ -106,10 +103,10 @@ class MomentServiceTest {
     void 나의_모멘트_다음_페이지를_조회한다() {
         // given
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC, start);
-        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC,
+        Moment moment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, start);
+        Moment moment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter,
                 start.plusHours(1));
-        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC,
+        Moment moment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter,
                 start.plusHours(2));
 
         Cursor cursor = new Cursor(moment3.getCreatedAt().toString() + "_" + moment3.getId());
@@ -130,13 +127,13 @@ class MomentServiceTest {
     void 읽지_않은_모멘트_첫_페이지를_조회한다() {
         // given
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC,
+        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter,
                 start.plusHours(1));
-        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC,
+        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter,
                 start.plusHours(2));
-        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC,
+        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter,
                 start.plusHours(3));
-        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter, WriteType.BASIC,
+        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter,
                 start.plusHours(4));
 
         Cursor cursor = new Cursor(null);
@@ -162,13 +159,13 @@ class MomentServiceTest {
     void 읽지_않은_모멘트_다음_페이지를_조회한다() {
         // given
         LocalDateTime start = LocalDateTime.of(2025, 01, 01, 00, 00);
-        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter, WriteType.BASIC,
+        Moment unReadMoment1 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment1", momenter,
                 start.plusHours(1));
-        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter, WriteType.BASIC,
+        Moment unReadMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment2", momenter,
                 start.plusHours(2));
-        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter, WriteType.BASIC,
+        Moment readMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("moment3", momenter,
                 start.plusHours(3));
-        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter, WriteType.BASIC,
+        Moment unReadMoment3 = momentCreatedAtHelper.saveMomentWithCreatedAt("moment4", momenter,
                 start.plusHours(4));
 
         Cursor cursor = new Cursor(unReadMoment2.getCreatedAt() + "_" + unReadMoment2.getId());
@@ -191,9 +188,9 @@ class MomentServiceTest {
     @Test
     void 신고한_모멘트를_제외하고_코멘트_달_수_있는_모멘트를_조회한다() {
         // given
-        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter));
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter));
+        Moment moment3 = momentRepository.save(new Moment("moment3", momenter));
 
         User reporter = userRepository.save(
                 UserFixture.createUser()
@@ -217,9 +214,9 @@ class MomentServiceTest {
     @Disabled
     void 기간이_지난_모멘트를_제외하고_달_수_있는_모멘트를_조회한다() throws NoSuchFieldException {
         // given
-        Moment newMoment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment newMoment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment oldMoment = momentRepository.save(new Moment("I wrote it 5days ago", momenter, WriteType.BASIC));
+        Moment newMoment1 = momentRepository.save(new Moment("moment1", momenter));
+        Moment newMoment2 = momentRepository.save(new Moment("moment2", momenter));
+        Moment oldMoment = momentRepository.save(new Moment("I wrote it 5days ago", momenter));
 
         Field createdAtField = BaseEntity.class.getDeclaredField("createdAt");
         createdAtField.setAccessible(true);
@@ -242,9 +239,9 @@ class MomentServiceTest {
     @Test
     void 모멘트_아이디로_모멘트를_조회한다() {
         // given
-        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("moment3", momenter, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter));
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter));
+        Moment moment3 = momentRepository.save(new Moment("moment3", momenter));
 
         List<Long> momentIds = List.of(moment1, moment2, moment3).stream()
                 .map(Moment::getId)
@@ -260,8 +257,8 @@ class MomentServiceTest {
     @Test
     void 모멘트를_삭제한다() {
         // given
-        Moment moment1 = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment2", momenter, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("moment1", momenter));
+        Moment moment2 = momentRepository.save(new Moment("moment2", momenter));
 
         // when
         momentService.deleteBy(moment1.getId());
@@ -277,7 +274,7 @@ class MomentServiceTest {
     @Test
     void 모멘트가_존재하는지_확인한다() {
         // given
-        Moment moment = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment1", momenter));
 
         // when
         boolean isExistsMoment1 = momentService.existsMoment(moment.getId());
@@ -293,7 +290,7 @@ class MomentServiceTest {
     @Test
     void 모멘트의_작성자가_맞을경우_예외가_발생하지_않는다() {
         // given
-        Moment moment = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment1", momenter));
 
         // when & then
         assertDoesNotThrow(() -> momentService.validateMomenter(moment.getId(), momenter));
@@ -302,7 +299,7 @@ class MomentServiceTest {
     @Test
     void 모멘트의_작성자가_아니면_예외가_발생한다() {
         // given
-        Moment moment = momentRepository.save(new Moment("moment1", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment1", momenter));
 
         User notMomenter = UserFixture.createUser();
         momenter = userRepository.save(notMomenter);

@@ -19,9 +19,6 @@ import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentCreationStatus;
 import moment.moment.domain.MomentImage;
-import moment.moment.domain.MomentTag;
-import moment.moment.domain.Tag;
-import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
@@ -29,13 +26,10 @@ import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MomentReportCreateResponse;
-import moment.moment.dto.response.TagNamesResponse;
 import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.dto.response.tobe.MyMomentResponse;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
-import moment.moment.infrastructure.MomentTagRepository;
-import moment.moment.infrastructure.TagRepository;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;
@@ -76,10 +70,6 @@ class MomentControllerTest {
     @Autowired
     private ReportRepository reportRepository;
     @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private MomentTagRepository momentTagRepository;
-    @Autowired
     private MomentCreatedAtHelper momentCreatedAtHelper;
 
     @Autowired
@@ -102,9 +92,8 @@ class MomentControllerTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.saveAndFlush(momenter);
         String content = "재미있는 내용이네요~~?";
-        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, null, null);
+        MomentCreateRequest request = new MomentCreateRequest(content, null, null);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -130,12 +119,10 @@ class MomentControllerTest {
     void 추가_모멘트를_등록한다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
-        List<String> tagNames = List.of("일상/여가");
 
-        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, null, null);
+        MomentCreateRequest request = new MomentCreateRequest(content, null, null);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -163,11 +150,10 @@ class MomentControllerTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
-        List<String> tagNames = List.of("일상/여가");
         String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
         String imageName = "abcde.jpg";
 
-        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(content, imageUrl, imageName);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -193,14 +179,12 @@ class MomentControllerTest {
     void 이미지를_첨부한_추가_모멘트를_등록한다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
         String content = "재미있는 내용이네요~~?";
-        List<String> tagNames = List.of("일상/여가");
         String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
         String imageName = "abcde.jpg";
 
-        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, imageUrl, imageName);
+        MomentCreateRequest request = new MomentCreateRequest(content, imageUrl, imageName);
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         // when
@@ -223,62 +207,6 @@ class MomentControllerTest {
     }
 
     @Test
-    void 추가_모멘트를_등록_시_별조각을_차감한다() {
-
-        User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(30);
-        User savedMomenter = userRepository.saveAndFlush(momenter);
-        String content = "재미있는 내용이네요~~?";
-        List<String> tagNames = List.of("일상/여가");
-
-        MomentCreateRequest request = new MomentCreateRequest(content, tagNames, null, null);
-        String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
-
-        MomentCreateResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("accessToken", token)
-                .body(request)
-                .when().post("/api/v1/moments")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", MomentCreateResponse.class);
-
-        User user = userRepository.findById(savedMomenter.getId()).get();
-        // then
-        assertAll(
-                () -> assertThat(response.momenterId()).isEqualTo(savedMomenter.getId()),
-                () -> assertThat(response.content()).isEqualTo(content),
-                () -> assertThat(user.getAvailableStar()).isEqualTo(35)
-        );
-
-        String contentExtra = "추가 모멘트 재미있는 내용이네요~~?";
-
-        MomentCreateRequest requestExtra = new MomentCreateRequest(contentExtra, tagNames, null, null);
-
-        // when
-        MomentCreateResponse responseExtra = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .cookie("accessToken", token)
-                .body(requestExtra)
-                .when().post("/api/v1/moments/extra")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .jsonPath()
-                .getObject("data", MomentCreateResponse.class);
-
-        User findUser = userRepository.findById(savedMomenter.getId()).get();
-        // then
-        assertAll(
-                () -> assertThat(responseExtra.momenterId()).isEqualTo(savedMomenter.getId()),
-                () -> assertThat(responseExtra.content()).isEqualTo(contentExtra),
-                () -> assertThat(findUser.getAvailableStar()).isEqualTo(25)
-        );
-    }
-
-    @Test
     @Disabled
     void 내_모멘트를_등록_시간_순으로_정렬한_페이지를_조회한다() throws InterruptedException {
         // given
@@ -287,10 +215,10 @@ class MomentControllerTest {
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
-        Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
-        Moment moment3 = new Moment("아 짜증나", false, savedMomenter, WriteType.BASIC);
-        Moment moment4 = new Moment("아 신기해", false, savedMomenter, WriteType.BASIC);
+        Moment moment1 = new Moment("아 행복해", savedMomenter);
+        Moment moment2 = new Moment("아 힘들어", savedMomenter);
+        Moment moment3 = new Moment("아 짜증나", savedMomenter);
+        Moment moment4 = new Moment("아 신기해", savedMomenter);
 
         momentRepository.save(moment1);
         Thread.sleep(200);
@@ -331,7 +259,6 @@ class MomentControllerTest {
     void 내_모멘트_조회_시_읽음_상태를_함께_반환한다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
         User commenter = userRepository.save(UserFixture.createUser());
@@ -339,7 +266,7 @@ class MomentControllerTest {
         String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
         String commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
 
-        MomentCreateRequest createRequest1 = new MomentCreateRequest("첫 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateRequest createRequest1 = new MomentCreateRequest("첫 번째 모멘트", null, null);
         MomentCreateResponse momentResponse1 = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", momenterToken)
@@ -347,7 +274,7 @@ class MomentControllerTest {
                 .when().post("/api/v1/moments")
                 .then().extract().jsonPath().getObject("data", MomentCreateResponse.class);
 
-        MomentCreateRequest createRequest2 = new MomentCreateRequest("두 번째 모멘트", List.of("일상/여가"), null, null);
+        MomentCreateRequest createRequest2 = new MomentCreateRequest("두 번째 모멘트", null, null);
         MomentCreateResponse momentResponse2 = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", momenterToken)
@@ -393,12 +320,11 @@ class MomentControllerTest {
     void 내_모멘트_조회_시_모멘트_태그가_없는_경우도_조회된다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
         String momenterToken = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
-        Moment momentWithoutTag = new Moment("태그 없는 모멘트", savedMomenter, WriteType.BASIC);
+        Moment momentWithoutTag = new Moment("태그 없는 모멘트", savedMomenter);
         momentRepository.save(momentWithoutTag);
 
         // when
@@ -415,9 +341,8 @@ class MomentControllerTest {
         // then
         List<MyMomentResponse> myMoments = response.items().myMomentsResponse();
 
-        TagNamesResponse tagNames = myMoments.get(0).tagNames();
-
-        assertThat(tagNames.getTagNames()).isEmpty();
+        assertThat(myMoments).hasSize(1);
+        assertThat(myMoments.get(0).content()).isEqualTo("태그 없는 모멘트");
     }
 
     @Test
@@ -429,10 +354,10 @@ class MomentControllerTest {
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
-        Moment moment1 = new Moment("아 행복해", true, savedMomenter, WriteType.BASIC);
-        Moment moment2 = new Moment("아 힘들어", true, savedMomenter, WriteType.BASIC);
-        Moment moment3 = new Moment("아 짜증나", false, savedMomenter, WriteType.BASIC);
-        Moment moment4 = new Moment("아 신기해", false, savedMomenter, WriteType.BASIC);
+        Moment moment1 = new Moment("아 행복해", savedMomenter);
+        Moment moment2 = new Moment("아 힘들어", savedMomenter);
+        Moment moment3 = new Moment("아 짜증나", savedMomenter);
+        Moment moment4 = new Moment("아 신기해", savedMomenter);
 
         momentRepository.save(moment1);
         Thread.sleep(200);
@@ -490,12 +415,12 @@ class MomentControllerTest {
     }
 
     @Test
-    void 기본_모멘트_작성_불가능_상태를_가져온다() {
-        // given
+    void 기본_모멘트_작성_항상_가능_상태를_반환한다() {
+        // given (정책 제거로 기본 모멘트 작성은 항상 허용)
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         momentRepository.save(moment);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -511,7 +436,7 @@ class MomentControllerTest {
                 .getObject("data", MomentCreationStatusResponse.class);
 
         // then
-        assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.ALLOWED);
     }
 
     @Test
@@ -523,7 +448,7 @@ class MomentControllerTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
@@ -539,7 +464,6 @@ class MomentControllerTest {
         assertAll(
                 () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
                 () -> assertThat(response.nickname()).isEqualTo(savedMomenter.getNickname()),
-                () -> assertThat(response.level()).isEqualTo(savedMomenter.getLevel()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent())
         );
     }
@@ -553,7 +477,7 @@ class MomentControllerTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         String imageUrl = "http://s3-north-east/techcourse-2025/moment-dev/images/abcde.jpg";
@@ -574,7 +498,6 @@ class MomentControllerTest {
         assertAll(
                 () -> assertThat(response.id()).isEqualTo(savedMoment.getId()),
                 () -> assertThat(response.nickname()).isEqualTo(savedMomenter.getNickname()),
-                () -> assertThat(response.level()).isEqualTo(savedMomenter.getLevel()),
                 () -> assertThat(response.content()).isEqualTo(savedMoment.getContent()),
                 () -> assertThat(response.imageUrl()).isEqualTo(imageUrl)
         );
@@ -584,7 +507,6 @@ class MomentControllerTest {
     void 추가_모멘트_작성_가능_상태를_가져온다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(10);
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -604,10 +526,9 @@ class MomentControllerTest {
     }
 
     @Test
-    void 추가_모멘트_작성_불가능_상태를_가져온다() {
-        // given
+    void 추가_모멘트_작성_가능_상태를_항상_반환한다() {
+        // given (stars 시스템 제거로 extra moment는 항상 허용)
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -623,17 +544,16 @@ class MomentControllerTest {
                 .getObject("data", MomentCreationStatusResponse.class);
 
         // then
-        assertThat(response.status()).isEqualTo(MomentCreationStatus.DENIED);
+        assertThat(response.status()).isEqualTo(MomentCreationStatus.ALLOWED);
     }
 
     @Test
     void 모멘트를_신고한다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
@@ -660,10 +580,9 @@ class MomentControllerTest {
     void 정해진_신고_횟수_넘긴_모멘트를_삭제한다() {
         // given
         User momenter = UserFixture.createUser();
-        momenter.addStarAndUpdateLevel(9);
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         User reporter1 = UserFixture.createUser();
@@ -705,14 +624,9 @@ class MomentControllerTest {
         String token = tokenManager.createAccessToken(savedMomenter.getId(), savedMomenter.getEmail());
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
-        Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter,
-                WriteType.BASIC, start);
-        Tag savedTag = tagRepository.save(new Tag("일상/생각"));
-        momentTagRepository.save(new MomentTag(savedMoment, savedTag));
+        Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter, start);
 
-        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter,
-                WriteType.BASIC, start.plusHours(1));
-        momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter, start.plusHours(1));
 
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()

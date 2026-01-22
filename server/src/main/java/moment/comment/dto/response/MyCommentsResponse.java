@@ -5,14 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import moment.comment.domain.Comment;
-import moment.comment.domain.CommentImage;
 import moment.comment.dto.tobe.CommentComposition;
-import moment.comment.dto.tobe.CommentCompositions;
-import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
-import moment.moment.domain.MomentTag;
-import moment.comment.domain.Echo;
 import moment.moment.dto.response.tobe.MomentComposition;
 
 public record MyCommentsResponse(List<MyCommentResponse> myCommentsResponse) {

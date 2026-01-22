@@ -206,11 +206,9 @@ public class MomentController {
     })
     @GetMapping("/commentable")
     public ResponseEntity<SuccessResponse<CommentableMomentResponse>> readCommentableMoment(
-            @AuthenticationPrincipal Authentication authentication,
-            @RequestParam(required = false, defaultValue = "") List<String> tagName
+            @AuthenticationPrincipal Authentication authentication
     ) {
-        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMoment(authentication.id(),
-                tagName);
+        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMoment(authentication.id());
 
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

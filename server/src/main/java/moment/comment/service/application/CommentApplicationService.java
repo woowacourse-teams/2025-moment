@@ -1,25 +1,19 @@
 package moment.comment.service.application;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.comment.domain.Echo;
-import moment.comment.dto.CommentForEcho;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
-import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
-import moment.comment.service.comment.EchoService;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.storage.application.PhotoUrlResolver;
@@ -38,7 +32,6 @@ public class CommentApplicationService {
     private final UserService userService;
     private final CommentService commentService;
     private final CommentImageService commentImageService;
-    private final EchoService echoService;
     private final PhotoUrlResolver photoUrlResolver;
 
     public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
@@ -52,8 +45,6 @@ public class CommentApplicationService {
 
         Map<Comment, CommentImage> commentImageByComment = commentImageService.getCommentImageByComment(comments);
 
-        Map<Comment, List<Echo>> echosByComments = echoService.getEchosOfComments(comments);
-
         return comments.stream()
                 .map(comment -> {
                     CommentImage image = commentImageByComment.get(comment);
@@ -62,8 +53,7 @@ public class CommentApplicationService {
                     return CommentComposition.of(
                             comment,
                             commentersByComments.get(comment),
-                            resolvedImageUrl,
-                            echosByComments.get(comment)
+                            resolvedImageUrl
                     );
                 })
                 .toList();
@@ -93,7 +83,6 @@ public class CommentApplicationService {
     @Transactional
     public void deleteByReport(Long commentId, Long reportCount) {
         if (reportCount >= COMMENT_DELETE_THRESHOLD) {
-            echoService.deleteBy(commentId);
             commentImageService.deleteBy(commentId);
             commentService.deleteBy(commentId);
         }
@@ -138,18 +127,12 @@ public class CommentApplicationService {
         Map<Comment, CommentImage> commentImagesByComment = commentImageService.getCommentImageByComment(
                 commentsWithoutCursor);
 
-        Map<Comment, List<Echo>> echoesByComments = echoService.getEchosOfComments(commentsWithoutCursor);
-
         return commentsWithoutCursor.stream()
                 .map(comment -> {
                     CommentImage image = commentImagesByComment.get(comment);
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
-                    return CommentComposition.of(
-                            comment,
-                            commenter,
-                            resolvedImageUrl,
-                            echoesByComments.getOrDefault(comment, Collections.emptyList()));
+                    return CommentComposition.of(comment, commenter, resolvedImageUrl);
                 })
                 .toList();
     }
@@ -182,22 +165,4 @@ public class CommentApplicationService {
         );
     }
 
-    public CommentForEcho getCommentForEchoBy(Long commentId) {
-        Comment comment = commentService.getCommentBy(commentId);
-        return CommentForEcho.from(comment);
-    }
-
-    public void createEcho(Long commentId, Long momenterId, Set<String> echoTypes) {
-        Comment comment = commentService.getCommentBy(commentId);
-        User momenter = userService.getUserBy(momenterId);
-        echoService.saveIfNotExisted(comment, momenter, echoTypes);
-    }
-
-    public List<EchoDetail> getEchosBy(Long commentId) {
-        Comment comment = commentService.getCommentBy(commentId);
-        List<Echo> echos = echoService.getEchosBy(comment);
-
-        return echos.stream().map(EchoDetail::from)
-                .toList();
-    }
 }

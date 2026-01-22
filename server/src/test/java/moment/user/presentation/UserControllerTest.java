@@ -90,9 +90,7 @@ class UserControllerTest {
         User savedUser = userRepository.save(user);
 
         String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
-        UserProfileResponse expect = new UserProfileResponse(savedUser.getNickname(), savedUser.getAvailableStar(),
-                savedUser.getLevel(),
-                savedUser.getLevel().getNextLevelRequiredStars());
+        UserProfileResponse expect = new UserProfileResponse(savedUser.getNickname());
 
         // when
         SuccessResponse<UserProfileResponse> response = RestAssured.given().log().all()

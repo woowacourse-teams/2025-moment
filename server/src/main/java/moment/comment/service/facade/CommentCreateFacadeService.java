@@ -7,8 +7,6 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
-import moment.reward.domain.Reason;
-import moment.reward.service.application.RewardApplicationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,6 @@ public class CommentCreateFacadeService {
 
     private final CommentApplicationService commentApplicationService;
     private final MomentApplicationService momentApplicationService;
-    private final RewardApplicationService rewardApplicationService;
 
     private final ApplicationEventPublisher publisher;
 
@@ -30,8 +27,6 @@ public class CommentCreateFacadeService {
 
         Moment moment = momentApplicationService.getMomentBy(request.momentId());
         CommentCreateResponse createdComment = commentApplicationService.createComment(request, userId);
-
-        rewardApplicationService.rewardForComment(userId, Reason.COMMENT_CREATION, createdComment.commentId());
 
         publisher.publishEvent(CommentCreateEvent.of(moment));
 

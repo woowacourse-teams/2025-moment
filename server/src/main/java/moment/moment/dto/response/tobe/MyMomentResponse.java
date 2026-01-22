@@ -6,7 +6,6 @@ import java.util.List;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.moment.dto.response.MomentNotificationResponse;
 import moment.moment.dto.response.MyMomentCommentResponse;
-import moment.moment.dto.response.TagNamesResponse;
 
 @Schema(description = "내 모멘트 조회 응답")
 public record MyMomentResponse(
@@ -18,9 +17,6 @@ public record MyMomentResponse(
 
         @Schema(description = "내 모멘트 내용", example = "야근 힘들어요 퓨ㅠㅠ")
         String content,
-
-        @Schema(description = "태그 이름", example = "일상/여가")
-        TagNamesResponse tagNames,
 
         @Schema(description = "모멘트 이미지", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
         String imageUrl,
@@ -46,7 +42,6 @@ public record MyMomentResponse(
                 momentComposition.id(),
                 momentComposition.momenterId(),
                 momentComposition.content(),
-                new TagNamesResponse(momentComposition.tagNames()),
                 momentComposition.imageUrl(),
                 momentComposition.momentCreatedAt(),
                 myMomentCommentResponses,

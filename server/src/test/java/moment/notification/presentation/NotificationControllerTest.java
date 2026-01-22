@@ -11,18 +11,15 @@ import static org.mockito.BDDMockito.then;
 
 import io.restassured.RestAssured;
 import java.util.List;
-import java.util.Set;
 import moment.auth.application.TokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
-import moment.comment.dto.request.EchoCreateRequest;
 import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -94,9 +91,9 @@ public class NotificationControllerTest {
     void setUp() {
         RestAssured.port = port;
         momenter = userRepository.save(UserFixture.createUser());
-        moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter, WriteType.BASIC));
-        moment2 = momentRepository.save(new Moment("안녕하세요", momenter, WriteType.BASIC));
-        moment3 = momentRepository.save(new Moment("반가워요", momenter, WriteType.BASIC));
+        moment = momentRepository.save(new Moment("나의 재능을 Miami로", momenter));
+        moment2 = momentRepository.save(new Moment("안녕하세요", momenter));
+        moment3 = momentRepository.save(new Moment("반가워요", momenter));
         momenterToken = tokenManager.createAccessToken(momenter.getId(), momenter.getEmail());
         commenter = userRepository.save(UserFixture.createUser());
         commenterToken = tokenManager.createAccessToken(commenter.getId(), commenter.getEmail());
@@ -136,40 +133,6 @@ public class NotificationControllerTest {
                 () -> assertThat(response.targetType()).isEqualTo(TargetType.MOMENT),
                 () -> assertThat(response.targetId()).isEqualTo(moment.getId()),
                 () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT.getMessage()),
-                () -> assertThat(response.isRead()).isFalse()
-        );
-    }
-
-    @Test
-    void 사용자가_코멘트에_반응을_달면_SSE_알림을_받는다() {
-        // given
-        given(sseNotificationService.subscribe(anyLong())).willReturn(new SseEmitter());
-        Comment comment = commentRepository.save(new Comment("하하", commenter, moment.getId()));
-
-        // when
-        EchoCreateRequest request = new EchoCreateRequest(Set.of("THANKS"), comment.getId());
-        RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken) // 모멘트 작성자가 에코를 달음
-                .contentType(io.restassured.http.ContentType.JSON)
-                .body(request)
-                .when().post("/api/v1/echos")
-                .then().log().all()
-                .statusCode(201);
-
-        // then
-        ArgumentCaptor<NotificationSseResponse> responseCaptor = ArgumentCaptor.forClass(NotificationSseResponse.class);
-        await().atMost(2, SECONDS).untilAsserted(() -> {
-            then(sseNotificationService).should()
-                    .sendToClient(eq(commenter.getId()), eq("notification"), responseCaptor.capture());
-        });
-
-        NotificationSseResponse response = responseCaptor.getValue();
-
-        assertAll(
-                () -> assertThat(response.notificationType()).isEqualTo(NotificationType.NEW_REPLY_ON_COMMENT),
-                () -> assertThat(response.targetType()).isEqualTo(TargetType.COMMENT),
-                () -> assertThat(response.targetId()).isEqualTo(comment.getId()),
-                () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_REPLY_ON_COMMENT.getMessage()),
                 () -> assertThat(response.isRead()).isFalse()
         );
     }
@@ -217,64 +180,6 @@ public class NotificationControllerTest {
         // then
         assertAll(
                 () -> assertThat(responses).hasSize(3),
-                () -> assertThat(responses.stream()
-                        .noneMatch(NotificationResponse::isRead))
-                        .isTrue());
-    }
-
-    @Test
-    void 사용자가_읽지_않은_코멘트_알림을_받는다() {
-        // given
-        Comment comment = commentRepository.save(new Comment("하하", commenter, moment2.getId()));
-        EchoCreateRequest request1 = new EchoCreateRequest(Set.of("HEART"), comment.getId());
-        EchoCreateRequest request2 = new EchoCreateRequest(Set.of("DDABONG"), comment.getId());
-        EchoCreateRequest request3 = new EchoCreateRequest(Set.of("STAR"), comment.getId());
-        EchoCreateRequest request4 = new EchoCreateRequest(Set.of("KING"), comment.getId());
-
-        // when
-        RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken)
-                .contentType(io.restassured.http.ContentType.JSON)
-                .body(request1)
-                .when().post("/api/v1/echos")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken)
-                .contentType(io.restassured.http.ContentType.JSON)
-                .body(request2)
-                .when().post("/api/v1/echos")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken)
-                .contentType(io.restassured.http.ContentType.JSON)
-                .body(request3)
-                .when().post("/api/v1/echos")
-                .then().log().all()
-                .statusCode(201);
-
-        RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken)
-                .contentType(io.restassured.http.ContentType.JSON)
-                .body(request4)
-                .when().post("/api/v1/echos")
-                .then().log().all()
-                .statusCode(201);
-
-        List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("accessToken", commenterToken)
-                .when().get("/api/v1/notifications?read=false")
-                .then().log().all()
-                .statusCode(200)
-                .extract().jsonPath()
-                .getList("data", NotificationResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(responses).hasSize(4),
                 () -> assertThat(responses.stream()
                         .noneMatch(NotificationResponse::isRead))
                         .isTrue());

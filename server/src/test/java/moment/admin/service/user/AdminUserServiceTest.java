@@ -52,18 +52,12 @@ class AdminUserServiceTest {
     void 사용자_정보를_수정한다() {
         User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
-        AdminUserUpdateRequest request = new AdminUserUpdateRequest(
-            "새닉네임", 100, 200
-        );
+        AdminUserUpdateRequest request = new AdminUserUpdateRequest("새닉네임");
 
         adminUserService.updateUser(savedUser.getId(), request);
 
         User updatedUser = userRepository.findById(savedUser.getId()).get();
-        assertAll(
-            () -> assertThat(updatedUser.getNickname()).isEqualTo("새닉네임"),
-            () -> assertThat(updatedUser.getAvailableStar()).isEqualTo(100),
-            () -> assertThat(updatedUser.getExpStar()).isEqualTo(200)
-        );
+        assertThat(updatedUser.getNickname()).isEqualTo("새닉네임");
     }
 
     @Test

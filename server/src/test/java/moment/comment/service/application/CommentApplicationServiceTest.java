@@ -6,20 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.comment.domain.Echo;
-import moment.comment.dto.CommentForEcho;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
-import moment.comment.dto.tobe.EchoDetail;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
-import moment.comment.infrastructure.EchoRepository;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
@@ -27,7 +22,6 @@ import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.User;
@@ -65,9 +59,6 @@ class CommentApplicationServiceTest {
     private CommentImageRepository commentImageRepository;
 
     @Autowired
-    private EchoRepository echoRepository;
-
-    @Autowired
     private CommentCreatedAtHelper createdAtHelper;
 
     private User user;
@@ -76,7 +67,7 @@ class CommentApplicationServiceTest {
     @BeforeEach
     void setUp() {
         user = userRepository.save(UserFixture.createUser());
-        moment = momentRepository.save(new Moment("moment content", user, WriteType.BASIC));
+        moment = momentRepository.save(new Moment("moment content", user));
     }
 
     @Test
@@ -120,7 +111,6 @@ class CommentApplicationServiceTest {
         // given
         Comment comment = commentRepository.save(new Comment("comment", user, moment.getId()));
         commentImageRepository.save(new CommentImage(comment, "url", "name"));
-        echoRepository.save(new Echo("HAPPY", user, comment));
 
         long reportCount = 1;
 
@@ -130,7 +120,6 @@ class CommentApplicationServiceTest {
         // then
         assertThat(commentRepository.findById(comment.getId())).isEmpty();
         assertThat(commentImageRepository.findByComment(comment)).isEmpty();
-        assertThat(echoRepository.findByComment(comment)).isEmpty();
     }
 
     @Test
@@ -138,7 +127,6 @@ class CommentApplicationServiceTest {
         // given
         Comment comment = commentRepository.save(new Comment("comment", user, moment.getId()));
         commentImageRepository.save(new CommentImage(comment, "url", "name"));
-        echoRepository.save(new Echo("HAPPY", user, comment));
 
         long reportCount = 0;
 
@@ -148,7 +136,6 @@ class CommentApplicationServiceTest {
         // then
         assertThat(commentRepository.findById(comment.getId())).isPresent();
         assertThat(commentImageRepository.findByComment(comment)).isPresent();
-        assertThat(echoRepository.findByComment(comment)).isNotEmpty();
     }
 
     @Test
@@ -177,7 +164,7 @@ class CommentApplicationServiceTest {
         // given
         User otherUser = UserFixture.createUser();
         userRepository.save(otherUser);
-        Moment moment2 = momentRepository.save(new Moment("moment 2", user, WriteType.BASIC));
+        Moment moment2 = momentRepository.save(new Moment("moment 2", user));
         commentRepository.save(new Comment("my comment", user, moment.getId()));
         commentRepository.save(new Comment("other's comment", otherUser, moment2.getId()));
 
@@ -192,69 +179,11 @@ class CommentApplicationServiceTest {
     }
 
     @Test
-    void 에코를_위한_코멘트_정보를_조회한다() {
-        // given
-        Comment savedComment = commentRepository.save(new Comment("comment", user, moment.getId()));
-
-        // when
-        CommentForEcho result = commentApplicationService.getCommentForEchoBy(savedComment.getId());
-
-        // then
-        assertThat(result.commenterId()).isEqualTo(savedComment.getCommenter().getId());
-        assertThat(result.momentId()).isEqualTo(savedComment.getMomentId());
-    }
-
-    @Test
-    void 존재하지_않는_코멘트_ID로_에코용_정보를_조회하면_예외가_발생한다() {
-        // given
-        Long nonExistentCommentId = 999L;
-
-        // when & then
-        assertThatThrownBy(() -> commentApplicationService.getCommentForEchoBy(nonExistentCommentId))
-                .isInstanceOf(MomentException.class)
-                .hasMessageContaining(ErrorCode.COMMENT_NOT_FOUND.getMessage());
-    }
-
-    @Test
-    void 코멘트에_에코를_생성한다() {
-        // given
-        Comment savedComment = commentRepository.save(new Comment("comment", user, moment.getId()));
-        Set<String> echoTypes = Set.of("HAPPY", "SAD");
-
-        // when
-        commentApplicationService.createEcho(savedComment.getId(), user.getId(), echoTypes);
-
-        // then
-        List<Echo> echos = echoRepository.findAllByComment(savedComment);
-        assertThat(echos).hasSize(2);
-
-        List<String> actualEchoTypes = echos.stream().map(Echo::getEchoType).toList();
-        assertThat(actualEchoTypes).containsExactlyInAnyOrder("HAPPY", "SAD");
-    }
-
-    @Test
-    void 코멘트의_에코_목록을_조회한다() {
-        // given
-        Comment savedComment = commentRepository.save(new Comment("comment", user, moment.getId()));
-        echoRepository.save(new Echo("HAPPY", user, savedComment));
-        echoRepository.save(new Echo("SAD", user, savedComment));
-
-        // when
-        List<EchoDetail> echoDetails = commentApplicationService.getEchosBy(savedComment.getId());
-
-        // then
-        assertThat(echoDetails).hasSize(2);
-        assertThat(echoDetails.get(0).echoType()).isEqualTo("HAPPY");
-        assertThat(echoDetails.get(1).echoType()).isEqualTo("SAD");
-    }
-
-    @Test
     void 모멘트_ID_목록으로_코멘트_구성_요소를_조회한다() {
         // given
         Comment comment = commentRepository.save(new Comment("comment", user, moment.getId()));
         String originalImageUrl = "https://cdn.moment.com/test/images/comment_photo.jpg";
         commentImageRepository.save(new CommentImage(comment, originalImageUrl, "name1"));
-        echoRepository.save(new Echo("HAPPY", user, comment));
 
         Comment comment2 = commentRepository.save(new Comment("comment2", user, moment.getId()));
 
@@ -272,12 +201,9 @@ class CommentApplicationServiceTest {
                 () -> assertThat(composition1.content()).isEqualTo(comment.getContent()),
                 () -> assertThat(composition1.nickname()).isEqualTo(user.getNickname()),
                 () -> assertThat(composition1.imageUrl()).isEqualTo(expectedResolvedUrl),
-                () -> assertThat(composition1.echoDetails()).hasSize(1),
-                () -> assertThat(composition1.echoDetails().get(0).echoType()).isEqualTo("HAPPY"),
                 () -> assertThat(composition2.content()).isEqualTo(comment2.getContent()),
                 () -> assertThat(composition2.nickname()).isEqualTo(user.getNickname()),
-                () -> assertThat(composition2.imageUrl()).isNull(),
-                () -> assertThat(composition2.echoDetails()).isEmpty()
+                () -> assertThat(composition2.imageUrl()).isNull()
         );
     }
 

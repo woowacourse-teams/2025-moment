@@ -2,8 +2,6 @@ package moment.moment.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,33 +37,16 @@ public class Moment extends BaseEntity implements Cursorable {
     @Column(nullable = false, length = 200)
     private String content;
 
-    @Column(nullable = false)
-    private boolean isMatched;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
 
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private WriteType writeType;
-
     private LocalDateTime deletedAt;
 
-    public Moment(String content, User momenter, WriteType writeType) {
+    public Moment(String content, User momenter) {
         validate(content, momenter);
         this.content = content;
-        this.isMatched = false;
         this.momenter = momenter;
-        this.writeType = writeType;
-    }
-
-    public Moment(String content, boolean isMatched, User momenter, WriteType writeType) {
-        validate(content, momenter);
-        this.content = content;
-        this.isMatched = isMatched;
-        this.momenter = momenter;
-        this.writeType = writeType;
     }
 
     private void validate(String content, User momenter) {

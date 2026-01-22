@@ -11,7 +11,6 @@ import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -29,8 +28,8 @@ public class MomentService {
     private final MomentRepository momentRepository;
 
     @Transactional
-    public Moment create(String content, User momenter, WriteType writeType) {
-        Moment moment = new Moment(content, momenter, writeType);
+    public Moment create(String content, User momenter) {
+        Moment moment = new Moment(content, momenter);
         return momentRepository.save(moment);
     }
 

@@ -9,7 +9,6 @@ import moment.comment.domain.CommentImage;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -49,7 +48,7 @@ public class CommentImageRepositoryTest {
         User savedCommenter2 = userRepository.save(commenter2);
         User savedCommenter3 = userRepository.save(commenter3);
 
-        Moment moment = new Moment("내용", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("내용", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         String imageUrl = "https://s3:moment-dev/images/고양이.jpg";
@@ -83,7 +82,7 @@ public class CommentImageRepositoryTest {
         // given
         User momenter = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment content", momenter));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
         String imageUrl = "https://example.com/image.jpg";
@@ -105,7 +104,7 @@ public class CommentImageRepositoryTest {
         // given
         User momenter = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment content", momenter));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
         String imageUrl = "https://example.com/image.jpg";
@@ -125,7 +124,7 @@ public class CommentImageRepositoryTest {
         // given
         User momenter = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment content", momenter));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
 
         // when
@@ -140,7 +139,7 @@ public class CommentImageRepositoryTest {
         // given
         User momenter = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment content", momenter, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment content", momenter));
         Comment comment = commentRepository.save(new Comment("comment content", commenter, moment.getId()));
         Long commentId = comment.getId();
 
