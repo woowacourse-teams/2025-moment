@@ -109,4 +109,8 @@ public class GroupMember extends BaseEntity {
     public boolean isPending() {
         return this.status == MemberStatus.PENDING;
     }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
 }
