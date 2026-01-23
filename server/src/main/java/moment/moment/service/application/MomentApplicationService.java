@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
@@ -212,5 +214,34 @@ public class MomentApplicationService {
 
         Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
         return GroupFeedResponse.of(responses, nextCursor);
+    }
+
+    @Transactional
+    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content) {
+        User momenter = userService.getUserBy(userId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        moment.group.domain.Group group = member.getGroup();
+
+        Moment moment = momentService.createInGroup(momenter, group, member, content);
+        return GroupMomentResponse.from(moment, 0L, false, 0L);
+    }
+
+    @Transactional
+    public void deleteMomentInGroup(Long groupId, Long momentId, Long userId) {
+        Moment momentToDelete = momentService.getMomentBy(momentId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+
+        if (!momentToDelete.getMember().getId().equals(member.getId())) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+
+        momentService.deleteBy(momentId);
+    }
+
+    @Transactional
+    public boolean toggleMomentLike(Long groupId, Long momentId, Long userId) {
+        Moment moment = momentService.getMomentBy(momentId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        return momentLikeService.toggle(moment, member);
     }
 }
