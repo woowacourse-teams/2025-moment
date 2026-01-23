@@ -1,5 +1,6 @@
 package moment.notification.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -49,6 +50,9 @@ public class Notification extends BaseEntity {
 
     private boolean isRead;
 
+    @Column(name = "group_id")
+    private Long groupId;
+
     private LocalDateTime deletedAt;
 
     public Notification(User user,
@@ -59,6 +63,19 @@ public class Notification extends BaseEntity {
         this.notificationType = notificationType;
         this.targetType = targetType;
         this.targetId = targetId;
+        this.isRead = false;
+    }
+
+    public Notification(User user,
+                        NotificationType notificationType,
+                        TargetType targetType,
+                        Long targetId,
+                        Long groupId) {
+        this.user = user;
+        this.notificationType = notificationType;
+        this.targetType = targetType;
+        this.targetId = targetId;
+        this.groupId = groupId;
         this.isRead = false;
     }
 

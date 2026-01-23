@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.exception.MomentException;
-import moment.reward.domain.Reason;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -114,12 +112,7 @@ public class UserServiceTest {
         UserProfileResponse userProfile = userService.getUserProfileBy(authentication);
 
         // then
-        assertAll(
-                () -> assertThat(userProfile.nickname()).isEqualTo(savedUser.getNickname()),
-                () -> assertThat(userProfile.level()).isEqualTo(savedUser.getLevel()),
-                () -> assertThat(userProfile.expStar()).isEqualTo(savedUser.getExpStar()),
-                () -> assertThat(userProfile.nextStepExp()).isEqualTo(savedUser.getLevel().getNextLevelRequiredStars())
-        );
+        assertThat(userProfile.nickname()).isEqualTo(savedUser.getNickname());
     }
 
     @Test
@@ -277,15 +270,10 @@ public class UserServiceTest {
     }
 
     @Test
-    void 리워드를_소모하여_유저_닉네임을_변경합니다() throws NoSuchFieldException, IllegalAccessException {
+    void 유저_닉네임을_변경합니다() {
         // given
         User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
-
-        int availableStar = 1000;
-        Field field = User.class.getDeclaredField("availableStar");
-        field.setAccessible(true);
-        field.set(savedUser, availableStar);
 
         // when
         String changedNickname = "변경된 닉네임";
@@ -293,41 +281,19 @@ public class UserServiceTest {
 
         // then
         User changedUser = userRepository.findById(savedUser.getId()).get();
-        assertAll(
-                () -> assertThat(changedUser.getNickname()).isEqualTo(changedNickname),
-                () -> assertThat(changedUser.getAvailableStar()).isEqualTo(
-                        availableStar + Reason.NICKNAME_CHANGE.getPointTo())
-        );
+        assertThat(changedUser.getNickname()).isEqualTo(changedNickname);
     }
 
     @Test
-    void 사용중인_닉네임으로_변경_시_예외가_발생합니다() throws NoSuchFieldException, IllegalAccessException {
+    void 사용중인_닉네임으로_변경_시_예외가_발생합니다() {
         // given
         User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
-
-        int availableStar = 1000;
-        Field field = User.class.getDeclaredField("availableStar");
-        field.setAccessible(true);
-        field.set(savedUser, availableStar);
 
         // when & then
         assertThatThrownBy(() -> userService.changeNickname(savedUser.getNickname(), savedUser.getId()))
                 .isInstanceOf(MomentException.class)
                 .hasFieldOrPropertyWithValue("message", "이미 존재하는 닉네임입니다.");
-    }
-
-    @Test
-    void 닉네임_변경_시_사용_가능한_리워드가_부족한_경우_예외가_발생합니다() {
-        // given
-        User user = UserFixture.createUser();
-        User savedUser = userRepository.save(user);
-
-        // when & then
-        String changedNickname = "변경된 닉네임";
-        assertThatThrownBy(() -> userService.changeNickname(changedNickname, savedUser.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("message", "사용 가능한 별조각을 확인해주세요.");
     }
 
     @Test

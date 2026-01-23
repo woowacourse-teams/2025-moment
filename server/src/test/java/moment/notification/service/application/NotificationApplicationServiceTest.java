@@ -140,7 +140,7 @@ class NotificationApplicationServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        notificationApplicationService.createNotification(userId, contentId, reason, contentType);
+        notificationApplicationService.createNotification(userId, contentId, reason, contentType, null);
         List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
 
         // then

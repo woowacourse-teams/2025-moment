@@ -13,7 +13,6 @@ import java.util.Optional;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
-import moment.comment.domain.Echo;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.request.CommentReportCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
@@ -22,19 +21,13 @@ import moment.comment.dto.response.MyCommentPageResponse;
 import moment.comment.dto.response.MyCommentResponse;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
-import moment.comment.infrastructure.EchoRepository;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentTag;
-import moment.moment.domain.Tag;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
-import moment.moment.infrastructure.MomentTagRepository;
-import moment.moment.infrastructure.TagRepository;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -69,9 +62,6 @@ class CommentControllerTest {
     private CommentRepository commentRepository;
 
     @Autowired
-    private EchoRepository echoRepository;
-
-    @Autowired
     private JwtTokenManager jwtTokenManager;
 
     @Autowired
@@ -82,10 +72,6 @@ class CommentControllerTest {
 
     @Autowired
     private CommentCreatedAtHelper commentCreatedAtHelper;
-    @Autowired
-    private MomentTagRepository momentTagRepository;
-    @Autowired
-    private TagRepository tagRepository;
 
     @BeforeEach
     void setUp() {
@@ -107,7 +93,7 @@ class CommentControllerTest {
         User user2 = UserFixture.createUser();
         User savedUser2 = userRepository.saveAndFlush(user2);
 
-        Moment moment = new Moment("개발의 세계는 신비해요!", true, user2, WriteType.BASIC);
+        Moment moment = new Moment("개발의 세계는 신비해요!", user2);
         momentRepository.saveAndFlush(moment);
 
         String token = jwtTokenManager.createAccessToken(savedUser1.getId(), savedUser1.getEmail());
@@ -143,27 +129,18 @@ class CommentControllerTest {
 
         String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
-        Tag savedTag = tagRepository.save(new Tag("일상/생각"));
-        momentTagRepository.save(new MomentTag(savedMoment, savedTag));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         Comment savedComment = commentCreatedAtHelper.saveCommentWithCreatedAt("첫 번째 댓글", savedCommenter,
                 savedMoment.getId(), start);
 
-        Echo echo = new Echo("HEART", savedMomenter, savedComment);
-        Echo savedEcho = echoRepository.save(echo);
-
-        Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", true, savedMomenter, WriteType.BASIC);
+        Moment moment2 = new Moment("오늘 하루는 즐거운 하루~", savedMomenter);
         Moment savedMoment2 = momentRepository.save(moment2);
-        momentTagRepository.save(new MomentTag(savedMoment2, savedTag));
 
         Comment savedComment2 = commentCreatedAtHelper.saveCommentWithCreatedAt("즐거운 댓글", savedCommenter,
                 savedMoment2.getId(), start.plusHours(1));
-
-        Echo echo2 = new Echo("HEART", savedMomenter, savedComment2);
-        Echo savedEcho2 = echoRepository.save(echo2);
 
         // when
         MyCommentPageResponse response = RestAssured.given().log().all()
@@ -189,9 +166,7 @@ class CommentControllerTest {
                 () -> assertThat(response.pageSize()).isEqualTo(1),
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment2.getContent()),
                 () -> assertThat(firstResponse.content()).isEqualTo(savedComment2.getContent()),
-                () -> assertThat(firstResponse.moment().content()).isEqualTo(savedMoment2.getContent()),
-                () -> assertThat(firstResponse.echos().getFirst().id()).isEqualTo(savedEcho2.getId()),
-                () -> assertThat(firstResponse.echos().getFirst().echoType()).isEqualTo(savedEcho2.getEchoType())
+                () -> assertThat(firstResponse.moment().content()).isEqualTo(savedMoment2.getContent())
         );
     }
 
@@ -206,7 +181,7 @@ class CommentControllerTest {
 
         String token = jwtTokenManager.createAccessToken(savedCommenter.getId(), savedCommenter.getEmail());
 
-        Moment moment = new Moment("오늘 하루는 힘든 하루~", true, savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("오늘 하루는 힘든 하루~", savedMomenter);
         Moment savedMoment = momentRepository.saveAndFlush(moment);
 
         Comment comment = new Comment("첫 번째 댓글", savedCommenter, savedMoment.getId());
@@ -243,7 +218,7 @@ class CommentControllerTest {
         User savedMomenter = userRepository.save(momenter);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         Comment comment = new Comment("아 행복해", savedCommenter, savedMoment.getId());
@@ -276,7 +251,7 @@ class CommentControllerTest {
         User savedMomenter = userRepository.save(momenter);
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment = new Moment("아 행복해", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("아 행복해", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         Comment comment = new Comment("아 행복해", savedCommenter, savedMoment.getId());
@@ -297,11 +272,9 @@ class CommentControllerTest {
 
         // then
         Optional<Comment> findComment = commentRepository.findById(savedComment.getId());
-        Optional<Echo> findEcho = echoRepository.findByComment(savedComment);
         Optional<CommentImage> findCommentImage = commentImageRepository.findByComment(savedComment);
 
         assertThat(findComment).isEmpty();
-        assertThat(findEcho).isEmpty();
         assertThat(findCommentImage).isEmpty();
     }
 }

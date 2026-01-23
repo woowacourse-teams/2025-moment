@@ -23,31 +23,35 @@ public class NotificationFacadeService {
             Long userId,
             Long targetId,
             NotificationType notificationType,
-            TargetType targetType
+            TargetType targetType,
+            Long groupId
     ) {
         Notification savedNotification = notificationApplicationService.createNotification(
                 userId,
                 targetId,
                 notificationType,
-                targetType);
+                targetType,
+                groupId);
 
         NotificationSseResponse response = NotificationSseResponse.createSseResponse(
                 savedNotification.getId(),
                 notificationType,
                 targetType,
-                targetId);
+                targetId,
+                groupId);
 
         sseNotificationService.sendToClient(userId, "notification", response);
     }
 
-    public void createNotificationAndSendSseAndSendToDeviceEndpoint(
+    public void createNotificationAndSendSseAndPush(
             Long userId,
             Long targetId,
             NotificationType notificationType,
             TargetType targetType,
+            Long groupId,
             PushNotificationMessage message
     ) {
-        createNotificationAndSendSse(userId, targetId, notificationType, targetType);
+        createNotificationAndSendSse(userId, targetId, notificationType, targetType, groupId);
         pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
     }
 }

@@ -35,6 +35,18 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
+    @Transactional
+    public Notification saveNotificationWithGroupId(
+            User user,
+            Long targetId,
+            NotificationType notificationType,
+            TargetType targetType,
+            Long groupId
+    ) {
+        Notification notification = new Notification(user, notificationType, targetType, targetId, groupId);
+        return notificationRepository.save(notification);
+    }
+
     public List<Notification> getNotificationsBy(List<Long> targetIds, boolean isRead, TargetType targetType) {
         return notificationRepository.findNotificationsBy(targetIds, isRead, targetType);
     }

@@ -23,19 +23,12 @@ public record MyCommentResponse(
         @Schema(description = "Comment가 등록된 Moment")
         MomentDetailResponse moment,
 
-        @Schema(description = "Comment에 등록된 에코 목록")
-        List<EchoDetailResponse> echos,
-
         @Schema(description = "내 코멘트 알림 정보")
         CommentNotificationResponse commentNotification
 ) {
     public static MyCommentResponse of(CommentComposition commentComposition,
                                        MomentComposition momentComposition,
                                        List<Long> unreadNotificationIds) {
-
-        List<EchoDetailResponse> echos = commentComposition.echoDetails().stream()
-                .map(EchoDetailResponse::from)
-                .toList();
 
         MomentDetailResponse momentDetail = momentComposition == null ? null : MomentDetailResponse.from(momentComposition);
 
@@ -45,7 +38,6 @@ public record MyCommentResponse(
                 commentComposition.imageUrl(),
                 commentComposition.commentCreatedAt(),
                 momentDetail,
-                echos,
                 CommentNotificationResponse.from(unreadNotificationIds)
         );
     }

@@ -10,7 +10,6 @@ import moment.comment.domain.Comment;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.User;
@@ -57,10 +56,10 @@ class CommentRepositoryTest {
         User commenter = UserFixture.createUser();
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", momenter1);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", momenter2);
         Moment savedMoment2 = momentRepository.save(moment2);
 
         Comment comment1 = new Comment("moment1 comment", commenter, savedMoment1.getId());
@@ -96,16 +95,16 @@ class CommentRepositoryTest {
         User commenter = UserFixture.createUser();
         User savedCommenter = userRepository.save(commenter);
 
-        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", true, momenter1, WriteType.BASIC);
+        Moment moment1 = new Moment("오늘 하루는 행복한 하루~", momenter1);
         Moment savedMoment1 = momentRepository.save(moment1);
 
-        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
+        Moment moment2 = new Moment("오늘 하루는 맛있는 하루~", momenter2);
         Moment savedMoment2 = momentRepository.save(moment2);
 
-        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", true, momenter1, WriteType.BASIC);
+        Moment moment3 = new Moment("오늘 하루는 맛있는 하루~", momenter1);
         Moment savedMoment3 = momentRepository.save(moment3);
 
-        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", true, momenter2, WriteType.BASIC);
+        Moment moment4 = new Moment("오늘 하루는 맛있는 하루~", momenter2);
         Moment savedMoment4 = momentRepository.save(moment4);
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
@@ -143,7 +142,7 @@ class CommentRepositoryTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner));
 
         Comment comment1 = commentRepository.save(new Comment("comment1", commenter, moment.getId()));
         Comment comment2 = commentRepository.save(new Comment("comment2", commenter, moment.getId()));
@@ -165,7 +164,7 @@ class CommentRepositoryTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner));
 
         Comment comment1 = commentRepository.save(new Comment("comment1", commenter, moment.getId()));
         Thread.sleep(10);
@@ -191,9 +190,9 @@ class CommentRepositoryTest {
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
 
-        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner));
+        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner));
+        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner));
 
         Comment comment1 = commentRepository.save(new Comment("Comment on moment 1", commenter, moment1.getId()));
         Comment comment2 = commentRepository.save(new Comment("Comment on moment 2", commenter, moment2.getId()));
@@ -218,10 +217,10 @@ class CommentRepositoryTest {
         User user3 = userRepository.save(UserFixture.createUser());
         User momentOwner = userRepository.save(UserFixture.createUser());
 
-        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner, WriteType.BASIC));
-        Moment moment4 = momentRepository.save(new Moment("Moment 4", momentOwner, WriteType.BASIC));
+        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner));
+        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner));
+        Moment moment3 = momentRepository.save(new Moment("Moment 3", momentOwner));
+        Moment moment4 = momentRepository.save(new Moment("Moment 4", momentOwner));
 
         commentRepository.save(new Comment("User1 on Moment1", user1, moment1.getId())); // 내가 코멘트
 
@@ -246,7 +245,7 @@ class CommentRepositoryTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner));
         commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
         // when
@@ -261,7 +260,7 @@ class CommentRepositoryTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner));
 
         // when
         boolean result = commentRepository.existsByMomentIdAndCommenterId(moment.getId(), commenter.getId());
@@ -275,7 +274,7 @@ class CommentRepositoryTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("A moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("A moment", momentOwner));
         Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
         // when

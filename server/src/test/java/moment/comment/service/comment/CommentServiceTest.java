@@ -19,7 +19,6 @@ import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
 import moment.user.domain.User;
@@ -75,9 +74,9 @@ class CommentServiceTest {
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
 
-        Moment moment1 = momentRepository.save(new Moment("moment 1", momentOwner, WriteType.BASIC));
-        Moment moment2 = momentRepository.save(new Moment("moment 2", momentOwner, WriteType.BASIC));
-        Moment moment3 = momentRepository.save(new Moment("moment 3", momentOwner, WriteType.BASIC)); // Not in search
+        Moment moment1 = momentRepository.save(new Moment("moment 1", momentOwner));
+        Moment moment2 = momentRepository.save(new Moment("moment 2", momentOwner));
+        Moment moment3 = momentRepository.save(new Moment("moment 3", momentOwner)); // Not in search
 
         Comment comment1 = commentRepository.save(new Comment("comment on moment 1", commenter, moment1.getId()));
         Comment comment2 = commentRepository.save(new Comment("comment on moment 2", commenter, moment2.getId()));
@@ -98,10 +97,10 @@ class CommentServiceTest {
         User other = userRepository.save(UserFixture.createUser());
         User momentOwner = userRepository.save(UserFixture.createUser());
 
-        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner, WriteType.BASIC)); // me만 코멘트
-        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner, WriteType.BASIC)); // other만 코멘트
+        Moment moment1 = momentRepository.save(new Moment("Moment 1", momentOwner)); // me만 코멘트
+        Moment moment2 = momentRepository.save(new Moment("Moment 2", momentOwner)); // other만 코멘트
         Moment moment3 = momentRepository.save(
-                new Moment("Moment 3", momentOwner, WriteType.BASIC)); // me와 other 모두 코멘트
+                new Moment("Moment 3", momentOwner)); // me와 other 모두 코멘트
 
         commentRepository.save(new Comment("My comment", me, moment1.getId()));
         commentRepository.save(new Comment("Other's comment", other, moment2.getId()));
@@ -124,7 +123,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
         Comment comment = commentRepository.save(new Comment("comment", commenter, moment.getId()));
 
         assertThat(commentRepository.findById(comment.getId())).isPresent();
@@ -141,7 +140,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
         Comment newComment = new Comment("new comment", commenter, moment.getId());
 
         // when
@@ -157,7 +156,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
         commentRepository.save(new Comment("existing comment", commenter, moment.getId()));
 
         // when & then
@@ -171,7 +170,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
 
         // when & then
         assertThatCode(() -> commentService.validateUniqueBy(moment.getId(), commenter.getId()))
@@ -183,7 +182,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
@@ -212,7 +211,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
@@ -247,7 +246,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
@@ -277,7 +276,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
 
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         IntStream.range(0, 5).forEach(i -> {
@@ -308,7 +307,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
         Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
         // when
@@ -334,7 +333,7 @@ class CommentServiceTest {
         // given
         User momentOwner = userRepository.save(UserFixture.createUser());
         User commenter = userRepository.save(UserFixture.createUser());
-        Moment moment = momentRepository.save(new Moment("moment", momentOwner, WriteType.BASIC));
+        Moment moment = momentRepository.save(new Moment("moment", momentOwner));
         Comment comment = commentRepository.save(new Comment("A comment", commenter, moment.getId()));
 
         // when

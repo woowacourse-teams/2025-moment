@@ -10,7 +10,6 @@ import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentReportCreateRequest;
 import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
@@ -41,7 +40,7 @@ class ReportServiceTest {
         TargetType targetType = TargetType.MOMENT;
         User user = UserFixture.createUser();
         User momenter = UserFixture.createUser();
-        Moment moment = new Moment("잘자요", momenter, WriteType.BASIC);
+        Moment moment = new Moment("잘자요", momenter);
         ReflectionTestUtils.setField(moment, "id", 1L);
 
         MomentReportCreateRequest request = new MomentReportCreateRequest("SEXUAL_CONTENT");

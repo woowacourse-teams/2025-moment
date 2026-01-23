@@ -13,7 +13,6 @@ import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
@@ -57,7 +56,7 @@ class CommentImageServiceTest {
         commentImageService = new CommentImageService(commentImageRepository);
 
         user = userRepository.save(UserFixture.createUser());
-        moment = momentRepository.save(new Moment("moment content", user, WriteType.BASIC));
+        moment = momentRepository.save(new Moment("moment content", user));
         comment = commentRepository.save(new Comment("comment content", user, moment.getId()));
     }
 

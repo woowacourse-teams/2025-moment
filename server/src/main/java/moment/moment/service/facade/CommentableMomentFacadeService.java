@@ -16,12 +16,12 @@ public class CommentableMomentFacadeService {
     private final MomentApplicationService momentApplicationService;
     private final CommentApplicationService commentApplicationService;
 
-    public CommentableMomentResponse getCommentableMoment(Long commenterId, List<String> tagNames) {
+    public CommentableMomentResponse getCommentableMoment(Long commenterId) {
         List<Long> momentIds = momentApplicationService.getCommentableMoment(commenterId);
 
         List<Long> momentIdsNotCommentedByMe = commentApplicationService.getMomentIdsNotCommentedByMe(momentIds,
                 commenterId);
 
-        return momentApplicationService.pickRandomMomentComposition(momentIdsNotCommentedByMe, tagNames);
+        return momentApplicationService.pickRandomMomentComposition(momentIdsNotCommentedByMe);
     }
 }
