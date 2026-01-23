@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "STORAGE API", description = "S3 저장소 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/storage")
+@RequestMapping("/api/v2/storage")
 public class FileStorageController {
 
     private final FileStorageService fileStorageService;

@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Moment API", description = "모멘트 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/moments")
+@RequestMapping("/api/v2/moments")
 public class MomentController {
 
     private final MyMomentPageFacadeService myMomentPageFacadeService;

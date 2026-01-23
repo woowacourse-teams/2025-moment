@@ -95,7 +95,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email")
+                .when().post("/api/v2/auth/email")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -108,7 +108,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new EmailRequest(request.email()))
-                .when().post("/api/v1/auth/email")
+                .when().post("/api/v2/auth/email")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -116,7 +116,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email/verify")
+                .when().post("/api/v2/auth/email/verify")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -133,7 +133,7 @@ class AuthControllerTest {
         Response response = given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/login");
+                .when().post("/api/v2/auth/login");
         response.then().log().all().statusCode(HttpStatus.OK.value());
 
         // then
@@ -163,7 +163,7 @@ class AuthControllerTest {
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
                 .contentType(ContentType.JSON)
-                .when().post("/api/v1/auth/logout");
+                .when().post("/api/v2/auth/logout");
 
         // then
         response.then().log().all().statusCode(HttpStatus.OK.value());
@@ -177,7 +177,7 @@ class AuthControllerTest {
         given()
                 .when()
                 .redirects().follow(false)
-                .get("/api/v1/auth/login/google")
+                .get("/api/v2/auth/login/google")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
                 .header(HttpHeaders.LOCATION, containsString("https://accounts.google.com/o/oauth2/v2/auth"));
@@ -198,7 +198,7 @@ class AuthControllerTest {
                 .when()
                 .redirects().follow(false)
                 .queryParam("code", "testAuthorizationCode")
-                .get("/api/v1/auth/callback/google");
+                .get("/api/v2/auth/callback/google");
 
         // then
         response.then()
@@ -223,7 +223,7 @@ class AuthControllerTest {
         // when
         LoginCheckResponse response = given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -238,7 +238,7 @@ class AuthControllerTest {
     void 쿠키가_없으면_로그인_상태로_거짓을_반환한다() {
         // when
         LoginCheckResponse response = given().log().all()
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -255,7 +255,7 @@ class AuthControllerTest {
         // when
         LoginCheckResponse response = given().log().all()
                 .cookie("token", token) // This will send a cookie with an empty or blank value
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -289,7 +289,7 @@ class AuthControllerTest {
         Response response = given().log().all()
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshTokenValue)
-                .when().post("/api/v1/auth/refresh");
+                .when().post("/api/v2/auth/refresh");
 
         // then
         response.then().log().all().statusCode(HttpStatus.OK.value());
@@ -336,7 +336,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email/password")
+                .when().post("/api/v2/auth/email/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }

@@ -115,7 +115,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -149,7 +149,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request1)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -157,7 +157,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request2)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -165,7 +165,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request3)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -173,7 +173,7 @@ public class NotificationControllerTest {
         await().atMost(2, SECONDS).untilAsserted(() -> {
             List<NotificationResponse> responses = RestAssured.given().log().all()
                     .cookie("accessToken", momenterToken)
-                    .when().get("/api/v1/notifications?read=false")
+                    .when().get("/api/v2/notifications?read=false")
                     .then().log().all()
                     .statusCode(200)
                     .extract().jsonPath()
@@ -197,7 +197,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -209,7 +209,7 @@ public class NotificationControllerTest {
         RestAssured.given().log().all()
                 .cookie("accessToken", momenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
-                .when().patch("/api/v1/notifications/" + notification.getId() + "/read")
+                .when().patch("/api/v2/notifications/" + notification.getId() + "/read")
                 .then().log().all()
                 .statusCode(204);
 
@@ -230,7 +230,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request1)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -238,7 +238,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", commenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(request2)
-                .when().post("/api/v1/comments")
+                .when().post("/api/v2/comments")
                 .then().log().all()
                 .statusCode(201);
 
@@ -256,7 +256,7 @@ public class NotificationControllerTest {
                 .cookie("accessToken", momenterToken)
                 .contentType(io.restassured.http.ContentType.JSON)
                 .body(notificationReadRequest)
-                .when().patch("/api/v1/notifications/read-all")
+                .when().patch("/api/v2/notifications/read-all")
                 .then().log().all()
                 .statusCode(204);
 

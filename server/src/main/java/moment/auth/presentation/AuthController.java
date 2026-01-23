@@ -41,7 +41,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Tag(name = "Auth API", description = "인증/인가 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v2/auth")
 public class AuthController {
 
     private static final int ACCESS_TOKEN_TIME = 30 * 60;
