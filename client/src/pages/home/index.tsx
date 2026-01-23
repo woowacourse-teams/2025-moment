@@ -25,7 +25,7 @@ export default function HomePage() {
   const { isVisible } = useDelayedVisible({ delay: 100 });
   const { isOpen, handleClose, handleOpen } = useModal();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
-  const { data: groupsData } = useGroupsQuery();
+  const { data: groupsData } = useGroupsQuery({ enabled: !!isLoggedIn });
 
   const {
     isOpen: isGroupModalOpen,

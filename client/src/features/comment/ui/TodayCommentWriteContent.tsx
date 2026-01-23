@@ -8,6 +8,7 @@ import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
 import { Card } from '@/shared/design-system/card/Card';
 import { TextArea } from '@/shared/design-system/textArea';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
 export const TodayCommentWriteContent = ({
   isLoggedIn,
@@ -18,8 +19,13 @@ export const TodayCommentWriteContent = ({
 }) => {
   const MAX_LENGTH = 200;
   const { showWarning } = useToast();
-  const { comment, handleChange, handleImageChange, handleSubmit, isPending } =
-    useSendComments(momentId);
+  const { getCurrentGroupId } = useCurrentGroup();
+  const groupId = getCurrentGroupId();
+
+  const { comment, handleChange, handleImageChange, handleSubmit, isPending } = useSendComments({
+    groupId: groupId || 1,
+    momentId,
+  });
 
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;
