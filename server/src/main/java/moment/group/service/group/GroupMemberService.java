@@ -85,6 +85,11 @@ public class GroupMemberService {
     }
 
     @Transactional
+    public void deleteOwner(GroupMember owner) {
+        memberRepository.delete(owner);
+    }
+
+    @Transactional
     public void transferOwnership(Long groupId, Long currentOwnerId, Long newOwnerMemberId) {
         GroupMember currentOwner = getByGroupAndUser(groupId, currentOwnerId);
         GroupMember newOwner = getById(newOwnerMemberId);

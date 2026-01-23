@@ -76,6 +76,8 @@ public class GroupApplicationService {
         }
 
         User user = userService.getUserBy(userId);
+        GroupMember owner = memberService.getByGroupAndUser(groupId, userId);
+        memberService.deleteOwner(owner);
         groupService.delete(groupId, user);
     }
 }
