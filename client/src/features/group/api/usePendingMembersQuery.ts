@@ -6,7 +6,7 @@ export const usePendingMembersQuery = (groupId: number | string) => {
   return useQuery({
     queryKey: ['group', groupId, 'pending'],
     queryFn: async (): Promise<PendingMembersResponse> => {
-      const response = await api.get(`/v2/groups/${groupId}/pending`);
+      const response = await api.get(`/groups/${groupId}/pending`);
       return response.data;
     },
     enabled: !!groupId,

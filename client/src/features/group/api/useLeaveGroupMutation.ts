@@ -9,7 +9,7 @@ export const useLeaveGroupMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (): Promise<GroupActionResponse> => {
-      const response = await api.delete(`/v2/groups/${groupId}/leave`);
+      const response = await api.delete(`/groups/${groupId}/leave`);
       return response.data;
     },
     onSuccess: () => {

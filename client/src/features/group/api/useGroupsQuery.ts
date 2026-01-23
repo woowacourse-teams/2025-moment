@@ -6,7 +6,7 @@ export const useGroupsQuery = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['groups'],
     queryFn: async (): Promise<GroupsResponse> => {
-      const response = await api.get('/v2/groups');
+      const response = await api.get('/groups');
       return response.data;
     },
     enabled: options?.enabled ?? true,

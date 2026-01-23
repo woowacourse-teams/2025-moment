@@ -6,7 +6,7 @@ export const useGroupDetailQuery = (groupId: number | string) => {
   return useQuery({
     queryKey: ['group', groupId],
     queryFn: async (): Promise<GroupDetailResponse> => {
-      const response = await api.get(`/v2/groups/${groupId}`);
+      const response = await api.get(`/groups/${groupId}`);
       return response.data;
     },
     enabled: !!groupId,

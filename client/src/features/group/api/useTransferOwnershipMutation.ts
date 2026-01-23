@@ -9,7 +9,7 @@ export const useTransferOwnershipMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (memberId: number): Promise<GroupActionResponse> => {
-      const response = await api.post(`/v2/groups/${groupId}/transfer/${memberId}`);
+      const response = await api.post(`/groups/${groupId}/transfer/${memberId}`);
       return response.data;
     },
     onSuccess: () => {

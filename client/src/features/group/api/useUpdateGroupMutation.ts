@@ -9,7 +9,7 @@ export const useUpdateGroupMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (data: UpdateGroupRequest): Promise<GroupActionResponse> => {
-      const response = await api.patch(`/v2/groups/${groupId}`, data);
+      const response = await api.patch(`/groups/${groupId}`, data);
       return response.data;
     },
     onSuccess: () => {

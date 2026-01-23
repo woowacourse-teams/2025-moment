@@ -24,6 +24,6 @@ const getMoments = async ({ groupId, pageParam = null }: GetMoments): Promise<Mo
   }
   params.append('pageSize', '10');
 
-  const response = await api.get(`/v2/groups/${groupId}/my-moments?${params.toString()}`);
+  const response = await api.get(`/groups/${groupId}/my-moments?${params.toString()}`);
   return response.data;
 };

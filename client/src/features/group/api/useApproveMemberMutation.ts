@@ -9,7 +9,7 @@ export const useApproveMemberMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (memberId: number): Promise<GroupActionResponse> => {
-      const response = await api.post(`/v2/groups/${groupId}/members/${memberId}/approve`);
+      const response = await api.post(`/groups/${groupId}/members/${memberId}/approve`);
       return response.data;
     },
     onSuccess: () => {

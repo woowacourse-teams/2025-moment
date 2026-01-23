@@ -6,7 +6,7 @@ export const useInviteInfoQuery = (code: string) => {
   return useQuery({
     queryKey: ['invite', code],
     queryFn: async (): Promise<InviteInfoResponse> => {
-      const response = await api.get(`/v2/invite/${code}`);
+      const response = await api.get(`/invite/${code}`);
       return response.data;
     },
     enabled: !!code,

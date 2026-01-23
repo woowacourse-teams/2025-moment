@@ -43,9 +43,6 @@ const sendComments = async (
   momentId: number,
   commentsData: Omit<SendCommentsData, 'momentId'>,
 ): Promise<SendCommentsResponse> => {
-  const response = await api.post(
-    `/v2/groups/${groupId}/moments/${momentId}/comments`,
-    commentsData,
-  );
+  const response = await api.post(`/groups/${groupId}/moments/${momentId}/comments`, commentsData);
   return response.data;
 };

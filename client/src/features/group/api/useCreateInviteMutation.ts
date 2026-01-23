@@ -8,7 +8,7 @@ export const useCreateInviteMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (): Promise<InviteResponse> => {
-      const response = await api.post(`/v2/groups/${groupId}/invite`);
+      const response = await api.post(`/groups/${groupId}/invite`);
       return response.data;
     },
     onSuccess: () => {

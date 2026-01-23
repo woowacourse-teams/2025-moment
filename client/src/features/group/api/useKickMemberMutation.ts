@@ -9,7 +9,7 @@ export const useKickMemberMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (memberId: number): Promise<GroupActionResponse> => {
-      const response = await api.delete(`/v2/groups/${groupId}/members/${memberId}`);
+      const response = await api.delete(`/groups/${groupId}/members/${memberId}`);
       return response.data;
     },
     onSuccess: () => {

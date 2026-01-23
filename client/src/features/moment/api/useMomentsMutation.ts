@@ -59,6 +59,6 @@ const sendMoments = async (groupId: number | string, data: SendMomentsData) => {
     payload.imageName = data.imageName;
   }
 
-  const response = await api.post(`/v2/groups/${groupId}/moments`, payload);
+  const response = await api.post(`/groups/${groupId}/moments`, payload);
   return response.data;
 };

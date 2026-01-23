@@ -9,7 +9,7 @@ export const useDeleteGroupMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: async (): Promise<GroupActionResponse> => {
-      const response = await api.delete(`/v2/groups/${groupId}`);
+      const response = await api.delete(`/groups/${groupId}`);
       return response.data;
     },
     onSuccess: () => {

@@ -9,7 +9,7 @@ export const useCreateGroupMutation = () => {
 
   return useMutation({
     mutationFn: async (data: CreateGroupRequest): Promise<GroupActionResponse> => {
-      const response = await api.post('/v2/groups', data);
+      const response = await api.post('/groups', data);
       return response.data;
     },
     onSuccess: () => {
