@@ -80,6 +80,7 @@ auth:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
+    url: /v3/api-docs
 
 server:
   forward-headers-strategy: native
