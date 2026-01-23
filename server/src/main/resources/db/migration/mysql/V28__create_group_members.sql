@@ -7,7 +7,7 @@ CREATE TABLE group_members (
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    CONSTRAINT fk_members_group FOREIGN KEY (group_id) REFERENCES groups(id),
+    CONSTRAINT fk_members_group FOREIGN KEY (group_id) REFERENCES `groups`(id),
     CONSTRAINT fk_members_user FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT uq_member UNIQUE (group_id, user_id)
 );
