@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Push Notification API", description = "푸시 알림 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/push-notifications")
+@RequestMapping("/api/v2/push-notifications")
 public class PushNotificationController {
 
     private final PushNotificationApplicationService pushNotificationApplicationService;

@@ -70,7 +70,7 @@ class MyPageControllerTest {
         // when
         SuccessResponse<MyPageProfileResponse> response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/me/profile")
+                .when().get("/api/v2/me/profile")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -100,7 +100,7 @@ class MyPageControllerTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .cookie("accessToken", token)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -132,7 +132,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/password")
+                .when().post("/api/v2/me/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -174,7 +174,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -210,7 +210,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -233,7 +233,7 @@ class MyPageControllerTest {
                 .body(retryRequest)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();

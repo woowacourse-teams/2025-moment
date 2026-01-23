@@ -29,7 +29,7 @@ public class ReportController {
     
     private final ReportCreateFacadeService reportCreateFacadeService;
 
-    @PostMapping("/api/v1/moments/{id}/reports")
+    @PostMapping("/api/v2/moments/{id}/reports")
     public ResponseEntity<SuccessResponse<ReportCreateResponse>> createMomentReport(
             @AuthenticationPrincipal Authentication authentication,
             @RequestBody ReportCreateRequest request,
@@ -58,7 +58,7 @@ public class ReportController {
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping("/api/v1/comments/{id}/reports")
+    @PostMapping("/api/v2/comments/{id}/reports")
     public ResponseEntity<SuccessResponse<ReportCreateResponse>> createCommentReport(
             @AuthenticationPrincipal Authentication authentication,
             @RequestBody ReportCreateRequest request,
