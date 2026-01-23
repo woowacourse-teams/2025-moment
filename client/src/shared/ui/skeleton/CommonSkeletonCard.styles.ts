@@ -108,6 +108,27 @@ export const SkeletonMomentContent = styled.div`
   text-align: center;
 `;
 
+export const SkeletonMomentBottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
+export const SkeletonImageArea = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+`;
+
+export const SkeletonTagArea = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+`;
+
 export const SkeletonRewardHistoryTable = styled.table`
   display: flex;
   width: 100%;
