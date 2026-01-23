@@ -36,7 +36,7 @@ export default function HomePage() {
   const shouldShowNotificationModal =
     isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
 
-  const hasNoGroups = isLoggedIn && groupsData && groupsData.data.length === 0;
+  const hasNoGroups = isLoggedIn && groupsData?.data?.length === 0;
 
   useEffect(() => {
     if (shouldShowNotificationModal) {
