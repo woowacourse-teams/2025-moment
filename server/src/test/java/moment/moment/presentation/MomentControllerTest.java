@@ -403,7 +403,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/writable/basic")
+                .when().get("api/v2/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -428,7 +428,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/writable/basic")
+                .when().get("api/v2/moments/writable/basic")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -456,7 +456,7 @@ class MomentControllerTest {
         // when
         CommentableMomentResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/commentable")
+                .when().get("api/v2/moments/commentable")
                 .jsonPath()
                 .getObject("data", CommentableMomentResponse.class);
 
@@ -490,7 +490,7 @@ class MomentControllerTest {
         // when
         CommentableMomentResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/commentable")
+                .when().get("api/v2/moments/commentable")
                 .jsonPath()
                 .getObject("data", CommentableMomentResponse.class);
 
@@ -514,7 +514,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/writable/extra")
+                .when().get("api/v2/moments/writable/extra")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -536,7 +536,7 @@ class MomentControllerTest {
         // when
         MomentCreationStatusResponse response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("api/v1/moments/writable/extra")
+                .when().get("api/v2/moments/writable/extra")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -565,7 +565,7 @@ class MomentControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", token)
                 .body(request)
-                .when().post("api/v1/moments/1/reports")
+                .when().post("api/v2/moments/1/reports")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -606,7 +606,7 @@ class MomentControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", token)
                 .body(request)
-                .when().post("api/v1/moments/" + savedMoment.getId() + "/reports")
+                .when().post("api/v2/moments/" + savedMoment.getId() + "/reports")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -626,7 +626,8 @@ class MomentControllerTest {
         LocalDateTime start = LocalDateTime.of(2025, 1, 1, 0, 0);
         Moment savedMoment = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 힘든 하루~", savedMomenter, start);
 
-        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter, start.plusHours(1));
+        Moment savedMoment2 = momentCreatedAtHelper.saveMomentWithCreatedAt("오늘 하루는 즐거운 하루~", savedMomenter,
+                start.plusHours(1));
 
         // when
         MyMomentPageResponse response = RestAssured.given().log().all()

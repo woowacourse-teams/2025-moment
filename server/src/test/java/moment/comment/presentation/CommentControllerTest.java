@@ -232,7 +232,7 @@ class CommentControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", token)
                 .body(request)
-                .when().post("api/v1/comments/1/reports")
+                .when().post("api/v2/comments/1/reports")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -266,7 +266,7 @@ class CommentControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", token)
                 .body(request)
-                .when().post("api/v1/comments/" + savedComment.getId() + "/reports")
+                .when().post("api/v2/comments/" + savedComment.getId() + "/reports")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
