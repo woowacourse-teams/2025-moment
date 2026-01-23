@@ -19,7 +19,7 @@ export const EmptyState = styled.div`
 
 export const EmptyText = styled.p`
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
 `;
 

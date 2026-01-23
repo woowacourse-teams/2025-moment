@@ -3,7 +3,7 @@ import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 
 export function useGroupMembership(groupId: number | string) {
   const { data: members } = useGroupMembersQuery(groupId);
-  const { data: profile } = useProfileQuery();
+  const { data: profile } = useProfileQuery({ enabled: true });
 
   if (!members || !profile) {
     return {
@@ -12,7 +12,7 @@ export function useGroupMembership(groupId: number | string) {
     };
   }
 
-  const memberInfo = members.data.find(member => member.userId === profile.data.id);
+  const memberInfo = members.data.find(member => member.userId === profile.id);
 
   return {
     isMember: !!memberInfo,

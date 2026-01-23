@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useMomentsMutation } from '../api/useMomentsMutation';
 import { track } from '@/shared/lib/ga/track';
 import { useEffect } from 'react';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
 export const useSendMoments = () => {
   const [content, setContent] = useState('');
   const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
   const [tagNames, setTagNames] = useState<string[]>([]);
+  const { getCurrentGroupId } = useCurrentGroup();
+  const groupId = getCurrentGroupId();
 
-  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation();
+  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation(groupId || 1);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
@@ -27,6 +30,11 @@ export const useSendMoments = () => {
   };
 
   const handleSendContent = async () => {
+    if (!groupId) {
+      console.error('No group selected');
+      return;
+    }
+
     try {
       const payload = imageData
         ? { content, tagNames, imageUrl: imageData.imageUrl, imageName: imageData.imageName }

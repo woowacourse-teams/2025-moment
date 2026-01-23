@@ -21,20 +21,20 @@ export const TitleSection = styled.div`
 export const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0 0 8px 0;
 `;
 
 export const Description = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
   line-height: 1.6;
 `;
 
 export const MemberCount = styled.div`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.tertiary};
+  color: ${({ theme }) => theme.colors['gray-600']};
   margin-top: 8px;
 `;
 
@@ -53,7 +53,7 @@ export const Section = styled.section`
 export const SectionTitle = styled.h2`
   font-size: 20px;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0;
 `;
 

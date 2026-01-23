@@ -8,8 +8,8 @@ interface GroupCardProps {
 }
 
 export function GroupCard({ group, onClick }: GroupCardProps) {
-  const { data: profile } = useProfileQuery();
-  const isOwner = profile?.data.id === group.ownerId;
+  const { data: profile } = useProfileQuery({ enabled: true });
+  const isOwner = profile?.id === group.ownerId;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

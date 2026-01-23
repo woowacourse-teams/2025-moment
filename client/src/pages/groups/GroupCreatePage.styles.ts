@@ -13,12 +13,12 @@ export const Header = styled.div`
 export const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0 0 8px 0;
 `;
 
 export const Subtitle = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
 `;

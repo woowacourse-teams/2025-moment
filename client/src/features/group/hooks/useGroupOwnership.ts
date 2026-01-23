@@ -3,7 +3,7 @@ import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 
 export function useGroupOwnership(groupId?: number | string) {
   const { currentGroup } = useCurrentGroup();
-  const { data: profile } = useProfileQuery();
+  const { data: profile } = useProfileQuery({ enabled: true });
 
   const targetGroupId = groupId ?? currentGroup?.id;
 
@@ -11,7 +11,7 @@ export function useGroupOwnership(groupId?: number | string) {
     return { isOwner: false, ownerId: null };
   }
 
-  const isOwner = currentGroup.ownerId === profile.data.id;
+  const isOwner = currentGroup.ownerId === profile.id;
 
   return {
     isOwner,

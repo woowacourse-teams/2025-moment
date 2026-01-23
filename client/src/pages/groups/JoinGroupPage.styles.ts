@@ -13,13 +13,13 @@ export const Header = styled.div`
 export const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0 0 8px 0;
 `;
 
 export const Description = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
 `;
 
@@ -34,7 +34,7 @@ export const LoadingState = styled.div`
   justify-content: center;
   padding: 60px 20px;
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
 export const ErrorState = styled.div`
@@ -48,6 +48,6 @@ export const ErrorState = styled.div`
 
 export const ErrorText = styled.p`
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors['gray-400']};
   margin: 0;
 `;

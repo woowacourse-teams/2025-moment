@@ -16,6 +16,6 @@ export const Header = styled.div`
 export const Title = styled.h1`
   font-size: 28px;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.white};
   margin: 0;
 `;

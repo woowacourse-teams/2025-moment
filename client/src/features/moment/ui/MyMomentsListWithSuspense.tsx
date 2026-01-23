@@ -6,6 +6,7 @@ import * as S from './MyMomentsList.styles';
 import { useMomentsSuspenseQuery } from '../api/useMomentsSuspenseQuery';
 import { MyMomentsItem } from '../types/moments';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
 /**
  * @example
@@ -16,12 +17,15 @@ import { NotFound } from '@/shared/ui/notFound/NotFound';
  * </ErrorBoundary>
  */
 export const MyMomentsListWithSuspense = () => {
+  const { getCurrentGroupId } = useCurrentGroup();
+  const groupId = getCurrentGroupId();
+
   const {
     data: moments,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useMomentsSuspenseQuery();
+  } = useMomentsSuspenseQuery(groupId || 1);
 
   const momentItems = moments?.pages.flatMap(page => page.data.items) || [];
   const hasMoments = momentItems.length > 0;
