@@ -23,46 +23,13 @@ public class NotificationFacadeService {
             Long userId,
             Long targetId,
             NotificationType notificationType,
-            TargetType targetType
+            TargetType targetType,
+            Long groupId
     ) {
         Notification savedNotification = notificationApplicationService.createNotification(
                 userId,
                 targetId,
                 notificationType,
-                targetType);
-
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                savedNotification.getId(),
-                notificationType,
-                targetType,
-                targetId,
-                null);
-
-        sseNotificationService.sendToClient(userId, "notification", response);
-    }
-
-    public void createNotificationAndSendSseAndSendToDeviceEndpoint(
-            Long userId,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType,
-            PushNotificationMessage message
-    ) {
-        createNotificationAndSendSse(userId, targetId, notificationType, targetType);
-        pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
-    }
-
-    public void createNotificationWithGroupIdAndSendSse(
-            Long userId,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType,
-            Long groupId
-    ) {
-        Notification savedNotification = notificationApplicationService.createNotificationWithGroupId(
-                userId,
-                targetId,
-                notificationType,
                 targetType,
                 groupId);
 
@@ -76,7 +43,7 @@ public class NotificationFacadeService {
         sseNotificationService.sendToClient(userId, "notification", response);
     }
 
-    public void createNotificationWithGroupIdAndSendSseAndSendPush(
+    public void createNotificationAndSendSseAndPush(
             Long userId,
             Long targetId,
             NotificationType notificationType,
@@ -84,7 +51,7 @@ public class NotificationFacadeService {
             Long groupId,
             PushNotificationMessage message
     ) {
-        createNotificationWithGroupIdAndSendSse(userId, targetId, notificationType, targetType, groupId);
+        createNotificationAndSendSse(userId, targetId, notificationType, targetType, groupId);
         pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
     }
 }

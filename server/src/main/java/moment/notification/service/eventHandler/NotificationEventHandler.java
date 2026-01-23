@@ -28,11 +28,12 @@ public class NotificationEventHandler {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
-        notificationFacadeService.createNotificationAndSendSseAndSendToDeviceEndpoint(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
                 event.momenterId(),
                 event.momentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
                 TargetType.MOMENT,
+                null,
                 PushNotificationMessage.REPLY_TO_MOMENT
         );
     }
@@ -43,7 +44,7 @@ public class NotificationEventHandler {
         log.info("GroupJoinRequestEvent received: groupId={}, applicant={}",
             event.groupId(), event.nickname());
 
-        notificationFacadeService.createNotificationWithGroupIdAndSendSseAndSendPush(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.ownerId(),
             event.groupId(),
             NotificationType.GROUP_JOIN_REQUEST,
@@ -59,7 +60,7 @@ public class NotificationEventHandler {
         log.info("GroupJoinApprovedEvent received: groupId={}, memberId={}",
             event.groupId(), event.memberId());
 
-        notificationFacadeService.createNotificationWithGroupIdAndSendSseAndSendPush(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.userId(),
             event.groupId(),
             NotificationType.GROUP_JOIN_APPROVED,
@@ -75,7 +76,7 @@ public class NotificationEventHandler {
         log.info("GroupKickedEvent received: groupId={}, userId={}",
             event.groupId(), event.kickedUserId());
 
-        notificationFacadeService.createNotificationWithGroupIdAndSendSseAndSendPush(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.kickedUserId(),
             event.groupId(),
             NotificationType.GROUP_KICKED,
@@ -91,11 +92,12 @@ public class NotificationEventHandler {
         log.info("MomentLikeEvent received: momentId={}, liker={}",
             event.momentId(), event.likerNickname());
 
-        notificationFacadeService.createNotificationAndSendSseAndSendToDeviceEndpoint(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.momentOwnerId(),
             event.momentId(),
             NotificationType.MOMENT_LIKED,
             TargetType.MOMENT,
+            null,
             PushNotificationMessage.MOMENT_LIKED
         );
     }
@@ -106,11 +108,12 @@ public class NotificationEventHandler {
         log.info("CommentLikeEvent received: commentId={}, liker={}",
             event.commentId(), event.likerNickname());
 
-        notificationFacadeService.createNotificationAndSendSseAndSendToDeviceEndpoint(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.commentOwnerId(),
             event.commentId(),
             NotificationType.COMMENT_LIKED,
             TargetType.COMMENT,
+            null,
             PushNotificationMessage.COMMENT_LIKED
         );
     }
@@ -126,7 +129,7 @@ public class NotificationEventHandler {
             return;
         }
 
-        notificationFacadeService.createNotificationWithGroupIdAndSendSseAndSendPush(
+        notificationFacadeService.createNotificationAndSendSseAndPush(
             event.momentOwnerId(),
             event.momentId(),
             NotificationType.NEW_COMMENT_ON_MOMENT,

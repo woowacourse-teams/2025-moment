@@ -42,7 +42,7 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupJoinRequestEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationWithGroupIdAndSendSseAndSendPush(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(2L),  // ownerId
             eq(1L),  // groupId (targetId)
             eq(NotificationType.GROUP_JOIN_REQUEST),
@@ -62,7 +62,7 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupJoinApprovedEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationWithGroupIdAndSendSseAndSendPush(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(3L),  // userId
             eq(1L),  // groupId (targetId)
             eq(NotificationType.GROUP_JOIN_APPROVED),
@@ -82,7 +82,7 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupKickedEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationWithGroupIdAndSendSseAndSendPush(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(3L),  // kickedUserId
             eq(1L),  // groupId (targetId)
             eq(NotificationType.GROUP_KICKED),
@@ -102,11 +102,12 @@ class NotificationEventHandlerTest {
         eventHandler.handleMomentLikeEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndSendToDeviceEndpoint(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(2L),  // momentOwnerId
             eq(1L),  // momentId
             eq(NotificationType.MOMENT_LIKED),
             eq(TargetType.MOMENT),
+            eq(null),  // groupId
             eq(PushNotificationMessage.MOMENT_LIKED)
         );
     }
@@ -121,11 +122,12 @@ class NotificationEventHandlerTest {
         eventHandler.handleCommentLikeEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndSendToDeviceEndpoint(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(2L),  // commentOwnerId
             eq(1L),  // commentId
             eq(NotificationType.COMMENT_LIKED),
             eq(TargetType.COMMENT),
+            eq(null),  // groupId
             eq(PushNotificationMessage.COMMENT_LIKED)
         );
     }
@@ -142,7 +144,7 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupCommentCreateEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationWithGroupIdAndSendSseAndSendPush(
+        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
             eq(3L),  // momentOwnerId
             eq(2L),  // momentId (targetId)
             eq(NotificationType.NEW_COMMENT_ON_MOMENT),
@@ -164,7 +166,7 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupCommentCreateEvent(event);
 
         // Then
-        verify(notificationFacadeService, never()).createNotificationWithGroupIdAndSendSseAndSendPush(
+        verify(notificationFacadeService, never()).createNotificationAndSendSseAndPush(
             any(), any(), any(), any(), any(), any()
         );
     }
