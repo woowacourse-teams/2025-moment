@@ -8,12 +8,15 @@ import GlobalStyles from './styles/GlobalStyles';
 import { theme } from '../shared/styles/theme';
 import { useInitializeFCM } from '@/shared/lib/notifications/useInitializeFCM';
 import { ErrorBoundary } from '@/shared/ui/errorBoundary';
+import { GroupProvider } from '@/features/group/context/GroupContext';
 
 const AppContent = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <RouterProvider router={router} />
+      <GroupProvider>
+        <RouterProvider router={router} />
+      </GroupProvider>
       {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </ThemeProvider>
   );

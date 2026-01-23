@@ -15,6 +15,8 @@ import { NotificationButton } from '@/shared/lib/notifications/NotificationButto
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isDevice, isPWA } from '@/shared/utils/device';
 import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
+import { GroupSelectionModal } from '@/features/group/ui/GroupSelectionModal';
+import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 
 export default function HomePage() {
   useScrollDepth();
@@ -23,15 +25,30 @@ export default function HomePage() {
   const { isVisible } = useDelayedVisible({ delay: 100 });
   const { isOpen, handleClose, handleOpen } = useModal();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const { data: groupsData } = useGroupsQuery();
+
+  const {
+    isOpen: isGroupModalOpen,
+    handleClose: handleGroupModalClose,
+    handleOpen: handleGroupModalOpen,
+  } = useModal();
 
   const shouldShowNotificationModal =
     isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
+
+  const hasNoGroups = isLoggedIn && groupsData && groupsData.data.length === 0;
 
   useEffect(() => {
     if (shouldShowNotificationModal) {
       handleOpen();
     }
   }, [handleOpen, shouldShowNotificationModal]);
+
+  useEffect(() => {
+    if (hasNoGroups) {
+      handleGroupModalOpen();
+    }
+  }, [hasNoGroups, handleGroupModalOpen]);
 
   const handleClick = () => {
     handleOpen();
@@ -120,6 +137,7 @@ export default function HomePage() {
           <NotificationButton onClose={handleClose} />
         </Modal.Content>
       </Modal>
+      <GroupSelectionModal isOpen={isGroupModalOpen} onClose={handleGroupModalClose} />
     </>
   );
 }
