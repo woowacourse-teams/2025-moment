@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/shared/design-system/input/Input';
 import { Button } from '@/shared/design-system/button/Button';
 import { useCreateGroupMutation } from '../api/useCreateGroupMutation';
+import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import * as S from './GroupCreateForm.styles';
 
 interface GroupCreateFormProps {
@@ -16,16 +17,18 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const createGroupMutation = useCreateGroupMutation();
+  const { data: profile } = useProfileQuery({ enabled: true });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim()) return;
+    if (!name.trim() || !profile?.nickname) return;
 
     try {
       await createGroupMutation.mutateAsync({
         name: name.trim(),
         description: description.trim(),
+        ownerNickname: profile.nickname,
       });
       onSuccess?.();
     } catch (error) {
@@ -52,6 +55,19 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
         <S.CharCount>
           {name.length} / {MAX_NAME_LENGTH}
         </S.CharCount>
+      </S.InputGroup>
+
+      <S.InputGroup>
+        <S.Label htmlFor="owner-nickname">그룹장 닉네임</S.Label>
+        <Input
+          id="owner-nickname"
+          type="text"
+          placeholder="프로필 닉네임이 자동으로 설정됩니다"
+          value={profile?.nickname || ''}
+          readOnly
+          disabled
+          aria-label="그룹장 닉네임"
+        />
       </S.InputGroup>
 
       <S.InputGroup>

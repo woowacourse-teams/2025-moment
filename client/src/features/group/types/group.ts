@@ -44,6 +44,7 @@ export interface InviteInfo {
 export interface CreateGroupRequest {
   name: string;
   description: string;
+  ownerNickname: string;
 }
 
 export interface UpdateGroupRequest {
