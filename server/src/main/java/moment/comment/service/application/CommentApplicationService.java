@@ -10,12 +10,20 @@ import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.GroupMember;
+import moment.group.service.group.GroupMemberService;
+import moment.like.service.CommentLikeService;
+import moment.moment.domain.Moment;
+import moment.moment.service.moment.MomentService;
 import moment.storage.application.PhotoUrlResolver;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
@@ -33,6 +41,9 @@ public class CommentApplicationService {
     private final CommentService commentService;
     private final CommentImageService commentImageService;
     private final PhotoUrlResolver photoUrlResolver;
+    private final GroupMemberService groupMemberService;
+    private final MomentService momentService;
+    private final CommentLikeService commentLikeService;
 
     public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
         List<Comment> comments = commentService.getAllByMomentIds(momentIds);
@@ -165,4 +176,45 @@ public class CommentApplicationService {
         );
     }
 
+    @Transactional
+    public GroupCommentResponse createCommentInGroup(Long groupId, Long momentId, Long userId, String content) {
+        User commenter = userService.getUserBy(userId);
+        GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
+        Moment moment = momentService.getMomentBy(momentId);
+
+        Comment comment = commentService.createWithMember(moment, commenter, member, content);
+        return GroupCommentResponse.from(comment, 0L, false);
+    }
+
+    public List<GroupCommentResponse> getCommentsInGroup(Long groupId, Long momentId, Long userId) {
+        GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
+        List<Comment> comments = commentService.getAllByMomentIds(List.of(momentId));
+
+        return comments.stream()
+            .map(comment -> {
+                long likeCount = commentLikeService.getCount(comment.getId());
+                boolean hasLiked = commentLikeService.hasLiked(comment.getId(), member.getId());
+                return GroupCommentResponse.from(comment, likeCount, hasLiked);
+            })
+            .toList();
+    }
+
+    @Transactional
+    public void deleteCommentInGroup(Long groupId, Long commentId, Long userId) {
+        Comment comment = commentService.getCommentBy(commentId);
+        GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
+
+        if (!comment.getMember().getId().equals(member.getId())) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+
+        commentService.deleteBy(commentId);
+    }
+
+    @Transactional
+    public boolean toggleCommentLike(Long groupId, Long commentId, Long userId) {
+        Comment comment = commentService.getCommentBy(commentId);
+        GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
+        return commentLikeService.toggle(comment, member);
+    }
 }
