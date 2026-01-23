@@ -77,6 +77,10 @@ auth:
   password_update:
     uri: https://dev.connectingmoment.com/passwordUpdate?token=
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+
 server:
   forward-headers-strategy: native
   servlet:

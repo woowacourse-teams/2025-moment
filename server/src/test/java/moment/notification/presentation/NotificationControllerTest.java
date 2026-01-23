@@ -169,20 +169,22 @@ public class NotificationControllerTest {
                 .then().log().all()
                 .statusCode(201);
 
-        List<NotificationResponse> responses = RestAssured.given().log().all()
-                .cookie("accessToken", momenterToken)
-                .when().get("/api/v1/notifications?read=false")
-                .then().log().all()
-                .statusCode(200)
-                .extract().jsonPath()
-                .getList("data", NotificationResponse.class);
-
         // then
-        assertAll(
-                () -> assertThat(responses).hasSize(3),
-                () -> assertThat(responses.stream()
-                        .noneMatch(NotificationResponse::isRead))
-                        .isTrue());
+        await().atMost(2, SECONDS).untilAsserted(() -> {
+            List<NotificationResponse> responses = RestAssured.given().log().all()
+                    .cookie("accessToken", momenterToken)
+                    .when().get("/api/v1/notifications?read=false")
+                    .then().log().all()
+                    .statusCode(200)
+                    .extract().jsonPath()
+                    .getList("data", NotificationResponse.class);
+
+            assertAll(
+                    () -> assertThat(responses).hasSize(3),
+                    () -> assertThat(responses.stream()
+                            .noneMatch(NotificationResponse::isRead))
+                            .isTrue());
+        });
     }
 
     @Test
@@ -198,6 +200,9 @@ public class NotificationControllerTest {
                 .when().post("/api/v1/comments")
                 .then().log().all()
                 .statusCode(201);
+
+        await().atMost(2, SECONDS).until(() ->
+                notificationRepository.findAllByUserIdAndIsRead(momenter.getId(), false).size() == 1);
 
         Notification notification = notificationRepository.findAllByUserIdAndIsRead(momenter.getId(), false).getFirst();
 
@@ -236,6 +241,10 @@ public class NotificationControllerTest {
                 .when().post("/api/v1/comments")
                 .then().log().all()
                 .statusCode(201);
+
+        await().atMost(2, SECONDS).until(() ->
+                notificationRepository.findAllByUserIdAndIsReadAndTargetType(
+                        momenter.getId(), false, TargetType.MOMENT).size() == 2);
 
         List<Long> unReadNotificationsIds = notificationRepository.findAllByUserIdAndIsReadAndTargetType(
                 momenter.getId(), false, TargetType.MOMENT);
