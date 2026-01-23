@@ -7,12 +7,16 @@ import { track } from '@/shared/lib/ga/track';
 
 const COMMENTS_REWARD_POINT = 2;
 
-export const useSendCommentsMutation = () => {
+export const useSendCommentsMutation = (groupId: number | string, momentId: number) => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: sendComments,
+    mutationFn: (data: Omit<SendCommentsData, 'momentId'>) => sendComments(groupId, momentId, data),
     onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['group', groupId, 'moment', momentId, 'comments'],
+      });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
       queryClient.invalidateQueries({ queryKey: ['commentableMoments'] });
       queryClient.invalidateQueries({ queryKey: ['comments'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
@@ -23,7 +27,7 @@ export const useSendCommentsMutation = () => {
       const length = variables.content?.length ?? 0;
       const length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
       track('submit_comment', {
-        item_id: String(variables.momentId),
+        item_id: String(momentId),
         length_bucket,
       });
     },
@@ -34,7 +38,14 @@ export const useSendCommentsMutation = () => {
   });
 };
 
-const sendComments = async (commentsData: SendCommentsData): Promise<SendCommentsResponse> => {
-  const response = await api.post('/comments', commentsData);
+const sendComments = async (
+  groupId: number | string,
+  momentId: number,
+  commentsData: Omit<SendCommentsData, 'momentId'>,
+): Promise<SendCommentsResponse> => {
+  const response = await api.post(
+    `/v2/groups/${groupId}/moments/${momentId}/comments`,
+    commentsData,
+  );
   return response.data;
 };

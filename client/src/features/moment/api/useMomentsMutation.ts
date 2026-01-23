@@ -13,13 +13,14 @@ interface SendMomentsData {
   imageName?: string;
 }
 
-export const useMomentsMutation = () => {
+export const useMomentsMutation = (groupId: number | string) => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: sendMoments,
+    mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
       queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
@@ -47,7 +48,7 @@ export const useMomentsMutation = () => {
   });
 };
 
-const sendMoments = async (data: SendMomentsData) => {
+const sendMoments = async (groupId: number | string, data: SendMomentsData) => {
   const payload: { content: string; tagNames: string[]; imageUrl?: string; imageName?: string } = {
     content: data.content,
     tagNames: data.tagNames,
@@ -58,6 +59,6 @@ const sendMoments = async (data: SendMomentsData) => {
     payload.imageName = data.imageName;
   }
 
-  const response = await api.post('/moments', payload);
+  const response = await api.post(`/v2/groups/${groupId}/moments`, payload);
   return response.data;
 };

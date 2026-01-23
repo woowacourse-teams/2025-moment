@@ -12,4 +12,10 @@ export const ROUTES = {
   MY: '/my',
   FIND_PASSWORD: '/find-password',
   NEW_PASSWORD: '/passwordUpdate',
+  GROUPS: '/groups',
+  GROUP_CREATE: '/groups/create',
+  GROUP_DETAIL: '/groups/:groupId',
+  GROUP_SETTINGS: '/groups/:groupId/settings',
+  GROUP_MEMBERS: '/groups/:groupId/members',
+  JOIN_GROUP: '/invite/:code',
 };
