@@ -1,8 +1,15 @@
 package moment.group.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
+import moment.global.dto.response.ErrorResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.like.service.MomentLikeService;
 import moment.moment.dto.request.GroupMomentCreateRequest;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Group Moment API", description = "그룹 모멘트 관련 API 명세")
 @RestController
 @RequestMapping("/api/v2/groups/{groupId}")
 @RequiredArgsConstructor
@@ -29,6 +37,22 @@ public class GroupMomentController {
     private final MomentApplicationService momentApplicationService;
     private final MomentLikeService momentLikeService;
 
+    @Operation(summary = "그룹 모멘트 작성", description = "그룹 내에 새로운 모멘트를 작성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "모멘트 작성 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PostMapping("/moments")
     public ResponseEntity<GroupMomentResponse> createMoment(
             @AuthenticationPrincipal Authentication authentication,
@@ -39,6 +63,22 @@ public class GroupMomentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "그룹 피드 조회", description = "그룹의 모멘트 피드를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 피드 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @GetMapping("/moments")
     public ResponseEntity<GroupFeedResponse> getGroupFeed(
             @AuthenticationPrincipal Authentication authentication,
@@ -48,6 +88,22 @@ public class GroupMomentController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "나의 모멘트 조회", description = "그룹 내 나의 모멘트 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나의 모멘트 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @GetMapping("/my-moments")
     public ResponseEntity<GroupFeedResponse> getMyMoments(
             @AuthenticationPrincipal Authentication authentication,
@@ -57,6 +113,23 @@ public class GroupMomentController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "모멘트 삭제", description = "모멘트를 삭제합니다. 작성자만 삭제할 수 있습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "모멘트 삭제 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    - [M-002] 존재하지 않는 모멘트입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @DeleteMapping("/moments/{momentId}")
     public ResponseEntity<Void> deleteMoment(
             @AuthenticationPrincipal Authentication authentication,
@@ -66,6 +139,23 @@ public class GroupMomentController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "모멘트 좋아요 토글", description = "모멘트에 좋아요를 추가하거나 취소합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 토글 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    - [M-002] 존재하지 않는 모멘트입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PostMapping("/moments/{momentId}/like")
     public ResponseEntity<LikeToggleResponse> toggleLike(
             @AuthenticationPrincipal Authentication authentication,

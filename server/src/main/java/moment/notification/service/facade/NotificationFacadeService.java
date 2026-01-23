@@ -35,7 +35,8 @@ public class NotificationFacadeService {
                 savedNotification.getId(),
                 notificationType,
                 targetType,
-                targetId);
+                targetId,
+                null);
 
         sseNotificationService.sendToClient(userId, "notification", response);
     }
@@ -69,7 +70,8 @@ public class NotificationFacadeService {
                 savedNotification.getId(),
                 notificationType,
                 targetType,
-                targetId);
+                targetId,
+                groupId);
 
         sseNotificationService.sendToClient(userId, "notification", response);
     }
