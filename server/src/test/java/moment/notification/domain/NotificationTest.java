@@ -30,4 +30,24 @@ public class NotificationTest {
         // then
         assertThat(notification.isRead()).isTrue();
     }
+
+    @Test
+    void groupId를_포함하여_알림_객체를_생성한다() {
+        // given
+        User user = UserFixture.createUser();
+        NotificationType notificationType = NotificationType.GROUP_JOIN_REQUEST;
+        TargetType targetType = TargetType.GROUP;
+        Long targetId = 1L;
+        Long groupId = 100L;
+
+        // when
+        Notification notification = new Notification(user, notificationType, targetType, targetId, groupId);
+
+        // then
+        assertThat(notification.getGroupId()).isEqualTo(groupId);
+        assertThat(notification.getTargetId()).isEqualTo(targetId);
+        assertThat(notification.getNotificationType()).isEqualTo(notificationType);
+        assertThat(notification.getTargetType()).isEqualTo(targetType);
+        assertThat(notification.isRead()).isFalse();
+    }
 }

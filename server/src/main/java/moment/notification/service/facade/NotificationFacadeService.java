@@ -50,4 +50,39 @@ public class NotificationFacadeService {
         createNotificationAndSendSse(userId, targetId, notificationType, targetType);
         pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
     }
+
+    public void createNotificationWithGroupIdAndSendSse(
+            Long userId,
+            Long targetId,
+            NotificationType notificationType,
+            TargetType targetType,
+            Long groupId
+    ) {
+        Notification savedNotification = notificationApplicationService.createNotificationWithGroupId(
+                userId,
+                targetId,
+                notificationType,
+                targetType,
+                groupId);
+
+        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
+                savedNotification.getId(),
+                notificationType,
+                targetType,
+                targetId);
+
+        sseNotificationService.sendToClient(userId, "notification", response);
+    }
+
+    public void createNotificationWithGroupIdAndSendSseAndSendPush(
+            Long userId,
+            Long targetId,
+            NotificationType notificationType,
+            TargetType targetType,
+            Long groupId,
+            PushNotificationMessage message
+    ) {
+        createNotificationWithGroupIdAndSendSse(userId, targetId, notificationType, targetType, groupId);
+        pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
+    }
 }

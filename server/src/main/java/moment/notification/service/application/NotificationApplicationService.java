@@ -60,6 +60,24 @@ public class NotificationApplicationService {
                 targetType);
     }
 
+    @Transactional
+    public Notification createNotificationWithGroupId(
+            Long userId,
+            Long targetId,
+            NotificationType notificationType,
+            TargetType targetType,
+            Long groupId) {
+
+        User user = userService.getUserBy(userId);
+
+        return notificationService.saveNotificationWithGroupId(
+                user,
+                targetId,
+                notificationType,
+                targetType,
+                groupId);
+    }
+
     public List<Long> getUnreadNotifications(Long userId, TargetType targetType) {
         return notificationService.getUnreadTargetIdsBy(userId, targetType);
     }

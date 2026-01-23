@@ -66,6 +66,19 @@ public class Notification extends BaseEntity {
         this.isRead = false;
     }
 
+    public Notification(User user,
+                        NotificationType notificationType,
+                        TargetType targetType,
+                        Long targetId,
+                        Long groupId) {
+        this.user = user;
+        this.notificationType = notificationType;
+        this.targetType = targetType;
+        this.targetId = targetId;
+        this.groupId = groupId;
+        this.isRead = false;
+    }
+
     public void checkNotification() {
         isRead = true;
     }
