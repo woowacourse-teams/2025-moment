@@ -57,6 +57,16 @@ public enum ErrorCode {
     EMAIL_COOL_DOWN_NOT_PASSED("V-002", "이메일 요청은 1분에 한번만 요청 할 수 있습니다.", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILURE("V-003", "이메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD_RESET_TOKEN("V-004", "유효하지 않은 비밀번호 재설정 요청입니다.", HttpStatus.BAD_REQUEST),
+
+    ADMIN_LOGIN_FAILED("A-001", "관리자 로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    ADMIN_NOT_FOUND("A-002", "존재하지 않는 관리자입니다.", HttpStatus.NOT_FOUND),
+    ADMIN_UNAUTHORIZED("A-003", "관리자 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    ADMIN_EMAIL_CONFLICT("A-004", "이미 등록된 관리자 이메일입니다.", HttpStatus.CONFLICT),
+    ADMIN_INVALID_INFO("A-005", "유효하지 않은 입력 정보입니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_CANNOT_BLOCK_SELF("A-006", "자기 자신을 차단할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_LAST_SUPER_ADMIN_DELETE("A-007", "마지막 SUPER_ADMIN은 차단할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_SESSION_NOT_FOUND("A-008", "세션을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    ADMIN_SESSION_INVALIDATED("A-009", "세션이 만료되었습니다. 다시 로그인해 주세요.", HttpStatus.UNAUTHORIZED),
     ;
 
     private final String code;

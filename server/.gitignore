@@ -12,3 +12,7 @@ logs/
 .env
 .env.*
 
+firebase-credentials.json
+
+# Claude Code 개인 설정
+../.claude/settings.local.json

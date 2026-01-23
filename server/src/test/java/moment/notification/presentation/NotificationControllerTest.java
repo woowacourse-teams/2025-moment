@@ -1,6 +1,8 @@
 package moment.notification.presentation;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -122,8 +124,11 @@ public class NotificationControllerTest {
 
         // then
         ArgumentCaptor<NotificationSseResponse> responseCaptor = ArgumentCaptor.forClass(NotificationSseResponse.class);
-        then(sseNotificationService).should()
-                .sendToClient(eq(momenter.getId()), eq("notification"), responseCaptor.capture());
+        await().atMost(2, SECONDS).untilAsserted(() -> {
+            then(sseNotificationService).should()
+                    .sendToClient(eq(momenter.getId()), eq("notification"), responseCaptor.capture());
+        });
+
         NotificationSseResponse response = responseCaptor.getValue();
 
         assertAll(
@@ -153,9 +158,10 @@ public class NotificationControllerTest {
 
         // then
         ArgumentCaptor<NotificationSseResponse> responseCaptor = ArgumentCaptor.forClass(NotificationSseResponse.class);
-
-        then(sseNotificationService).should()
-                .sendToClient(eq(commenter.getId()), eq("notification"), responseCaptor.capture());
+        await().atMost(2, SECONDS).untilAsserted(() -> {
+            then(sseNotificationService).should()
+                    .sendToClient(eq(commenter.getId()), eq("notification"), responseCaptor.capture());
+        });
 
         NotificationSseResponse response = responseCaptor.getValue();
 

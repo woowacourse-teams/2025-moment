@@ -35,13 +35,18 @@ public class DatabaseCleaner implements InitializingBean {
 
     @Transactional
     public void clean() {
-        entityManager.flush();
+        entityManager.clear();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1")
+                    .executeUpdate();
         }
+
+        // Spring Session 테이블 정리 (JPA 엔티티가 아니므로 수동으로 정리)
+        entityManager.createNativeQuery("TRUNCATE TABLE SPRING_SESSION_ATTRIBUTES").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE SPRING_SESSION").executeUpdate();
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
