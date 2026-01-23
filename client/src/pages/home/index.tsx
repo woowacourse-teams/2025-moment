@@ -15,7 +15,6 @@ import { NotificationButton } from '@/shared/lib/notifications/NotificationButto
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isDevice, isPWA } from '@/shared/utils/device';
 import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
-import { GroupSelectionModal } from '@/features/group/ui/GroupSelectionModal';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 
 export default function HomePage() {
@@ -25,18 +24,13 @@ export default function HomePage() {
   const { isVisible } = useDelayedVisible({ delay: 100 });
   const { isOpen, handleClose, handleOpen } = useModal();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
-  const { data: groupsData } = useGroupsQuery({ enabled: !!isLoggedIn });
-
-  const {
-    isOpen: isGroupModalOpen,
-    handleClose: handleGroupModalClose,
-    handleOpen: handleGroupModalOpen,
-  } = useModal();
+  const { data: groupsData, isSuccess } = useGroupsQuery({ enabled: !!isLoggedIn });
 
   const shouldShowNotificationModal =
     isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
 
-  const hasNoGroups = isLoggedIn && groupsData?.data?.length === 0;
+  const groupsArray = Array.isArray(groupsData) ? groupsData : groupsData?.data;
+  const hasNoGroups = isLoggedIn && isSuccess && groupsArray?.length === 0;
 
   useEffect(() => {
     if (shouldShowNotificationModal) {
@@ -46,9 +40,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (hasNoGroups) {
-      handleGroupModalOpen();
+      navigate(ROUTES.GROUP_CREATE, { replace: true });
     }
-  }, [hasNoGroups, handleGroupModalOpen]);
+  }, [hasNoGroups, navigate]);
 
   const handleClick = () => {
     handleOpen();
@@ -137,7 +131,6 @@ export default function HomePage() {
           <NotificationButton onClose={handleClose} />
         </Modal.Content>
       </Modal>
-      <GroupSelectionModal isOpen={isGroupModalOpen} onClose={handleGroupModalClose} />
     </>
   );
 }
