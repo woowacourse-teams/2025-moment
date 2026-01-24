@@ -16,6 +16,7 @@ import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { GroupCreateForm } from './GroupCreateForm';
 import { GroupCreateSuccess } from './GroupCreateSuccess';
+import { GroupInviteSection } from './GroupInviteSection';
 
 export const MyGroupList = () => {
   const { data: groupsData, isLoading } = useGroupsQuery();
@@ -29,6 +30,7 @@ export const MyGroupList = () => {
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [managingGroupId, setManagingGroupId] = useState<number | null>(null);
   const [editingProfileGroup, setEditingProfileGroup] = useState<Group | null>(null);
+  const [invitingGroupId, setInvitingGroupId] = useState<number | null>(null);
 
   const {
     isOpen: isCreateOpen,
@@ -70,6 +72,10 @@ export const MyGroupList = () => {
 
   const handleEditProfile = (group: Group) => {
     setEditingProfileGroup(group);
+  };
+
+  const handleInvite = (groupId: number) => {
+    setInvitingGroupId(groupId);
   };
 
   const handleDelete = async (groupId: number) => {
@@ -125,6 +131,7 @@ export const MyGroupList = () => {
               onLeave={handleLeave}
               onManageMembers={handleManageMembers}
               onEditProfile={handleEditProfile}
+              onInvite={handleInvite}
             />
           ))}
         </S.Grid>
@@ -171,6 +178,15 @@ export const MyGroupList = () => {
               inviteCode={createdGroupInfo.code}
               onClose={closeSuccessModal}
             />
+          )}
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={!!invitingGroupId} onClose={() => setInvitingGroupId(null)}>
+        <Modal.Header title="그룹 초대" showCloseButton />
+        <Modal.Content>
+          {invitingGroupId && (
+            <GroupInviteSection groupId={invitingGroupId} showTitle={false} showContainer={false} />
           )}
         </Modal.Content>
       </Modal>

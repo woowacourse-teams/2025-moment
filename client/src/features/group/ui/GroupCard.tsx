@@ -1,6 +1,6 @@
 import { Group } from '../types/group';
 import * as S from './GroupCard.styles';
-import { MoreVertical, Edit, Trash2, LogOut, Users, UserCircle } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, LogOut, Users, UserCircle, UserPlus } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 
@@ -12,6 +12,7 @@ interface GroupCardProps {
   onLeave?: (groupId: number) => void;
   onManageMembers?: (groupId: number) => void;
   onEditProfile?: (group: Group) => void;
+  onInvite?: (groupId: number) => void;
 }
 
 export function GroupCard({
@@ -22,6 +23,7 @@ export function GroupCard({
   onLeave,
   onManageMembers,
   onEditProfile,
+  onInvite,
 }: GroupCardProps) {
   const isOwner = group.isOwner;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -77,6 +79,11 @@ export function GroupCard({
                 </S.MenuItem>
                 {isOwner ? (
                   <>
+                    <S.MenuItem
+                      onClick={e => onInvite && handleAction(e, () => onInvite(group.groupId))}
+                    >
+                      <UserPlus size={14} /> 초대하기
+                    </S.MenuItem>
                     <S.MenuItem
                       onClick={e =>
                         onManageMembers && handleAction(e, () => onManageMembers(group.groupId))

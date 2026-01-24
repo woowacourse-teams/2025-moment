@@ -9,7 +9,6 @@ export const useCommentLikeMutation = (groupId: number | string, commentId: numb
       return response.data;
     },
     onSuccess: () => {
-      // Since comment details are usually nested in moments, we might need broader invalidation
       const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({ queryKey: ['group', numericGroupId] });
     },

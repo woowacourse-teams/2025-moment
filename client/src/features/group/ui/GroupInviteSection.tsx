@@ -6,9 +6,15 @@ import * as S from './GroupInviteSection.styles';
 
 interface GroupInviteSectionProps {
   groupId: number | string;
+  showTitle?: boolean;
+  showContainer?: boolean;
 }
 
-export function GroupInviteSection({ groupId }: GroupInviteSectionProps) {
+export function GroupInviteSection({
+  groupId,
+  showTitle = true,
+  showContainer = true,
+}: GroupInviteSectionProps) {
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const createInviteMutation = useCreateInviteMutation(groupId);
   const { showSuccess } = useToast();
@@ -30,9 +36,9 @@ export function GroupInviteSection({ groupId }: GroupInviteSectionProps) {
     }
   };
 
-  return (
-    <S.Container>
-      <S.Title>그룹 초대</S.Title>
+  const Content = (
+    <>
+      {showTitle && <S.Title>그룹 초대</S.Title>}
       <S.Description>
         초대 코드를 생성하여 친구들을 그룹에 초대하세요.
         <br />
@@ -69,6 +75,12 @@ export function GroupInviteSection({ groupId }: GroupInviteSectionProps) {
           aria-label="초대 코드 생성"
         />
       )}
-    </S.Container>
+    </>
   );
+
+  if (!showContainer) {
+    return Content;
+  }
+
+  return <S.Container>{Content}</S.Container>;
 }
