@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestCo
 import { queryClient } from './queryClient';
 import { toasts } from '@/shared/store/toast';
 
-export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1';
+export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v2';
 
 const commonConfig = {
   headers: { 'Content-Type': 'application/json' },

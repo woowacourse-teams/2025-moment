@@ -1,6 +1,6 @@
 import { Group } from '../types/group';
 import * as S from './GroupCard.styles';
-import { MoreVertical, Edit, Trash2, LogOut } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, LogOut, Users, UserCircle } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 
@@ -10,9 +10,19 @@ interface GroupCardProps {
   onEdit?: (group: Group) => void;
   onDelete?: (groupId: number) => void;
   onLeave?: (groupId: number) => void;
+  onManageMembers?: (groupId: number) => void;
+  onEditProfile?: (group: Group) => void;
 }
 
-export function GroupCard({ group, onClick, onEdit, onDelete, onLeave }: GroupCardProps) {
+export function GroupCard({
+  group,
+  onClick,
+  onEdit,
+  onDelete,
+  onLeave,
+  onManageMembers,
+  onEditProfile,
+}: GroupCardProps) {
   const isOwner = group.isOwner;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -60,16 +70,28 @@ export function GroupCard({ group, onClick, onEdit, onDelete, onLeave }: GroupCa
             </S.MenuButton>
             {isMenuOpen && (
               <S.MenuDropdown ref={menuRef}>
+                <S.MenuItem
+                  onClick={e => onEditProfile && handleAction(e, () => onEditProfile(group))}
+                >
+                  <UserCircle size={14} /> 프로필 수정
+                </S.MenuItem>
                 {isOwner ? (
                   <>
+                    <S.MenuItem
+                      onClick={e =>
+                        onManageMembers && handleAction(e, () => onManageMembers(group.groupId))
+                      }
+                    >
+                      <Users size={14} /> 멤버 관리
+                    </S.MenuItem>
                     <S.MenuItem onClick={e => onEdit && handleAction(e, () => onEdit(group))}>
-                      <Edit size={14} /> 수정하기
+                      <Edit size={14} /> 그룹 수정
                     </S.MenuItem>
                     <S.MenuItem
                       className="danger"
                       onClick={e => onDelete && handleAction(e, () => onDelete(group.groupId))}
                     >
-                      <Trash2 size={14} /> 삭제하기
+                      <Trash2 size={14} /> 그룹 삭제
                     </S.MenuItem>
                   </>
                 ) : (

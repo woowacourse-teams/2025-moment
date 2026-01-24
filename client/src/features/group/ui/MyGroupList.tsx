@@ -10,6 +10,8 @@ import { useToast } from '@/shared/hooks/useToast';
 import { useState } from 'react';
 import { Group } from '../types/group';
 import { EditGroupModal } from './EditGroupModal';
+import { GroupMemberManagementModal } from './GroupMemberManagementModal';
+import { EditGroupProfileModal } from './EditGroupProfileModal';
 
 export const MyGroupList = () => {
   const { data: groupsData, isLoading } = useGroupsQuery();
@@ -21,6 +23,8 @@ export const MyGroupList = () => {
   const leaveGroupMutation = useLeaveGroupMutation();
 
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [managingGroupId, setManagingGroupId] = useState<number | null>(null);
+  const [editingProfileGroup, setEditingProfileGroup] = useState<Group | null>(null);
 
   const handleCreateGroup = () => {
     navigate(ROUTES.GROUP_CREATE);
@@ -33,6 +37,14 @@ export const MyGroupList = () => {
 
   const handleEdit = (group: Group) => {
     setEditingGroup(group);
+  };
+
+  const handleManageMembers = (groupId: number) => {
+    setManagingGroupId(groupId);
+  };
+
+  const handleEditProfile = (group: Group) => {
+    setEditingProfileGroup(group);
   };
 
   const handleDelete = async (groupId: number) => {
@@ -87,6 +99,8 @@ export const MyGroupList = () => {
               onEdit={handleEdit}
               onDelete={handleDelete}
               onLeave={handleLeave}
+              onManageMembers={handleManageMembers}
+              onEditProfile={handleEditProfile}
             />
           ))}
         </S.Grid>
@@ -97,6 +111,23 @@ export const MyGroupList = () => {
           group={editingGroup}
           isOpen={!!editingGroup}
           onClose={() => setEditingGroup(null)}
+        />
+      )}
+
+      {managingGroupId && (
+        <GroupMemberManagementModal
+          groupId={managingGroupId}
+          isOpen={!!managingGroupId}
+          onClose={() => setManagingGroupId(null)}
+        />
+      )}
+
+      {editingProfileGroup && (
+        <EditGroupProfileModal
+          groupId={editingProfileGroup.groupId}
+          currentNickname={editingProfileGroup.myNickname}
+          isOpen={!!editingProfileGroup}
+          onClose={() => setEditingProfileGroup(null)}
         />
       )}
     </S.Container>
