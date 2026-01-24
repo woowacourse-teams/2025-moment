@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { Input } from '@/shared/design-system/input/Input';
 import { Button } from '@/shared/design-system/button/Button';
-import { useCreateGroupMutation } from '../api/useCreateGroupMutation';
-import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
+import { useGroupCreateForm } from '../hooks/useGroupCreateForm';
 import * as S from './GroupCreateForm.styles';
 
 interface GroupCreateFormProps {
@@ -10,33 +8,19 @@ interface GroupCreateFormProps {
   onCancel?: () => void;
 }
 
-const MAX_NAME_LENGTH = 50;
-const MAX_DESCRIPTION_LENGTH = 200;
-
 export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const createGroupMutation = useCreateGroupMutation();
-  const { data: profile } = useProfileQuery({ enabled: true });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name.trim() || !profile?.nickname) return;
-
-    try {
-      await createGroupMutation.mutateAsync({
-        name: name.trim(),
-        description: description.trim(),
-        ownerNickname: profile.nickname,
-      });
-      onSuccess?.();
-    } catch (error) {
-      console.error('Failed to create group:', error);
-    }
-  };
-
-  const isValid = name.trim().length > 0 && name.length <= MAX_NAME_LENGTH;
+  const {
+    name,
+    description,
+    profile,
+    setName,
+    setDescription,
+    isValid,
+    isPending,
+    MAX_NAME_LENGTH,
+    MAX_DESCRIPTION_LENGTH,
+    handleSubmit,
+  } = useGroupCreateForm({ onSuccess });
 
   return (
     <S.FormContainer onSubmit={handleSubmit}>
@@ -71,13 +55,14 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
       </S.InputGroup>
 
       <S.InputGroup>
-        <S.Label htmlFor="group-description">그룹 설명</S.Label>
+        <S.Label htmlFor="group-description">그룹 설명 *</S.Label>
         <S.TextArea
           id="group-description"
-          placeholder="그룹에 대한 설명을 입력하세요 (선택사항)"
+          placeholder="그룹에 대한 설명을 입력하세요"
           value={description}
           onChange={e => setDescription(e.target.value)}
           maxLength={MAX_DESCRIPTION_LENGTH}
+          required
           aria-label="그룹 설명"
         />
         <S.CharCount>
@@ -99,7 +84,7 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
           type="submit"
           title="그룹 만들기"
           variant="primary"
-          disabled={!isValid || createGroupMutation.isPending}
+          disabled={!isValid || isPending}
           aria-label="그룹 만들기"
         />
       </S.ButtonGroup>

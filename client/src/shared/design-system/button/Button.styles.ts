@@ -134,7 +134,9 @@ export const Button = styled.button<{
   &:disabled {
     cursor: not-allowed;
     transform: none;
-    color: ${({ theme }) => theme.colors['slate-700']};
-    border: 1px solid ${({ theme }) => theme.colors['slate-700']};
+    color: ${({ theme }) => theme.colors['gray-600']};
+    border: 1px solid ${({ theme }) => theme.colors['slate-800']};
+    background-color: ${({ theme }) => theme.colors['slate-900']};
+    opacity: 0.5;
   }
 `;
