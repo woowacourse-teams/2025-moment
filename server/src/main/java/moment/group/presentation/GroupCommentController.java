@@ -14,6 +14,7 @@ import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.like.service.CommentLikeService;
 import moment.user.dto.request.Authentication;
@@ -54,14 +55,15 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/moments/{momentId}/comments")
-    public ResponseEntity<GroupCommentResponse> createComment(
+    public ResponseEntity<SuccessResponse<GroupCommentResponse>> createComment(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long momentId,
             @Valid @RequestBody GroupCommentCreateRequest request) {
         GroupCommentResponse response = commentApplicationService.createCommentInGroup(
             groupId, momentId, authentication.id(), request.content());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        HttpStatus status = HttpStatus.CREATED;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "코멘트 목록 조회", description = "모멘트의 코멘트 목록을 조회합니다.")
@@ -82,13 +84,14 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/moments/{momentId}/comments")
-    public ResponseEntity<List<GroupCommentResponse>> getComments(
+    public ResponseEntity<SuccessResponse<List<GroupCommentResponse>>> getComments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long momentId) {
         List<GroupCommentResponse> response = commentApplicationService.getCommentsInGroup(
             groupId, momentId, authentication.id());
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "코멘트 삭제", description = "코멘트를 삭제합니다. 작성자만 삭제할 수 있습니다.")
@@ -109,12 +112,13 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(
+    public ResponseEntity<SuccessResponse<Void>> deleteComment(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long commentId) {
         commentApplicationService.deleteCommentInGroup(groupId, commentId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "코멘트 좋아요 토글", description = "코멘트에 좋아요를 추가하거나 취소합니다.")
@@ -135,12 +139,13 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/comments/{commentId}/like")
-    public ResponseEntity<LikeToggleResponse> toggleLike(
+    public ResponseEntity<SuccessResponse<LikeToggleResponse>> toggleLike(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long commentId) {
         boolean liked = commentApplicationService.toggleCommentLike(groupId, commentId, authentication.id());
         long likeCount = commentLikeService.getCount(commentId);
-        return ResponseEntity.ok(LikeToggleResponse.of(liked, likeCount));
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, LikeToggleResponse.of(liked, likeCount)));
     }
 }

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.like.service.MomentLikeService;
 import moment.moment.dto.request.GroupMomentCreateRequest;
@@ -54,13 +55,14 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/moments")
-    public ResponseEntity<GroupMomentResponse> createMoment(
+    public ResponseEntity<SuccessResponse<GroupMomentResponse>> createMoment(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @Valid @RequestBody GroupMomentCreateRequest request) {
         GroupMomentResponse response = momentApplicationService.createMomentInGroup(
             groupId, authentication.id(), request.content());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        HttpStatus status = HttpStatus.CREATED;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "그룹 피드 조회", description = "그룹의 모멘트 피드를 조회합니다.")
@@ -80,12 +82,13 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/moments")
-    public ResponseEntity<GroupFeedResponse> getGroupFeed(
+    public ResponseEntity<SuccessResponse<GroupFeedResponse>> getGroupFeed(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
         GroupFeedResponse response = momentApplicationService.getGroupFeed(groupId, authentication.id(), cursor);
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "나의 모멘트 조회", description = "그룹 내 나의 모멘트 목록을 조회합니다.")
@@ -105,12 +108,13 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-moments")
-    public ResponseEntity<GroupFeedResponse> getMyMoments(
+    public ResponseEntity<SuccessResponse<GroupFeedResponse>> getMyMoments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
         GroupFeedResponse response = momentApplicationService.getMyMomentsInGroup(groupId, authentication.id(), cursor);
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "모멘트 삭제", description = "모멘트를 삭제합니다. 작성자만 삭제할 수 있습니다.")
@@ -131,12 +135,13 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/moments/{momentId}")
-    public ResponseEntity<Void> deleteMoment(
+    public ResponseEntity<SuccessResponse<Void>> deleteMoment(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long momentId) {
         momentApplicationService.deleteMomentInGroup(groupId, momentId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "모멘트 좋아요 토글", description = "모멘트에 좋아요를 추가하거나 취소합니다.")
@@ -157,12 +162,13 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/moments/{momentId}/like")
-    public ResponseEntity<LikeToggleResponse> toggleLike(
+    public ResponseEntity<SuccessResponse<LikeToggleResponse>> toggleLike(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long momentId) {
         boolean liked = momentApplicationService.toggleMomentLike(groupId, momentId, authentication.id());
         long likeCount = momentLikeService.getCount(momentId);
-        return ResponseEntity.ok(LikeToggleResponse.of(liked, likeCount));
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, LikeToggleResponse.of(liked, likeCount)));
     }
 }

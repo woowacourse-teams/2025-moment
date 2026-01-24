@@ -87,7 +87,7 @@ class GroupMemberControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         // then
         assertAll(
@@ -113,7 +113,7 @@ class GroupMemberControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         // then
         assertThat(response).isEmpty();
@@ -146,7 +146,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         assertThat(members.get(0).nickname()).isEqualTo("변경된닉네임");
     }
@@ -183,7 +183,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         assertThat(members).hasSize(1);
         assertThat(members.get(0).nickname()).isEqualTo("그룹장닉네임");
@@ -220,7 +220,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         assertThat(members).hasSize(1);
     }
@@ -256,7 +256,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         assertThat(members).hasSize(2);
     }
@@ -292,7 +292,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         assertThat(pendingMembers).isEmpty();
     }
@@ -328,7 +328,7 @@ class GroupMemberControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", MemberResponse.class);
+            .getList("data", MemberResponse.class);
 
         MemberResponse newOwner = members.stream()
             .filter(m -> m.nickname().equals("멤버닉네임"))
@@ -348,6 +348,7 @@ class GroupMemberControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 }
