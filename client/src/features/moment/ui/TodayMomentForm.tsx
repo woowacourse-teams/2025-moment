@@ -5,7 +5,7 @@ import { useToast } from '@/shared/hooks/useToast';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { TagList } from '@/shared/design-system/tag/TagList';
 import { Send, Star } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { TAGS } from '../const/tags';
 import * as S from './TodayContent.styles';
 import { Card } from '@/shared/design-system/card';
@@ -28,6 +28,7 @@ export function TodayMomentForm({
   tagNames: string[];
 }) {
   const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const { showError, showWarning } = useToast();
 
@@ -53,7 +54,9 @@ export function TodayMomentForm({
     }
 
     handleSendContent();
-    navigate(ROUTES.TODAY_MOMENT_SUCCESS);
+    if (groupId) {
+      navigate(ROUTES.TODAY_MOMENT_SUCCESS.replace(':groupId', groupId));
+    }
   };
 
   const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {

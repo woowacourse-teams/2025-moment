@@ -1,7 +1,8 @@
+import { ROUTES } from '@/app/routes/routes';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import * as S from './TodayMomentSuccessContent.styles';
 import { useMomentExtraWritableQuery } from '../api/useMomentExtraWritableQuery';
 import { useModal } from '@/shared/design-system/modal';
@@ -17,13 +18,19 @@ export const TodayMomentSuccessContent = () => {
 
   const { handleOpen, handleClose, isOpen } = useModal();
 
+  const { groupId } = useParams<{ groupId: string }>();
+
   const handleNavigate = () => {
     track('click_navigation', { destination: 'today_comment', source: 'success_page' });
-    navigate('/today-comment');
+    if (groupId) {
+      navigate(ROUTES.TODAY_COMMENT.replace(':groupId', groupId));
+    }
   };
 
   const handleNavigateToTodayMoment = () => {
-    navigate('/today-moment-extra');
+    if (groupId) {
+      navigate(ROUTES.TODAY_MOMENT_EXTRA.replace(':groupId', groupId));
+    }
   };
 
   return (

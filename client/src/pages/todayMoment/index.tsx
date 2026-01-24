@@ -4,7 +4,7 @@ import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
@@ -20,6 +20,7 @@ export default function TodayMomentPage() {
   } = useSendMoments();
   const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
   const momentBasicWritable = momentWritingStatusData?.data?.status;
+  const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -33,8 +34,8 @@ export default function TodayMomentPage() {
   useDwell({ item_type: 'moment', surface: 'composer' });
 
   useEffect(() => {
-    if (momentBasicWritable === 'DENIED') {
-      navigate(ROUTES.TODAY_MOMENT_SUCCESS, { replace: true });
+    if (momentBasicWritable === 'DENIED' && groupId) {
+      navigate(ROUTES.TODAY_MOMENT_SUCCESS.replace(':groupId', groupId), { replace: true });
     }
   }, [momentBasicWritable]);
 
