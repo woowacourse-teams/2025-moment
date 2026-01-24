@@ -13,7 +13,6 @@ import NotFoundPage from '@/pages/notFound';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayMomentPage from '@/pages/todayMoment';
-import TodayMomentExtraPage from '@/pages/todayMoment/TodayMomentExtraPage';
 import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
@@ -30,7 +29,6 @@ export const router = createBrowserRouter(
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
         <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
-        <Route path={ROUTES.TODAY_MOMENT_EXTRA} element={<TodayMomentExtraPage />} />
         <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
 
         <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />

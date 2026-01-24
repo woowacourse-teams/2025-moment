@@ -7,11 +7,6 @@ const TEST_MOMENT = {
   tagNames: ['일상/생각', '인간관계'],
 } as const;
 
-const TEST_EXTRA_MOMENT = {
-  content: '추가로 더 좋은 일이 생겼어요!',
-  tagNames: ['일상/생각'],
-} as const;
-
 const MOCK_MY_MOMENTS = [
   {
     id: 1,
@@ -155,96 +150,6 @@ describe('오늘의 모멘트 페이지', () => {
     it('빈 내용으로는 모멘트를 작성할 수 없다', () => {
       cy.get('textarea').should('have.value', '');
       cy.get('button').contains('모멘트 공유하기').should('be.disabled');
-    });
-
-    it('성공 페이지에서 별조각이 부족하면 추가 모멘트 작성이 불가능하다', () => {
-      // 먼저 모멘트 작성
-      cy.get('textarea').clear().type(TEST_MOMENT.content);
-      TEST_MOMENT.tagNames.forEach(tag => {
-        cy.contains(tag).click();
-      });
-      cy.get('button').contains('모멘트 공유하기').click();
-      cy.wait('@sendMoment');
-
-      // 성공 페이지로 이동
-      cy.url().should('include', '/today-moment/success');
-
-      // extraWritable API intercept (별조각 부족)
-      cy.intercept('GET', '**/api/v1/moments/writable/extra', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: {
-            status: 'DENIED',
-          },
-        },
-      }).as('getMomentExtraWritableDenied');
-
-      // 추가 작성하기 버튼 클릭
-      cy.contains('추가 작성하기').click();
-
-      cy.wait('@getMomentExtraWritableDenied');
-
-      // 모달 확인
-      cy.get('[role="dialog"]').should('be.visible');
-      cy.contains('추가 작성하려면 별조각 10개가 필요합니다.').should('be.visible');
-      cy.contains('별조각을 모아오세요.').should('be.visible');
-
-      // "추가 작성하기" 버튼이 없어야 함 (별조각 부족)
-      cy.get('[role="dialog"]').find('button').contains('추가 작성하기').should('not.exist');
-
-      // 닫기 버튼만 있어야 함
-      cy.get('[role="dialog"]').find('button').contains('닫기').should('be.visible');
-    });
-  });
-
-  describe('시나리오 2: 추가 모멘트 작성', () => {
-    beforeEach(() => {
-      mockGlobalAPIs();
-
-      cy.intercept('POST', '**/api/v1/moments/extra', req => {
-        expect(req.body).to.have.property('content');
-        expect(req.body).to.have.property('tagNames');
-
-        req.reply({
-          statusCode: 201,
-          body: {
-            status: 201,
-            data: {
-              id: 2,
-              content: req.body.content,
-              tagNames: req.body.tagNames,
-            },
-          },
-        });
-      }).as('sendExtraMoment');
-
-      cy.visit('/today-moment-extra');
-
-      cy.wait('@checkLogin');
-      cy.wait('@getProfile');
-      cy.wait('@getNotifications');
-    });
-
-    it('추가 모멘트가 작성 가능한 경우 추가 모멘트를 작성할 수 있다', () => {
-      cy.contains('모멘트 공유하기').should('be.visible');
-
-      cy.get('textarea').should('be.visible');
-      cy.get('textarea').clear().type(TEST_EXTRA_MOMENT.content);
-
-      TEST_EXTRA_MOMENT.tagNames.forEach(tag => {
-        cy.contains(tag).click();
-      });
-
-      cy.get('button').contains('모멘트 공유하기').should('not.be.disabled');
-      cy.get('button').contains('모멘트 공유하기').click();
-
-      cy.wait('@sendExtraMoment').then(interception => {
-        expect(interception.request.body.content).to.equal(TEST_EXTRA_MOMENT.content);
-        expect(interception.request.body.tagNames).to.deep.equal(TEST_EXTRA_MOMENT.tagNames);
-      });
-
-      cy.url().should('include', '/today-moment/success');
     });
   });
 

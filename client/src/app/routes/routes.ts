@@ -6,7 +6,6 @@ export const ROUTES = {
   GROUPS: '/groups',
 
   TODAY_MOMENT: '/groups/:groupId/today-moment',
-  TODAY_MOMENT_EXTRA: '/groups/:groupId/today-moment-extra',
   TODAY_COMMENT: '/groups/:groupId/today-comment',
   TODAY_MOMENT_SUCCESS: '/groups/:groupId/today-moment/success',
   GOOGLE_CALLBACK: '/auth/callback',
