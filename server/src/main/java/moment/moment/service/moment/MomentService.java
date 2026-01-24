@@ -133,4 +133,27 @@ public class MomentService {
             groupId, memberId, cursor, pageable
         );
     }
+
+    public List<Moment> getCommentableMomentsInGroup(Long groupId, User user, List<Long> reportedMomentIds) {
+        LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
+
+        List<Long> momentIds;
+        if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
+            momentIds = momentRepository.findMomentIdsInGroup(groupId, user.getId(), cutoffDateTime);
+        } else {
+            momentIds = momentRepository.findMomentIdsInGroupExcludingReported(
+                    groupId, user.getId(), cutoffDateTime, reportedMomentIds);
+        }
+
+        if (momentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        int randomIndex = RANDOM.nextInt(momentIds.size());
+        Long randomId = momentIds.get(randomIndex);
+
+        return momentRepository.findById(randomId)
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList());
+    }
 }
