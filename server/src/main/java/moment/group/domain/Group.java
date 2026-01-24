@@ -19,10 +19,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "moment_groups")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE groups SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE moment_groups SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Group extends BaseEntity {
 
