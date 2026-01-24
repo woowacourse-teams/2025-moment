@@ -2,7 +2,6 @@ export const ROUTES = {
   ROOT: '/',
   SIGNUP: '/signup',
   LOGIN: '/login',
-  GROUP_CREATE: '/groups/create',
   GROUPS: '/groups',
 
   TODAY_MOMENT: '/groups/:groupId/today-moment',

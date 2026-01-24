@@ -12,6 +12,10 @@ import { Group } from '../types/group';
 import { EditGroupModal } from './EditGroupModal';
 import { GroupMemberManagementModal } from './GroupMemberManagementModal';
 import { EditGroupProfileModal } from './EditGroupProfileModal';
+import { useModal } from '@/shared/design-system/modal';
+import { Modal } from '@/shared/design-system/modal/Modal';
+import { GroupCreateForm } from './GroupCreateForm';
+import { GroupCreateSuccess } from './GroupCreateSuccess';
 
 export const MyGroupList = () => {
   const { data: groupsData, isLoading } = useGroupsQuery();
@@ -26,8 +30,29 @@ export const MyGroupList = () => {
   const [managingGroupId, setManagingGroupId] = useState<number | null>(null);
   const [editingProfileGroup, setEditingProfileGroup] = useState<Group | null>(null);
 
+  const {
+    isOpen: isCreateOpen,
+    handleOpen: openCreateModal,
+    handleClose: closeCreateModal,
+  } = useModal();
+  const {
+    isOpen: isSuccessOpen,
+    handleOpen: openSuccessModal,
+    handleClose: closeSuccessModal,
+  } = useModal();
+  const [createdGroupInfo, setCreatedGroupInfo] = useState<{
+    groupId: number;
+    code: string;
+  } | null>(null);
+
   const handleCreateGroup = () => {
-    navigate(ROUTES.GROUP_CREATE);
+    openCreateModal();
+  };
+
+  const handleCreateSuccess = (groupId: number, code: string) => {
+    setCreatedGroupInfo({ groupId, code });
+    closeCreateModal();
+    openSuccessModal();
   };
 
   const handleGroupClick = (groupId: number) => {
@@ -51,7 +76,6 @@ export const MyGroupList = () => {
     if (window.confirm('정말로 이 그룹을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
       try {
         await deleteGroupMutation.mutateAsync(groupId);
-        // Toast handled in mutation usually, but assuming mutation returns promise
       } catch (error) {
         console.error('Failed to delete group', error);
       }
@@ -130,6 +154,26 @@ export const MyGroupList = () => {
           onClose={() => setEditingProfileGroup(null)}
         />
       )}
+
+      <Modal isOpen={isCreateOpen} onClose={closeCreateModal}>
+        <Modal.Header title="그룹 생성" showCloseButton />
+        <Modal.Content>
+          <GroupCreateForm onSuccess={handleCreateSuccess} onCancel={closeCreateModal} />
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={isSuccessOpen} onClose={closeSuccessModal}>
+        <Modal.Header title="참여 코드" showCloseButton />
+        <Modal.Content>
+          {createdGroupInfo && (
+            <GroupCreateSuccess
+              groupId={createdGroupInfo.groupId}
+              inviteCode={createdGroupInfo.code}
+              onClose={closeSuccessModal}
+            />
+          )}
+        </Modal.Content>
+      </Modal>
     </S.Container>
   );
 };
