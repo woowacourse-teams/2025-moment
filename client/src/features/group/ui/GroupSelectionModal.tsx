@@ -4,8 +4,11 @@ import { Button } from '@/shared/design-system/button/Button';
 import { Input } from '@/shared/design-system/input/Input';
 import { useJoinGroupMutation } from '../api/useJoinGroupMutation';
 import { useNavigate } from 'react-router';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
+import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { ROUTES } from '@/app/routes/routes';
 import * as S from './GroupSelectionModal.styles';
+import { useEffect } from 'react';
 
 interface GroupSelectionModalProps {
   isOpen: boolean;
@@ -15,8 +18,18 @@ interface GroupSelectionModalProps {
 export function GroupSelectionModal({ isOpen, onClose }: GroupSelectionModalProps) {
   const [showInviteInput, setShowInviteInput] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
+  const [nickname, setNickname] = useState('');
   const navigate = useNavigate();
   const joinGroupMutation = useJoinGroupMutation();
+
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const { data: profile } = useProfileQuery({ enabled: !!isLoggedIn });
+
+  useEffect(() => {
+    if (profile?.nickname && !nickname) {
+      setNickname(profile.nickname);
+    }
+  }, [profile?.nickname, showInviteInput]);
 
   const handleCreateGroup = () => {
     navigate(ROUTES.GROUP_CREATE);
@@ -24,10 +37,10 @@ export function GroupSelectionModal({ isOpen, onClose }: GroupSelectionModalProp
   };
 
   const handleJoinGroup = async () => {
-    if (!inviteCode.trim()) return;
+    if (!inviteCode.trim() || !nickname.trim()) return;
 
     try {
-      await joinGroupMutation.mutateAsync({ code: inviteCode });
+      await joinGroupMutation.mutateAsync({ inviteCode, nickname });
       onClose();
       navigate(ROUTES.GROUPS);
     } catch (error) {
@@ -81,11 +94,20 @@ export function GroupSelectionModal({ isOpen, onClose }: GroupSelectionModalProp
                   onChange={e => setInviteCode(e.target.value)}
                   aria-label="초대 코드 입력"
                 />
+                <S.Label htmlFor="nickname">사용할 닉네임</S.Label>
+                <Input
+                  id="nickname"
+                  type="text"
+                  placeholder="닉네임을 입력하세요"
+                  value={nickname}
+                  onChange={e => setNickname(e.target.value)}
+                  aria-label="닉네임 입력"
+                />
                 <Button
                   title="참여하기"
                   variant="primary"
                   onClick={handleJoinGroup}
-                  disabled={!inviteCode.trim() || joinGroupMutation.isPending}
+                  disabled={!inviteCode.trim() || !nickname.trim() || joinGroupMutation.isPending}
                   aria-label="그룹 참여하기"
                 />
                 <Button

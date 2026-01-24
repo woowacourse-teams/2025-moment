@@ -61,7 +61,8 @@ export interface UpdateProfileRequest {
 }
 
 export interface JoinGroupRequest {
-  code: string;
+  inviteCode: string;
+  nickname: string;
 }
 
 // API Response Types
