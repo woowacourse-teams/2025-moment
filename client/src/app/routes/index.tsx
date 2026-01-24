@@ -15,10 +15,6 @@ import TodayCommentPage from '@/pages/todayComment';
 import TodayMomentPage from '@/pages/todayMoment';
 import TodayMomentExtraPage from '@/pages/todayMoment/TodayMomentExtraPage';
 import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
-import GroupListPage from '@/pages/groups/GroupListPage';
-import GroupCreatePage from '@/pages/groups/GroupCreatePage';
-import GroupDetailPage from '@/pages/groups/GroupDetailPage';
-import JoinGroupPage from '@/pages/groups/JoinGroupPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
 export const router = createBrowserRouter(
@@ -28,20 +24,19 @@ export const router = createBrowserRouter(
       <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
-      <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
-      <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
       <Route path={ROUTES.FIND_PASSWORD} element={<FindPasswordPage />} />
       <Route path={ROUTES.NEW_PASSWORD} element={<NewPasswordPage />} />
-      <Route path={ROUTES.JOIN_GROUP} element={<JoinGroupPage />} />
+
       <Route element={<ProtectedRoute />}>
-        <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
-        <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
+        <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+        <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
         <Route path={ROUTES.TODAY_MOMENT_EXTRA} element={<TodayMomentExtraPage />} />
         <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
+
+        <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
+        <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
+
         <Route path={ROUTES.MY} element={<MyPage />} />
-        <Route path={ROUTES.GROUPS} element={<GroupListPage />} />
-        <Route path={ROUTES.GROUP_CREATE} element={<GroupCreatePage />} />
-        <Route path={ROUTES.GROUP_DETAIL} element={<GroupDetailPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>,

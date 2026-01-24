@@ -16,7 +16,7 @@ export function GroupInviteSection({ groupId }: GroupInviteSectionProps) {
   const handleGenerateCode = async () => {
     try {
       const result = await createInviteMutation.mutateAsync();
-      setInviteCode(result.data.code);
+      setInviteCode(result.data);
     } catch (error) {
       console.error('Failed to generate invite code:', error);
     }

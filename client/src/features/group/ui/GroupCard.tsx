@@ -1,5 +1,5 @@
 import { Group } from '../types/group';
-import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
+
 import * as S from './GroupCard.styles';
 
 interface GroupCardProps {
@@ -8,10 +8,10 @@ interface GroupCardProps {
 }
 
 export function GroupCard({ group, onClick }: GroupCardProps) {
-  const { data: profile } = useProfileQuery({ enabled: true });
-  const isOwner = profile?.id === group.ownerId;
+  const isOwner = group.isOwner;
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -31,7 +31,7 @@ export function GroupCard({ group, onClick }: GroupCardProps) {
 
       <S.CardFooter>
         <S.MemberCount>멤버 {group.memberCount}명</S.MemberCount>
-        <S.CreatedDate>{formatDate(group.createdAt)}</S.CreatedDate>
+        {group.createdAt && <S.CreatedDate>{formatDate(group.createdAt)}</S.CreatedDate>}
       </S.CardFooter>
     </S.CardContainer>
   );

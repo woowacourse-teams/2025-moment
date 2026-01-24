@@ -8,7 +8,7 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useParams } from 'react-router';
 import { useToast } from '@/shared/hooks/useToast';
 import * as S from './Navbar.styles';
 import { ROUTES } from '@/app/routes/routes';
@@ -18,6 +18,7 @@ export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
 export const Navbar = () => {
   const location = useLocation();
+  const { groupId } = useParams<{ groupId: string }>();
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
   const { showError } = useToast();
@@ -68,6 +69,11 @@ export const Navbar = () => {
     return currentPath === href;
   };
 
+  const replaceGroupId = (path: string) => {
+    if (!groupId) return path;
+    return path.replace(':groupId', groupId);
+  };
+
   return (
     <S.Navbar>
       <Logo />
@@ -104,17 +110,23 @@ export const Navbar = () => {
       <S.MobileMenu ref={mobileMenuRef} $isOpen={isMobileMenuOpen}>
         <S.MobileMenuContent>
           <S.MobileNavItems>
-            {navItems.map(item => (
-              <S.MobileNavItem
-                key={item.href}
-                $isActive={isActiveNavItem(item.href)}
-                $shadow={item.label === '나만의 모음집' && isNotificationExisting}
-              >
-                <Link to={item.href} onClick={toggleMobileMenu}>
-                  <span>{item.label}</span>
-                </Link>
-              </S.MobileNavItem>
-            ))}
+            {navItems.map(item => {
+              if (!groupId && item.href.includes(':groupId')) return null;
+
+              const href = replaceGroupId(item.href);
+
+              return (
+                <S.MobileNavItem
+                  key={item.href}
+                  $isActive={isActiveNavItem(item.href)}
+                  $shadow={item.label === '나만의 모음집' && isNotificationExisting}
+                >
+                  <Link to={href} onClick={toggleMobileMenu}>
+                    <span>{item.label}</span>
+                  </Link>
+                </S.MobileNavItem>
+              );
+            })}
             <AuthButton
               onClick={handleMobileAuthButtonClick}
               profile={isProfileError ? undefined : profile}

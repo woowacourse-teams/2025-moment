@@ -1,10 +1,13 @@
 export interface Group {
-  id: number;
+  groupId: number;
   name: string;
   description: string;
-  ownerId: number;
-  createdAt: string;
+  memberId: number;
+  myNickname: string;
+  isOwner: boolean;
   memberCount: number;
+  createdAt?: string; // Optional if not in response
+  ownerId?: number; // Optional if not in response
 }
 
 export interface GroupMember {
@@ -84,10 +87,7 @@ export interface PendingMembersResponse {
 
 export interface InviteResponse {
   status: number;
-  data: {
-    code: string;
-    expiresAt?: string;
-  };
+  data: string;
 }
 
 export interface InviteInfoResponse {

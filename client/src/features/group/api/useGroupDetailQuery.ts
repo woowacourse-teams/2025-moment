@@ -9,6 +9,6 @@ export const useGroupDetailQuery = (groupId: number | string) => {
       const response = await api.get(`/groups/${groupId}`);
       return response.data;
     },
-    enabled: !!groupId,
+    enabled: !!groupId && groupId !== 'undefined',
   });
 };

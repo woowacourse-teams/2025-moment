@@ -333,3 +333,108 @@ export const ExplainText = styled.p`
     font-size: 1.1rem;
   }
 `;
+export const ActionButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const OnboardingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+`;
+
+export const OnboardingTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.white};
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+export const OnboardingDescription = styled.p`
+  font-size: 1.25rem;
+  color: ${({ theme }) => theme.colors['gray-400']};
+  margin-bottom: 32px;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+`;
+
+export const OnboardingButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+export const OnboardingCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  height: 200px;
+  padding: 30px;
+  background: ${({ theme }) => theme.colors['slate-800']};
+  border: 2px solid ${({ theme }) => theme.colors['slate-700']};
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.white};
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: ${({ theme }) => theme.colors['gray-400']};
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: ${({ theme }) => theme.colors['yellow-500']};
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+    h3 {
+      color: ${({ theme }) => theme.colors['yellow-500']};
+    }
+  }
+
+  @media (max-width: 640px) {
+    width: 100%;
+    max-width: 320px;
+    height: 160px;
+  }
+`;
+export const GroupListContainer = styled.div`
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+`;

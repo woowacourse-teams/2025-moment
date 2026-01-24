@@ -5,6 +5,27 @@ export const ListContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 4px;
+
+  /* Custom Scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors['slate-700']};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: ${({ theme }) => theme.colors['gray-600']};
+  }
 `;
 
 export const EmptyState = styled.div`

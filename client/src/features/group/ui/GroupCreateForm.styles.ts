@@ -1,5 +1,20 @@
 import styled from '@emotion/styled';
 
+export const SectionTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.white};
+  text-align: center;
+  margin-bottom: 8px;
+`;
+
+export const Description = styled.p`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors['gray-400']};
+  text-align: center;
+  margin-bottom: 32px;
+`;
+
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;

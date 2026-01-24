@@ -1,10 +1,12 @@
 import { Input } from '@/shared/design-system/input/Input';
 import { Button } from '@/shared/design-system/button/Button';
 import { useGroupCreateForm } from '../hooks/useGroupCreateForm';
+import { useNavigate } from 'react-router';
+import { useToast } from '@/shared/hooks/useToast';
 import * as S from './GroupCreateForm.styles';
 
 interface GroupCreateFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (groupId: number, code: string) => void;
   onCancel?: () => void;
 }
 
@@ -21,6 +23,9 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
     MAX_DESCRIPTION_LENGTH,
     handleSubmit,
   } = useGroupCreateForm({ onSuccess });
+
+  const navigate = useNavigate();
+  const { showSuccess } = useToast();
 
   return (
     <S.FormContainer onSubmit={handleSubmit}>

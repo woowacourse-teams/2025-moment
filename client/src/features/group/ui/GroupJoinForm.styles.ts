@@ -1,17 +1,19 @@
 import styled from '@emotion/styled';
 
-export const PageContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
+export const FormContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
 
 export const Header = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: 8px;
+  text-align: center;
 `;
 
-export const Title = styled.h1`
-  font-size: 28px;
+export const Title = styled.h2`
+  font-size: 24px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.white};
   margin: 0 0 8px 0;
@@ -26,13 +28,13 @@ export const Description = styled.p`
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 `;
 
 export const LoadingState = styled.div`
   display: flex;
   justify-content: center;
-  padding: 60px 20px;
+  padding: 40px 20px;
   font-size: 16px;
   color: ${({ theme }) => theme.colors['gray-400']};
 `;
@@ -42,7 +44,7 @@ export const ErrorState = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 60px 20px;
+  padding: 40px 20px;
   text-align: center;
 `;
 

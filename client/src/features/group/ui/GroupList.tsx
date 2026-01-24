@@ -10,11 +10,7 @@ export function GroupList() {
   const navigate = useNavigate();
 
   const handleGroupClick = (group: any) => {
-    navigate(`/groups/${group.id}`);
-  };
-
-  const handleCreateGroup = () => {
-    navigate('/groups/create');
+    navigate(`/groups/${group.groupId}/today-comment`);
   };
 
   if (isLoading) {
@@ -31,7 +27,6 @@ export function GroupList() {
     return (
       <S.EmptyState>
         <S.EmptyText>아직 참여한 그룹이 없습니다.</S.EmptyText>
-        <Button title="새 그룹 만들기" variant="primary" onClick={handleCreateGroup} />
       </S.EmptyState>
     );
   }
@@ -39,7 +34,7 @@ export function GroupList() {
   return (
     <S.ListContainer>
       {groups.map(group => (
-        <GroupCard key={group.id} group={group} onClick={() => handleGroupClick(group)} />
+        <GroupCard key={group.groupId} group={group} onClick={() => handleGroupClick(group)} />
       ))}
     </S.ListContainer>
   );
