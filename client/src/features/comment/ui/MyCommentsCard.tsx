@@ -1,26 +1,18 @@
 import { theme } from '@/shared/styles/theme';
-import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
-import { Heart, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import * as S from './MyCommentsCard.styles';
-import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import type { CommentItem } from '../types/comments';
 import { Card } from '@/shared/design-system/card';
 import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { Button } from '@/shared/design-system/button';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
+import { useMyCommentsCard } from '../hooks/useMyCommentsCard';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
-  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
-
-  const handleCommentOpen = () => {
-    if (myComment.commentNotification.isRead || isReadingNotification) return;
-    if (myComment.commentNotification.notificationIds) {
-      handleReadNotifications(myComment.commentNotification.notificationIds[0]);
-    }
-  };
+  const { handleCommentOpen, fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } =
+    useMyCommentsCard(myComment);
 
   return (
     <>

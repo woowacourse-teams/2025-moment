@@ -1,14 +1,10 @@
-import { ROUTES } from '@/app/routes/routes';
-import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
-import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { useToast } from '@/shared/hooks/useToast';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
-import { Send, Star } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+import { Star, Send } from 'lucide-react';
 import * as S from './TodayContent.styles';
 import { Card } from '@/shared/design-system/card';
 import { FileUpload } from '@/shared/ui';
 import { TextArea } from '@/shared/design-system/textArea';
+import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { useTodayMomentForm } from '../hook/useTodayMomentForm';
 
 export function TodayMomentForm({
   handleContentChange,
@@ -21,39 +17,8 @@ export function TodayMomentForm({
   handleSendContent: () => void;
   content: string;
 }) {
-  const navigate = useNavigate();
-  const { groupId } = useParams<{ groupId: string }>();
-  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
-  const { showError, showWarning } = useToast();
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleNavigateToTodayMomentSuccess();
-  };
-
-  const handleNavigateToTodayMomentSuccess = () => {
-    if (checkProfanityWord(content)) {
-      showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
-      return;
-    }
-
-    handleSendContent();
-    if (groupId) {
-      navigate(ROUTES.TODAY_MOMENT_SUCCESS.replace(':groupId', groupId));
-    }
-  };
-
-  const handleTextAreaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    if (!isLoggedIn) {
-      e.preventDefault();
-      e.target.blur();
-      showWarning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫');
-      navigate(ROUTES.LOGIN);
-      return;
-    }
-  };
-
-  const MAX_LENGTH = 200;
+  const { handleFormSubmit, handleNavigateToTodayMomentSuccess, handleTextAreaFocus, MAX_LENGTH } =
+    useTodayMomentForm({ content, handleSendContent });
 
   return (
     <Card width="medium">

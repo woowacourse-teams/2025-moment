@@ -8,11 +8,9 @@ import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
-import { useModal } from '@/shared/design-system/modal';
-import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
-import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { useTodayCommentForm } from '../hooks/useTodayCommentForm';
 
 export function TodayCommentForm({
   momentData,
@@ -31,15 +29,16 @@ export function TodayCommentForm({
   refetch: () => void;
   groupId?: string | number;
 }) {
-  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
-
   const {
-    handleOpen: handleComplaintOpen,
-    handleClose: handleComplaintClose,
-    isOpen: isComplaintOpen,
-  } = useModal();
-
-  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
+    fullImageSrc,
+    handleImageClick,
+    closeFullImage,
+    ImageOverlayPortal,
+    handleComplaintOpen,
+    handleComplaintClose,
+    handleComplaintSubmit,
+    isComplaintOpen,
+  } = useTodayCommentForm({ momentData });
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;

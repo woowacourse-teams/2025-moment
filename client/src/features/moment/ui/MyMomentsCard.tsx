@@ -1,69 +1,31 @@
-import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
-import { useMemo, useState } from 'react';
-import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
-import { useCommentNavigation } from '../hook/useCommentNavigation';
 import * as S from './MyMomentsCard.styles';
 import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
-import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
-import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { MyMomentsItem } from '../types/moments';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
+import { useMyMomentsCard } from '../hook/useMyMomentsCard';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
-  const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
-
-  const { handleReadAllNotifications, isLoading: isReadingNotification } =
-    useReadAllNotifications();
-  const { handleOpen, handleClose, isOpen } = useModal();
   const {
-    handleOpen: handleComplaintOpen,
-    handleClose: handleComplaintClose,
-    isOpen: isComplaintOpen,
-  } = useModal();
-
-  const filteredComments = useMemo(() => {
-    return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
-  }, [myMoment.comments, complainedCommentId]);
-
-  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
-  const sortedComments = useMemo(() => {
-    return filteredComments?.slice().reverse() || [];
-  }, [filteredComments]);
-
-  const navigation = useCommentNavigation(sortedComments?.length || 0);
-  const currentComment = sortedComments?.[navigation.currentIndex];
-
-  const { handleComplaintSubmit } = useSendComplaint(() => {
-    handleComplaintClose();
-
-    if (currentComment) {
-      setComplainedCommentId(prev => new Set([...prev, currentComment.id]));
-    }
-
-    if (filteredComments.length <= 1) {
-      handleModalClose();
-    } else if (navigation.currentIndex >= filteredComments.length - 1) {
-      navigation.goToPrevious();
-    }
-  });
-
-  const handleModalClose = () => {
-    navigation.reset();
-    handleClose();
-  };
-
-  const handleMomentClick = () => {
-    handleOpen();
-    navigation.reset();
-    if (myMoment.momentNotification.isRead || isReadingNotification) return;
-
-    handleReadAllNotifications(myMoment.momentNotification.notificationIds);
-  };
+    isOpen,
+    isComplaintOpen,
+    currentComment,
+    fullImageSrc,
+    sortedComments,
+    navigation,
+    handleModalClose,
+    handleMomentClick,
+    handleComplaintOpen,
+    handleComplaintClose,
+    handleComplaintSubmit,
+    handleImageClick,
+    closeFullImage,
+    ImageOverlayPortal,
+  } = useMyMomentsCard(myMoment);
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
 
