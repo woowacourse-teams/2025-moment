@@ -82,7 +82,8 @@ class GroupCommentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCommentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCommentResponse.class);
 
         // then
         assertAll(
@@ -113,7 +114,7 @@ class GroupCommentControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", GroupCommentResponse.class);
+            .getList("data", GroupCommentResponse.class);
 
         // then
         assertThat(response).hasSize(2);
@@ -144,7 +145,7 @@ class GroupCommentControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", GroupCommentResponse.class);
+            .getList("data", GroupCommentResponse.class);
 
         assertThat(comments).isEmpty();
     }
@@ -167,7 +168,8 @@ class GroupCommentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(LikeToggleResponse.class);
+            .jsonPath()
+            .getObject("data", LikeToggleResponse.class);
 
         // then
         assertAll(
@@ -186,7 +188,8 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 
     private GroupMomentResponse 모멘트_작성(String token, Long groupId, String content) {
@@ -199,7 +202,8 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupMomentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupMomentResponse.class);
     }
 
     private GroupCommentResponse 코멘트_작성(String token, Long groupId, Long momentId, String content) {
@@ -212,6 +216,7 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCommentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCommentResponse.class);
     }
 }

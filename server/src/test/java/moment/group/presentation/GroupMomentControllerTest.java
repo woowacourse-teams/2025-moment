@@ -79,7 +79,8 @@ class GroupMomentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupMomentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupMomentResponse.class);
 
         // then
         assertAll(
@@ -109,7 +110,8 @@ class GroupMomentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(GroupFeedResponse.class);
+            .jsonPath()
+            .getObject("data", GroupFeedResponse.class);
 
         // then
         assertThat(response.moments()).hasSize(2);
@@ -134,7 +136,8 @@ class GroupMomentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(GroupFeedResponse.class);
+            .jsonPath()
+            .getObject("data", GroupFeedResponse.class);
 
         // then
         assertAll(
@@ -167,7 +170,8 @@ class GroupMomentControllerTest {
             .when().get("/api/v2/groups/{groupId}/moments", group.groupId())
             .then()
             .extract()
-            .as(GroupFeedResponse.class);
+            .jsonPath()
+            .getObject("data", GroupFeedResponse.class);
 
         assertThat(feed.moments()).isEmpty();
     }
@@ -190,7 +194,8 @@ class GroupMomentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(LikeToggleResponse.class);
+            .jsonPath()
+            .getObject("data", LikeToggleResponse.class);
 
         // then
         assertAll(
@@ -209,7 +214,8 @@ class GroupMomentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 
     private GroupMomentResponse 모멘트_작성(String token, Long groupId, String content) {
@@ -222,6 +228,7 @@ class GroupMomentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupMomentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupMomentResponse.class);
     }
 }

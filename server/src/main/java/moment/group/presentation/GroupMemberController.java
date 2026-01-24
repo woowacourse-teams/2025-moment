@@ -11,10 +11,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.group.dto.request.ProfileUpdateRequest;
 import moment.group.dto.response.MemberResponse;
 import moment.group.service.application.GroupMemberApplicationService;
 import moment.user.dto.request.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,11 +51,12 @@ public class GroupMemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/members")
-    public ResponseEntity<List<MemberResponse>> getMembers(
+    public ResponseEntity<SuccessResponse<List<MemberResponse>>> getMembers(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         List<MemberResponse> response = memberApplicationService.getMembers(groupId);
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "대기자 목록 조회", description = "그룹 가입 대기 중인 멤버 목록을 조회합니다. 그룹 소유자만 가능합니다.")
@@ -73,11 +76,12 @@ public class GroupMemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/pending")
-    public ResponseEntity<List<MemberResponse>> getPendingMembers(
+    public ResponseEntity<SuccessResponse<List<MemberResponse>>> getPendingMembers(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         List<MemberResponse> response = memberApplicationService.getPendingMembers(groupId, authentication.id());
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "내 프로필 수정", description = "그룹 내 나의 닉네임을 수정합니다.")
@@ -101,12 +105,13 @@ public class GroupMemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/profile")
-    public ResponseEntity<Void> updateProfile(
+    public ResponseEntity<SuccessResponse<Void>> updateProfile(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @Valid @RequestBody ProfileUpdateRequest request) {
         memberApplicationService.updateProfile(groupId, authentication.id(), request.nickname());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "그룹 탈퇴", description = "그룹에서 탈퇴합니다. 그룹 소유자는 탈퇴할 수 없습니다.")
@@ -130,11 +135,12 @@ public class GroupMemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/leave")
-    public ResponseEntity<Void> leaveGroup(
+    public ResponseEntity<SuccessResponse<Void>> leaveGroup(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         memberApplicationService.leaveGroup(groupId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
 }

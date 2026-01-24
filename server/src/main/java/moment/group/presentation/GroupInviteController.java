@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.group.dto.request.GroupJoinRequest;
 import moment.group.dto.response.GroupJoinResponse;
 import moment.group.dto.response.InviteInfoResponse;
@@ -49,11 +50,12 @@ public class GroupInviteController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/groups/{groupId}/invite")
-    public ResponseEntity<String> createInviteLink(
+    public ResponseEntity<SuccessResponse<String>> createInviteLink(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         String inviteCode = memberApplicationService.createInviteLink(groupId, authentication.id());
-        return ResponseEntity.status(HttpStatus.CREATED).body(inviteCode);
+        HttpStatus status = HttpStatus.CREATED;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, inviteCode));
     }
 
     @Operation(summary = "초대 정보 조회", description = "초대 코드로 그룹 정보를 조회합니다.")
@@ -69,9 +71,10 @@ public class GroupInviteController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/invite/{code}")
-    public ResponseEntity<InviteInfoResponse> getInviteInfo(@PathVariable String code) {
+    public ResponseEntity<SuccessResponse<InviteInfoResponse>> getInviteInfo(@PathVariable String code) {
         InviteInfoResponse response = memberApplicationService.getInviteInfo(code);
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "그룹 가입 신청", description = "초대 코드를 사용하여 그룹에 가입을 신청합니다.")
@@ -95,10 +98,11 @@ public class GroupInviteController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/groups/join")
-    public ResponseEntity<GroupJoinResponse> joinGroup(
+    public ResponseEntity<SuccessResponse<GroupJoinResponse>> joinGroup(
             @AuthenticationPrincipal Authentication authentication,
             @Valid @RequestBody GroupJoinRequest request) {
         GroupJoinResponse response = memberApplicationService.joinGroup(authentication.id(), request);
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }
