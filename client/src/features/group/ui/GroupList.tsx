@@ -7,11 +7,9 @@ import * as S from './GroupList.styles';
 
 export function GroupList() {
   const { data: groupsData, isLoading } = useGroupsQuery();
-  const { selectGroup } = useCurrentGroup();
   const navigate = useNavigate();
 
   const handleGroupClick = (group: any) => {
-    selectGroup(group);
     navigate(`/groups/${group.id}`);
   };
 
