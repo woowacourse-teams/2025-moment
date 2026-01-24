@@ -1,5 +1,4 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useMomentWritingStatusQuery } from '@/features/moment/api/useMomentWritingStatusQuery';
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
 import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
@@ -11,16 +10,8 @@ import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 
 export default function TodayMomentPage() {
   const { groupId } = useParams<{ groupId: string }>();
-  const {
-    handleContentChange,
-    handleImageChange,
-    handleTagNameClick,
-    handleSendContent,
-    content,
-    tagNames,
-  } = useSendMoments(groupId);
-  const { data: momentWritingStatusData } = useMomentWritingStatusQuery(groupId);
-  const momentBasicWritable = momentWritingStatusData?.data?.status;
+  const { handleContentChange, handleImageChange, handleSendContent, content } =
+    useSendMoments(groupId);
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -33,12 +24,6 @@ export default function TodayMomentPage() {
 
   useDwell({ item_type: 'moment', surface: 'composer' });
 
-  useEffect(() => {
-    if (momentBasicWritable === 'DENIED' && groupId) {
-      navigate(ROUTES.TODAY_MOMENT_SUCCESS.replace(':groupId', groupId), { replace: true });
-    }
-  }, [momentBasicWritable]);
-
   return (
     <S.TodayPageWrapper>
       <TitleContainer
@@ -48,10 +33,8 @@ export default function TodayMomentPage() {
       <TodayMomentForm
         handleContentChange={handleContentChange}
         handleImageChange={handleImageChange}
-        handleTagNameClick={handleTagNameClick}
         handleSendContent={handleSendContent}
         content={content}
-        tagNames={tagNames}
       />
     </S.TodayPageWrapper>
   );

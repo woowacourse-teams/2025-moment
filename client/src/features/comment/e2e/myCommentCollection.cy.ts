@@ -14,21 +14,8 @@ const commentsData = [
       level: 'ASTEROID_WHITE',
       content: '오늘은 정말 힘든 하루였어요.',
       imageUrl: null,
-      tagNames: ['일상/생각'],
       createdAt: '2025-01-20T09:00:00',
     },
-    echos: [
-      {
-        id: 1,
-        echoType: 'THANKS',
-        userId: 1,
-      },
-      {
-        id: 2,
-        echoType: 'TOUCHED',
-        userId: 2,
-      },
-    ],
     commentNotification: {
       isRead: false,
       notificationIds: [1001],
@@ -45,10 +32,8 @@ const commentsData = [
       level: 'ASTEROID_WHITE',
       content: '새로운 도전을 시작했어요!',
       imageUrl: null,
-      tagNames: ['일/성장'],
       createdAt: '2025-01-20T10:30:00',
     },
-    echos: [],
     commentNotification: {
       isRead: true,
       notificationIds: [],
@@ -95,9 +80,6 @@ describe('나의 코멘트 모음집 페이지', () => {
 
       cy.contains(commentsData[0].moment?.content).should('be.visible');
       cy.contains(commentsData[1].moment?.content).should('be.visible');
-
-      cy.contains(commentsData[0].moment?.tagNames[0]).should('be.visible');
-      cy.contains(commentsData[1].moment?.tagNames[0]).should('be.visible');
     });
   });
 });

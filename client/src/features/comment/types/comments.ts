@@ -20,19 +20,11 @@ export interface CommentItem {
     level: string;
     nickName: string;
     imageUrl?: string | null;
-    tagNames: string[];
   } | null;
-  echos: Echo[];
   commentNotification: {
     isRead: boolean;
     notificationIds: number[];
   };
-}
-
-export interface Echo {
-  id: number;
-  echoType: string;
-  userId: number;
 }
 
 export interface SendCommentsData {

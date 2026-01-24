@@ -1,5 +1,3 @@
-import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
-import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
 import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
@@ -14,7 +12,6 @@ import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { MyMomentsItem } from '../types/moments';
-import { Tag } from '@/shared/design-system/tag';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
@@ -28,7 +25,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     handleClose: handleComplaintClose,
     isOpen: isComplaintOpen,
   } = useModal();
-  useEchoSelection();
 
   const filteredComments = useMemo(() => {
     return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
@@ -112,11 +108,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           ) : (
             <div />
           )}
-          <S.MyMomentsTagWrapper>
-            {myMoment.tagNames.map((tag: string) => (
-              <Tag key={tag} tag={tag} />
-            ))}
-          </S.MyMomentsTagWrapper>
         </S.MyMomentsBottomWrapper>
       </S.MyMomentsCard>
       {isOpen && (
@@ -188,7 +179,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       {navigation.currentIndex + 1} / {sortedComments?.length || 0}
                     </S.CommentIndicator>
                   </S.CommentContentWrapper>
-                  <SendEchoForm currentComment={currentComment} />
                 </S.MyMomentsModalContent>
               </>
             )}

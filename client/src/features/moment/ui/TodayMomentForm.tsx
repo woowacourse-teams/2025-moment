@@ -3,10 +3,8 @@ import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
-import { TagList } from '@/shared/design-system/tag/TagList';
 import { Send, Star } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
-import { TAGS } from '../const/tags';
 import * as S from './TodayContent.styles';
 import { Card } from '@/shared/design-system/card';
 import { FileUpload } from '@/shared/ui';
@@ -16,16 +14,12 @@ export function TodayMomentForm({
   handleContentChange,
   handleImageChange,
   handleSendContent,
-  handleTagNameClick,
   content,
-  tagNames,
 }: {
   handleContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleImageChange: (imageData: { imageUrl: string; imageName: string } | null) => void;
   handleSendContent: () => void;
-  handleTagNameClick: (tagName: string) => void;
   content: string;
-  tagNames: string[];
 }) {
   const navigate = useNavigate();
   const { groupId } = useParams<{ groupId: string }>();
@@ -40,16 +34,6 @@ export function TodayMomentForm({
   const handleNavigateToTodayMomentSuccess = () => {
     if (checkProfanityWord(content)) {
       showError('모멘트에 부적절한 단어가 포함되어 있습니다.');
-      return;
-    }
-
-    if (tagNames.length === 0) {
-      showError('태그를 선택해주세요.');
-      return;
-    }
-
-    if (tagNames.length > 3) {
-      showError('태그는 최대 3개까지 선택할 수 있습니다.');
       return;
     }
 
@@ -81,13 +65,6 @@ export function TodayMomentForm({
           subtitle="뿌듯한 순간, 위로받고 싶은 순간, 기쁜 순간 모든 모멘트를 자유롭게 적어보세요"
         />
         <Card.Content>
-          <fieldset>
-            <legend className="sr-only">태그 선택(필수, 최대 3개)</legend>
-            <S.TagWrapper>
-              <S.TagLabel id="tag-label">태그: </S.TagLabel>
-              <TagList tags={TAGS} onTagClick={handleTagNameClick} selectedTag={tagNames} />
-            </S.TagWrapper>
-          </fieldset>
           <fieldset>
             <legend className="sr-only">모멘트 내용 작성</legend>
             <TextArea

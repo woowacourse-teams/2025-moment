@@ -1,6 +1,4 @@
 import { theme } from '@/shared/styles/theme';
-import { EchoTypeKey } from '@/features/echo/type/echos';
-import { Echo } from '@/features/echo/ui/Echo';
 import { useReadNotifications } from '@/features/notification/hooks/useReadNotifications';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
@@ -11,7 +9,6 @@ import type { CommentItem } from '../types/comments';
 import { Card } from '@/shared/design-system/card';
 import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { Button } from '@/shared/design-system/button';
-import { Tag } from '@/shared/design-system/tag';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
@@ -91,28 +88,6 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               }
             />
           </S.ContentContainer>
-          {myComment.moment && (
-            <S.ContentContainer>
-              <S.TitleContainer>
-                <Heart size={20} color={theme.colors['yellow-500']} />
-                <S.SubTitle>받은 에코</S.SubTitle>
-              </S.TitleContainer>
-              <S.EchoContainer>
-                {myComment.echos && myComment.echos.length > 0 ? (
-                  myComment.echos.map(echo => (
-                    <Echo key={echo.id} echo={echo.echoType as EchoTypeKey} />
-                  ))
-                ) : (
-                  <S.NoEchoContent>아직 받은 에코가 없습니다.</S.NoEchoContent>
-                )}
-              </S.EchoContainer>
-              <S.MyCommentsTagWrapper>
-                {myComment.moment.tagNames.map((tag: string) => (
-                  <Tag key={tag} tag={tag} />
-                ))}
-              </S.MyCommentsTagWrapper>
-            </S.ContentContainer>
-          )}
           {!myComment.commentNotification.isRead && (
             <Button onClick={handleCommentOpen} title="확인" />
           )}

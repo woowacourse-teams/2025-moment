@@ -9,7 +9,6 @@ const momentsData = [
     content: '오늘 정말 행복한 하루를 보냈어요!',
     createdAt: '2025-10-22T10:00:00',
     imageUrl: null,
-    tagNames: ['행복', '일상'],
     comments: [
       {
         id: 101,
@@ -18,18 +17,6 @@ const momentsData = [
         level: 'ASTEROID_WHITE',
         createdAt: '2025-10-22T10:30:00',
         imageUrl: null,
-        echos: [
-          {
-            id: 1,
-            echoType: 'THANKS',
-            userId: 1,
-          },
-          {
-            id: 2,
-            echoType: 'TOUCHED',
-            userId: 2,
-          },
-        ],
       },
       {
         id: 102,
@@ -38,7 +25,6 @@ const momentsData = [
         level: 'ASTEROID_WHITE',
         createdAt: '2025-10-22T11:00:00',
         imageUrl: null,
-        echos: [],
       },
     ],
     momentNotification: {
@@ -52,7 +38,6 @@ const momentsData = [
     content: '새로운 도전을 시작했어요!',
     createdAt: '2025-10-22T12:00:00',
     imageUrl: 'https://example.com/image.jpg',
-    tagNames: ['성장', '도전'],
     comments: [
       {
         id: 103,
@@ -61,13 +46,6 @@ const momentsData = [
         level: 'ASTEROID_WHITE',
         createdAt: '2025-10-22T12:30:00',
         imageUrl: null,
-        echos: [
-          {
-            id: 3,
-            echoType: 'AMAZING',
-            userId: 3,
-          },
-        ],
       },
     ],
     momentNotification: {
@@ -81,7 +59,6 @@ const momentsData = [
     content: '조용한 하루였어요.',
     createdAt: '2025-10-22T13:00:00',
     imageUrl: null,
-    tagNames: ['휴식'],
     comments: null,
     momentNotification: {
       isRead: true,
@@ -119,14 +96,6 @@ describe('나의 모멘트 모음집 페이지', () => {
       cy.contains(momentsData[0].content).should('be.visible');
       cy.contains(momentsData[1].content).should('be.visible');
       cy.contains(momentsData[2].content).should('be.visible');
-    });
-
-    it('모멘트의 태그를 확인할 수 있다', () => {
-      momentsData.forEach(moment => {
-        moment.tagNames.forEach(tag => {
-          cy.contains(tag).should('be.visible');
-        });
-      });
     });
   });
 
@@ -198,15 +167,15 @@ describe('나의 모멘트 모음집 페이지', () => {
     });
   });
 
-  describe('시나리오 4: 에코 확인', () => {
-    it('코멘트에 받은 에코를 확인할 수 있다', () => {
+  describe('시나리오 4: 상세 내용 확인', () => {
+    it('코멘트 상세 내용을 확인할 수 있다', () => {
       cy.contains(momentsData[0].content).click();
 
       cy.get('[role="dialog"]').should('be.visible');
 
       const firstComment = momentsData[0].comments?.[momentsData[0].comments.length - 1];
-      if (firstComment && firstComment.echos.length > 0) {
-        cy.contains('보낸 에코').should('be.visible');
+      if (firstComment) {
+        cy.contains(firstComment.content).should('be.visible');
       }
     });
   });
@@ -346,7 +315,6 @@ describe('나의 모멘트 모음집 페이지', () => {
         content: `두 번째 페이지 모멘트 ${i + 1}`,
         createdAt: `2025-10-22T${15 + i}:00:00`,
         imageUrl: null,
-        tagNames: ['테스트'],
         comments: null,
         momentNotification: {
           isRead: true,

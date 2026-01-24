@@ -1,8 +1,5 @@
-import type { Echos } from '@/features/echo/type/echos';
-
 export interface MomentsRequest {
   content: string;
-  tagNames: string[];
 }
 
 export interface MomentsResponse {
@@ -22,7 +19,6 @@ export interface MyMomentsItem {
   createdAt: string;
   imageUrl?: string | null;
   comments: Comment[] | null;
-  tagNames: string[];
   momentNotification: {
     isRead: boolean;
     notificationIds: number[];
@@ -36,19 +32,6 @@ export interface Comment {
   level: string;
   createdAt: string;
   imageUrl?: string | null;
-  echos: Echos[];
-}
-
-export interface MomentWritingStatusResponse {
-  data: {
-    status: 'DENIED' | 'ALLOWED';
-  };
-}
-
-export interface MomentExtraWritableResponse {
-  data: {
-    status: 'DENIED' | 'ALLOWED';
-  };
 }
 
 export interface MatchMomentsResponse {

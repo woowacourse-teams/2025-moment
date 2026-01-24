@@ -4,7 +4,6 @@ import { mockGlobalAPIs } from '../../../../cypress/fixtures/mockGlobalApi';
 
 const TEST_MOMENT = {
   content: '오늘 정말 행복한 하루였어요!',
-  tagNames: ['일상/생각', '인간관계'],
 } as const;
 
 const MOCK_MY_MOMENTS = [
@@ -12,7 +11,6 @@ const MOCK_MY_MOMENTS = [
     id: 1,
     momenterId: 1,
     content: '첫 번째 모멘트입니다.',
-    tagNames: ['태그1'],
     imageUrl: null,
     createdAt: '2025-10-22T10:00:00',
     comments: [
@@ -35,7 +33,6 @@ const MOCK_MY_MOMENTS = [
     id: 2,
     momenterId: 1,
     content: '두 번째 모멘트입니다.',
-    tagNames: ['태그2'],
     imageUrl: null,
     createdAt: '2025-10-22T11:00:00',
     comments: null,
@@ -87,19 +84,8 @@ describe('오늘의 모멘트 페이지', () => {
         },
       }).as('getNotifications');
 
-      cy.intercept('GET', '**/api/v1/moments/writable/basic', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: {
-            status: 'ALLOWED',
-          },
-        },
-      }).as('getMomentWritingStatus');
-
       cy.intercept('POST', '**/api/v1/moments', req => {
         expect(req.body).to.have.property('content');
-        expect(req.body).to.have.property('tagNames');
 
         req.reply({
           statusCode: 201,
@@ -108,7 +94,6 @@ describe('오늘의 모멘트 페이지', () => {
             data: {
               id: 1,
               content: req.body.content,
-              tagNames: req.body.tagNames,
               imageUrl: req.body.imageUrl || null,
               imageName: req.body.imageName || null,
             },
@@ -131,16 +116,11 @@ describe('오늘의 모멘트 페이지', () => {
       cy.get('textarea').should('be.visible');
       cy.get('textarea').clear().type(TEST_MOMENT.content);
 
-      TEST_MOMENT.tagNames.forEach(tag => {
-        cy.contains(tag).click();
-      });
-
       cy.get('button').contains('모멘트 공유하기').should('not.be.disabled');
       cy.get('button').contains('모멘트 공유하기').click();
 
       cy.wait('@sendMoment').then(interception => {
         expect(interception.request.body.content).to.equal(TEST_MOMENT.content);
-        expect(interception.request.body.tagNames).to.deep.equal(TEST_MOMENT.tagNames);
       });
 
       cy.url().should('include', '/today-moment/success');
@@ -311,7 +291,6 @@ describe('오늘의 모멘트 페이지', () => {
         id: 1,
         momenterId: 1,
         content: '댓글이 달린 모멘트입니다.',
-        tagNames: ['태그1'],
         imageUrl: null,
         createdAt: '2025-10-22T10:00:00',
         comments: null,
