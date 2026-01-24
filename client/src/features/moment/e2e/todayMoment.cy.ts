@@ -63,7 +63,7 @@ describe('오늘의 모멘트 페이지', () => {
       }).as('notificationSubscribe');
 
       // 인증 상태를 계속 유지하도록 설정
-      cy.intercept('GET', '**/api/v1/auth/login/check', {
+      cy.intercept('GET', '**/api/v2/auth/login/check', {
         statusCode: 200,
         body: {
           status: 200,

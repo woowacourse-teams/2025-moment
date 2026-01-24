@@ -3,7 +3,7 @@
 import { userData } from './userData';
 
 export const mockGlobalAPIs = () => {
-  cy.intercept('GET', '**/api/v1/auth/login/check', {
+  cy.intercept('GET', '**/api/v2/auth/login/check', {
     statusCode: 200,
     body: {
       status: 200,
