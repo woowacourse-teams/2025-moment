@@ -48,13 +48,15 @@ export const HeroSection = styled.section`
   }
 `;
 
-export const ContentSection = styled.section<{ isVisible: boolean }>`
+export const ContentSection = styled('section', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  animation: ${({ $isVisible }) => ($isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.8s backwards;
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -65,7 +67,9 @@ export const ContentSection = styled.section<{ isVisible: boolean }>`
   }
 `;
 
-export const HighlightedTextContainer = styled.blockquote<{ isVisible: boolean }>`
+export const HighlightedTextContainer = styled('blockquote', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   margin: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -74,8 +78,8 @@ export const HighlightedTextContainer = styled.blockquote<{ isVisible: boolean }
   width: 100%;
   max-width: 560px;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  animation: ${({ $isVisible }) => ($isVisible ? fadeInUp : 'none')} 0.8s ease-out 1.2s backwards;
 `;
 
 export const HighlightedText = styled.p`
@@ -132,13 +136,15 @@ export const HighlightedText = styled.p`
   }
 `;
 
-export const BottomArrow = styled(Picture)<{ isVisible: boolean }>`
+export const BottomArrow = styled(Picture, {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   width: 100px;
   height: 100px;
   margin-top: 40px;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? float : 'none')} 2s ease-in-out infinite;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  animation: ${({ $isVisible }) => ($isVisible ? float : 'none')} 2s ease-in-out infinite;
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))
     drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 45px rgba(255, 255, 255, 0.2));
 
@@ -195,7 +201,9 @@ export const IntroTitleLogo = styled(Picture)`
   }
 `;
 
-export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
+export const IntroSectionWrapper = styled('section', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   width: 100%;
   height: 75vh;
   display: flex;
@@ -206,8 +214,8 @@ export const IntroSectionWrapper = styled.section<{ isVisible: boolean }>`
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 100px 0;
 
-  ${({ isVisible }) =>
-    isVisible &&
+  ${({ $isVisible }) =>
+    $isVisible &&
     `
     opacity: 1;
     transform: translateY(0);

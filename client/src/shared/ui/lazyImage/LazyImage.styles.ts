@@ -31,7 +31,9 @@ const levelIconStyles = css`
   }
 `;
 
-export const ErrorFallback = styled.div<{
+export const ErrorFallback = styled('div', {
+  shouldForwardProp: prop => !['height', 'width', '$borderRadius', '$variant'].includes(prop),
+})<{
   width?: string | number;
   height?: string | number;
   $borderRadius?: string | number;
@@ -65,7 +67,9 @@ export const ErrorIcon = styled.span`
   opacity: 0.5;
 `;
 
-export const PlaceholderWrapper = styled.div<{
+export const PlaceholderWrapper = styled('div', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{
   $isVisible: boolean;
 }>`
   position: absolute;
@@ -76,7 +80,9 @@ export const PlaceholderWrapper = styled.div<{
   pointer-events: none;
 `;
 
-export const ErrorWrapper = styled.div<{
+export const ErrorWrapper = styled('div', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{
   $isVisible: boolean;
 }>`
   position: absolute;
@@ -87,7 +93,9 @@ export const ErrorWrapper = styled.div<{
   pointer-events: ${({ $isVisible }) => ($isVisible ? 'auto' : 'none')};
 `;
 
-export const Image = styled.img<{
+export const Image = styled('img', {
+  shouldForwardProp: prop => !['$variant', '$isVisible'].includes(prop),
+})<{
   $variant: string;
   $isVisible: boolean;
 }>`

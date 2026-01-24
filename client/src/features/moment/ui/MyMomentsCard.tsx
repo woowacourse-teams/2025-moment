@@ -131,7 +131,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       <S.WriterInfoWrapper>
                         <WriterInfo
                           writer={currentComment.memberNickname || currentComment.nickname}
-                          level={currentComment.level}
                         />
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>

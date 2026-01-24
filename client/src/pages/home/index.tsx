@@ -82,7 +82,7 @@ export default function HomePage() {
             <Hero />
           </S.HeroSection>
 
-          <S.ContentSection isVisible={isVisible}>
+          <S.ContentSection $isVisible={isVisible}>
             {isLoggedIn ? (
               hasGroups ? (
                 <S.GroupListContainer>
@@ -115,9 +115,9 @@ export default function HomePage() {
             )}
           </S.ContentSection>
 
-          <S.ContentSection isVisible={isVisible}>
+          <S.ContentSection $isVisible={isVisible}>
             <S.BottomArrow
-              isVisible={isVisible}
+              $isVisible={isVisible}
               webpSrc="/images/belowAirplane.webp"
               fallbackSrc="/images/fallback/belowAirplane.png"
               alt="아래로 스크롤하세요"
@@ -125,7 +125,7 @@ export default function HomePage() {
             />
           </S.ContentSection>
           <S.HighlightedTextContainer
-            isVisible={isVisible}
+            $isVisible={isVisible}
             role="region"
             aria-label="서비스 핵심 가치"
           >
@@ -230,7 +230,7 @@ const AnimatedIntroSection = ({ children }: PropsWithChildren) => {
   });
 
   return (
-    <S.IntroSectionWrapper ref={ref} isVisible={isVisible}>
+    <S.IntroSectionWrapper ref={ref} $isVisible={isVisible}>
       {children}
     </S.IntroSectionWrapper>
   );

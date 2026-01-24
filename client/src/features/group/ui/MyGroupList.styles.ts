@@ -17,7 +17,7 @@ export const Header = styled.div`
 export const Title = styled.h3`
   font-size: 1.125rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors['slate-900']};
+  color: ${({ theme }) => theme.colors['gray-400']};
 `;
 
 export const Grid = styled.div`
