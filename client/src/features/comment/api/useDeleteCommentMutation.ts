@@ -12,7 +12,8 @@ export const useDeleteCommentMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
+      const numericGroupId = Number(groupId);
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId] });
       showSuccess('코멘트가 삭제되었습니다.');
     },
     onError: () => {

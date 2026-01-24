@@ -33,7 +33,10 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
           <Card.TitleContainer
             title={
               <S.TitleWrapper>
-                <WriterInfo writer={myComment.moment.nickName} level={myComment.moment.level} />
+                <WriterInfo
+                  writer={myComment.moment.memberNickname || myComment.moment.nickName}
+                  level={myComment.moment.level}
+                />
                 <WriteTime date={myComment.createdAt} />
               </S.TitleWrapper>
             }

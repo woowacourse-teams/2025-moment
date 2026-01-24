@@ -6,8 +6,8 @@ export interface Group {
   myNickname: string;
   isOwner: boolean;
   memberCount: number;
-  createdAt?: string; // Optional if not in response
-  ownerId?: number; // Optional if not in response
+  createdAt?: string;
+  ownerId?: number;
 }
 
 export interface GroupMember {
@@ -43,7 +43,6 @@ export interface InviteInfo {
   isValid: boolean;
 }
 
-// API Request Types
 export interface CreateGroupRequest {
   name: string;
   description: string;
@@ -65,7 +64,6 @@ export interface JoinGroupRequest {
   nickname: string;
 }
 
-// API Response Types
 export interface GroupsResponse {
   status: number;
   data: Group[];

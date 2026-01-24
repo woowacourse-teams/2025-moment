@@ -3,7 +3,7 @@ import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 import { Clock } from 'lucide-react';
 import { MyMomentsCard } from './MyMomentsCard';
 import * as S from './MyMomentsList.styles';
-import { useMomentsSuspenseQuery } from '../api/useMomentsSuspenseQuery';
+import { useMyMomentsSuspenseQuery } from '../api/useMyMomentsSuspenseQuery';
 import { MyMomentsItem } from '../types/moments';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
@@ -25,9 +25,9 @@ export const MyMomentsListWithSuspense = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useMomentsSuspenseQuery(groupId || 1);
+  } = useMyMomentsSuspenseQuery(groupId || 1);
 
-  const momentItems = moments?.pages.flatMap(page => page.data.items) || [];
+  const momentItems = moments?.pages.flatMap(page => page.data.moments) || [];
   const hasMoments = momentItems.length > 0;
 
   const observerRef = useIntersectionObserver({

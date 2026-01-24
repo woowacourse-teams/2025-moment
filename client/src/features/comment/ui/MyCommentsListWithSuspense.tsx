@@ -35,7 +35,7 @@ export const MyCommentsListWithSuspense = ({
     : allCommentsQuery;
 
   const currentComments: CommentItem[] =
-    data?.pages.flatMap((page: CommentsResponse) => page.data.items) || [];
+    data?.pages.flatMap((page: CommentsResponse) => page.data.comments) || [];
   const hasComments = currentComments.length > 0;
 
   const observerRef = useIntersectionObserver({

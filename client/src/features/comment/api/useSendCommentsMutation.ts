@@ -13,12 +13,13 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
   return useMutation({
     mutationFn: (data: Omit<SendCommentsData, 'momentId'>) => sendComments(groupId, momentId, data),
     onSuccess: (_data, variables) => {
+      const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({
-        queryKey: ['group', groupId, 'moment', momentId, 'comments'],
+        queryKey: ['group', numericGroupId, 'moment', momentId, 'comments'],
       });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
       queryClient.invalidateQueries({ queryKey: ['commentableMoments'] });
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });

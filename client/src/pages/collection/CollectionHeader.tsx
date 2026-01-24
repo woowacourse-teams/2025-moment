@@ -1,9 +1,10 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import * as S from './index.styles';
 
 export const CollectionHeader = () => {
+  const { groupId } = useParams<{ groupId: string }>();
   const currentpath = useLocation().pathname;
   const { data: notifications } = useReadNotificationsQuery();
 
@@ -14,13 +15,16 @@ export const CollectionHeader = () => {
     notification => notification.targetType === 'COMMENT',
   );
 
+  const momentCollectionPath = ROUTES.COLLECTION_MYMOMENT.replace(':groupId', groupId || '');
+  const commentCollectionPath = ROUTES.COLLECTION_MYCOMMENT.replace(':groupId', groupId || '');
+
   return (
     <S.CollectionHeaderContainer>
       <S.CollectionHeaderLinkContainer
-        to={ROUTES.COLLECTION_MYMOMENT}
-        className={currentpath === ROUTES.COLLECTION_MYMOMENT ? 'active' : ''}
+        to={momentCollectionPath}
+        className={currentpath === momentCollectionPath ? 'active' : ''}
         $shadow={isMomentNotificationExisting}
-        aria-current={currentpath === ROUTES.COLLECTION_MYMOMENT ? 'page' : undefined}
+        aria-current={currentpath === momentCollectionPath ? 'page' : undefined}
         aria-label={
           isMomentNotificationExisting
             ? '나의 모멘트 모음집 페이지 이동 (새 알림 있음)'
@@ -30,10 +34,10 @@ export const CollectionHeader = () => {
         나의 모멘트 모음집
       </S.CollectionHeaderLinkContainer>
       <S.CollectionHeaderLinkContainer
-        to={ROUTES.COLLECTION_MYCOMMENT}
-        className={currentpath === ROUTES.COLLECTION_MYCOMMENT ? 'active' : ''}
+        to={commentCollectionPath}
+        className={currentpath === commentCollectionPath ? 'active' : ''}
         $shadow={isCommentNotificationExisting}
-        aria-current={currentpath === ROUTES.COLLECTION_MYCOMMENT ? 'page' : undefined}
+        aria-current={currentpath === commentCollectionPath ? 'page' : undefined}
         aria-label={
           isCommentNotificationExisting
             ? '나의 코멘트 모음집 페이지 이동 (새 알림 있음)'

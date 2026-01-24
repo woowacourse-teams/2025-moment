@@ -70,7 +70,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   return (
     <>
       <S.MyMomentsCard
-        key={myMoment.id}
+        key={myMoment.momentId || myMoment.id}
         $hasComment={hasComments}
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.momentNotification.isRead}
@@ -129,7 +129,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                   <S.CommentContentWrapper>
                     <S.MyMomentsModalHeader>
                       <S.WriterInfoWrapper>
-                        <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
+                        <WriterInfo
+                          writer={currentComment.memberNickname || currentComment.nickname}
+                          level={currentComment.level}
+                        />
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />

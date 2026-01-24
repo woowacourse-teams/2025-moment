@@ -18,8 +18,9 @@ export const useMomentsMutation = (groupId: number | string) => {
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
+      const numericGroupId = Number(groupId);
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
       queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });

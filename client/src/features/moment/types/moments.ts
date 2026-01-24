@@ -5,8 +5,8 @@ export interface MomentsRequest {
 export interface MomentsResponse {
   status: number;
   data: {
-    items: MyMomentsItem[];
-    nextCursor: string | null;
+    moments: MyMomentsItem[];
+    nextCursor: string | number | null;
     hasNextPage: boolean;
     pageSize: number;
   };
@@ -14,10 +14,16 @@ export interface MomentsResponse {
 
 export interface MyMomentsItem {
   id: number;
+  momentId: number;
   momenterId: number;
+  memberId: number;
   content: string;
+  memberNickname: string;
   createdAt: string;
   imageUrl?: string | null;
+  likeCount?: number;
+  hasLiked?: boolean;
+  commentCount?: number;
   comments: Comment[] | null;
   momentNotification: {
     isRead: boolean;
@@ -29,6 +35,7 @@ export interface Comment {
   id: number;
   content: string;
   nickname: string;
+  memberNickname: string; // V2
   level: string;
   createdAt: string;
   imageUrl?: string | null;

@@ -1,8 +1,8 @@
 export interface CommentsResponse {
   status: number;
   data: {
-    items: CommentItem[];
-    nextCursor: string | null;
+    comments: CommentItem[];
+    nextCursor: string | number | null;
     hasNextPage: boolean;
     pageSize: number;
   };
@@ -19,6 +19,7 @@ export interface CommentItem {
     id: number;
     level: string;
     nickName: string;
+    memberNickname?: string;
     imageUrl?: string | null;
   } | null;
   commentNotification: {
@@ -63,7 +64,7 @@ export interface GetCommentableMoments {
   createdAt: string;
 }
 export interface GetComments {
-  pageParam?: string | null;
+  pageParam?: string | number | null;
 }
 
 export type FilterType = 'all' | 'unread';

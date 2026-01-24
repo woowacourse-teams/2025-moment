@@ -2,25 +2,30 @@ import { api } from '@/app/lib/api';
 import type { MomentsResponse } from '../types/moments';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
-interface GetMoments {
+interface GetMyMoments {
   groupId: number | string;
-  pageParam?: string | null;
+  pageParam?: string | number | null;
 }
 
-export const useMomentsSuspenseQuery = (groupId: number | string) => {
+export const useMyMomentsSuspenseQuery = (groupId: number | string) => {
+  const numericGroupId = Number(groupId);
   return useSuspenseInfiniteQuery({
-    queryKey: ['group', groupId, 'my-moments'],
-    queryFn: ({ pageParam }: { pageParam: string | null }) => getMoments({ groupId, pageParam }),
+    queryKey: ['group', numericGroupId, 'my-moments'],
+    queryFn: ({ pageParam }: { pageParam: string | number | null }) =>
+      getMyMoments({ groupId: numericGroupId, pageParam }),
     getNextPageParam: lastPage =>
       lastPage.data.hasNextPage ? lastPage.data.nextCursor : undefined,
     initialPageParam: null,
   });
 };
 
-const getMoments = async ({ groupId, pageParam = null }: GetMoments): Promise<MomentsResponse> => {
+const getMyMoments = async ({
+  groupId,
+  pageParam = null,
+}: GetMyMoments): Promise<MomentsResponse> => {
   const params = new URLSearchParams();
   if (pageParam) {
-    params.append('nextCursor', pageParam);
+    params.append('nextCursor', String(pageParam));
   }
   params.append('pageSize', '10');
 

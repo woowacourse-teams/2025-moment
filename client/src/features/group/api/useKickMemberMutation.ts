@@ -13,7 +13,8 @@ export const useKickMemberMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'members'] });
+      const numericGroupId = Number(groupId);
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'members'] });
       showSuccess('멤버가 강퇴되었습니다.');
     },
     onError: () => {

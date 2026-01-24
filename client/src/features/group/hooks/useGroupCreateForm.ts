@@ -32,15 +32,12 @@ export function useGroupCreateForm({ onSuccess }: UseGroupCreateFormProps) {
         ownerNickname: profile.nickname,
       });
 
-      // Fetch groups to get the new group ID (workaround)
       const { data: groupsResponse } = await refetchGroups();
       const groups = groupsResponse?.data || [];
 
-      // Assume the group with largest ID is the one we just created
       const newestGroup = groups.sort((a, b) => b.groupId - a.groupId)[0];
 
       if (newestGroup) {
-        // Create invite link directly
         const inviteResponse = await api.post(`/groups/${newestGroup.groupId}/invite`);
         const code = inviteResponse.data.data;
 

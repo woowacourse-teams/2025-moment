@@ -2,6 +2,7 @@ import { MyCommentsListWithSuspense } from '@/features/comment/ui/MyCommentsList
 import { CollectionHeader } from '@/pages/collection/CollectionHeader';
 import { SuspenseSkeleton } from '@/shared/ui/skeleton';
 import * as S from '../index.styles';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 import { TodayCommentFilter } from '@/features/comment/ui/TodayCommentFilter';
 import { useState, Suspense } from 'react';
 import { FilterType } from '@/features/comment/types/comments';
@@ -11,7 +12,7 @@ import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 import { useParams } from 'react-router';
 
 export default function MyCommentCollectionPage() {
-  const { groupId } = useParams<{ groupId: string }>();
+  const { currentGroupId: groupId } = useCurrentGroup();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   const handleActiveFilterChange = (filter: FilterType) => {
