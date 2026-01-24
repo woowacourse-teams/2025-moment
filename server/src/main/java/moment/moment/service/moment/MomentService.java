@@ -156,4 +156,14 @@ public class MomentService {
                 .map(Collections::singletonList)
                 .orElse(Collections.emptyList());
     }
+
+    public List<Moment> getUnreadMyMomentsInGroup(
+            Long groupId, Long memberId, List<Long> momentIds, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdAndMemberIdAndIdIn(groupId, memberId, momentIds, pageable);
+        }
+        return momentRepository.findByGroupIdAndMemberIdAndIdInAndIdLessThan(
+                groupId, memberId, momentIds, cursor, pageable);
+    }
 }

@@ -17,6 +17,7 @@ import moment.moment.dto.request.GroupMomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupFeedResponse;
 import moment.moment.dto.response.GroupMomentResponse;
+import moment.moment.dto.response.MyGroupFeedResponse;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -120,7 +121,7 @@ class GroupMomentControllerTest {
     }
 
     @Test
-    void 나의_모음집을_조회한다() {
+    void 그룹_내_나의_모멘트를_조회한다() {
         // given
         User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
@@ -132,20 +133,69 @@ class GroupMomentControllerTest {
         모멘트_작성(token, group.groupId(), "내 모멘트");
 
         // when
-        GroupFeedResponse response = RestAssured.given().log().all()
+        MyGroupFeedResponse response = RestAssured.given().log().all()
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/my-moments", group.groupId())
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", GroupFeedResponse.class);
+            .getObject("data", MyGroupFeedResponse.class);
 
         // then
         assertAll(
             () -> assertThat(response.moments()).hasSize(1),
-            () -> assertThat(response.moments().get(0).content()).isEqualTo("내 모멘트")
+            () -> assertThat(response.moments().get(0).content()).isEqualTo("내 모멘트"),
+            () -> assertThat(response.moments().get(0).comments()).isNotNull(),
+            () -> assertThat(response.moments().get(0).momentNotification()).isNotNull()
         );
+    }
+
+    @Test
+    void 그룹_내_읽지_않은_나의_모멘트를_조회한다() {
+        // given
+        User user = UserFixture.createUser();
+        User savedUser = userRepository.save(user);
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
+
+        // 모멘트 작성 (알림 없으므로 unread도 없음)
+        모멘트_작성(token, group.groupId(), "내 모멘트");
+
+        // when
+        MyGroupFeedResponse response = RestAssured.given().log().all()
+            .cookie("accessToken", token)
+            .when().get("/api/v2/groups/{groupId}/my-moments/unread", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", MyGroupFeedResponse.class);
+
+        // then - 알림이 없으므로 빈 응답
+        assertThat(response.moments()).isEmpty();
+    }
+
+    @Test
+    void 그룹_멤버가_아니면_나의_모멘트_조회_시_예외가_발생한다() {
+        // given
+        User groupOwner = UserFixture.createUser();
+        User savedOwner = userRepository.save(groupOwner);
+        String ownerToken = tokenManager.createAccessToken(savedOwner.getId(), savedOwner.getEmail());
+
+        User nonMember = UserFixture.createUser();
+        User savedNonMember = userRepository.save(nonMember);
+        String nonMemberToken = tokenManager.createAccessToken(savedNonMember.getId(), savedNonMember.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(ownerToken, "테스트 그룹", "설명", "그룹장닉네임");
+
+        // when & then
+        RestAssured.given().log().all()
+            .cookie("accessToken", nonMemberToken)
+            .when().get("/api/v2/groups/{groupId}/my-moments", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test

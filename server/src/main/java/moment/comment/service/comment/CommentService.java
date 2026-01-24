@@ -89,4 +89,26 @@ public class CommentService {
     public long countByMomentId(Long momentId) {
         return commentRepository.countByMomentId(momentId);
     }
+
+    public List<Comment> getMyCommentsInGroup(Long memberId, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return commentRepository.findByMemberIdOrderByIdDesc(memberId, pageable);
+        }
+        return commentRepository.findByMemberIdAndIdLessThanOrderByIdDesc(memberId, cursor, pageable);
+    }
+
+    public List<Comment> getUnreadMyCommentsInGroup(
+            Long memberId,
+            List<Long> commentIds,
+            Long cursor,
+            int limit
+    ) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return commentRepository.findByMemberIdAndIdInOrderByIdDesc(memberId, commentIds, pageable);
+        }
+        return commentRepository.findByMemberIdAndIdInAndIdLessThanOrderByIdDesc(
+                memberId, commentIds, cursor, pageable);
+    }
 }

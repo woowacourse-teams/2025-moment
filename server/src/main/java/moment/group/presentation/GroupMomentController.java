@@ -17,8 +17,10 @@ import moment.moment.dto.request.GroupMomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupFeedResponse;
 import moment.moment.dto.response.GroupMomentResponse;
+import moment.moment.dto.response.MyGroupFeedResponse;
 import moment.moment.service.application.MomentApplicationService;
 import moment.moment.service.facade.CommentableMomentFacadeService;
+import moment.moment.service.facade.MyGroupMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,7 @@ public class GroupMomentController {
     private final MomentApplicationService momentApplicationService;
     private final MomentLikeService momentLikeService;
     private final CommentableMomentFacadeService commentableMomentFacadeService;
+    private final MyGroupMomentPageFacadeService myGroupMomentPageFacadeService;
 
     @Operation(summary = "그룹 모멘트 작성", description = "그룹 내에 새로운 모멘트를 작성합니다.")
     @ApiResponses({
@@ -94,7 +97,8 @@ public class GroupMomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "나의 모멘트 조회", description = "그룹 내 나의 모멘트 목록을 조회합니다.")
+    @Operation(summary = "그룹 내 나의 모멘트 조회",
+            description = "그룹 내에서 자신이 작성한 모멘트를 조회합니다. 댓글과 알림 정보가 포함됩니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "나의 모멘트 조회 성공"),
             @ApiResponse(responseCode = "401", description = """
@@ -111,11 +115,40 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-moments")
-    public ResponseEntity<SuccessResponse<GroupFeedResponse>> getMyMoments(
+    public ResponseEntity<SuccessResponse<MyGroupFeedResponse>> getMyMoments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        GroupFeedResponse response = momentApplicationService.getMyMomentsInGroup(groupId, authentication.id(), cursor);
+        MyGroupFeedResponse response = myGroupMomentPageFacadeService.getMyMomentsInGroup(
+                groupId, authentication.id(), cursor);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "그룹 내 읽지 않은 나의 모멘트 조회",
+            description = "그룹 내에서 알림을 읽지 않은 자신의 모멘트를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "읽지 않은 나의 모멘트 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/my-moments/unread")
+    public ResponseEntity<SuccessResponse<MyGroupFeedResponse>> getUnreadMyMoments(
+            @AuthenticationPrincipal Authentication authentication,
+            @PathVariable Long groupId,
+            @RequestParam(required = false) Long cursor) {
+        MyGroupFeedResponse response = myGroupMomentPageFacadeService.getUnreadMyMomentsInGroup(
+                groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
