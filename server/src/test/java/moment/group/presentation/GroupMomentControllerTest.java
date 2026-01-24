@@ -10,9 +10,11 @@ import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.group.dto.request.GroupCreateRequest;
+import moment.group.dto.request.GroupJoinRequest;
 import moment.group.dto.response.GroupCreateResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.moment.dto.request.GroupMomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupFeedResponse;
 import moment.moment.dto.response.GroupMomentResponse;
 import moment.user.domain.User;
@@ -230,5 +232,132 @@ class GroupMomentControllerTest {
             .extract()
             .jsonPath()
             .getObject("data", GroupMomentResponse.class);
+    }
+
+    private void 그룹_가입(String token, String inviteCode, String nickname) {
+        GroupJoinRequest request = new GroupJoinRequest(inviteCode, nickname);
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", token)
+            .body(request)
+            .when().post("/api/v2/groups/join")
+            .then()
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void 그룹_내_코멘트를_작성할_수_있는_모멘트를_조회한다() {
+        // given
+        User user1 = UserFixture.createUser();
+        User savedUser1 = userRepository.save(user1);
+        String token1 = tokenManager.createAccessToken(savedUser1.getId(), savedUser1.getEmail());
+
+        User user2 = UserFixture.createUser();
+        User savedUser2 = userRepository.save(user2);
+        String token2 = tokenManager.createAccessToken(savedUser2.getId(), savedUser2.getEmail());
+
+        // 그룹 생성 (user1이 그룹장)
+        GroupCreateResponse group = 그룹_생성(token1, "테스트 그룹", "설명", "그룹장닉네임");
+
+        // user2를 그룹에 초대 (초대 코드 사용)
+        그룹_가입(token2, group.inviteCode(), "멤버닉네임");
+
+        // user1이 모멘트 작성
+        모멘트_작성(token1, group.groupId(), "코멘트 가능한 모멘트");
+
+        // when - user2가 코멘트 가능한 모멘트 조회
+        CommentableMomentResponse response = RestAssured.given().log().all()
+            .cookie("accessToken", token2)
+            .when().get("/api/v2/groups/{groupId}/moments/commentable", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", CommentableMomentResponse.class);
+
+        // then
+        assertAll(
+            () -> assertThat(response.id()).isNotNull(),
+            () -> assertThat(response.content()).isEqualTo("코멘트 가능한 모멘트")
+        );
+    }
+
+    @Test
+    void 그룹_멤버가_아닌_경우_코멘트_가능_모멘트_조회_실패() {
+        // given
+        User groupOwner = UserFixture.createUser();
+        User savedOwner = userRepository.save(groupOwner);
+        String ownerToken = tokenManager.createAccessToken(savedOwner.getId(), savedOwner.getEmail());
+
+        User nonMember = UserFixture.createUser();
+        User savedNonMember = userRepository.save(nonMember);
+        String nonMemberToken = tokenManager.createAccessToken(savedNonMember.getId(), savedNonMember.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(ownerToken, "테스트 그룹", "설명", "그룹장닉네임");
+
+        // when & then
+        RestAssured.given().log().all()
+            .cookie("accessToken", nonMemberToken)
+            .when().get("/api/v2/groups/{groupId}/moments/commentable", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    void 본인_모멘트는_코멘트_가능_모멘트에서_제외된다() {
+        // given - 그룹에 혼자만 있고, 본인 모멘트만 있는 경우
+        User user = UserFixture.createUser();
+        User savedUser = userRepository.save(user);
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
+        모멘트_작성(token, group.groupId(), "내가 작성한 모멘트");
+
+        // when
+        CommentableMomentResponse response = RestAssured.given().log().all()
+            .cookie("accessToken", token)
+            .when().get("/api/v2/groups/{groupId}/moments/commentable", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", CommentableMomentResponse.class);
+
+        // then - null 응답 (본인 모멘트 제외)
+        assertThat(response).isNull();
+    }
+
+    @Test
+    void 다른_그룹의_모멘트는_조회되지_않는다() {
+        // given
+        User user1 = UserFixture.createUser();
+        User savedUser1 = userRepository.save(user1);
+        String token1 = tokenManager.createAccessToken(savedUser1.getId(), savedUser1.getEmail());
+
+        User user2 = UserFixture.createUser();
+        User savedUser2 = userRepository.save(user2);
+        String token2 = tokenManager.createAccessToken(savedUser2.getId(), savedUser2.getEmail());
+
+        // 그룹 A 생성 (user1)
+        GroupCreateResponse groupA = 그룹_생성(token1, "그룹 A", "설명", "닉네임A");
+
+        // 그룹 B 생성 (user2)
+        GroupCreateResponse groupB = 그룹_생성(token2, "그룹 B", "설명", "닉네임B");
+
+        // user2가 그룹 B에 모멘트 작성
+        모멘트_작성(token2, groupB.groupId(), "그룹 B의 모멘트");
+
+        // when - user1이 그룹 A에서 코멘트 가능 모멘트 조회
+        CommentableMomentResponse response = RestAssured.given().log().all()
+            .cookie("accessToken", token1)
+            .when().get("/api/v2/groups/{groupId}/moments/commentable", groupA.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", CommentableMomentResponse.class);
+
+        // then - 그룹 A에는 모멘트가 없으므로 null
+        assertThat(response).isNull();
     }
 }

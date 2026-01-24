@@ -131,4 +131,30 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
         @Param("memberId") Long memberId,
         @Param("cursor") Long cursor,
         Pageable pageable);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+    """)
+    List<Long> findMomentIdsInGroup(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+            AND m.id NOT IN :reportedMoments
+    """)
+    List<Long> findMomentIdsInGroupExcludingReported(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo,
+            @Param("reportedMoments") List<Long> reportedMoments);
 }

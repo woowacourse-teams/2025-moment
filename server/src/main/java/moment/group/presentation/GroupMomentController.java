@@ -14,9 +14,11 @@ import moment.global.dto.response.SuccessResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.like.service.MomentLikeService;
 import moment.moment.dto.request.GroupMomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupFeedResponse;
 import moment.moment.dto.response.GroupMomentResponse;
 import moment.moment.service.application.MomentApplicationService;
+import moment.moment.service.facade.CommentableMomentFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,7 @@ public class GroupMomentController {
 
     private final MomentApplicationService momentApplicationService;
     private final MomentLikeService momentLikeService;
+    private final CommentableMomentFacadeService commentableMomentFacadeService;
 
     @Operation(summary = "그룹 모멘트 작성", description = "그룹 내에 새로운 모멘트를 작성합니다.")
     @ApiResponses({
@@ -170,5 +173,31 @@ public class GroupMomentController {
         long likeCount = momentLikeService.getCount(momentId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, LikeToggleResponse.of(liked, likeCount)));
+    }
+
+    @Operation(summary = "코멘트를 달 수 있는 그룹 모멘트 조회", description = "그룹 내에서 코멘트를 달 수 있는 모멘트를 랜덤으로 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "코멘트 가능 모멘트 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = """
+                    - [GM-002] 그룹 멤버가 아닙니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [GR-001] 존재하지 않는 그룹입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/moments/commentable")
+    public ResponseEntity<SuccessResponse<CommentableMomentResponse>> getCommentableMoment(
+            @AuthenticationPrincipal Authentication authentication,
+            @PathVariable Long groupId) {
+        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMomentInGroup(
+                groupId, authentication.id());
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }
