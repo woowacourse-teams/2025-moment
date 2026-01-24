@@ -51,7 +51,7 @@ export function TodayCommentForm({
         <Card.TitleContainer
           title={
             <S.TitleWrapper>
-              <WriterInfo writer={'푸르른 물방울의 테리우스'} level={'ASTEROID_WHITE'} />
+              <WriterInfo writer={'푸르른 물방울의 테리우스'} />
               <S.ActionWrapper>
                 <WriteTime date="9시간 전" />
               </S.ActionWrapper>
@@ -96,7 +96,7 @@ export function TodayCommentForm({
         <Card.TitleContainer
           title={
             <S.TitleWrapper>
-              <WriterInfo writer={momentData.nickname} level={momentData.level} />
+              <WriterInfo writer={momentData.nickname} />
               <S.ActionWrapper>
                 <WriteTime date={momentData.createdAt} />
                 <S.ComplaintButton onClick={handleComplaintOpen} aria-label="모멘트 신고">
