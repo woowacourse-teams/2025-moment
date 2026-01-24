@@ -4,14 +4,12 @@ import { track } from '@/shared/lib/ga/track';
 import { useEffect } from 'react';
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
-export const useSendMoments = () => {
+export const useSendMoments = (groupId: string | undefined) => {
   const [content, setContent] = useState('');
   const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
   const [tagNames, setTagNames] = useState<string[]>([]);
-  const { getCurrentGroupId } = useCurrentGroup();
-  const groupId = getCurrentGroupId();
 
-  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation(groupId || 1);
+  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation(groupId || '');
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;

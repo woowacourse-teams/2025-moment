@@ -10,6 +10,7 @@ import { track } from '@/shared/lib/ga/track';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 
 export default function TodayMomentPage() {
+  const { groupId } = useParams<{ groupId: string }>();
   const {
     handleContentChange,
     handleImageChange,
@@ -17,10 +18,9 @@ export default function TodayMomentPage() {
     handleSendContent,
     content,
     tagNames,
-  } = useSendMoments();
-  const { data: momentWritingStatusData } = useMomentWritingStatusQuery();
+  } = useSendMoments(groupId);
+  const { data: momentWritingStatusData } = useMomentWritingStatusQuery(groupId);
   const momentBasicWritable = momentWritingStatusData?.data?.status;
-  const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
 
   const location = useLocation();

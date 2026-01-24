@@ -13,17 +13,17 @@ import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 export const TodayCommentWriteContent = ({
   isLoggedIn,
   momentId,
+  groupId,
 }: {
   isLoggedIn: boolean;
   momentId: number;
+  groupId?: string | number;
 }) => {
   const MAX_LENGTH = 200;
   const { showWarning } = useToast();
-  const { getCurrentGroupId } = useCurrentGroup();
-  const groupId = getCurrentGroupId();
 
   const { comment, handleChange, handleImageChange, handleSubmit, isPending } = useSendComments({
-    groupId: groupId || 1,
+    groupId: groupId || '',
     momentId,
   });
 

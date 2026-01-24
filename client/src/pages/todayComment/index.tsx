@@ -8,7 +8,10 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQ
 import { TAGS } from '@/features/moment/const/tags';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
 
+import { useParams } from 'react-router';
+
 export default function TodayCommentPage() {
+  const { groupId } = useParams<{ groupId: string }>();
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
   const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
   const {
@@ -16,7 +19,7 @@ export default function TodayCommentPage() {
     isLoading,
     error,
     refetch,
-  } = useCommentableMomentsQuery({ enabled: isLoggedIn === true }, selectedTag);
+  } = useCommentableMomentsQuery(groupId, { enabled: isLoggedIn === true }, selectedTag);
 
   useDwell({ item_type: 'comment', surface: 'composer' });
 
@@ -43,6 +46,7 @@ export default function TodayCommentPage() {
         isLoggedInLoading={isLoggedInLoading}
         error={error}
         refetch={refetch}
+        groupId={groupId}
       />
     </S.TodayPageWrapper>
   );

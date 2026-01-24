@@ -1,4 +1,7 @@
-export const formatRelativeTime = (dateString: string): string => {
+export const formatRelativeTime = (dateString?: string): string => {
+  if (!dateString) {
+    return '';
+  }
   if (dateString.includes('전') || dateString.includes('ago')) {
     return dateString;
   }

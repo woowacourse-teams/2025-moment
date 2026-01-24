@@ -8,7 +8,10 @@ import { FilterType } from '@/features/comment/types/comments';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
 import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
+import { useParams } from 'react-router';
+
 export default function MyCommentCollectionPage() {
+  const { groupId } = useParams<{ groupId: string }>();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   const handleActiveFilterChange = (filter: FilterType) => {
@@ -32,7 +35,7 @@ export default function MyCommentCollectionPage() {
         )}
       >
         <Suspense fallback={<SuspenseSkeleton variant="comment" count={3} />}>
-          <MyCommentsListWithSuspense filterType={activeFilter} />
+          {groupId && <MyCommentsListWithSuspense filterType={activeFilter} groupId={groupId} />}
         </Suspense>
       </ErrorBoundary>
     </S.CollectionContainer>

@@ -21,6 +21,7 @@ export function TodayCommentForm({
   isLoggedInLoading,
   error,
   refetch,
+  groupId,
 }: {
   momentData?: GetCommentableMoments;
   isLoading: boolean;
@@ -28,6 +29,7 @@ export function TodayCommentForm({
   isLoggedInLoading: boolean;
   error: Error | null;
   refetch: () => void;
+  groupId?: string | number;
 }) {
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
@@ -58,7 +60,7 @@ export function TodayCommentForm({
           subtitle=""
         />
         <SimpleCard height="small" content={'다른 사람의 모멘트는 로그인 후에 확인할 수 있어요!'} />
-        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} />
+        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} groupId={groupId} />
       </Card>
     );
   }
@@ -131,6 +133,7 @@ export function TodayCommentForm({
         <TodayCommentWriteContent
           momentId={momentData.id}
           isLoggedIn={isLoggedIn}
+          groupId={groupId}
           key={momentData.id}
         />
       </Card>
