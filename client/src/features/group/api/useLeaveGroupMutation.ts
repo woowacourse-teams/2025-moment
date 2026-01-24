@@ -4,11 +4,11 @@ import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
-export const useLeaveGroupMutation = (groupId: number | string) => {
+export const useLeaveGroupMutation = () => {
   const { showSuccess, showError } = useToast();
 
   return useMutation({
-    mutationFn: async (): Promise<GroupActionResponse> => {
+    mutationFn: async (groupId: number | string): Promise<GroupActionResponse> => {
       const response = await api.delete(`/groups/${groupId}/leave`);
       return response.data;
     },

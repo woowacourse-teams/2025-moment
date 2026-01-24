@@ -1,4 +1,4 @@
-import { LEVEL_MAP, navItems } from '@/app/layout/data/navItems';
+import { navItems } from '@/app/layout/data/navItems';
 import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { AuthButton } from '@/features/auth/ui/AuthButton';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
@@ -13,8 +13,6 @@ import { useToast } from '@/shared/hooks/useToast';
 import * as S from './Navbar.styles';
 import { ROUTES } from '@/app/routes/routes';
 import { track } from '@/shared/lib/ga/track';
-
-export type Level = 'METEOR' | 'ASTEROID' | 'COMET';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -84,13 +82,6 @@ export const Navbar = () => {
         {isProfileLoading && isLoggedIn ? (
           <S.LevelIconWrapper>
             <S.LoadingSkeleton />
-          </S.LevelIconWrapper>
-        ) : profile?.level ? (
-          <S.LevelIconWrapper>
-            <S.LevelIcon
-              src={LEVEL_MAP[profile?.level as keyof typeof LEVEL_MAP]}
-              alt="레벨 등급표"
-            />
           </S.LevelIconWrapper>
         ) : null}
         <AuthButton
