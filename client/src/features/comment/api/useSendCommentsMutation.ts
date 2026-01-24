@@ -2,8 +2,23 @@ import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
-import { SendCommentsData, SendCommentsResponse } from '../types/comments';
 import { track } from '@/shared/lib/ga/track';
+
+export interface SendCommentsData {
+  content: string;
+  momentId: number;
+  imageUrl?: string;
+  imageName?: string;
+}
+
+export interface SendCommentsResponse {
+  status: number;
+  data: {
+    commentId: number;
+    content: string;
+    createdAt: string;
+  };
+}
 
 const COMMENTS_REWARD_POINT = 2;
 

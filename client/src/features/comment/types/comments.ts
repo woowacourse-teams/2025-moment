@@ -28,33 +28,6 @@ export interface CommentItem {
   };
 }
 
-export interface SendCommentsData {
-  content: string;
-  momentId: number;
-  imageUrl?: string;
-  imageName?: string;
-}
-
-export interface SendCommentsResponse {
-  status: number;
-  data: {
-    commentId: number;
-    content: string;
-    createdAt: string;
-  };
-}
-
-export interface SendCommentsError {
-  code: string;
-  message: string;
-  status: number;
-}
-
-export interface GetCommentableMomentsResponse {
-  status: number;
-  data: GetCommentableMoments;
-}
-
 export interface GetCommentableMoments {
   id: number;
   nickname: string;
@@ -63,6 +36,7 @@ export interface GetCommentableMoments {
   imageUrl?: string | null;
   createdAt: string;
 }
+
 export interface GetComments {
   pageParam?: string | number | null;
 }

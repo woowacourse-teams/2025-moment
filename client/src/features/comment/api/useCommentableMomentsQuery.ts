@@ -1,9 +1,11 @@
 import { api } from '@/app/lib/api';
-import {
-  GetCommentableMoments,
-  GetCommentableMomentsResponse,
-} from '@/features/comment/types/comments';
+import { GetCommentableMoments } from '@/features/comment/types/comments';
 import { useQuery } from '@tanstack/react-query';
+
+export interface GetCommentableMomentsResponse {
+  status: number;
+  data: GetCommentableMoments;
+}
 
 export const useCommentableMomentsQuery = (
   groupId: number | string | undefined,

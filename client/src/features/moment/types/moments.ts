@@ -1,7 +1,3 @@
-export interface MomentsRequest {
-  content: string;
-}
-
 export interface MomentsResponse {
   status: number;
   data: {
@@ -39,13 +35,4 @@ export interface Comment {
   level: string;
   createdAt: string;
   imageUrl?: string | null;
-}
-
-export interface MatchMomentsResponse {
-  status: number;
-  data: {
-    id: number;
-    content: string;
-    createdAt: string;
-  };
 }
