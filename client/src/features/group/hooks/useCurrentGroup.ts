@@ -1,21 +1,15 @@
-import { useGroupContext } from '../context/GroupContext';
-import { Group } from '../types/group';
+import { useParams } from 'react-router';
 
 export function useCurrentGroup() {
-  const { currentGroup, setCurrentGroup, clearCurrentGroup } = useGroupContext();
-
-  const selectGroup = (group: Group) => {
-    setCurrentGroup(group);
-  };
+  const { groupId: groupIdParam } = useParams<{ groupId: string }>();
+  const currentGroupId = groupIdParam ? Number(groupIdParam) : null;
 
   const getCurrentGroupId = (): number | null => {
-    return currentGroup?.id ?? null;
+    return currentGroupId;
   };
 
   return {
-    currentGroup,
-    selectGroup,
-    clearCurrentGroup,
+    currentGroupId,
     getCurrentGroupId,
   };
 }
