@@ -79,4 +79,56 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Long> findMomentIdById(Long commentId);
 
     long countByMomentId(Long momentId);
+
+    // 그룹 내 나의 Comment 첫 페이지 조회 (member_id 기준)
+    @Query("""
+            SELECT c
+            FROM comments c
+            LEFT JOIN FETCH c.member
+            WHERE c.member.id = :memberId
+            ORDER BY c.id DESC
+            """)
+    List<Comment> findByMemberIdOrderByIdDesc(
+            @Param("memberId") Long memberId,
+            Pageable pageable);
+
+    // 그룹 내 나의 Comment 다음 페이지 조회 (커서 기반)
+    @Query("""
+            SELECT c
+            FROM comments c
+            LEFT JOIN FETCH c.member
+            WHERE c.member.id = :memberId AND c.id < :cursor
+            ORDER BY c.id DESC
+            """)
+    List<Comment> findByMemberIdAndIdLessThanOrderByIdDesc(
+            @Param("memberId") Long memberId,
+            @Param("cursor") Long cursor,
+            Pageable pageable);
+
+    // 그룹 내 읽지 않은 나의 Comment 첫 페이지 조회
+    @Query("""
+            SELECT c
+            FROM comments c
+            LEFT JOIN FETCH c.member
+            WHERE c.member.id = :memberId AND c.id IN :commentIds
+            ORDER BY c.id DESC
+            """)
+    List<Comment> findByMemberIdAndIdInOrderByIdDesc(
+            @Param("memberId") Long memberId,
+            @Param("commentIds") List<Long> commentIds,
+            Pageable pageable);
+
+    // 그룹 내 읽지 않은 나의 Comment 다음 페이지 조회 (커서 기반)
+    @Query("""
+            SELECT c
+            FROM comments c
+            LEFT JOIN FETCH c.member
+            WHERE c.member.id = :memberId AND c.id IN :commentIds AND c.id < :cursor
+            ORDER BY c.id DESC
+            """)
+    List<Comment> findByMemberIdAndIdInAndIdLessThanOrderByIdDesc(
+            @Param("memberId") Long memberId,
+            @Param("commentIds") List<Long> commentIds,
+            @Param("cursor") Long cursor,
+            Pageable pageable);
 }

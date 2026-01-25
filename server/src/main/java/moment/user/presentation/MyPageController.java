@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "MyPage API", description = "마이페이지 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/me")
+@RequestMapping("/api/v2/me")
 public class MyPageController {
 
     private final MyPageFacadeService myPageFacadeService;

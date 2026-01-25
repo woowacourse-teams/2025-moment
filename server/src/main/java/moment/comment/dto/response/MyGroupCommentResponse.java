@@ -6,37 +6,52 @@ import java.util.List;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.moment.dto.response.tobe.MomentComposition;
 
-@Schema(description = "나의 Comment 목록 조회 응답")
-public record MyCommentResponse(
+@Schema(description = "그룹 내 나의 Comment 단일 응답")
+public record MyGroupCommentResponse(
         @Schema(description = "등록된 Comment id", example = "1")
         Long id,
 
         @Schema(description = "등록된 Comment 내용", example = "정말 멋진 하루군요!")
         String content,
 
-        @Schema(description = "Comment 이미지 url", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
+        @Schema(description = "Comment 이미지 url", example = "https://example.com/image.jpg")
         String imageUrl,
 
         @Schema(description = "Comment 등록 시간", example = "2025-07-21T10:57:08.926954")
         LocalDateTime createdAt,
 
+        @Schema(description = "Comment 좋아요 수", example = "3")
+        long likeCount,
+
+        @Schema(description = "현재 사용자의 좋아요 여부", example = "false")
+        boolean hasLiked,
+
         @Schema(description = "Comment가 등록된 Moment")
-        MomentDetailResponse moment,
+        MyGroupCommentMomentResponse moment,
 
         @Schema(description = "내 코멘트 알림 정보")
         CommentNotificationResponse commentNotification
 ) {
-    public static MyCommentResponse of(CommentComposition commentComposition,
-                                       MomentComposition momentComposition,
-                                       List<Long> unreadNotificationIds) {
+    public static MyGroupCommentResponse of(
+            CommentComposition commentComposition,
+            MomentComposition momentComposition,
+            List<Long> unreadNotificationIds,
+            long commentLikeCount,
+            boolean commentHasLiked,
+            long momentLikeCount,
+            boolean momentHasLiked
+    ) {
+        MyGroupCommentMomentResponse momentDetail = momentComposition == null
+                ? null
+                : MyGroupCommentMomentResponse.from(momentComposition, momentLikeCount, momentHasLiked);
 
-        MomentDetailResponse momentDetail = momentComposition == null ? null : MomentDetailResponse.from(momentComposition);
-
-        return new MyCommentResponse(
+        return new MyGroupCommentResponse(
                 commentComposition.id(),
                 commentComposition.content(),
                 commentComposition.imageUrl(),
                 commentComposition.commentCreatedAt(),
+                commentLikeCount,
+                commentHasLiked,
                 momentDetail,
                 CommentNotificationResponse.from(unreadNotificationIds)
         );

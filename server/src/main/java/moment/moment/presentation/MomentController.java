@@ -7,20 +7,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.moment.dto.request.MomentCreateRequest;
-import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
-import moment.moment.dto.response.tobe.MyMomentPageResponse;
 import moment.moment.service.application.MomentApplicationService;
-import moment.moment.service.facade.CommentableMomentFacadeService;
 import moment.moment.service.facade.MomentCreateFacadeService;
-import moment.moment.service.facade.MyMomentPageFacadeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,17 +23,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Moment API", description = "모멘트 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/moments")
+@RequestMapping("/api/v2/moments")
 public class MomentController {
 
-    private final MyMomentPageFacadeService myMomentPageFacadeService;
-    private final CommentableMomentFacadeService commentableMomentFacadeService;
     private final MomentCreateFacadeService momentCreateFacadeService;
     private final MomentApplicationService momentApplicationService;
 
@@ -91,60 +83,6 @@ public class MomentController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "내 모멘트 조회", description = "사용자가 자신의 모멘트를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "내 모멘트 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    - [M-005] 유효하지 않은 페이지 사이즈입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/me")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyMoment(
-            @RequestParam(required = false) String nextCursor,
-            @RequestParam(defaultValue = "10") int limit,
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        MyMomentPageResponse response = myMomentPageFacadeService.getMyMomentsPage(nextCursor, limit,
-                authentication.id());
-        HttpStatus status = HttpStatus.OK;
-
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
-    @Operation(summary = "알림을 읽지 않은 내 모멘트 조회", description = "사용자가 알림을 읽지 않은 자신의 모멘트를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "내 모멘트 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    - [M-005] 유효하지 않은 페이지 사이즈입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/me/unread")
-    public ResponseEntity<SuccessResponse<MyMomentPageResponse>> readMyUnreadMoment(
-            @RequestParam(required = false) String nextCursor,
-            @RequestParam(defaultValue = "10") int limit,
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        MyMomentPageResponse response = myMomentPageFacadeService.getUnreadMyMomentsPage(nextCursor, limit,
-                authentication.id());
-        HttpStatus status = HttpStatus.OK;
-
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
     @Operation(summary = "기본 모멘트 작성 여부 확인", description = "유저가 오늘 기본 모멘트를 더 보낼 수 있는지 확인입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "기본 모멘트 작성 여부 조회 성공"),
@@ -188,29 +126,6 @@ public class MomentController {
         MomentCreationStatusResponse response = momentApplicationService.canCreateExtraMoment(authentication.id());
         HttpStatus status = HttpStatus.OK;
 
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
-    @Operation(summary = "코멘트를 달 수 있는 모멘트 조회", description = "사용자가 코멘트를 달 수 있는 모멘트를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "코멘트를 달 수 있는 모멘트 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/commentable")
-    public ResponseEntity<SuccessResponse<CommentableMomentResponse>> readCommentableMoment(
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        CommentableMomentResponse response = commentableMomentFacadeService.getCommentableMoment(authentication.id());
-
-        HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import moment.auth.application.TokenManager;
 import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
+import moment.comment.dto.response.MyGroupCommentFeedResponse;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
@@ -82,7 +83,8 @@ class GroupCommentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCommentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCommentResponse.class);
 
         // then
         assertAll(
@@ -113,7 +115,7 @@ class GroupCommentControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", GroupCommentResponse.class);
+            .getList("data", GroupCommentResponse.class);
 
         // then
         assertThat(response).hasSize(2);
@@ -144,7 +146,7 @@ class GroupCommentControllerTest {
             .then()
             .extract()
             .jsonPath()
-            .getList(".", GroupCommentResponse.class);
+            .getList("data", GroupCommentResponse.class);
 
         assertThat(comments).isEmpty();
     }
@@ -167,7 +169,8 @@ class GroupCommentControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(LikeToggleResponse.class);
+            .jsonPath()
+            .getObject("data", LikeToggleResponse.class);
 
         // then
         assertAll(
@@ -186,7 +189,8 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 
     private GroupMomentResponse 모멘트_작성(String token, Long groupId, String content) {
@@ -199,7 +203,8 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupMomentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupMomentResponse.class);
     }
 
     private GroupCommentResponse 코멘트_작성(String token, Long groupId, Long momentId, String content) {
@@ -212,6 +217,87 @@ class GroupCommentControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCommentResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCommentResponse.class);
+    }
+
+    @Test
+    void 그룹_내_나의_코멘트를_조회한다() {
+        // given
+        User user = UserFixture.createUser();
+        User savedUser = userRepository.save(user);
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
+        GroupMomentResponse moment = 모멘트_작성(token, group.groupId(), "모멘트 내용");
+        코멘트_작성(token, group.groupId(), moment.momentId(), "첫 번째 코멘트");
+        코멘트_작성(token, group.groupId(), moment.momentId(), "두 번째 코멘트");
+
+        // when
+        MyGroupCommentFeedResponse response = RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", token)
+            .when().get("/api/v2/groups/{groupId}/my-comments", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", MyGroupCommentFeedResponse.class);
+
+        // then
+        assertAll(
+            () -> assertThat(response.comments()).hasSize(2),
+            () -> assertThat(response.comments().get(0).moment()).isNotNull(),
+            () -> assertThat(response.comments().get(0).commentNotification()).isNotNull()
+        );
+    }
+
+    @Test
+    void 그룹_내_읽지_않은_나의_코멘트를_조회한다() {
+        // given
+        User user = UserFixture.createUser();
+        User savedUser = userRepository.save(user);
+        String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
+        GroupMomentResponse moment = 모멘트_작성(token, group.groupId(), "모멘트 내용");
+        코멘트_작성(token, group.groupId(), moment.momentId(), "코멘트 내용");
+        // 읽지 않은 알림이 없으므로 빈 응답 예상
+
+        // when
+        MyGroupCommentFeedResponse response = RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", token)
+            .when().get("/api/v2/groups/{groupId}/my-comments/unread", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", MyGroupCommentFeedResponse.class);
+
+        // then
+        assertThat(response.comments()).isEmpty();
+    }
+
+    @Test
+    void 그룹_멤버가_아니면_나의_코멘트_조회_시_예외가_발생한다() {
+        // given
+        User ownerUser = UserFixture.createUser();
+        User savedOwnerUser = userRepository.save(ownerUser);
+        String ownerToken = tokenManager.createAccessToken(savedOwnerUser.getId(), savedOwnerUser.getEmail());
+
+        GroupCreateResponse group = 그룹_생성(ownerToken, "테스트 그룹", "설명", "그룹장닉네임");
+
+        User nonMemberUser = UserFixture.createUser();
+        User savedNonMemberUser = userRepository.save(nonMemberUser);
+        String nonMemberToken = tokenManager.createAccessToken(savedNonMemberUser.getId(), savedNonMemberUser.getEmail());
+
+        // when & then
+        RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", nonMemberToken)
+            .when().get("/api/v2/groups/{groupId}/my-comments", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.FORBIDDEN.value());
     }
 }

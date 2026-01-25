@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.group.dto.request.GroupCreateRequest;
 import moment.group.dto.request.GroupUpdateRequest;
 import moment.group.dto.response.GroupCreateResponse;
@@ -50,11 +51,12 @@ public class GroupController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping
-    public ResponseEntity<GroupCreateResponse> createGroup(
+    public ResponseEntity<SuccessResponse<GroupCreateResponse>> createGroup(
             @AuthenticationPrincipal Authentication authentication,
             @Valid @RequestBody GroupCreateRequest request) {
         GroupCreateResponse response = groupApplicationService.createGroup(authentication.id(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        HttpStatus status = HttpStatus.CREATED;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "내 그룹 목록 조회", description = "내가 속한 그룹 목록을 조회합니다.")
@@ -70,10 +72,11 @@ public class GroupController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping
-    public ResponseEntity<List<MyGroupResponse>> getMyGroups(
+    public ResponseEntity<SuccessResponse<List<MyGroupResponse>>> getMyGroups(
             @AuthenticationPrincipal Authentication authentication) {
         List<MyGroupResponse> response = groupApplicationService.getMyGroups(authentication.id());
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "그룹 상세 조회", description = "그룹의 상세 정보를 조회합니다.")
@@ -93,11 +96,12 @@ public class GroupController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{groupId}")
-    public ResponseEntity<GroupDetailResponse> getGroupDetail(
+    public ResponseEntity<SuccessResponse<GroupDetailResponse>> getGroupDetail(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         GroupDetailResponse response = groupApplicationService.getGroupDetail(groupId, authentication.id());
-        return ResponseEntity.ok(response);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     @Operation(summary = "그룹 정보 수정", description = "그룹의 정보를 수정합니다. 그룹 소유자만 가능합니다.")
@@ -117,12 +121,13 @@ public class GroupController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/{groupId}")
-    public ResponseEntity<Void> updateGroup(
+    public ResponseEntity<SuccessResponse<Void>> updateGroup(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @Valid @RequestBody GroupUpdateRequest request) {
         groupApplicationService.updateGroup(groupId, authentication.id(), request.name(), request.description());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "그룹 삭제", description = "그룹을 삭제합니다. 그룹 소유자만 가능하며, 멤버가 있으면 삭제할 수 없습니다.")
@@ -146,10 +151,11 @@ public class GroupController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<Void> deleteGroup(
+    public ResponseEntity<SuccessResponse<Void>> deleteGroup(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId) {
         groupApplicationService.deleteGroup(groupId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 }

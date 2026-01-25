@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
 import moment.group.service.application.GroupMemberApplicationService;
 import moment.user.dto.request.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,12 +50,13 @@ public class GroupMemberApprovalController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<Void> kickMember(
+    public ResponseEntity<SuccessResponse<Void>> kickMember(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long memberId) {
         memberApplicationService.kickMember(groupId, memberId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "멤버 승인", description = "대기 중인 멤버의 가입을 승인합니다. 그룹 소유자만 가능합니다.")
@@ -78,12 +81,13 @@ public class GroupMemberApprovalController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/members/{memberId}/approve")
-    public ResponseEntity<Void> approveMember(
+    public ResponseEntity<SuccessResponse<Void>> approveMember(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long memberId) {
         memberApplicationService.approveMember(groupId, memberId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "멤버 거절", description = "대기 중인 멤버의 가입을 거절합니다. 그룹 소유자만 가능합니다.")
@@ -108,12 +112,13 @@ public class GroupMemberApprovalController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/members/{memberId}/reject")
-    public ResponseEntity<Void> rejectMember(
+    public ResponseEntity<SuccessResponse<Void>> rejectMember(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long memberId) {
         memberApplicationService.rejectMember(groupId, memberId, authentication.id());
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
     @Operation(summary = "소유권 이전", description = "그룹 소유권을 다른 멤버에게 이전합니다. 그룹 소유자만 가능합니다.")
@@ -138,11 +143,12 @@ public class GroupMemberApprovalController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/transfer/{memberId}")
-    public ResponseEntity<Void> transferOwnership(
+    public ResponseEntity<SuccessResponse<Void>> transferOwnership(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @PathVariable Long memberId) {
         memberApplicationService.transferOwnership(groupId, authentication.id(), memberId);
-        return ResponseEntity.noContent().build();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 }

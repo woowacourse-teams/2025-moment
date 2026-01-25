@@ -77,7 +77,8 @@ class GroupControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
 
         // then
         assertAll(
@@ -108,7 +109,7 @@ class GroupControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", MyGroupResponse.class);
+            .getList("data", MyGroupResponse.class);
 
         // then
         assertThat(response).hasSize(2);
@@ -130,7 +131,8 @@ class GroupControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(GroupDetailResponse.class);
+            .jsonPath()
+            .getObject("data", GroupDetailResponse.class);
 
         // then
         assertAll(
@@ -169,7 +171,8 @@ class GroupControllerTest {
             .when().get("/api/v2/groups/{groupId}", createdGroup.groupId())
             .then()
             .extract()
-            .as(GroupDetailResponse.class);
+            .jsonPath()
+            .getObject("data", GroupDetailResponse.class);
 
         assertAll(
             () -> assertThat(detail.name()).isEqualTo("변경된 이름"),
@@ -201,7 +204,7 @@ class GroupControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getList(".", MyGroupResponse.class);
+            .getList("data", MyGroupResponse.class);
 
         assertThat(myGroups).isEmpty();
     }
@@ -216,6 +219,7 @@ class GroupControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 }

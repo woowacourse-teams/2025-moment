@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import moment.comment.service.comment.CommentService;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
-import moment.comment.service.comment.CommentService;
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
 import moment.like.service.MomentLikeService;
+import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupFeedResponse;
@@ -137,16 +137,11 @@ public class MomentApplicationService {
         return MomentCreationStatusResponse.createAllowedStatus();
     }
 
-    public List<Long> getCommentableMoment(Long id) {
-        User user = userService.getUserBy(id);
-
+    public List<Long> getCommentableMomentInGroup(Long groupId, Long userId) {
+        User user = userService.getUserBy(userId);
         List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
-
-        List<Moment> commentableMoments = momentService.getCommentableMoments(user, reportedMomentIds);
-
-        return commentableMoments.stream()
-                .map(Moment::getId)
-                .toList();
+        List<Moment> commentableMoments = momentService.getCommentableMomentsInGroup(groupId, user, reportedMomentIds);
+        return commentableMoments.stream().map(Moment::getId).toList();
     }
 
     public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds) {
@@ -187,13 +182,13 @@ public class MomentApplicationService {
         List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE);
 
         List<GroupMomentResponse> responses = moments.stream()
-            .map(moment -> {
-                long likeCount = momentLikeService.getCount(moment.getId());
-                boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
-                long commentCount = commentService.countByMomentId(moment.getId());
-                return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
-            })
-            .toList();
+                .map(moment -> {
+                    long likeCount = momentLikeService.getCount(moment.getId());
+                    boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                    long commentCount = commentService.countByMomentId(moment.getId());
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                })
+                .toList();
 
         Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
         return GroupFeedResponse.of(responses, nextCursor);
@@ -204,13 +199,13 @@ public class MomentApplicationService {
         List<Moment> moments = momentService.getMyMomentsInGroup(groupId, member.getId(), cursor, DEFAULT_PAGE_SIZE);
 
         List<GroupMomentResponse> responses = moments.stream()
-            .map(moment -> {
-                long likeCount = momentLikeService.getCount(moment.getId());
-                boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
-                long commentCount = commentService.countByMomentId(moment.getId());
-                return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
-            })
-            .toList();
+                .map(moment -> {
+                    long likeCount = momentLikeService.getCount(moment.getId());
+                    boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                    long commentCount = commentService.countByMomentId(moment.getId());
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                })
+                .toList();
 
         Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
         return GroupFeedResponse.of(responses, nextCursor);

@@ -75,7 +75,8 @@ class GroupInviteControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .asString();
+            .jsonPath()
+            .getString("data");
 
         // then
         assertThat(inviteCode).isNotBlank();
@@ -97,7 +98,8 @@ class GroupInviteControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(InviteInfoResponse.class);
+            .jsonPath()
+            .getObject("data", InviteInfoResponse.class);
 
         // then
         assertAll(
@@ -132,7 +134,8 @@ class GroupInviteControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
-            .as(GroupJoinResponse.class);
+            .jsonPath()
+            .getObject("data", GroupJoinResponse.class);
 
         // then
         assertAll(
@@ -153,6 +156,7 @@ class GroupInviteControllerTest {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .extract()
-            .as(GroupCreateResponse.class);
+            .jsonPath()
+            .getObject("data", GroupCreateResponse.class);
     }
 }

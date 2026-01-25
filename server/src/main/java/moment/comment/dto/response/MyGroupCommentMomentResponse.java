@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import moment.moment.dto.response.tobe.MomentComposition;
 
-@Schema(description = "Comment가 등록된 Moment 상세 내용")
-public record MomentDetailResponse(
+@Schema(description = "그룹 내 나의 Comment가 등록된 Moment 상세 내용")
+public record MyGroupCommentMomentResponse(
         @Schema(description = "Moment 아이디", example = "1")
         Long id,
 
@@ -15,20 +15,31 @@ public record MomentDetailResponse(
         @Schema(description = "Moment 작성자 닉네임", example = "따뜻한 감성의 시리우스")
         String nickName,
 
-        @Schema(description = "Moment 이미지 url", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
+        @Schema(description = "Moment 이미지 url", example = "https://example.com/image.jpg")
         String imageUrl,
 
         @Schema(description = "Moment 등록 시간", example = "2025-07-21T10:57:08.926954")
-        LocalDateTime createdAt
-) {
+        LocalDateTime createdAt,
 
-    public static MomentDetailResponse from(MomentComposition momentComposition) {
-        return new MomentDetailResponse(
+        @Schema(description = "Moment 좋아요 수", example = "5")
+        long likeCount,
+
+        @Schema(description = "현재 사용자의 좋아요 여부", example = "true")
+        boolean hasLiked
+) {
+    public static MyGroupCommentMomentResponse from(
+            MomentComposition momentComposition,
+            long likeCount,
+            boolean hasLiked
+    ) {
+        return new MyGroupCommentMomentResponse(
                 momentComposition.id(),
                 momentComposition.content(),
                 momentComposition.nickname(),
                 momentComposition.imageUrl(),
-                momentComposition.momentCreatedAt()
+                momentComposition.momentCreatedAt(),
+                likeCount,
+                hasLiked
         );
     }
 }

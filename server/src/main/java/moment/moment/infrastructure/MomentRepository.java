@@ -131,4 +131,64 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
         @Param("memberId") Long memberId,
         @Param("cursor") Long cursor,
         Pageable pageable);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+    """)
+    List<Long> findMomentIdsInGroup(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+            AND m.id NOT IN :reportedMoments
+    """)
+    List<Long> findMomentIdsInGroupExcludingReported(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo,
+            @Param("reportedMoments") List<Long> reportedMoments);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+            AND m.member.id = :memberId
+            AND m.id IN :momentIds
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdIn(
+            @Param("groupId") Long groupId,
+            @Param("memberId") Long memberId,
+            @Param("momentIds") List<Long> momentIds,
+            Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+            AND m.member.id = :memberId
+            AND m.id IN :momentIds
+            AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdInAndIdLessThan(
+            @Param("groupId") Long groupId,
+            @Param("memberId") Long memberId,
+            @Param("momentIds") List<Long> momentIds,
+            @Param("cursor") Long cursor,
+            Pageable pageable);
 }
