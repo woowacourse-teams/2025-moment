@@ -152,6 +152,47 @@ export const ComplaintButton = styled.button`
   `}
 `;
 
+export const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const DeleteButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors['red-500']};
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const IconButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    transform: scale(1.1);
+  }
+`;
+
 export const CommentNavigationButton = styled.button<{ position: 'left' | 'right' }>`
   display: flex;
   align-items: center;

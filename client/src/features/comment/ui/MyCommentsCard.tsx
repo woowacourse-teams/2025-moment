@@ -9,8 +9,20 @@ import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { Button } from '@/shared/design-system/button';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
 import { useMyCommentsCard } from '../hooks/useMyCommentsCard';
+import { useDeleteCommentMutation } from '../api/useDeleteCommentMutation';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
+import { Trash2 } from 'lucide-react';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
+  const { currentGroupId } = useCurrentGroup();
+  const deleteMutation = useDeleteCommentMutation(currentGroupId || '');
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('정말로 이 코멘트를 삭제하시겠습니까?')) {
+      deleteMutation.mutate(myComment.id);
+    }
+  };
   const { handleCommentOpen, fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } =
     useMyCommentsCard(myComment);
 
@@ -26,7 +38,12 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
             title={
               <S.TitleWrapper>
                 <WriterInfo writer={myComment.moment.memberNickname || myComment.moment.nickName} />
-                <WriteTime date={myComment.createdAt} />
+                <S.ActionWrapper>
+                  <WriteTime date={myComment.createdAt} />
+                  <S.DeleteButton onClick={handleDelete} aria-label="코멘트 삭제">
+                    <Trash2 size={24} color={theme.colors['red-500']} />
+                  </S.DeleteButton>
+                </S.ActionWrapper>
               </S.TitleWrapper>
             }
             subtitle={''}

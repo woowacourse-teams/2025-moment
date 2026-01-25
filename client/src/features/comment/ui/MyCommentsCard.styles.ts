@@ -42,6 +42,28 @@ export const TitleWrapper = styled.div`
   gap: 8px;
 `;
 
+export const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const DeleteButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors['red-500']};
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
 export const Title = styled.span`
   font-size: ${({ theme }) => theme.typography.fontSize.title.small};
   font-weight: ${({ theme }) => theme.typography.fontWeight.large};

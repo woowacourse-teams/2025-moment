@@ -8,6 +8,11 @@ import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { MyMomentsItem } from '../types/moments';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
 import { useMyMomentsCard } from '../hook/useMyMomentsCard';
+import { useDeleteMomentMutation } from '../api/useDeleteMomentMutation';
+import { useCommentLikeMutation } from '@/features/comment/api/useCommentLikeMutation';
+import { useDeleteCommentMutation } from '@/features/comment/api/useDeleteCommentMutation';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
+import { Trash2, Heart } from 'lucide-react';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const {
@@ -26,6 +31,28 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     closeFullImage,
     ImageOverlayPortal,
   } = useMyMomentsCard(myMoment);
+
+  const { currentGroupId } = useCurrentGroup();
+  const deleteMomentMutation = useDeleteMomentMutation(currentGroupId || '');
+  const likeCommentMutation = useCommentLikeMutation(currentGroupId || '');
+  const deleteCommentMutation = useDeleteCommentMutation(currentGroupId || '');
+
+  const handleDeleteMoment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('정말로 이 모멘트를 삭제하시겠습니까?')) {
+      deleteMomentMutation.mutate(myMoment.momentId || myMoment.id);
+    }
+  };
+
+  const handleLikeComment = (commentId: number) => {
+    likeCommentMutation.mutate(commentId);
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    if (window.confirm('정말로 이 코멘트를 삭제하시겠습니까?')) {
+      deleteCommentMutation.mutate(commentId);
+    }
+  };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
 
@@ -55,7 +82,12 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
             <Mail size={16} aria-hidden="true" />
             <span aria-hidden="true">{sortedComments?.length}</span>
           </S.CommentCountWrapper>
-          <WriteTime date={myMoment.createdAt} />
+          <S.ActionWrapper>
+            <WriteTime date={myMoment.createdAt} />
+            <S.DeleteButton onClick={handleDeleteMoment} aria-label="모멘트 삭제">
+              <Trash2 size={24} color={theme.colors['red-500']} />
+            </S.DeleteButton>
+          </S.ActionWrapper>
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsBottomWrapper>
@@ -97,12 +129,31 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />
-                        <S.ComplaintButton
-                          onClick={handleComplaintOpen}
-                          aria-label="코멘트 신고하기"
-                        >
-                          <Siren size={28} color={theme.colors['red-500']} />
-                        </S.ComplaintButton>
+                        <S.ActionWrapper>
+                          <S.IconButton
+                            onClick={() => handleLikeComment(currentComment.id)}
+                            aria-label="코멘트 좋아요"
+                          >
+                            <Heart
+                              size={28}
+                              color={theme.colors['red-500']}
+                              fill={currentComment.hasLiked ? theme.colors['red-500'] : 'none'}
+                            />
+                          </S.IconButton>
+                          <S.IconButton
+                            onClick={() => handleDeleteComment(currentComment.id)}
+                            className="danger"
+                            aria-label="코멘트 삭제"
+                          >
+                            <Trash2 size={28} color={theme.colors['red-500']} />
+                          </S.IconButton>
+                          <S.ComplaintButton
+                            onClick={handleComplaintOpen}
+                            aria-label="코멘트 신고하기"
+                          >
+                            <Siren size={28} color={theme.colors['red-500']} />
+                          </S.ComplaintButton>
+                        </S.ActionWrapper>
                       </S.TitleWrapper>
                     </S.MyMomentsModalHeader>
                     <S.CommentContainer>

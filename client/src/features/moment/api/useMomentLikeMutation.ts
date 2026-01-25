@@ -8,6 +8,8 @@ export const useMomentLikeMutation = (groupId: number | string) => {
     onSuccess: (_data, momentId) => {
       queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
       queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moment', momentId] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
+      queryClient.invalidateQueries({ queryKey: ['commentableMoments', groupId] });
     },
   });
 };

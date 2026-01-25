@@ -34,6 +34,8 @@ export interface Comment {
   memberNickname: string; // V2
   createdAt: string;
   imageUrl?: string | null;
+  likeCount?: number;
+  hasLiked?: boolean;
 }
 
 export type FilterType = 'all' | 'unread';

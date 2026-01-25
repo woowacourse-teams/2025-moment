@@ -39,6 +39,27 @@ export const ComplaintButton = styled.button`
   `}
 `;
 
+export const LikeButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  ${({ theme }) => css`
+    color: ${theme.colors['red-500']};
+    &:hover {
+      background-color: ${theme.colors['red-500']}1A;
+    }
+  `}
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(1.1);
+  }
+`;
+
 export const RefreshButton = styled.button`
   display: flex;
   align-items: center;

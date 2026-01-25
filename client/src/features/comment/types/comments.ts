@@ -33,6 +33,8 @@ export interface GetCommentableMoments {
   content: string;
   imageUrl?: string | null;
   createdAt: string;
+  likeCount?: number;
+  hasLiked?: boolean;
 }
 
 export interface GetComments {

@@ -11,6 +11,8 @@ import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { GetCommentableMoments } from '../types/comments';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
 import { useTodayCommentForm } from '../hooks/useTodayCommentForm';
+import { useMomentLikeMutation } from '@/features/moment/api/useMomentLikeMutation';
+import { Heart } from 'lucide-react';
 
 export function TodayCommentForm({
   momentData,
@@ -39,6 +41,14 @@ export function TodayCommentForm({
     handleComplaintSubmit,
     isComplaintOpen,
   } = useTodayCommentForm({ momentData });
+
+  const momentLikeMutation = useMomentLikeMutation(groupId || '');
+
+  const handleLike = () => {
+    if (momentData) {
+      momentLikeMutation.mutate(momentData.id);
+    }
+  };
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -101,6 +111,13 @@ export function TodayCommentForm({
                 <S.ComplaintButton onClick={handleComplaintOpen} aria-label="모멘트 신고">
                   <Siren size={28} color={theme.colors['red-500']} />
                 </S.ComplaintButton>
+                <S.LikeButton onClick={handleLike} aria-label="모멘트 좋아요">
+                  <Heart
+                    size={28}
+                    color={theme.colors['red-500']}
+                    fill={momentData.hasLiked ? theme.colors['red-500'] : 'none'}
+                  />
+                </S.LikeButton>
                 <S.RefreshButton onClick={() => refetch()} aria-label="다른 모멘트 보기">
                   <RotateCcw size={28} />
                 </S.RefreshButton>

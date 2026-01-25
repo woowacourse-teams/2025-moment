@@ -55,7 +55,7 @@ export const MyMomentsListWithSuspense = ({
       {hasMoments ? (
         <>
           {momentItems.map((myMoment: MyMomentsItem) => (
-            <MyMomentsCard key={myMoment.id} myMoment={myMoment} />
+            <MyMomentsCard key={myMoment.momentId || myMoment.id} myMoment={myMoment} />
           ))}
 
           <div ref={observerRef} style={{ height: '1px' }} />

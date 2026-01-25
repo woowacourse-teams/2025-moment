@@ -7,6 +7,7 @@ export const useCommentLikeMutation = (groupId: number | string) => {
     mutationFn: (commentId: number) => toggleCommentLike(groupId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['group', groupId, 'comments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
     },
   });
 };
