@@ -5,7 +5,6 @@ import { Button } from '@/shared/design-system/button/Button';
 import { Input } from '@/shared/design-system/input/Input';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import * as S from './GroupCreateForm.styles'; // Reuse styles
-import styled from '@emotion/styled';
 
 interface EditGroupModalProps {
   group: Group;

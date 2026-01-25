@@ -9,8 +9,6 @@ import { FilterType } from '@/features/comment/types/comments';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
 import { ErrorBoundary } from '@/shared/ui/errorBoundary';
 
-import { useParams } from 'react-router';
-
 export default function MyCommentCollectionPage() {
   const { currentGroupId: groupId } = useCurrentGroup();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');

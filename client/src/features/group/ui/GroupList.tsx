@@ -1,8 +1,6 @@
 import { useGroupsQuery } from '../api/useGroupsQuery';
-import { useCurrentGroup } from '../hooks/useCurrentGroup';
 import { useNavigate } from 'react-router';
 import { GroupCard } from './GroupCard';
-import { Button } from '@/shared/design-system/button/Button';
 import * as S from './GroupList.styles';
 
 export function GroupList() {

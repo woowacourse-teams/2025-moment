@@ -4,8 +4,6 @@ import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
 
-const MOMENTS_REWARD_POINT = 5;
-
 interface SendMomentsData {
   content: string;
   imageUrl?: string;
@@ -13,7 +11,7 @@ interface SendMomentsData {
 }
 
 export const useMomentsMutation = (groupId: number | string) => {
-  const { showSuccess, showError } = useToast();
+  const { showError } = useToast();
 
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),

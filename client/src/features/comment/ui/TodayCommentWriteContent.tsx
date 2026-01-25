@@ -8,7 +8,6 @@ import * as S from '../../moment/ui/TodayContent.styles';
 import { useSendComments } from '../hooks/useSendComments';
 import { Card } from '@/shared/design-system/card/Card';
 import { TextArea } from '@/shared/design-system/textArea';
-import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
 export const TodayCommentWriteContent = ({
   isLoggedIn,

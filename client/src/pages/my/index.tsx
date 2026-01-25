@@ -8,10 +8,8 @@ import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { MyGroupList } from '@/features/group/ui/MyGroupList';
-import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import * as S from './index.styles';
-import { NotFound } from '@/shared/ui/notFound/NotFound';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -26,7 +24,6 @@ export default function MyPage() {
     handleOpen: handleOpenNicknameModal,
     handleClose: handleCloseNicknameModal,
   } = useModal();
-  const [currentPage, setCurrentPage] = useState(0);
   const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
   const showNotificationSettings = isDevice() || isPWA();

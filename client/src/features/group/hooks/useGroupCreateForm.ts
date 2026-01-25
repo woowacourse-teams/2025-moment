@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useCreateGroupMutation } from '../api/useCreateGroupMutation';
 import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { useGroupsQuery } from '../api/useGroupsQuery';
-import { useCreateInviteMutation } from '../api/useCreateInviteMutation';
 import { api } from '@/app/lib/api';
 
 const MAX_NAME_LENGTH = 50;

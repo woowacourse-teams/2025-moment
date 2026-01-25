@@ -1,13 +1,10 @@
 import { useModal } from '@/shared/design-system/modal';
 import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
-import { GetCommentableMoments } from '../types/comments';
 
-interface UseTodayCommentFormProps {
-  momentData?: GetCommentableMoments;
-}
+interface UseTodayCommentFormProps {}
 
-export const useTodayCommentForm = ({ momentData }: UseTodayCommentFormProps) => {
+export const useTodayCommentForm = ({}: UseTodayCommentFormProps) => {
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
   const {

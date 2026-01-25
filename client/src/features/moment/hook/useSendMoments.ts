@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useMomentsMutation } from '../api/useMomentsMutation';
 import { track } from '@/shared/lib/ga/track';
 import { useEffect } from 'react';
-import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 
 export const useSendMoments = (groupId: string | undefined) => {
   const [content, setContent] = useState('');
