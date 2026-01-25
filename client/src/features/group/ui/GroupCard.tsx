@@ -59,7 +59,13 @@ export function GroupCard({
   const showMenu = (isOwner && (onEdit || onDelete)) || (!isOwner && onLeave);
 
   return (
-    <S.CardContainer onClick={onClick} role="button" tabIndex={0} aria-label={`${group.name} 그룹`}>
+    <S.CardContainer
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`${group.name} 그룹`}
+      $isMenuOpen={isMenuOpen}
+    >
       <S.CardHeader>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
           <S.GroupName>{group.name}</S.GroupName>

@@ -32,7 +32,6 @@ export default function HomePage() {
 
   const { data: groupsResponse, refetch: refetchGroups } = useGroupsQuery({ enabled: isLoggedIn });
 
-  // Modal State
   const [modalType, setModalType] = useState<'none' | 'create' | 'join' | 'invite'>('none');
   const [createdGroupInfo, setCreatedGroupInfo] = useState<{
     groupId: number;
@@ -54,7 +53,6 @@ export default function HomePage() {
   const handleClick = () => {
     openNoti();
     track('click_cta', { target: 'today_moment', cta_type: 'primary' });
-    // Navigate to Login if not logged in, otherwise logic handles itself
     navigate(ROUTES.LOGIN);
   };
 
@@ -176,7 +174,6 @@ export default function HomePage() {
         ))}
       </S.HomePageWrapper>
 
-      {/* Modals */}
       <Modal
         size="small"
         isOpen={isNotiOpen}

@@ -6,7 +6,7 @@ import { ROUTES } from '@/app/routes/routes';
 import * as S from './MyGroupList.styles';
 import { useDeleteGroupMutation } from '../api/useDeleteGroupMutation';
 import { useLeaveGroupMutation } from '../api/useLeaveGroupMutation';
-import { useToast } from '@/shared/hooks/useToast';
+
 import { useState } from 'react';
 import { Group } from '../types/group';
 import { EditGroupModal } from './EditGroupModal';
@@ -23,7 +23,6 @@ export const MyGroupList = () => {
   const navigate = useNavigate();
   const groups = groupsData?.data || [];
 
-  const { showSuccess, showError } = useToast();
   const deleteGroupMutation = useDeleteGroupMutation();
   const leaveGroupMutation = useLeaveGroupMutation();
 

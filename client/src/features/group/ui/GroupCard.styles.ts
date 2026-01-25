@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const CardContainer = styled.div`
+export const CardContainer = styled.div<{ $isMenuOpen?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -10,11 +10,14 @@ export const CardContainer = styled.div`
   background: ${({ theme }) => theme.colors['slate-800']};
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: ${({ $isMenuOpen }) => ($isMenuOpen ? 5 : 1)};
 
   &:hover {
     border-color: ${({ theme }) => theme.colors['yellow-500']};
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 2;
   }
 `;
 
@@ -49,7 +52,7 @@ export const MenuDropdown = styled.div`
   border-radius: 8px;
   padding: 4px;
   min-width: 120px;
-  z-index: 10;
+  z-index: 100;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 `;
 
