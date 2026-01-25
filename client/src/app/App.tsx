@@ -14,7 +14,7 @@ const AppContent = () => {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <RouterProvider router={router} />
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+      {/* {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />} */}
     </ThemeProvider>
   );
 };
