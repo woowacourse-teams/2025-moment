@@ -199,11 +199,18 @@ const globalStyles = css`
     margin: 0;
   }
 
+  input,
+  textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
   button {
     overflow: visible;
     background: none;
     border: none;
     cursor: pointer;
+    padding: 0; /* Added padding: 0 to button */
   }
 
   button,
