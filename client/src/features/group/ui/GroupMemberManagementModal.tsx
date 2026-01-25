@@ -85,7 +85,7 @@ export const GroupMemberManagementModal = ({
               <EmptyText>멤버가 없습니다.</EmptyText>
             ) : (
               members.map(member => {
-                const memberId = member.id || (member as any).memberId;
+                const memberId = member.id;
                 return (
                   <MemberItem key={memberId}>
                     <MemberInfo>
@@ -125,7 +125,7 @@ export const GroupMemberManagementModal = ({
             <EmptyText>대기 중인 회원이 없습니다.</EmptyText>
           ) : (
             pending.map(applicant => {
-              const applicantId = applicant.id || (applicant as any).memberId;
+              const applicantId = applicant.id;
               return (
                 <MemberItem key={applicantId}>
                   <MemberInfo>
