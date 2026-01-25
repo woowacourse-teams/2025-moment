@@ -2,8 +2,9 @@ import { useReadNotifications } from '@/features/notification/hooks/useReadNotif
 import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { CommentItem } from '../types/comments';
 
-export const useMyCommentsCard = (myComment: CommentItem) => {
-  const { handleReadNotifications, isLoading: isReadingNotification } = useReadNotifications();
+export const useMyCommentsCard = (myComment: CommentItem, groupId?: number | string) => {
+  const { handleReadNotifications, isLoading: isReadingNotification } =
+    useReadNotifications(groupId);
   const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
 
   const handleCommentOpen = () => {

@@ -60,6 +60,12 @@ export const LikeButton = styled.button`
   }
 `;
 
+export const LikeCount = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors['red-500']};
+`;
+
 export const RefreshButton = styled.button`
   display: flex;
   align-items: center;

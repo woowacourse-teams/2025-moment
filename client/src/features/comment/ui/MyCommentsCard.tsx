@@ -11,11 +11,15 @@ import { convertToWebp } from '@/shared/utils/convertToWebp';
 import { useMyCommentsCard } from '../hooks/useMyCommentsCard';
 import { useDeleteCommentMutation } from '../api/useDeleteCommentMutation';
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Heart } from 'lucide-react';
+import { useMomentLikeMutation } from '@/features/moment/api/useMomentLikeMutation';
+import { useCommentLikeMutation } from '../api/useCommentLikeMutation';
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { currentGroupId } = useCurrentGroup();
   const deleteMutation = useDeleteCommentMutation(currentGroupId || '');
+  const momentLikeMutation = useMomentLikeMutation(currentGroupId || '');
+  const commentLikeMutation = useCommentLikeMutation(currentGroupId || '');
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -23,8 +27,20 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
       deleteMutation.mutate(myComment.id);
     }
   };
+
+  const handleLikeMoment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (myComment.moment) {
+      momentLikeMutation.mutate(myComment.moment.id);
+    }
+  };
+
+  const handleLikeComment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    commentLikeMutation.mutate(myComment.id);
+  };
   const { handleCommentOpen, fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } =
-    useMyCommentsCard(myComment);
+    useMyCommentsCard(myComment, currentGroupId || '');
 
   return (
     <>
@@ -56,6 +72,16 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                 <S.MyMomentContent aria-label={`모멘트 내용: ${myComment.moment.content}`}>
                   {myComment.moment.content}
                 </S.MyMomentContent>
+                <S.ActionWrapper>
+                  <S.LikeButton onClick={handleLikeMoment} aria-label="모멘트 좋아요">
+                    <Heart
+                      size={20}
+                      color={theme.colors['red-500']}
+                      fill={myComment.moment.hasLiked ? theme.colors['red-500'] : 'none'}
+                    />
+                  </S.LikeButton>
+                  <S.LikeCount>{myComment.moment.likeCount || 0}</S.LikeCount>
+                </S.ActionWrapper>
                 {myComment.moment?.imageUrl && (
                   <S.CommentImageContainer>
                     <S.CommentImage
@@ -76,6 +102,16 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
             <S.TitleContainer>
               <Send size={20} color={theme.colors['yellow-500']} />
               <S.SubTitle>보낸 코멘트</S.SubTitle>
+              <S.ActionWrapper>
+                <S.LikeButton onClick={handleLikeComment} aria-label="코멘트 좋아요">
+                  <Heart
+                    size={20}
+                    color={theme.colors['red-500']}
+                    fill={myComment.hasLiked ? theme.colors['red-500'] : 'none'}
+                  />
+                </S.LikeButton>
+                <S.LikeCount>{myComment.likeCount || 0}</S.LikeCount>
+              </S.ActionWrapper>
             </S.TitleContainer>
             <SimpleCard
               height="small"

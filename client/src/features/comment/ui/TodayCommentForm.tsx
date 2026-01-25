@@ -117,6 +117,7 @@ export function TodayCommentForm({
                     color={theme.colors['red-500']}
                     fill={momentData.hasLiked ? theme.colors['red-500'] : 'none'}
                   />
+                  <S.LikeCount>{momentData.likeCount || 0}</S.LikeCount>
                 </S.LikeButton>
                 <S.RefreshButton onClick={() => refetch()} aria-label="다른 모멘트 보기">
                   <RotateCcw size={28} />

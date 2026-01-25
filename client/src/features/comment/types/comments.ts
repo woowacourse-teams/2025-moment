@@ -13,6 +13,8 @@ export interface CommentItem {
   content: string;
   createdAt: string;
   imageUrl?: string | null;
+  likeCount: number;
+  hasLiked: boolean;
   moment: {
     content: string;
     createdAt: string;
@@ -20,6 +22,8 @@ export interface CommentItem {
     nickName: string;
     memberNickname?: string;
     imageUrl?: string | null;
+    likeCount: number;
+    hasLiked: boolean;
   } | null;
   commentNotification: {
     isRead: boolean;

@@ -9,8 +9,9 @@ export const useDeleteMomentMutation = (groupId: number | string) => {
   return useMutation({
     mutationFn: (momentId: number) => deleteMoment(groupId, momentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
+      const numericGroupId = Number(groupId);
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
       showSuccess('모멘트가 삭제되었습니다.');
     },
     onError: () => {

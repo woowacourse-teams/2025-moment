@@ -2,7 +2,7 @@ import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const useReadAllNotificationsMutation = () => {
+export const useReadAllNotificationsMutation = (groupId?: number | string) => {
   const queryClient = useQueryClient();
   const { showError } = useToast();
 
@@ -10,9 +10,12 @@ export const useReadAllNotificationsMutation = () => {
     mutationFn: patchReadAllNotifications,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      queryClient.invalidateQueries({ queryKey: ['comments', 'unread'] });
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
-      queryClient.invalidateQueries({ queryKey: ['moments'] });
+      if (groupId) {
+        const numericGroupId = Number(groupId);
+        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
+        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
+        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
+      }
     },
     onError: error => {
       console.error('알림 읽음 처리 실패:', error);

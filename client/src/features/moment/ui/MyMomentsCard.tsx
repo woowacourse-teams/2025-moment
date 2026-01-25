@@ -13,8 +13,10 @@ import { useCommentLikeMutation } from '@/features/comment/api/useCommentLikeMut
 import { useDeleteCommentMutation } from '@/features/comment/api/useDeleteCommentMutation';
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 import { Trash2, Heart } from 'lucide-react';
+import { useMomentLikeMutation } from '../api/useMomentLikeMutation';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
+  const { currentGroupId } = useCurrentGroup();
   const {
     isOpen,
     isComplaintOpen,
@@ -30,10 +32,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     handleImageClick,
     closeFullImage,
     ImageOverlayPortal,
-  } = useMyMomentsCard(myMoment);
+  } = useMyMomentsCard(myMoment, currentGroupId || '');
 
-  const { currentGroupId } = useCurrentGroup();
   const deleteMomentMutation = useDeleteMomentMutation(currentGroupId || '');
+  const likeMomentMutation = useMomentLikeMutation(currentGroupId || '');
   const likeCommentMutation = useCommentLikeMutation(currentGroupId || '');
   const deleteCommentMutation = useDeleteCommentMutation(currentGroupId || '');
 
@@ -42,6 +44,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
     if (window.confirm('정말로 이 모멘트를 삭제하시겠습니까?')) {
       deleteMomentMutation.mutate(myMoment.momentId || myMoment.id);
     }
+  };
+
+  const handleLikeMoment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    likeMomentMutation.mutate(myMoment.momentId || myMoment.id);
   };
 
   const handleLikeComment = (commentId: number) => {
@@ -78,11 +85,24 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
       >
         <S.MyMomentsTitleWrapper>
-          <S.CommentCountWrapper aria-label={`달린 코멘트 수: ${sortedComments?.length}개`}>
-            <Mail size={16} aria-hidden="true" />
-            <span aria-hidden="true">{sortedComments?.length}</span>
-          </S.CommentCountWrapper>
           <S.ActionWrapper>
+            <S.CommentCountWrapper aria-label={`좋아요 수: ${myMoment.likeCount}개`}>
+              <S.LikeButton onClick={handleLikeMoment} aria-label="모멘트 좋아요">
+                <Heart
+                  size={16}
+                  aria-hidden="true"
+                  color={theme.colors['red-500']}
+                  fill={myMoment.hasLiked ? theme.colors['red-500'] : 'none'}
+                />
+              </S.LikeButton>
+              <span aria-hidden="true">{myMoment.likeCount}</span>
+            </S.CommentCountWrapper>
+
+            <S.CommentCountWrapper aria-label={`코멘트 수: ${sortedComments?.length}개`}>
+              <Mail size={16} aria-hidden="true" />
+              <span aria-hidden="true">{sortedComments?.length}</span>
+            </S.CommentCountWrapper>
+
             <WriteTime date={myMoment.createdAt} />
             <S.DeleteButton onClick={handleDeleteMoment} aria-label="모멘트 삭제">
               <Trash2 size={24} color={theme.colors['red-500']} />
@@ -140,6 +160,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                               fill={currentComment.hasLiked ? theme.colors['red-500'] : 'none'}
                             />
                           </S.IconButton>
+                          <S.LikeCount>{currentComment.likeCount || 0}</S.LikeCount>
                           <S.IconButton
                             onClick={() => handleDeleteComment(currentComment.id)}
                             className="danger"

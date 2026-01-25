@@ -17,9 +17,9 @@ export interface MyMomentsItem {
   memberNickname: string;
   createdAt: string;
   imageUrl?: string | null;
-  likeCount?: number;
-  hasLiked?: boolean;
-  commentCount?: number;
+  likeCount: number;
+  hasLiked: boolean;
+  commentCount: number;
   comments: Comment[] | null;
   momentNotification: {
     isRead: boolean;
@@ -34,8 +34,8 @@ export interface Comment {
   memberNickname: string; // V2
   createdAt: string;
   imageUrl?: string | null;
-  likeCount?: number;
-  hasLiked?: boolean;
+  likeCount: number;
+  hasLiked: boolean;
 }
 
 export type FilterType = 'all' | 'unread';

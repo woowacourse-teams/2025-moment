@@ -6,10 +6,12 @@ export const useMomentLikeMutation = (groupId: number | string) => {
   return useMutation({
     mutationFn: (momentId: number) => toggleMomentLike(groupId, momentId),
     onSuccess: (_data, momentId) => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'moment', momentId] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'my-moments'] });
-      queryClient.invalidateQueries({ queryKey: ['commentableMoments', groupId] });
+      const numericGroupId = Number(groupId);
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moment', momentId] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
+      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
+      queryClient.invalidateQueries({ queryKey: ['commentableMoments', numericGroupId] });
     },
   });
 };

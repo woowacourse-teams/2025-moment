@@ -6,11 +6,11 @@ import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { useCommentNavigation } from './useCommentNavigation';
 import { MyMomentsItem } from '../types/moments';
 
-export const useMyMomentsCard = (myMoment: MyMomentsItem) => {
+export const useMyMomentsCard = (myMoment: MyMomentsItem, groupId?: number | string) => {
   const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
 
   const { handleReadAllNotifications, isLoading: isReadingNotification } =
-    useReadAllNotifications();
+    useReadAllNotifications(groupId);
   const { handleOpen, handleClose, isOpen } = useModal();
   const {
     handleOpen: handleComplaintOpen,
