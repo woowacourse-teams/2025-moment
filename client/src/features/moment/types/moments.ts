@@ -35,3 +35,5 @@ export interface Comment {
   createdAt: string;
   imageUrl?: string | null;
 }
+
+export type FilterType = 'all' | 'unread';
