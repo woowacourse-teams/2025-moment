@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
+import { useFocusEffect } from "expo-router";
 import { useWebView } from "@/hooks/useWebview";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
-import { useEffect } from "react";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 
@@ -19,6 +19,22 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
   const { webViewRef, isLoading, error, reload, handlers } = useWebView(url);
 
   const { expoPushToken } = usePushNotifications();
+
+  // 탭이 포커스될 때 로그인 상태 동기화를 위해 웹뷰에 알림 전송
+  useFocusEffect(
+    useCallback(() => {
+      if (webViewRef.current) {
+        // 웹앱에 현재 탭이 포커스되었음을 알림
+        // 웹앱은 이를 받아서 로그인 상태를 다시 조회(queryClient.invalidateQueries)함
+        const script = `
+          if (window.onTabFocus) {
+            window.onTabFocus();
+          }
+        `;
+        webViewRef.current.injectJavaScript(script);
+      }
+    }, []),
+  );
 
   useEffect(() => {
     if (expoPushToken && webViewRef.current) {
