@@ -9,6 +9,8 @@ export const IOSBrowserWarning: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) return;
+
     const shouldShow = isDevice() && !isPWA();
     const isDismissed = localStorage.getItem(IOS_BROWSER_WARNING_DISMISSED_KEY);
 
