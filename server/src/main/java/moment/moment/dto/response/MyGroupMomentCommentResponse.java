@@ -7,14 +7,22 @@ public record MyGroupMomentCommentResponse(
         Long id,
         String content,
         String memberNickname,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        long likeCount,
+        boolean hasLiked
 ) {
-    public static MyGroupMomentCommentResponse from(CommentComposition composition) {
+    public static MyGroupMomentCommentResponse of(
+            CommentComposition composition,
+            long likeCount,
+            boolean hasLiked
+    ) {
         return new MyGroupMomentCommentResponse(
                 composition.id(),
                 composition.content(),
                 composition.nickname(),
-                composition.commentCreatedAt()
+                composition.commentCreatedAt(),
+                likeCount,
+                hasLiked
         );
     }
 }
