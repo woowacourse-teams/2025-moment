@@ -46,6 +46,19 @@ describe('나의 모멘트 모음집 페이지', () => {
       },
     }).as('getMyMoments');
 
+    cy.intercept('GET', '**/api/v2/groups/1/my-moments/unread*', {
+      statusCode: 200,
+      body: {
+        status: 200,
+        data: {
+          moments: [],
+          nextCursor: null,
+          hasNextPage: false,
+          pageSize: 10,
+        },
+      },
+    }).as('getUnreadMoments');
+
     cy.visit('/groups/1/collection/my-moment');
     cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMyMoments']);
   });
