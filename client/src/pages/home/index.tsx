@@ -94,7 +94,7 @@ export default function HomePage() {
                 <S.OnboardingContainer>
                   <S.OnboardingTitle>시작하기</S.OnboardingTitle>
                   <S.OnboardingDescription>
-                    그룹을 만들거나 초경을 통해 참여해보세요.
+                    그룹을 만들거나 초대 코드를 통해 참여해보세요.
                   </S.OnboardingDescription>
                   <S.OnboardingButtonGroup>
                     <S.OnboardingCard onClick={handleCreateGroupCtx}>

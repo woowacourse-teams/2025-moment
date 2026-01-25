@@ -21,7 +21,7 @@ export function GroupCreateSuccess({ inviteCode, groupId, onClose }: GroupCreate
       await navigator.clipboard.writeText(inviteLink);
       showSuccess('초대 링크가 복사되었습니다!');
     } catch (err) {
-      console.error('Failed to copy logic', err);
+      console.error('Failed to copy invite link', err);
     }
   };
 
