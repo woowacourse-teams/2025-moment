@@ -90,7 +90,11 @@ class MyGroupCommentPageFacadeServiceTest {
         assertAll(
                 () -> assertThat(response.comments()).hasSize(1),
                 () -> assertThat(response.comments().get(0).moment()).isNotNull(),
-                () -> assertThat(response.comments().get(0).commentNotification()).isNotNull()
+                () -> assertThat(response.comments().get(0).commentNotification()).isNotNull(),
+                () -> assertThat(response.comments().get(0).likeCount()).isEqualTo(0L),
+                () -> assertThat(response.comments().get(0).hasLiked()).isFalse(),
+                () -> assertThat(response.comments().get(0).moment().likeCount()).isEqualTo(0L),
+                () -> assertThat(response.comments().get(0).moment().hasLiked()).isFalse()
         );
     }
 
@@ -126,7 +130,11 @@ class MyGroupCommentPageFacadeServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.comments()).hasSize(1),
-                () -> assertThat(response.comments().get(0).commentNotification().isRead()).isFalse()
+                () -> assertThat(response.comments().get(0).commentNotification().isRead()).isFalse(),
+                () -> assertThat(response.comments().get(0).likeCount()).isEqualTo(0L),
+                () -> assertThat(response.comments().get(0).hasLiked()).isFalse(),
+                () -> assertThat(response.comments().get(0).moment().likeCount()).isEqualTo(0L),
+                () -> assertThat(response.comments().get(0).moment().hasLiked()).isFalse()
         );
     }
 

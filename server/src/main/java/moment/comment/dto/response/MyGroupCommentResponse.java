@@ -20,6 +20,12 @@ public record MyGroupCommentResponse(
         @Schema(description = "Comment 등록 시간", example = "2025-07-21T10:57:08.926954")
         LocalDateTime createdAt,
 
+        @Schema(description = "Comment 좋아요 수", example = "3")
+        long likeCount,
+
+        @Schema(description = "현재 사용자의 좋아요 여부", example = "false")
+        boolean hasLiked,
+
         @Schema(description = "Comment가 등록된 Moment")
         MyGroupCommentMomentResponse moment,
 
@@ -29,17 +35,23 @@ public record MyGroupCommentResponse(
     public static MyGroupCommentResponse of(
             CommentComposition commentComposition,
             MomentComposition momentComposition,
-            List<Long> unreadNotificationIds
+            List<Long> unreadNotificationIds,
+            long commentLikeCount,
+            boolean commentHasLiked,
+            long momentLikeCount,
+            boolean momentHasLiked
     ) {
         MyGroupCommentMomentResponse momentDetail = momentComposition == null
                 ? null
-                : MyGroupCommentMomentResponse.from(momentComposition);
+                : MyGroupCommentMomentResponse.from(momentComposition, momentLikeCount, momentHasLiked);
 
         return new MyGroupCommentResponse(
                 commentComposition.id(),
                 commentComposition.content(),
                 commentComposition.imageUrl(),
                 commentComposition.commentCreatedAt(),
+                commentLikeCount,
+                commentHasLiked,
                 momentDetail,
                 CommentNotificationResponse.from(unreadNotificationIds)
         );
