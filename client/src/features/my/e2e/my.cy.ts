@@ -7,7 +7,7 @@ describe('마이페이지', () => {
   beforeEach(() => {
     mockGlobalAPIs();
 
-    cy.intercept('GET', '**/api/v1/me/profile', {
+    cy.intercept('GET', '**/api/v2/me/profile', {
       statusCode: 200,
       body: {
         status: 200,
@@ -15,7 +15,7 @@ describe('마이페이지', () => {
       },
     }).as('getMyProfile');
 
-    cy.intercept('GET', '**/api/v1/me/reward/history?pageNum=0&pageSize=10', {
+    cy.intercept('GET', '**/api/v2/me/reward/history?pageNum=0&pageSize=10', {
       statusCode: 200,
       body: {
         status: 200,

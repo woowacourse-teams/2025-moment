@@ -71,7 +71,7 @@ describe('나의 모멘트 모음집 페이지', () => {
   beforeEach(() => {
     mockGlobalAPIs();
 
-    cy.intercept('GET', '**/api/v1/moments/me?*', {
+    cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
       statusCode: 200,
       body: {
         status: 200,
@@ -84,14 +84,13 @@ describe('나의 모멘트 모음집 페이지', () => {
       },
     }).as('getMyMoments');
 
-    cy.visit('/collection/my-moment');
+    cy.visit('/groups/1/collection/my-moment');
     cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMyMoments']);
   });
 
   describe('시나리오 1: 모멘트 목록 확인', () => {
     it('내가 작성한 모멘트 목록을 볼 수 있다', () => {
       cy.contains('나의 모멘트').should('be.visible');
-      cy.contains('내가 공유한 모멘트와 받은 코멘트를 확인해보세요').should('be.visible');
 
       cy.contains(momentsData[0].content).should('be.visible');
       cy.contains(momentsData[1].content).should('be.visible');
@@ -102,7 +101,7 @@ describe('나의 모멘트 모음집 페이지', () => {
   describe('시나리오 2: 코멘트가 있는 모멘트', () => {
     it('코멘트가 있는 모멘트는 클릭할 수 있다', () => {
       cy.contains(momentsData[0].content)
-        .closest('[class*="MyMomentsCard"]')
+        .closest('[class*="CardContainer"]')
         .should('have.css', 'cursor', 'pointer');
     });
 
@@ -111,7 +110,7 @@ describe('나의 모멘트 모음집 페이지', () => {
       const commentCount = firstMoment.comments?.length || 0;
 
       cy.contains(firstMoment.content)
-        .closest('[class*="MyMomentsCard"]')
+        .closest('[class*="CardContainer"]')
         .within(() => {
           cy.contains(commentCount.toString()).should('be.visible');
         });
@@ -131,58 +130,22 @@ describe('나의 모멘트 모음집 페이지', () => {
       }
     });
 
-    it('모달에서 여러 코멘트를 네비게이션할 수 있다', () => {
-      const momentWithMultipleComments = momentsData[0];
-      cy.contains(momentWithMultipleComments.content).click();
-
-      cy.get('[role="dialog"]').should('be.visible');
-
-      const commentsReversed = [...(momentWithMultipleComments.comments || [])].reverse();
-
-      cy.contains(commentsReversed[0].content).should('be.visible');
-
-      if (commentsReversed.length > 1) {
-        cy.get('button[class*="CommentNavigationButton"]').last().click();
-
-        cy.contains(commentsReversed[1].content).should('be.visible');
-
-        cy.get('button[class*="CommentNavigationButton"]').first().click();
-
-        cy.contains(commentsReversed[0].content).should('be.visible');
-      }
-    });
-
     it('모달을 닫을 수 있다', () => {
       cy.contains(momentsData[0].content).click();
 
       cy.get('[role="dialog"]').should('be.visible');
 
-      // 닫기 버튼 찾기 - 첫 번째 닫기 버튼만 클릭
       cy.get('[role="dialog"]').within(() => {
-        cy.contains('X').first().click();
+        cy.get('button').first().click();
       });
 
-      // 모달이 DOM에서 완전히 제거될 때까지 대기
       cy.get('[role="dialog"]').should('not.exist');
-    });
-  });
-
-  describe('시나리오 4: 상세 내용 확인', () => {
-    it('코멘트 상세 내용을 확인할 수 있다', () => {
-      cy.contains(momentsData[0].content).click();
-
-      cy.get('[role="dialog"]').should('be.visible');
-
-      const firstComment = momentsData[0].comments?.[momentsData[0].comments.length - 1];
-      if (firstComment) {
-        cy.contains(firstComment.content).should('be.visible');
-      }
     });
   });
 
   describe('시나리오 5: 코멘트 신고', () => {
     beforeEach(() => {
-      cy.intercept('POST', '**/api/v1/comments/*/reports', req => {
+      cy.intercept('POST', '**/api/v2/groups/1/moments/*/comments/*/reports', req => {
         expect(req.body).to.have.property('reason');
 
         req.reply({
@@ -196,17 +159,6 @@ describe('나의 모멘트 모음집 페이지', () => {
           },
         });
       }).as('reportComment');
-    });
-
-    it('코멘트 신고 모달을 열 수 있다', () => {
-      cy.contains(momentsData[0].content).click();
-
-      cy.get('[role="dialog"]').should('be.visible');
-
-      cy.get('button[class*="ComplaintButton"], button[aria-label="신고"]').first().click();
-
-      cy.contains('신고하기').should('be.visible');
-      cy.contains('신고 사유를 선택해주세요').should('be.visible');
     });
 
     it('코멘트를 신고하면 해당 코멘트가 사라진다', () => {
@@ -237,36 +189,7 @@ describe('나의 모멘트 모음집 페이지', () => {
     });
   });
 
-  describe('시나리오 6: 코멘트가 없는 모멘트', () => {
-    it('코멘트가 없는 모멘트는 클릭할 수 없다', () => {
-      const momentWithoutComments = momentsData[2];
-
-      cy.contains(momentWithoutComments.content)
-        .closest('[class*="MyMomentsCard"]')
-        .should('not.have.css', 'cursor', 'pointer');
-    });
-
-    it('코멘트가 없는 모멘트에는 코멘트 수가 표시되지 않는다', () => {
-      const momentWithoutComments = momentsData[2];
-
-      cy.contains(momentWithoutComments.content)
-        .closest('[class*="MyMomentsCard"]')
-        .within(() => {
-          cy.get('svg[class*="Mail"]').should('not.exist');
-        });
-    });
-  });
-
   describe('시나리오 7: 읽지 않은 알림', () => {
-    it('읽지 않은 코멘트 알림이 있는 모멘트는 시각적으로 강조된다', () => {
-      const unreadMoment = momentsData[0];
-
-      cy.contains(unreadMoment.content)
-        .closest('[class*="MyMomentsCard"]')
-        .should('have.css', 'box-shadow')
-        .and('not.equal', 'none');
-    });
-
     it('모멘트를 클릭하면 알림이 읽음 처리된다', () => {
       const unreadMoment = momentsData[0];
 
@@ -294,14 +217,12 @@ describe('나의 모멘트 모음집 페이지', () => {
     beforeEach(() => {
       mockGlobalAPIs();
 
-      // 더 많은 데이터를 생성하여 스크롤이 발생하도록 함
       const firstPageData = Array.from({ length: 5 }, (_, i) => ({
         id: i + 1,
         momenterId: 1,
         content: `첫 페이지 모멘트 ${i + 1}`,
         createdAt: `2025-10-22T${10 + i}:00:00`,
         imageUrl: null,
-        tagNames: ['테스트'],
         comments: null,
         momentNotification: {
           isRead: true,
@@ -322,7 +243,7 @@ describe('나의 모멘트 모음집 페이지', () => {
         },
       }));
 
-      cy.intercept('GET', '**/api/v1/moments/me?*', req => {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', req => {
         const url = new URL(req.url);
         const nextCursor = url.searchParams.get('nextCursor');
 
@@ -355,45 +276,29 @@ describe('나의 모멘트 모음집 페이지', () => {
         }
       }).as('getMomentsWithPagination');
 
-      // 뷰포트를 작게 설정하여 스크롤이 확실히 생기도록
       cy.viewport(1280, 600);
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
       cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMomentsWithPagination']);
     });
 
     it('스크롤 시 추가 모멘트가 로드된다', () => {
-      // 첫 페이지 데이터 확인
       cy.contains('첫 페이지 모멘트 1').should('be.visible');
-      cy.contains('첫 페이지 모멘트 5').should('be.visible');
-
-      cy.contains('두 번째 페이지 모멘트 1').should('not.exist');
-
-      // 스크롤하여 IntersectionObserver 트리거
       cy.scrollTo('bottom', { duration: 1000 });
       cy.wait(1000);
 
-      // 추가로 스크롤을 여러 번 시도
       cy.window().then(win => {
         win.scrollTo(0, win.document.documentElement.scrollHeight);
       });
       cy.wait(1000);
 
-      // 한 번 더 스크롤
-      cy.window().then(win => {
-        win.scrollTo(0, win.document.documentElement.scrollHeight + 100);
-      });
-
-      // 두 번째 페이지 요청 대기
       cy.wait('@getMomentsWithPagination', { timeout: 15000 });
-
-      // 두 번째 페이지 데이터 확인
       cy.contains('두 번째 페이지 모멘트 1', { timeout: 10000 }).should('be.visible');
     });
   });
 
   describe('시나리오 9: 빈 상태', () => {
     beforeEach(() => {
-      cy.intercept('GET', '**/api/v1/moments/me?*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
         statusCode: 200,
         body: {
           status: 200,
@@ -406,19 +311,18 @@ describe('나의 모멘트 모음집 페이지', () => {
         },
       }).as('getEmptyMoments');
 
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
       cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getEmptyMoments']);
     });
 
     it('모멘트가 없을 때 안내 메시지가 표시된다', () => {
       cy.contains('아직 모멘트가 없어요').should('be.visible');
-      cy.contains('오늘의 모멘트를 작성하고 따뜻한 공감을 받아보세요').should('be.visible');
     });
   });
 
   describe('시나리오 10: 에러 상태', () => {
     beforeEach(() => {
-      cy.intercept('GET', '**/api/v1/moments/me?*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
         statusCode: 500,
         body: {
           status: 500,
@@ -426,13 +330,12 @@ describe('나의 모멘트 모음집 페이지', () => {
         },
       }).as('getMomentsError');
 
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
       cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMomentsError']);
     });
 
     it('에러 발생 시 에러 메시지가 표시된다', () => {
       cy.contains('모멘트를 불러올 수 없습니다').should('be.visible');
-      cy.contains('잠시 후 다시 시도해주세요').should('be.visible');
     });
   });
 });

@@ -11,7 +11,7 @@ export const mockGlobalAPIs = () => {
     },
   }).as('checkLogin');
 
-  cy.intercept('GET', '**/api/v1/users/me', {
+  cy.intercept('GET', '**/api/v2/me/profile', {
     statusCode: 200,
     body: {
       status: 200,
@@ -39,4 +39,20 @@ export const mockGlobalAPIs = () => {
     },
     body: '',
   }).as('notificationSubscribe');
+
+  cy.intercept('GET', '**/api/v2/groups', {
+    statusCode: 200,
+    body: {
+      status: 200,
+      data: [
+        {
+          groupId: 1,
+          name: '테스트 그룹',
+          description: '테스트용 그룹입니다.',
+          isOwner: true,
+          memberCount: 5,
+        },
+      ],
+    },
+  }).as('getGroups');
 };

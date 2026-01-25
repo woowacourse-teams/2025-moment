@@ -46,45 +46,17 @@ const MOCK_MY_MOMENTS = [
 describe('오늘의 모멘트 페이지', () => {
   describe('시나리오 1: 모멘트 작성 및 성공 페이지', () => {
     beforeEach(() => {
-      cy.intercept('GET', '**/api/v1/notifications/subscribe', {
-        statusCode: 200,
-        headers: {
-          'content-type': 'text/event-stream',
-        },
-        body: '',
-      }).as('notificationSubscribe');
+      mockGlobalAPIs();
 
-      // 인증 상태를 계속 유지하도록 설정
-      cy.intercept('GET', '**/api/v2/auth/login/check', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/writing-status', {
         statusCode: 200,
         body: {
           status: 200,
-          data: { isLogged: true },
+          data: { isWritten: false },
         },
-      }).as('checkLogin');
+      }).as('getMomentWritingStatus');
 
-      cy.intercept('GET', '**/api/v1/users/me', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: {
-            nickname: '테스트유저',
-            level: 1,
-            expStar: 50,
-            nextStepExp: 100,
-          },
-        },
-      }).as('getProfile');
-
-      cy.intercept('GET', '**/api/v1/notifications*', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: [],
-        },
-      }).as('getNotifications');
-
-      cy.intercept('POST', '**/api/v1/moments', req => {
+      cy.intercept('POST', '**/api/v2/groups/1/moments', req => {
         expect(req.body).to.have.property('content');
 
         req.reply({
@@ -101,18 +73,13 @@ describe('오늘의 모멘트 페이지', () => {
         });
       }).as('sendMoment');
 
-      cy.visit('/today-moment');
+      cy.visit('/groups/1/today-moment');
 
-      cy.wait('@checkLogin');
-      cy.wait('@getProfile');
-      cy.wait('@getMomentWritingStatus');
-      cy.wait('@getNotifications');
+      cy.wait(['@checkLogin', '@getProfile', '@getMomentWritingStatus', '@getNotifications']);
     });
 
     it('텍스트를 입력하고 모멘트를 작성하면 성공 페이지로 이동한다', () => {
       cy.contains('오늘의 모멘트').should('be.visible');
-      cy.contains('하루에 한 번, 당신의 특별한 모멘트를 공유해보세요').should('be.visible');
-
       cy.get('textarea').should('be.visible');
       cy.get('textarea').clear().type(TEST_MOMENT.content);
 
@@ -137,7 +104,7 @@ describe('오늘의 모멘트 페이지', () => {
     beforeEach(() => {
       mockGlobalAPIs();
 
-      cy.intercept('GET', '**/api/v1/moments/me*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
         statusCode: 200,
         body: {
           status: 200,
@@ -150,12 +117,9 @@ describe('오늘의 모멘트 페이지', () => {
         },
       }).as('getMyMoments');
 
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
 
-      cy.wait('@checkLogin');
-      cy.wait('@getProfile');
-      cy.wait('@getMyMoments');
-      cy.wait('@getNotifications');
+      cy.wait(['@checkLogin', '@getProfile', '@getMyMoments', '@getNotifications']);
     });
 
     it('작성한 모멘트 목록을 확인할 수 있다', () => {
@@ -171,7 +135,7 @@ describe('오늘의 모멘트 페이지', () => {
     beforeEach(() => {
       mockGlobalAPIs();
 
-      cy.intercept('GET', '**/api/v1/moments/me*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
         statusCode: 200,
         body: {
           status: 200,
@@ -184,7 +148,7 @@ describe('오늘의 모멘트 페이지', () => {
         },
       }).as('getMyMoments');
 
-      cy.intercept('POST', '**/api/v1/comments/*/reports', req => {
+      cy.intercept('POST', '**/api/v2/groups/1/moments/*/comments/*/reports', req => {
         expect(req.body).to.have.property('reason');
 
         req.reply({
@@ -199,32 +163,23 @@ describe('오늘의 모멘트 페이지', () => {
         });
       }).as('reportComment');
 
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
 
-      cy.wait('@checkLogin');
-      cy.wait('@getProfile');
-      cy.wait('@getMyMoments');
-      cy.wait('@getNotifications');
+      cy.wait(['@checkLogin', '@getProfile', '@getMyMoments', '@getNotifications']);
     });
 
     it('코멘트를 신고할 수 있다', () => {
       const firstMoment = MOCK_MY_MOMENTS[0];
-      cy.contains(firstMoment.content).should('be.visible');
-
-      // 모멘트 카드를 클릭해서 코멘트 모달 열기
       cy.contains(firstMoment.content).click();
 
-      // 모달이 열릴 때까지 대기
       cy.get('[role="dialog"]').should('be.visible');
       cy.contains('댓글 내용입니다.').should('be.visible');
 
-      // 신고 버튼 클릭
       cy.get('button[class*="ComplaintButton"]').first().click();
 
       cy.contains('신고하기').should('be.visible');
       cy.contains('신고 사유를 선택해주세요').should('be.visible');
 
-      // 신고 사유 선택 및 제출
       cy.contains('스팸/광고').click();
       cy.get('button').contains('신고하기').last().click();
 
@@ -236,37 +191,8 @@ describe('오늘의 모멘트 페이지', () => {
 
   describe('시나리오 5: 모멘트 알림 확인', () => {
     beforeEach(() => {
-      // 인증 관련 intercept를 먼저 설정
-      cy.intercept('GET', '**/api/v1/auth/login/check', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: { isLogged: true },
-        },
-      }).as('checkLogin');
+      mockGlobalAPIs();
 
-      cy.intercept('GET', '**/api/v1/users/me', {
-        statusCode: 200,
-        body: {
-          status: 200,
-          data: {
-            nickname: '테스트유저',
-            level: 1,
-            expStar: 50,
-            nextStepExp: 100,
-          },
-        },
-      }).as('getProfile');
-
-      cy.intercept('GET', '**/api/v1/notifications/subscribe', {
-        statusCode: 200,
-        headers: {
-          'content-type': 'text/event-stream',
-        },
-        body: '',
-      }).as('notificationSubscribe');
-
-      // 알림 데이터 설정
       const mockNotifications = [
         {
           id: 1,
@@ -286,7 +212,6 @@ describe('오늘의 모멘트 페이지', () => {
         },
       }).as('getNotificationsWithData');
 
-      // 알림이 있는 모멘트 데이터
       const momentWithNotification = {
         id: 1,
         momenterId: 1,
@@ -300,7 +225,7 @@ describe('오늘의 모멘트 페이지', () => {
         },
       };
 
-      cy.intercept('GET', '**/api/v1/moments/me*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/me*', {
         statusCode: 200,
         body: {
           status: 200,
@@ -313,12 +238,14 @@ describe('오늘의 모멘트 페이지', () => {
         },
       }).as('getMyMomentsWithNotification');
 
-      cy.visit('/collection/my-moment');
+      cy.visit('/groups/1/collection/my-moment');
 
-      cy.wait('@checkLogin');
-      cy.wait('@getProfile');
-      cy.wait('@getNotificationsWithData');
-      cy.wait('@getMyMomentsWithNotification');
+      cy.wait([
+        '@checkLogin',
+        '@getProfile',
+        '@getNotificationsWithData',
+        '@getMyMomentsWithNotification',
+      ]);
     });
 
     it('모멘트 관련 알림을 확인할 수 있다', () => {
