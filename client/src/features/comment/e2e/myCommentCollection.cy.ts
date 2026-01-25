@@ -11,7 +11,6 @@ const commentsData = [
     moment: {
       id: 101,
       nickName: '별빛 가득한 아리아',
-      level: 'ASTEROID_WHITE',
       content: '오늘은 정말 힘든 하루였어요.',
       imageUrl: null,
       createdAt: '2025-01-20T09:00:00',
@@ -29,7 +28,6 @@ const commentsData = [
     moment: {
       id: 102,
       nickName: '푸른 하늘의 테리우스',
-      level: 'ASTEROID_WHITE',
       content: '새로운 도전을 시작했어요!',
       imageUrl: null,
       createdAt: '2025-01-20T10:30:00',
@@ -45,32 +43,44 @@ describe('나의 코멘트 모음집 페이지', () => {
   beforeEach(() => {
     mockGlobalAPIs();
 
-    cy.intercept('GET', '**/api/v1/comments/me?pageSize=10', {
+    // 모든 코멘트 가져오기
+    cy.intercept('GET', '**/api/v2/groups/1/my-comments?*', {
       statusCode: 200,
       body: {
         status: 200,
         data: {
-          items: commentsData,
-          hasNextPage: true,
-          nextCursor: 'next_page_cursor',
+          comments: commentsData,
+          hasNextPage: false,
+          nextCursor: null,
+          pageSize: 10,
         },
       },
     }).as('getComments');
 
-    cy.intercept('GET', '**/api/v1/comments/me/unread?pageSize=10', {
+    // 읽지 않은 코멘트 가져오기 (필터링 여부와 상관없이 호출될 수 있음)
+    cy.intercept('GET', '**/api/v2/groups/1/my-comments/unread?*', {
       statusCode: 200,
       body: {
         status: 200,
         data: {
-          items: commentsData,
+          comments: [],
           hasNextPage: false,
           nextCursor: null,
+          pageSize: 10,
         },
       },
     }).as('getUnreadComments');
 
-    cy.visit('/collection/my-comment');
-    cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getComments']);
+    cy.visit('/groups/1/collection/my-comment');
+
+    // 두 쿼리가 모두 완료될 때까지 대기
+    cy.wait([
+      '@checkLogin',
+      '@getProfile',
+      '@getNotifications',
+      '@getComments',
+      '@getUnreadComments',
+    ]);
   });
 
   describe('시나리오 1: 코멘트 확인', () => {
@@ -78,8 +88,8 @@ describe('나의 코멘트 모음집 페이지', () => {
       cy.contains(commentsData[0].content).should('be.visible');
       cy.contains(commentsData[1].content).should('be.visible');
 
-      cy.contains(commentsData[0].moment?.content).should('be.visible');
-      cy.contains(commentsData[1].moment?.content).should('be.visible');
+      cy.contains(commentsData[0].moment!.content).should('be.visible');
+      cy.contains(commentsData[1].moment!.content).should('be.visible');
     });
   });
 });

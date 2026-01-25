@@ -17,7 +17,6 @@ export interface CommentItem {
     content: string;
     createdAt: string;
     id: number;
-    level: string;
     nickName: string;
     memberNickname?: string;
     imageUrl?: string | null;
@@ -31,7 +30,6 @@ export interface CommentItem {
 export interface GetCommentableMoments {
   id: number;
   nickname: string;
-  level: string;
   content: string;
   imageUrl?: string | null;
   createdAt: string;
