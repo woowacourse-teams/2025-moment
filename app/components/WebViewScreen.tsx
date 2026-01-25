@@ -6,6 +6,8 @@ import { useWebView } from "@/hooks/useWebview";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useEffect } from "react";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 
@@ -15,6 +17,19 @@ interface WebViewScreenProps {
 
 export function WebViewScreen({ url }: WebViewScreenProps) {
   const { webViewRef, isLoading, error, reload, handlers } = useWebView(url);
+
+  const { expoPushToken } = usePushNotifications();
+
+  useEffect(() => {
+    if (expoPushToken && webViewRef.current) {
+      const script = `
+        if (window.onExpoPushToken) {
+          window.onExpoPushToken('${expoPushToken}');
+        }
+      `;
+      webViewRef.current.injectJavaScript(script);
+    }
+  }, [expoPushToken]);
 
   const handleMessage = async (event: any) => {
     try {

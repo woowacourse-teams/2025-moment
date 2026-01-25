@@ -5,11 +5,29 @@ import * as Sentry from '@sentry/react';
 import { isDevice, isPWA } from '../../utils/device';
 
 import { requestFCMPermission, setupForegroundMessage } from './firebase';
+import { registerFCMToken } from './registerFCMToken';
 
 export const useInitializeFCM = () => {
   useEffect(() => {
+    const handleExpoPushToken = async (token: string) => {
+      try {
+        await registerFCMToken(token);
+        console.log('Registered Expo Push Token from Native:', token);
+      } catch (e) {
+        console.error('Failed to register Expo Push Token:', e);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      (window as any).onExpoPushToken = handleExpoPushToken;
+    }
+
     const initializeFCM = async () => {
-      if (!('serviceWorker' in navigator) || (isDevice() && !isPWA())) return;
+      if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) return;
+
+      if (!('serviceWorker' in navigator)) return;
+
+      if (isDevice() && !isPWA()) return;
 
       try {
         await navigator.serviceWorker.register('/firebase-messaging-sw.js');
