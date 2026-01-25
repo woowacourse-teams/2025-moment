@@ -127,7 +127,7 @@ describe('오늘의 코멘트 페이지', () => {
 
   describe('시나리오 3: 신고하기', () => {
     beforeEach(() => {
-      cy.intercept('POST', '**/api/v2/groups/1/moments/*/reports', req => {
+      cy.intercept('POST', '**/api/v2/moments/*/reports', req => {
         expect(req.body).to.have.property('reason');
         expect(req.body.reason).to.be.oneOf(Object.values(COMPLAINT_REASONS));
 

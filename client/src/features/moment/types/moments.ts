@@ -32,7 +32,6 @@ export interface Comment {
   content: string;
   nickname: string;
   memberNickname: string; // V2
-  level: string;
   createdAt: string;
   imageUrl?: string | null;
 }

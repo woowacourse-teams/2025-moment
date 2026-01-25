@@ -64,8 +64,6 @@ export default function MyPage() {
                 </S.ButtonContainer>
               </S.UserInfo>
             </S.UserProfileSection>
-
-            <S.AvailableStar>사용가능한 별조각: {myProfile.expStar}</S.AvailableStar>
           </S.UserInfoContainer>
         </Card>
       </S.UserInfoSection>
@@ -110,17 +108,13 @@ export default function MyPage() {
         size="small"
         onClose={handleCloseNicknameModal}
       >
-        <Modal.Header title={myProfile.expStar < 100 ? '<별조각 보유 부족>' : '<닉네임 변경>'} />
+        <Modal.Header title="<닉네임 변경>" />
         <Modal.Content>
-          {myProfile.expStar < 100 ? (
-            <p>별조각 100개 이상 보유 시 닉네임 변경이 가능합니다.</p>
-          ) : (
-            <ChangeNicknameForm
-              nickname={localNickname}
-              updateNickname={handleNicknameChange}
-              handleCloseNicknameModal={handleCloseNicknameModal}
-            />
-          )}
+          <ChangeNicknameForm
+            nickname={localNickname}
+            updateNickname={handleNicknameChange}
+            handleCloseNicknameModal={handleCloseNicknameModal}
+          />
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>
