@@ -4,15 +4,13 @@ import { Logo } from '@/shared/ui/logo/Logo';
 import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router';
+import { useLocation } from 'react-router';
 import { useToast } from '@/shared/hooks/useToast';
 import * as S from './Navbar.styles';
-import { ROUTES } from '@/app/routes/routes';
 import { track } from '@/shared/lib/ga/track';
 
 export const Navbar = () => {
   const location = useLocation();
-  const { groupId } = useParams<{ groupId: string }>();
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
   const { showError } = useToast();
