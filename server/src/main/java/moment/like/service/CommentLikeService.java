@@ -1,6 +1,12 @@
 package moment.like.service;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
 import moment.group.domain.GroupMember;
@@ -54,5 +60,24 @@ public class CommentLikeService {
 
     public boolean hasLiked(Long commentId, Long memberId) {
         return likeRepository.existsByCommentIdAndMemberId(commentId, memberId);
+    }
+
+    public Map<Long, Long> getCountsByCommentIds(List<Long> commentIds) {
+        if (commentIds == null || commentIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        List<Object[]> results = likeRepository.countByCommentIdIn(commentIds);
+        return results.stream()
+                .collect(Collectors.toMap(
+                        row -> (Long) row[0],
+                        row -> (Long) row[1]
+                ));
+    }
+
+    public Set<Long> getLikedCommentIds(List<Long> commentIds, Long memberId) {
+        if (commentIds == null || commentIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return new HashSet<>(likeRepository.findLikedCommentIds(commentIds, memberId));
     }
 }

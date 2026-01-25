@@ -14,6 +14,8 @@ import moment.comment.service.comment.CommentService;
 import moment.global.domain.TargetType;
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
+import moment.like.service.CommentLikeService;
+import moment.like.service.MomentLikeService;
 import moment.moment.dto.response.tobe.MomentComposition;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.service.application.NotificationApplicationService;
@@ -32,6 +34,8 @@ public class MyGroupCommentPageFacadeService {
     private final GroupMemberService groupMemberService;
     private final MomentApplicationService momentApplicationService;
     private final NotificationApplicationService notificationApplicationService;
+    private final CommentLikeService commentLikeService;
+    private final MomentLikeService momentLikeService;
 
     public MyGroupCommentFeedResponse getMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
@@ -43,7 +47,7 @@ public class MyGroupCommentPageFacadeService {
             return MyGroupCommentFeedResponse.empty();
         }
 
-        return buildFeedResponse(comments, userId);
+        return buildFeedResponse(comments, member.getId());
     }
 
     public MyGroupCommentFeedResponse getUnreadMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
@@ -63,10 +67,10 @@ public class MyGroupCommentPageFacadeService {
             return MyGroupCommentFeedResponse.empty();
         }
 
-        return buildFeedResponse(comments, userId);
+        return buildFeedResponse(comments, member.getId());
     }
 
-    private MyGroupCommentFeedResponse buildFeedResponse(List<Comment> comments, Long userId) {
+    private MyGroupCommentFeedResponse buildFeedResponse(List<Comment> comments, Long memberId) {
         List<Long> commentIds = comments.stream().map(Comment::getId).toList();
         List<Long> momentIds = comments.stream().map(Comment::getMomentId).toList();
 
@@ -88,6 +92,7 @@ public class MyGroupCommentPageFacadeService {
         List<MyGroupCommentResponse> responses = comments.stream()
                 .map(comment -> createMyGroupCommentResponse(
                         comment,
+                        memberId,
                         commentCompositionMap,
                         momentCompositionMap,
                         notificationsMap))
@@ -102,14 +107,26 @@ public class MyGroupCommentPageFacadeService {
 
     private MyGroupCommentResponse createMyGroupCommentResponse(
             Comment comment,
+            Long memberId,
             Map<Long, CommentComposition> commentCompositionMap,
             Map<Long, MomentComposition> momentCompositionMap,
             Map<Long, List<Long>> notificationsMap
     ) {
         Long commentId = comment.getId();
+        Long momentId = comment.getMomentId();
         CommentComposition composition = commentCompositionMap.get(commentId);
-        MomentComposition momentComposition = momentCompositionMap.get(comment.getMomentId());
+        MomentComposition momentComposition = momentCompositionMap.get(momentId);
         List<Long> notificationIds = notificationsMap.getOrDefault(commentId, Collections.emptyList());
+
+        long commentLikeCount = commentLikeService.getCount(commentId);
+        boolean commentHasLiked = commentLikeService.hasLiked(commentId, memberId);
+
+        long momentLikeCount = 0L;
+        boolean momentHasLiked = false;
+        if (momentComposition != null) {
+            momentLikeCount = momentLikeService.getCount(momentId);
+            momentHasLiked = momentLikeService.hasLiked(momentId, memberId);
+        }
 
         if (composition == null) {
             composition = new CommentComposition(
@@ -122,6 +139,14 @@ public class MyGroupCommentPageFacadeService {
             );
         }
 
-        return MyGroupCommentResponse.of(composition, momentComposition, notificationIds);
+        return MyGroupCommentResponse.of(
+                composition,
+                momentComposition,
+                notificationIds,
+                commentLikeCount,
+                commentHasLiked,
+                momentLikeCount,
+                momentHasLiked
+        );
     }
 }

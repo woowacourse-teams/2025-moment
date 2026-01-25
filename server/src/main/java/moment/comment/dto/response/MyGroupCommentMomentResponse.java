@@ -19,15 +19,27 @@ public record MyGroupCommentMomentResponse(
         String imageUrl,
 
         @Schema(description = "Moment 등록 시간", example = "2025-07-21T10:57:08.926954")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        @Schema(description = "Moment 좋아요 수", example = "5")
+        long likeCount,
+
+        @Schema(description = "현재 사용자의 좋아요 여부", example = "true")
+        boolean hasLiked
 ) {
-    public static MyGroupCommentMomentResponse from(MomentComposition momentComposition) {
+    public static MyGroupCommentMomentResponse from(
+            MomentComposition momentComposition,
+            long likeCount,
+            boolean hasLiked
+    ) {
         return new MyGroupCommentMomentResponse(
                 momentComposition.id(),
                 momentComposition.content(),
                 momentComposition.nickname(),
                 momentComposition.imageUrl(),
-                momentComposition.momentCreatedAt()
+                momentComposition.momentCreatedAt(),
+                likeCount,
+                hasLiked
         );
     }
 }

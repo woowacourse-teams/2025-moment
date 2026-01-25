@@ -2,6 +2,7 @@ package moment.moment.service.facade;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.tobe.CommentComposition;
@@ -9,6 +10,7 @@ import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
+import moment.like.service.CommentLikeService;
 import moment.like.service.MomentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.dto.response.MomentNotificationResponse;
@@ -32,6 +34,7 @@ public class MyGroupMomentPageFacadeService {
     private final CommentApplicationService commentApplicationService;
     private final NotificationApplicationService notificationApplicationService;
     private final MomentLikeService momentLikeService;
+    private final CommentLikeService commentLikeService;
 
     public MyGroupFeedResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
@@ -77,8 +80,16 @@ public class MyGroupMomentPageFacadeService {
                 notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
                         momentIds, TargetType.MOMENT);
 
+        List<Long> allCommentIds = allComments.stream()
+                .map(CommentComposition::id)
+                .toList();
+        Map<Long, Long> commentLikeCountMap = commentLikeService.getCountsByCommentIds(allCommentIds);
+        Set<Long> likedCommentIds = commentLikeService.getLikedCommentIds(allCommentIds, memberId);
+
         List<MyGroupMomentResponse> responses = moments.stream()
-                .map(moment -> createMyGroupMomentResponse(moment, memberId, commentsMap, notificationsMap))
+                .map(moment -> createMyGroupMomentResponse(
+                        moment, memberId, commentsMap, notificationsMap,
+                        commentLikeCountMap, likedCommentIds))
                 .toList();
 
         Long nextCursor = moments.size() < DEFAULT_PAGE_SIZE
@@ -92,7 +103,9 @@ public class MyGroupMomentPageFacadeService {
             Moment moment,
             Long memberId,
             Map<Long, List<CommentComposition>> commentsMap,
-            Map<Long, List<Long>> notificationsMap
+            Map<Long, List<Long>> notificationsMap,
+            Map<Long, Long> commentLikeCountMap,
+            Set<Long> likedCommentIds
     ) {
         Long momentId = moment.getId();
 
@@ -101,7 +114,11 @@ public class MyGroupMomentPageFacadeService {
 
         List<CommentComposition> compositions = commentsMap.getOrDefault(momentId, List.of());
         List<MyGroupMomentCommentResponse> comments = compositions.stream()
-                .map(MyGroupMomentCommentResponse::from)
+                .map(composition -> {
+                    long commentLikeCount = commentLikeCountMap.getOrDefault(composition.id(), 0L);
+                    boolean commentHasLiked = likedCommentIds.contains(composition.id());
+                    return MyGroupMomentCommentResponse.of(composition, commentLikeCount, commentHasLiked);
+                })
                 .toList();
         long commentCount = comments.size();
 
