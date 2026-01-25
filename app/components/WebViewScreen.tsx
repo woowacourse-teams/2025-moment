@@ -7,12 +7,48 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
 
+import * as AppleAuthentication from "expo-apple-authentication";
+
 interface WebViewScreenProps {
   url: string;
 }
 
 export function WebViewScreen({ url }: WebViewScreenProps) {
   const { webViewRef, isLoading, error, reload, handlers } = useWebView(url);
+
+  const handleMessage = async (event: any) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.type === "LOGIN_APPLE") {
+        try {
+          const credential = await AppleAuthentication.signInAsync({
+            requestedScopes: [
+              AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+              AppleAuthentication.AppleAuthenticationScope.EMAIL,
+            ],
+          });
+
+          if (credential.identityToken) {
+            // Send token back to WebView
+            const script = `
+              if (window.onAppleLoginSuccess) {
+                window.onAppleLoginSuccess('${credential.identityToken}');
+              }
+            `;
+            webViewRef.current?.injectJavaScript(script);
+          }
+        } catch (e: any) {
+          if (e.code === "ERR_CANCELED") {
+            // User canceled, do nothing
+          } else {
+            console.error(e);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse message", e);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -34,6 +70,7 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
           onNavigationStateChange={handlers.onNavigationStateChange}
           onError={handlers.onError}
           onHttpError={handlers.onHttpError}
+          onMessage={handleMessage}
         />
       )}
 
