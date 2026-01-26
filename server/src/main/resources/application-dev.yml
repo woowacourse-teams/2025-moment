@@ -74,6 +74,8 @@ auth:
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect-uri: https://dev.connectingmoment.com/api/v2/auth/callback/google
     client-uri: https://dev.connectingmoment.com
+  apple:
+    client-ids: ${APPLE_CLIENT_IDS:com.moment.app}
   password_update:
     uri: https://dev.connectingmoment.com/passwordUpdate?token=
 
