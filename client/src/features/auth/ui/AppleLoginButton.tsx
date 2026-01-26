@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import * as S from './AppleLoginButton.styles';
+import { useAppleLoginMutation } from '../api/useAppleLoginMutation';
 
 export const AppleLoginButton = () => {
   const [isWebView, setIsWebView] = useState(false);
+
+  const { mutate: appleLogin } = useAppleLoginMutation();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) {
@@ -15,9 +18,8 @@ export const AppleLoginButton = () => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'APPLE_LOGIN_SUCCESS') {
-          // TODO: Send token to backend
           console.log('Apple Login Success:', data.token);
-          alert('Apple 로그인 성공! (백엔드 연동 필요)\nToken: ' + data.token.slice(0, 10) + '...');
+          appleLogin({ identityToken: data.token });
         }
       } catch (e) {
         // Ignore non-JSON messages
@@ -25,15 +27,23 @@ export const AppleLoginButton = () => {
     };
 
     if (typeof window !== 'undefined') {
+      window.addEventListener('message', handleMessage);
+
       // For iOS WebView, messages might come differently, but typically document or window.
       // react-native-webview injectJavaScript usually executes code.
       // So we might need to expose a global function.
       (window as any).onAppleLoginSuccess = (token: string) => {
         console.log('Apple Login Success:', token);
-        alert('Apple 로그인 성공! (백엔드 연동 필요)\nToken: ' + token.slice(0, 10) + '...');
+        appleLogin({ identityToken: token });
       };
     }
-  }, []);
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('message', handleMessage);
+      }
+    };
+  }, [appleLogin]);
 
   const handleAppleLogin = () => {
     if (isWebView && (window as any).ReactNativeWebView) {
