@@ -79,6 +79,13 @@ public enum ErrorCode {
     // InviteLink (IL)
     INVITE_LINK_INVALID("IL-001", "유효하지 않은 초대 링크입니다.", HttpStatus.NOT_FOUND),
     INVITE_LINK_EXPIRED("IL-002", "만료된 초대 링크입니다.", HttpStatus.BAD_REQUEST),
+
+    // Apple Auth (AP)
+    APPLE_TOKEN_INVALID("AP-001", "유효하지 않은 Apple 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    APPLE_TOKEN_EXPIRED("AP-002", "만료된 Apple 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    APPLE_PUBLIC_KEY_NOT_FOUND("AP-003", "Apple 공개키를 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    APPLE_PUBLIC_KEY_GENERATION_FAILED("AP-004", "Apple 공개키 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    APPLE_AUTH_SERVER_ERROR("AP-005", "Apple 인증 서버 오류입니다.", HttpStatus.SERVICE_UNAVAILABLE),
     ;
 
     private final String code;
