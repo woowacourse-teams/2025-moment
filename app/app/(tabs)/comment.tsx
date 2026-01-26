@@ -1,10 +1,15 @@
 import React from "react";
 import { WebViewScreen } from "@/components/WebViewScreen";
+import { useGroup } from "@/context/GroupContext";
 
-// TODO: Need context to inject groupId dynamically.
-// For now, redirecting to root which handles group selection/redirection.
-const WEB_URL = "https://connectingmoment.com";
+const BASE_URL = "https://connectingmoment.com/groups";
 
 export default function CommentScreen() {
-  return <WebViewScreen url={WEB_URL} />;
+  const { currentGroupId } = useGroup();
+
+  if (!currentGroupId) return null;
+
+  const url = `${BASE_URL}/${currentGroupId}/today-comment`;
+
+  return <WebViewScreen url={url} />;
 }

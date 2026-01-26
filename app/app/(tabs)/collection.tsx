@@ -1,9 +1,15 @@
 import React from "react";
 import { WebViewScreen } from "@/components/WebViewScreen";
+import { useGroup } from "@/context/GroupContext";
 
-// TODO: Update to specific collection URL once groupId context is available
-const WEB_URL = "https://connectingmoment.com";
+const BASE_URL = "https://connectingmoment.com/groups";
 
 export default function CollectionScreen() {
-  return <WebViewScreen url={WEB_URL} />;
+  const { currentGroupId } = useGroup();
+
+  if (!currentGroupId) return null;
+
+  const url = `${BASE_URL}/${currentGroupId}/collection/my-moment`;
+
+  return <WebViewScreen url={url} />;
 }

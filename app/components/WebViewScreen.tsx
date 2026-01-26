@@ -8,6 +8,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useGroup } from "@/context/GroupContext";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 
@@ -19,6 +20,7 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
   const { webViewRef, isLoading, error, reload, handlers } = useWebView(url);
 
   const { expoPushToken } = usePushNotifications();
+  const { setGroupId } = useGroup();
 
   // 탭이 포커스될 때 로그인 상태 동기화를 위해 웹뷰에 알림 전송
   useFocusEffect(
@@ -74,6 +76,11 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
           } else {
             console.error(e);
           }
+        }
+      } else if (data.type === "GROUP_CHANGED") {
+        if (data.groupId) {
+          setGroupId(data.groupId);
+          console.log("Native: Group Changed to", data.groupId);
         }
       }
     } catch (e) {

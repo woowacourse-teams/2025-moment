@@ -1,8 +1,10 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useGroup } from "@/context/GroupContext";
 
 export default function TabLayout() {
+  const { currentGroupId } = useGroup();
   return (
     <Tabs
       screenOptions={{
@@ -28,6 +30,7 @@ export default function TabLayout() {
         name="comment"
         options={{
           title: "코멘트",
+          href: currentGroupId ? "/comment" : null,
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbubble-outline" size={24} color={color} />
           ),
@@ -37,6 +40,7 @@ export default function TabLayout() {
         name="collection"
         options={{
           title: "모음집",
+          href: currentGroupId ? "/collection" : null,
           tabBarIcon: ({ color }) => (
             <Ionicons name="star-outline" size={24} color={color} />
           ),
