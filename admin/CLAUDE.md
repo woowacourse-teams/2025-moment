@@ -66,14 +66,29 @@ Every Admin feature must support:
   - No business logic
 - `features/`
   - **Separation of Concerns (Strict)**:
-    - **UI Components (`.tsx`)**: Pure presentational. Receive data/handlers as props or via hooks. No `useEffect` or complex state.
+    - **UI Components (`ui/`, `.tsx`)**: Pure presentational. Receive data/handlers as props or via hooks. No `useEffect` or complex state.
     - **Logic Hooks (`useX.ts`)**: Container data, side effects, handlers, mutations.
     - **API Hooks (`api/`)**: Pure server state management (React Query).
+    - **Styles**: keep Emotion styles as `ui/*.styles.ts` alongside components.
+    - **Types (`types/`)**: Feature-scoped TypeScript types. Extract to `shared/types` only when reused.
+    - **Constants (`constants/`)**: Feature-scoped constants. Extract to `shared/constants` only when reused.
 
 - `shared/`
   - Design system
   - API client
   - Guards, utilities, error normalization
+
+---
+
+## Styling Rules (Emotion)
+
+- Styling must use **Emotion**.
+- Style code must be separated into `*.styles.ts` files and placed **inside the same `ui/` directory**.
+  - Example:
+    - `features/admin-complaint/ui/ComplaintTable.tsx`
+    - `features/admin-complaint/ui/ComplaintTable.styles.ts`
+- Keep `.tsx` focused on markup and composition.
+- Avoid large inline styled blocks inside `.tsx`.
 
 ---
 
