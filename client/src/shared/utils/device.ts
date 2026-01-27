@@ -13,3 +13,7 @@ export const isSafari = () => {
 export const isPWA = () => {
   return window.matchMedia('(display-mode: standalone)').matches;
 };
+
+export const isApp = () => {
+  return /MomentApp/.test(navigator.userAgent);
+};

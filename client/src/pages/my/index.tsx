@@ -1,4 +1,4 @@
-import { isDevice, isPWA } from '@/shared/utils/device';
+import { isApp, isDevice, isPWA } from '@/shared/utils/device';
 import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
@@ -28,7 +28,7 @@ export default function MyPage() {
   const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
   const logoutMutation = useLogoutMutation();
-  const showNotificationSettings = isDevice() || isPWA();
+  const showNotificationSettings = (isDevice() || isPWA()) && !isApp();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
   if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
