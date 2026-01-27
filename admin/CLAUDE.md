@@ -59,24 +59,56 @@ Every Admin feature must support:
 
 ---
 
-## Architecture Rules
+## Architecture Rules (Feature-Sliced Design)
 
-- `pages/`
-  - Routing & composition only
-  - No business logic
-- `features/`
-  - **Separation of Concerns (Strict)**:
-    - **UI Components (`ui/`, `.tsx`)**: Pure presentational. Receive data/handlers as props or via hooks. No `useEffect` or complex state.
-    - **Logic Hooks (`useX.ts`)**: Container data, side effects, handlers, mutations.
-    - **API Hooks (`api/`)**: Pure server state management (React Query).
-    - **Styles**: keep Emotion styles as `ui/*.styles.ts` alongside components.
-    - **Types (`types/`)**: Feature-scoped TypeScript types. Extract to `shared/types` only when reused.
-    - **Constants (`constants/`)**: Feature-scoped constants. Extract to `shared/constants` only when reused.
+Strictly follow the **Feature-Sliced Design (FSD)** methodology. Dependency flow must be **unidirectional** (Top → Bottom). Lower layers **cannot** import from higher layers.
 
-- `shared/`
-  - Design system
-  - API client
-  - Guards, utilities, error normalization
+### [L0] `app/` (Application Layer)
+
+- **Role**: App initialization, global providers (React Query, Emotion), and global styling.
+- **Rule**: Minimal logic. Composition only.
+
+### [L1] `pages/` (Page Layer)
+
+- **Role**: Composition of widgets and features into full pages.
+- **Rule**: Routing and data fetching orchestration. No direct business logic.
+
+### [L2] `widgets/` (Composition Layer)
+
+- **Role**: Large, reusable self-contained blocks (e.g., `Header`, `Sidebar`, `UserTable`).
+- **Rule**: Combines features and entities. Shared across pages.
+
+### [L3] `features/` (Action Layer)
+
+- **Role**: User interactions and business processes that provide value (e.g., `UpdateUserStatus`, `BulkDeleteGroups`).
+- **Structure (Strict)**:
+  - `ui/`: Pure presentational components. Includes `*.styles.ts`. No `useEffect` or complex state.
+  - `model/`: Logic hooks (`useX.ts`). State, handlers, mutations, and side effects.
+  - `api/`: React Query hooks (`useQuery`, `useMutation`).
+  - `types/`: Feature-scoped TypeScript definitions.
+  - `index.ts`: **Public API**. Only export what is needed externally.
+- **Rules**: Features can import from `entities` and `shared`.
+
+### [L4] `entities/` (Business Layer)
+
+- **Role**: Business domain entities (e.g., `User`, `Group`, `Complaint`).
+- **Structure**: `index.ts`, `api/`, `model/`, `ui/`.
+- **Rules**: Entities **cannot** import from `features` or `widgets`.
+
+### [L5] `shared/` (Infrastructure Layer)
+
+- **Role**: Reusable infrastructure and UI kit.
+- **Contents**: `api/` (Axios client, query keys), `auth/` (Providers, Guards), `ui/` (Design System), `lib/` (Utils).
+- **Rules**: Purest layer. No business logic. No imports from higher layers.
+
+---
+
+## Technical Standards
+
+- **Unidirectional Flow**: `app` → `pages` → `widgets` → `features` → `entities` → `shared`.
+- **Public API**: Each slice MUST have an `index.ts` to export its public interface. Crossing-slice imports must only use the public API.
+- **Logic Separation**: Keep Emotion styles in `ui/*.styles.ts`. Keep business logic in `model/` or dedicated hooks.
+- **API Management**: Use TanStack React Query for all server state. Hierarchical query keys are mandatory and should be stored in `shared/api/queryKeys.ts`.
 
 ---
 
@@ -84,9 +116,6 @@ Every Admin feature must support:
 
 - Styling must use **Emotion**.
 - Style code must be separated into `*.styles.ts` files and placed **inside the same `ui/` directory**.
-  - Example:
-    - `features/admin-complaint/ui/ComplaintTable.tsx`
-    - `features/admin-complaint/ui/ComplaintTable.styles.ts`
 - Keep `.tsx` focused on markup and composition.
 - Avoid large inline styled blocks inside `.tsx`.
 
