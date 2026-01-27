@@ -121,10 +121,10 @@ No feature is complete without tests.
 
 Before implementing a feature:
 
-- Update `docs/admin/requirements.md`
-- Update `docs/admin/architecture.md`
-- Update `docs/admin/api-contract.md`
-- Update `docs/admin/test-plan.md`
+- Update `../docs/admin/requirements.md`
+- Update `../docs/admin/architecture.md`
+- Update `../docs/admin/api-contract.md`
+- Update `../docs/admin/test-plan.md`
 
 Documentation is part of the deliverable.
 
@@ -132,8 +132,8 @@ Documentation is part of the deliverable.
 
 ## Source of Truth
 
-- `docs/admin/*` is the source of truth for Admin requirements, architecture, API contract, and test plan.
-- If any other document conflicts, follow `docs/admin/*`.
+- `../docs/admin/*` is the source of truth for Admin requirements, architecture, API contract, and test plan.
+- If any other document conflicts, follow `../docs/admin/*`.
 
 ---
 

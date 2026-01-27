@@ -22,7 +22,7 @@ Provide (or infer) the following:
 
 - Feature name (e.g., "Complaint moderation")
 - Target roles: ADMIN / VIEWER behaviors
-- Entity endpoints involved (from `docs/admin/api-contract.md`)
+- Entity endpoints involved (from `../docs/admin/api-contract.md`)
 - MVP scope vs out-of-scope
 - Any deadlines or constraints (optional)
 
@@ -88,16 +88,16 @@ For each PR:
 
 ### 9) Docs Updates Checklist
 
-- [ ] docs/admin/requirements.md
-- [ ] docs/admin/architecture.md
-- [ ] docs/admin/api-contract.md
-- [ ] docs/admin/test-plan.md
+- [ ] ../docs/admin/requirements.md
+- [ ] ../docs/admin/architecture.md
+- [ ] ../docs/admin/api-contract.md
+- [ ] ../docs/admin/test-plan.md
 
 ---
 
 ## Rules
 
-- Base all API assumptions on `docs/admin/api-contract.md`
+- Base all API assumptions on `../docs/admin/api-contract.md`
 - Keep the plan realistic for a frontend-only implementation
 - If backend is missing, explicitly propose MSW mocking
 - Avoid large refactors; prefer incremental PRs
