@@ -40,7 +40,8 @@
           "backgroundColor": "#0a0a0f"
         }
       ],
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true,
