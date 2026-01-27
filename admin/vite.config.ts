@@ -9,7 +9,18 @@ interface VitestConfigExport extends UserConfig {
 
 export default defineConfig({
   plugins: [react()],
-  server: {},
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://dev.connectingmoment.com",
+        changeOrigin: true,
+        secure: false,
+        cookieDomainRewrite: {
+          "*": "localhost",
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

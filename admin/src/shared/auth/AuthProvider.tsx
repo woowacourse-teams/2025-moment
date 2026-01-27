@@ -44,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { data } = await apiClient.post<AdminUser>("/admin/auth/login", {
+      const { data } = await apiClient.post<AdminUser>("/auth/login", {
         email,
         password,
       });
