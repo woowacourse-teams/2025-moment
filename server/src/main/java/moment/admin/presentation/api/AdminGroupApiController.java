@@ -8,6 +8,7 @@ import moment.admin.domain.GroupStatusFilter;
 import moment.admin.dto.request.AdminGroupUpdateRequest;
 import moment.admin.dto.response.AdminCommentListResponse;
 import moment.admin.dto.response.AdminGroupDetailResponse;
+import moment.admin.dto.response.AdminGroupInviteLinkResponse;
 import moment.admin.dto.response.AdminGroupListResponse;
 import moment.admin.dto.response.AdminGroupMemberListResponse;
 import moment.admin.dto.response.AdminGroupStatsResponse;
@@ -161,6 +162,17 @@ public class AdminGroupApiController {
         adminGroupMemberService.transferOwnership(groupId, newOwnerMemberId);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
+    }
+
+    // ===== 초대 링크 API =====
+
+    @GetMapping("/{groupId}/invite-link")
+    public ResponseEntity<SuccessResponse<AdminGroupInviteLinkResponse>> getInviteLink(
+        @PathVariable Long groupId
+    ) {
+        AdminGroupInviteLinkResponse response = adminGroupService.getInviteLink(groupId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
     // ===== 콘텐츠 관리 API =====

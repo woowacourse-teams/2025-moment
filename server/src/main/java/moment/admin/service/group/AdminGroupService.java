@@ -3,13 +3,17 @@ package moment.admin.service.group;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.admin.dto.request.AdminGroupUpdateRequest;
+import moment.admin.dto.response.AdminGroupInviteLinkResponse;
 import moment.admin.global.exception.AdminErrorCode;
 import moment.admin.global.exception.AdminException;
 import moment.comment.infrastructure.CommentRepository;
 import moment.group.domain.Group;
+import moment.group.domain.GroupInviteLink;
+import moment.group.infrastructure.GroupInviteLinkRepository;
 import moment.group.infrastructure.GroupMemberRepository;
 import moment.group.infrastructure.GroupRepository;
 import moment.moment.infrastructure.MomentRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,10 @@ public class AdminGroupService {
     private final GroupMemberRepository groupMemberRepository;
     private final MomentRepository momentRepository;
     private final CommentRepository commentRepository;
+    private final GroupInviteLinkRepository groupInviteLinkRepository;
+
+    @Value("${app.base-url:https://moment.com}")
+    private String baseUrl;
 
     @Transactional
     public void updateGroup(Long groupId, AdminGroupUpdateRequest request) {
@@ -83,5 +91,20 @@ public class AdminGroupService {
         if (!momentIds.isEmpty()) {
             commentRepository.restoreByMomentIds(momentIds);
         }
+    }
+
+    public AdminGroupInviteLinkResponse getInviteLink(Long groupId) {
+        groupRepository.findByIdIncludingDeleted(groupId)
+            .orElseThrow(() -> new AdminException(AdminErrorCode.GROUP_NOT_FOUND));
+
+        GroupInviteLink inviteLink = groupInviteLinkRepository
+            .findFirstByGroupIdOrderByCreatedAtDesc(groupId)
+            .orElse(null);
+
+        if (inviteLink == null) {
+            return null;
+        }
+
+        return AdminGroupInviteLinkResponse.from(inviteLink, baseUrl);
     }
 }
