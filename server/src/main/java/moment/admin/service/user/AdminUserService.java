@@ -2,8 +2,8 @@ package moment.admin.service.user;
 
 import lombok.RequiredArgsConstructor;
 import moment.admin.dto.request.AdminUserUpdateRequest;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.springframework.data.domain.Page;
@@ -31,7 +31,7 @@ public class AdminUserService {
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new AdminException(AdminErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional

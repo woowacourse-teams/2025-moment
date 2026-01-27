@@ -11,9 +11,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice(basePackages = "moment.admin.presentation")
+@ControllerAdvice(basePackages = "moment.admin.presentation", basePackageClasses = {})
 @Slf4j
 public class AdminExceptionHandler {
+
+    @ExceptionHandler(AdminException.class)
+    public String handleAdminException(AdminException e, Model model,
+                                        HttpServletRequest request, HttpServletResponse response) {
+        AdminErrorCode errorCode = e.getErrorCode();
+
+        // API 요청은 AdminApiExceptionHandler에서 처리
+        if (request.getRequestURI().startsWith("/api/admin/")) {
+            throw e;
+        }
+
+        log.warn("Admin AdminException",
+                kv("path", request.getRequestURI()),
+                kv("errorCode", errorCode.name()),
+                kv("message", errorCode.getMessage())
+        );
+
+        if (errorCode == AdminErrorCode.UNAUTHORIZED ||
+                errorCode == AdminErrorCode.NOT_FOUND ||
+                errorCode == AdminErrorCode.LOGIN_FAILED ||
+                errorCode == AdminErrorCode.SESSION_EXPIRED) {
+            return "redirect:/admin/login?error=" + errorCode.getMessage();
+        }
+
+        // HTTP 상태 코드 설정
+        response.setStatus(e.getStatus().value());
+
+        model.addAttribute("errorCode", errorCode.getCode());
+        model.addAttribute("errorMessage", errorCode.getMessage());
+        model.addAttribute("statusCode", e.getStatus().value());
+        return "admin/error/error";
+    }
 
     @ExceptionHandler(MomentException.class)
     public String handleMomentException(MomentException e, Model model,
