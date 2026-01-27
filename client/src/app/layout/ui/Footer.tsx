@@ -1,6 +1,9 @@
+import { isApp } from '@/shared/utils/device';
 import * as S from './Footer.styles';
 
 export const Footer = () => {
+  if (isApp()) return null;
+
   return (
     <S.FooterWrapper>
       <div>
