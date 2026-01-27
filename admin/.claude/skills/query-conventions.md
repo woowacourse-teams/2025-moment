@@ -10,7 +10,16 @@ These rules are **mandatory** whenever writing `useQuery` / `useMutation` and re
 
 ## Key Rules (Must Follow)
 
-### 1) Co-locate when used in one place (inside `api/`)
+### 1) File naming: `use~Query.ts` / `use~Mutation.ts`
+
+API hook 파일명은 **훅 이름과 동일하게** 작성한다.
+
+- Query: `use[Name]Query.ts` (예: `useUsersQuery.ts`, `useUserDetailQuery.ts`)
+- Mutation: `use[Name]Mutation.ts` (예: `useUpdateUserMutation.ts`, `useDeleteUserMutation.ts`)
+
+❌ `complaintsList.query.ts`, `userUpdate.mutation.ts` 같은 네이밍은 사용하지 않는다.
+
+### 2) Co-locate when used in one place (inside `api/`)
 
 If a query/mutation is used by only one page/feature:
 
@@ -20,7 +29,7 @@ If a query/mutation is used by only one page/feature:
 
 ✅ Good:
 
-- `features/admin-complaint/api/complaintsList.query.ts` contains:
+- `features/admin-complaint/api/useAdminComplaintsQuery.ts` contains:
   - `useAdminComplaintsQuery`
   - `fetchAdminComplaints`
   - local request/response types only needed here
@@ -30,7 +39,7 @@ If a query/mutation is used by only one page/feature:
 - Splitting into `features/<feature>/api/*` + `features/<feature>/types/*` for single-use code
 - Creating deep folder hierarchies for one hook
 
-### 2) Extract only when reused (2+ call sites)
+### 3) Extract only when reused (2+ call sites)
 
 Extract shared code only when:
 
@@ -43,7 +52,7 @@ When extracting:
 - Put shared API client logic in `admin/src/shared/api/*`
 - Put shared types in `admin/src/shared/types/*` (only if truly shared)
 
-### 3) Query keys are centralized
+### 4) Query keys are centralized
 
 All query keys must be defined in:
 
@@ -52,7 +61,7 @@ All query keys must be defined in:
 Hooks must reference keys from this module.
 No ad-hoc keys inside feature files.
 
-### 4) Deterministic keys + stable params
+### 5) Deterministic keys + stable params
 
 - Query keys must be deterministic and serializable
 - Use a **single params object** and keep its shape stable
