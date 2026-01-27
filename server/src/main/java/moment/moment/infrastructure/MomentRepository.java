@@ -6,6 +6,7 @@ import moment.moment.domain.Moment;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -191,4 +192,41 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             @Param("momentIds") List<Long> momentIds,
             @Param("cursor") Long cursor,
             Pageable pageable);
+
+    // ===== Admin 그룹 삭제/복원용 메서드 =====
+
+    /**
+     * 그룹의 모든 모멘트 Soft Delete
+     */
+    @Modifying
+    @Query(value = "UPDATE moments SET deleted_at = NOW() WHERE group_id = :groupId AND deleted_at IS NULL", nativeQuery = true)
+    void softDeleteByGroupId(@Param("groupId") Long groupId);
+
+    /**
+     * 그룹의 모든 모멘트 복원
+     */
+    @Modifying
+    @Query(value = "UPDATE moments SET deleted_at = NULL WHERE group_id = :groupId AND deleted_at IS NOT NULL", nativeQuery = true)
+    void restoreByGroupId(@Param("groupId") Long groupId);
+
+    /**
+     * 그룹의 모든 모멘트 ID 조회 (코멘트 삭제용)
+     */
+    @Query(value = "SELECT id FROM moments WHERE group_id = :groupId", nativeQuery = true)
+    List<Long> findAllIdsByGroupId(@Param("groupId") Long groupId);
+
+    // ===== Admin 멤버 강제 추방용 메서드 =====
+
+    /**
+     * 특정 멤버의 모든 모멘트 Soft Delete
+     */
+    @Modifying
+    @Query(value = "UPDATE moments SET deleted_at = NOW() WHERE member_id = :memberId AND deleted_at IS NULL", nativeQuery = true)
+    int softDeleteByMemberId(@Param("memberId") Long memberId);
+
+    /**
+     * 특정 멤버의 모든 모멘트 ID 조회 (코멘트 삭제용)
+     */
+    @Query(value = "SELECT id FROM moments WHERE member_id = :memberId", nativeQuery = true)
+    List<Long> findAllIdsByMemberId(@Param("memberId") Long memberId);
 }
