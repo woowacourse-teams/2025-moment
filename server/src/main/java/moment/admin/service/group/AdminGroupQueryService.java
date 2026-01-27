@@ -129,10 +129,27 @@ public class AdminGroupQueryService {
     }
 
     public AdminGroupMemberListResponse getApprovedMembers(Long groupId, int page, int size) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        validateGroupExists(groupId);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<GroupMember> memberPage = groupMemberRepository.findApprovedMembersByGroupId(groupId, pageable);
+        Page<AdminGroupMemberResponse> responsePage = memberPage.map(AdminGroupMemberResponse::from);
+
+        return AdminGroupMemberListResponse.from(responsePage);
     }
 
     public AdminGroupMemberListResponse getPendingMembers(Long groupId, int page, int size) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        validateGroupExists(groupId);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<GroupMember> memberPage = groupMemberRepository.findPendingMembersByGroupId(groupId, pageable);
+        Page<AdminGroupMemberResponse> responsePage = memberPage.map(AdminGroupMemberResponse::from);
+
+        return AdminGroupMemberListResponse.from(responsePage);
+    }
+
+    private void validateGroupExists(Long groupId) {
+        groupRepository.findByIdIncludingDeleted(groupId)
+            .orElseThrow(() -> new AdminException(AdminErrorCode.GROUP_NOT_FOUND));
     }
 }
