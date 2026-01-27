@@ -6,11 +6,14 @@ import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQ
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { useToast } from '@/shared/hooks/useToast';
+import { isApp } from '@/shared/utils/device';
 import * as S from './Navbar.styles';
 import { track } from '@/shared/lib/ga/track';
 
 export const Navbar = () => {
   const location = useLocation();
+  if (isApp()) return null;
+
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
   const { showError } = useToast();
