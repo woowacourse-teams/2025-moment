@@ -96,3 +96,6 @@ admin:
   session:
     timeout: 3600
     cookie-name: SESSION
+
+app:
+  base-url: https://moment.test.com

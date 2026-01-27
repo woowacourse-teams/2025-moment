@@ -57,4 +57,8 @@ public class Group extends BaseEntity {
     public boolean isOwner(User user) {
         return this.owner.getId().equals(user.getId());
     }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
 }

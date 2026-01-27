@@ -29,6 +29,20 @@ public class ReportController {
     
     private final ReportCreateFacadeService reportCreateFacadeService;
 
+    @Operation(summary = "모멘트 신고", description = "부적절한 모멘트를 신고합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "모멘트 신고 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [M-002] 존재하지 않는 모멘트입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
     @PostMapping("/api/v2/moments/{id}/reports")
     public ResponseEntity<SuccessResponse<ReportCreateResponse>> createMomentReport(
             @AuthenticationPrincipal Authentication authentication,
@@ -46,7 +60,7 @@ public class ReportController {
 
     @Operation(summary = "코멘트 신고", description = "부적절한 코멘트를 신고합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "코멘트 신고 성공"),
+            @ApiResponse(responseCode = "201", description = "코멘트 신고 성공"),
             @ApiResponse(responseCode = "401", description = """
                     - [T-005] 토큰을 찾을 수 없습니다.
                     """,
