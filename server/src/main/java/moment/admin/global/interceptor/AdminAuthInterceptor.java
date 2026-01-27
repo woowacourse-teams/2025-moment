@@ -33,6 +33,11 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
+        // OPTIONS 요청은 CORS preflight이므로 인증 없이 통과
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         HttpSession session = request.getSession(false);
         String requestURI = request.getRequestURI();
 
