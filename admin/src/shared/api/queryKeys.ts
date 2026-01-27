@@ -14,10 +14,19 @@ export const queryKeys = {
   // Groups
   groups: {
     all: ['groups'] as const,
+    stats: () => [...queryKeys.groups.all, 'stats'] as const,
     lists: () => [...queryKeys.groups.all, 'list'] as const,
     list: (filters: Record<string, unknown>) => [...queryKeys.groups.lists(), filters] as const,
     details: () => [...queryKeys.groups.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.groups.details(), id] as const,
+    members: (id: string, filters: Record<string, unknown>) =>
+      [...queryKeys.groups.detail(id), 'members', filters] as const,
+    pendingMembers: (id: string, filters: Record<string, unknown>) =>
+      [...queryKeys.groups.detail(id), 'pending-members', filters] as const,
+    moments: (id: string, filters: Record<string, unknown>) =>
+      [...queryKeys.groups.detail(id), 'moments', filters] as const,
+    comments: (groupId: string, momentId: string, filters: Record<string, unknown>) =>
+      [...queryKeys.groups.detail(groupId), 'moments', momentId, 'comments', filters] as const,
   },
 
   // Moments
