@@ -12,15 +12,10 @@ import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.dto.response.SuccessResponse;
-import moment.reward.domain.Reason;
-import moment.reward.domain.RewardHistory;
-import moment.reward.infrastructure.RewardRepository;
-import moment.user.domain.Level;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
-import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +30,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @Tag(TestTags.E2E)
 @ActiveProfiles("test")
@@ -51,8 +45,6 @@ class MyPageControllerTest {
     private DatabaseCleaner databaseCleaner;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private RewardRepository rewardRepository;
     @Autowired
     private TokenManager tokenManager;
 
@@ -78,7 +70,7 @@ class MyPageControllerTest {
         // when
         SuccessResponse<MyPageProfileResponse> response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/me/profile")
+                .when().get("/api/v2/me/profile")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -89,59 +81,14 @@ class MyPageControllerTest {
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(profile.nickname()).isEqualTo(user.getNickname()),
-                () -> assertThat(profile.email()).isEqualTo(user.getEmail()),
-                () -> assertThat(profile.level()).isEqualTo(Level.ASTEROID_WHITE),
-                () -> assertThat(profile.availableStar()).isEqualTo(0),
-                () -> assertThat(profile.expStar()).isEqualTo(0),
-                () -> assertThat(profile.nextStepExp()).isEqualTo(5)
+                () -> assertThat(profile.email()).isEqualTo(user.getEmail())
         );
-    }
-
-    @Test
-    void 유저_보상_기록을_페이징_처리하여_조회한다() {
-        // given
-        User user = UserFixture.createUserByEmailAndNickname("test@gmail.com", "신비로운 행성의 지구");
-        userRepository.save(user);
-
-        createTestRewardHistory(user);
-
-        String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
-
-        // when
-        SuccessResponse<MyRewardHistoryPageResponse> response = RestAssured.given().log().all()
-                .cookie("accessToken", token)
-                .param("pageNum", 1)
-                .param("pageSize", 10)
-                .when().get("/api/v1/me/reward/history")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(new TypeRef<>() {
-                });
-
-        MyRewardHistoryPageResponse pageData = response.data();
-
-        // then
-        assertAll(
-                () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(pageData.totalPages()).isEqualTo(2),
-                () -> assertThat(pageData.pageSize()).isEqualTo(10),
-                () -> assertThat(pageData.items().size()).isEqualTo(10),
-                () -> assertThat(pageData.currentPageNum()).isEqualTo(1)
-        );
-    }
-
-    private void createTestRewardHistory(User user) {
-        for (int i = 0; i < 20; i++) {
-            rewardRepository.save(
-                    new RewardHistory(user, Reason.MOMENT_CREATION, (long) i));
-        }
     }
 
     @Test
     void 마이페이지에서_유저_닉네임을_변경한다() {
         // given
         User user = UserFixture.createUserByEmailAndNickname("test@gmail.com", "신비로운 행성의 지구");
-        ReflectionTestUtils.setField(user, "availableStar", 150);
         User savedUser = userRepository.save(user);
 
         String token = tokenManager.createAccessToken(user.getId(), user.getEmail());
@@ -153,7 +100,7 @@ class MyPageControllerTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .cookie("accessToken", token)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -164,8 +111,7 @@ class MyPageControllerTest {
 
         assertAll(
                 () -> assertThat(response.status()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(nicknameChangedUser.getNickname()).isEqualTo(request.newNickname()),
-                () -> assertThat(nicknameChangedUser.getAvailableStar()).isEqualTo(50)
+                () -> assertThat(nicknameChangedUser.getNickname()).isEqualTo(request.newNickname())
         );
     }
 
@@ -186,7 +132,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/password")
+                .when().post("/api/v2/me/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -210,12 +156,11 @@ class MyPageControllerTest {
     }
 
     @Test
-    void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_변경된다() {
+    void 마이페이지에서_닉네임을_변경한다() {
         // given
         String nickname = "신비로운 우주의 지구";
         User user = UserFixture.createUserByNickname(nickname);
         String email = user.getEmail();
-        ReflectionTestUtils.setField(user, "availableStar", 100);
 
         User savedUser = userRepository.save(user);
 
@@ -229,7 +174,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -247,12 +192,11 @@ class MyPageControllerTest {
     }
 
     @Test
-    void 마이페이지에서_닉네임_변경_시_유저의_사용_가능_별조각이_차감되며_별조각을_사용하면_몇번이던_변경된다() {
+    void 마이페이지에서_닉네임을_여러번_변경할_수_있다() {
         // given
         String nickname = "신비로운 우주의 지구";
         User user = UserFixture.createUserByNickname(nickname);
         String email = user.getEmail();
-        ReflectionTestUtils.setField(user, "availableStar", 1000);
 
         User savedUser = userRepository.save(user);
 
@@ -266,7 +210,7 @@ class MyPageControllerTest {
                 .body(request)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();
@@ -289,7 +233,7 @@ class MyPageControllerTest {
                 .body(retryRequest)
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
-                .when().post("/api/v1/me/nickname")
+                .when().post("/api/v2/me/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response();

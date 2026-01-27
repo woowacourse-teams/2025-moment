@@ -19,6 +19,9 @@ public record NotificationResponse(
         @Schema(description = "타겟 id", example = "1")
         Long targetId,
 
+        @Schema(description = "그룹 id", example = "1")
+        Long groupId,
+
         @Schema(description = "메시지", example = "알림이 전송되었습니다.")
         String message,
 
@@ -33,7 +36,9 @@ public record NotificationResponse(
                 notificationType,
                 notification.getTargetType(),
                 notification.getTargetId(),
-                notificationType.getMessage(), notification.isRead()
+                notification.getGroupId(),
+                notificationType.getMessage(),
+                notification.isRead()
         );
     }
 }

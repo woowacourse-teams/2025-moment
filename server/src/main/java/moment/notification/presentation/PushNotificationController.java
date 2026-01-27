@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Push Notification API", description = "푸시 알림 관련 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/push-notifications")
+@RequestMapping("/api/v2/push-notifications")
 public class PushNotificationController {
 
     private final PushNotificationApplicationService pushNotificationApplicationService;
@@ -45,6 +45,14 @@ public class PushNotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "디바이스 정보 삭제", description = "푸시 알림을 위한 디바이스 정보를 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "디바이스 정보 삭제 성공"),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-009] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @DeleteMapping
     public ResponseEntity<SuccessResponse<Void>> deleteDeviceEndpoint(
             @RequestBody DeviceEndpointRequest deviceEndpointRequest,

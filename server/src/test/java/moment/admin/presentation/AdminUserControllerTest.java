@@ -2,19 +2,15 @@ package moment.admin.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
 import moment.admin.domain.Admin;
-import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.AdminFixture;
 import moment.fixture.UserFixture;
-import moment.user.domain.Level;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -172,8 +168,6 @@ class AdminUserControllerTest {
         User savedUser = userRepository.save(user);
 
         String newNickname = "updatedNickname";
-        int newAvailableStar = 1000;
-        int newExpStar = 5000;
 
         // when
         RestAssured.given().log().all()
@@ -181,8 +175,6 @@ class AdminUserControllerTest {
                 .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
-                .formParam("availableStar", String.valueOf(newAvailableStar))
-                .formParam("expStar", String.valueOf(newExpStar))
                 .when().post("/admin/users/{id}/edit", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -190,23 +182,16 @@ class AdminUserControllerTest {
 
         // then
         User updatedUser = userRepository.findById(savedUser.getId()).orElseThrow();
-        assertAll(
-                () -> assertThat(updatedUser.getNickname()).isEqualTo(newNickname),
-                () -> assertThat(updatedUser.getAvailableStar()).isEqualTo(newAvailableStar),
-                () -> assertThat(updatedUser.getExpStar()).isEqualTo(newExpStar),
-                () -> assertThat(updatedUser.getLevel()).isEqualTo(Level.getLevel(newExpStar))
-        );
+        assertThat(updatedUser.getNickname()).isEqualTo(newNickname);
     }
 
     @Test
-    void 사용자_정보_수정_시_닉네임만_변경한다() {
+    void 사용자_정보_수정_시_닉네임을_변경한다() {
         // given
         User user = UserFixture.createUser();
         User savedUser = userRepository.save(user);
 
         String newNickname = "newNickname";
-        int originalAvailableStar = savedUser.getAvailableStar();
-        int originalExpStar = savedUser.getExpStar();
 
         // when
         RestAssured.given().log().all()
@@ -214,8 +199,6 @@ class AdminUserControllerTest {
                 .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", newNickname)
-                .formParam("availableStar", String.valueOf(originalAvailableStar))
-                .formParam("expStar", String.valueOf(originalExpStar))
                 .when().post("/admin/users/{id}/edit", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.FOUND.value())
@@ -238,48 +221,6 @@ class AdminUserControllerTest {
                 .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "")
-                .formParam("availableStar", "1000")
-                .formParam("expStar", "5000")
-                .when().post("/admin/users/{id}/edit", savedUser.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.HTML);
-    }
-
-    @Test
-    void 음수_별조각으로_사용자_수정_시_검증_에러가_발생한다() {
-        // given
-        User user = UserFixture.createUser();
-        User savedUser = userRepository.save(user);
-
-        // when & then
-        RestAssured.given().log().all()
-                .redirects().follow(false)
-                .cookie("SESSION", adminSessionId)
-                .contentType(ContentType.URLENC)
-                .formParam("nickname", "nickname")
-                .formParam("availableStar", "-100")
-                .formParam("expStar", "5000")
-                .when().post("/admin/users/{id}/edit", savedUser.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.HTML);
-    }
-
-    @Test
-    void 음수_경험치로_사용자_수정_시_검증_에러가_발생한다() {
-        // given
-        User user = UserFixture.createUser();
-        User savedUser = userRepository.save(user);
-
-        // when & then
-        RestAssured.given().log().all()
-                .redirects().follow(false)
-                .cookie("SESSION", adminSessionId)
-                .contentType(ContentType.URLENC)
-                .formParam("nickname", "nickname")
-                .formParam("availableStar", "1000")
-                .formParam("expStar", "-100")
                 .when().post("/admin/users/{id}/edit", savedUser.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -294,8 +235,6 @@ class AdminUserControllerTest {
                 .cookie("SESSION", adminSessionId)
                 .contentType(ContentType.URLENC)
                 .formParam("nickname", "nickname")
-                .formParam("availableStar", "1000")
-                .formParam("expStar", "5000")
                 .when().post("/admin/users/{id}/edit", 999L)
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value())

@@ -19,6 +19,9 @@ public record NotificationSseResponse(
         @Schema(description = "타겟 id", example = "1")
         Long targetId,
 
+        @Schema(description = "그룹 id", example = "1")
+        Long groupId,
+
         @Schema(description = "메시지", example = "알림이 전송되었습니다.")
         String message,
 
@@ -30,13 +33,15 @@ public record NotificationSseResponse(
             Long notificationId,
             NotificationType notificationType,
             TargetType targetType,
-            Long targetId
+            Long targetId,
+            Long groupId
     ) {
         return new NotificationSseResponse(
                 notificationId,
                 notificationType,
                 targetType,
                 targetId,
+                groupId,
                 notificationType.getMessage(),
                 false
         );

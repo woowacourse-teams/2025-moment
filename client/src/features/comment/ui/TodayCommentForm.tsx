@@ -8,11 +8,11 @@ import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
 import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
-import { useModal } from '@/shared/design-system/modal';
-import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
 import { GetCommentableMoments } from '../types/comments';
-import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { useTodayCommentForm } from '../hooks/useTodayCommentForm';
+import { useMomentLikeMutation } from '@/features/moment/api/useMomentLikeMutation';
+import { Heart } from 'lucide-react';
 
 export function TodayCommentForm({
   momentData,
@@ -21,6 +21,7 @@ export function TodayCommentForm({
   isLoggedInLoading,
   error,
   refetch,
+  groupId,
 }: {
   momentData?: GetCommentableMoments;
   isLoading: boolean;
@@ -28,16 +29,26 @@ export function TodayCommentForm({
   isLoggedInLoading: boolean;
   error: Error | null;
   refetch: () => void;
+  groupId?: string | number;
 }) {
-  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
-
   const {
-    handleOpen: handleComplaintOpen,
-    handleClose: handleComplaintClose,
-    isOpen: isComplaintOpen,
-  } = useModal();
+    fullImageSrc,
+    handleImageClick,
+    closeFullImage,
+    ImageOverlayPortal,
+    handleComplaintOpen,
+    handleComplaintClose,
+    handleComplaintSubmit,
+    isComplaintOpen,
+  } = useTodayCommentForm({ momentData });
 
-  const { handleComplaintSubmit } = useSendComplaint(handleComplaintClose);
+  const momentLikeMutation = useMomentLikeMutation(groupId || '');
+
+  const handleLike = () => {
+    if (momentData) {
+      momentLikeMutation.mutate(momentData.id);
+    }
+  };
 
   if (isLoggedInLoading) {
     return <CommonSkeletonCard variant="comment" />;
@@ -49,7 +60,7 @@ export function TodayCommentForm({
         <Card.TitleContainer
           title={
             <S.TitleWrapper>
-              <WriterInfo writer={'푸르른 물방울의 테리우스'} level={'ASTEROID_WHITE'} />
+              <WriterInfo writer={'푸르른 물방울의 테리우스'} />
               <S.ActionWrapper>
                 <WriteTime date="9시간 전" />
               </S.ActionWrapper>
@@ -58,7 +69,7 @@ export function TodayCommentForm({
           subtitle=""
         />
         <SimpleCard height="small" content={'다른 사람의 모멘트는 로그인 후에 확인할 수 있어요!'} />
-        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} />
+        <TodayCommentWriteContent isLoggedIn={isLoggedIn ?? false} momentId={0} groupId={groupId} />
       </Card>
     );
   }
@@ -94,12 +105,20 @@ export function TodayCommentForm({
         <Card.TitleContainer
           title={
             <S.TitleWrapper>
-              <WriterInfo writer={momentData.nickname} level={momentData.level} />
+              <WriterInfo writer={momentData.nickname} />
               <S.ActionWrapper>
                 <WriteTime date={momentData.createdAt} />
                 <S.ComplaintButton onClick={handleComplaintOpen} aria-label="모멘트 신고">
                   <Siren size={28} color={theme.colors['red-500']} />
                 </S.ComplaintButton>
+                <S.LikeButton onClick={handleLike} aria-label="모멘트 좋아요">
+                  <Heart
+                    size={28}
+                    color={theme.colors['red-500']}
+                    fill={momentData.hasLiked ? theme.colors['red-500'] : 'none'}
+                  />
+                  <S.LikeCount>{momentData.likeCount || 0}</S.LikeCount>
+                </S.LikeButton>
                 <S.RefreshButton onClick={() => refetch()} aria-label="다른 모멘트 보기">
                   <RotateCcw size={28} />
                 </S.RefreshButton>
@@ -131,6 +150,7 @@ export function TodayCommentForm({
         <TodayCommentWriteContent
           momentId={momentData.id}
           isLoggedIn={isLoggedIn}
+          groupId={groupId}
           key={momentData.id}
         />
       </Card>

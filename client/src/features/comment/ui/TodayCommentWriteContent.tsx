@@ -12,14 +12,19 @@ import { TextArea } from '@/shared/design-system/textArea';
 export const TodayCommentWriteContent = ({
   isLoggedIn,
   momentId,
+  groupId,
 }: {
   isLoggedIn: boolean;
   momentId: number;
+  groupId?: string | number;
 }) => {
   const MAX_LENGTH = 200;
   const { showWarning } = useToast();
-  const { comment, handleChange, handleImageChange, handleSubmit, isPending } =
-    useSendComments(momentId);
+
+  const { comment, handleChange, handleImageChange, handleSubmit, isPending } = useSendComments({
+    groupId: groupId || '',
+    momentId,
+  });
 
   const currentLength = comment.length;
   const isDisabled = comment.trim().length === 0 || currentLength > MAX_LENGTH;

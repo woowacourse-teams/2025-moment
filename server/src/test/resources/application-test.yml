@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         show_sql: false
@@ -74,6 +74,8 @@ auth:
     client-secret: test-client-secret
     redirect-uri: test-redirect-uri
     client-uri: test-client-uri
+  apple:
+    client-ids: com.moment.app,com.moment.app.test
   password_update:
     uri: test-mail-uri
 

@@ -9,7 +9,6 @@ import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
-import moment.moment.domain.WriteType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -40,7 +39,7 @@ public class MomentImageRepositoryTest {
         // given
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
-        Moment moment = new Moment("내용", savedMomenter, WriteType.BASIC);
+        Moment moment = new Moment("내용", savedMomenter);
         Moment savedMoment = momentRepository.save(moment);
 
         String imageUrl = "https://s3:moment-dev/images/고양이.jpg";
@@ -73,9 +72,9 @@ public class MomentImageRepositoryTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment1 = new Moment(momentContent1, savedMomenter, WriteType.BASIC);
-        Moment moment2 = new Moment(momentContent2, savedMomenter, WriteType.BASIC);
-        Moment moment3 = new Moment(momentContent3, savedMomenter, WriteType.BASIC);
+        Moment moment1 = new Moment(momentContent1, savedMomenter);
+        Moment moment2 = new Moment(momentContent2, savedMomenter);
+        Moment moment3 = new Moment(momentContent3, savedMomenter);
 
         Moment savedMoment1 = momentRepository.save(moment1);
         Moment savedMoment2 = momentRepository.save(moment2);
@@ -104,8 +103,8 @@ public class MomentImageRepositoryTest {
         User momenter = UserFixture.createUser();
         User savedMomenter = userRepository.save(momenter);
 
-        Moment moment1 = new Moment("내용1", savedMomenter, WriteType.BASIC);
-        Moment moment2 = new Moment("내용2", savedMomenter, WriteType.BASIC);
+        Moment moment1 = new Moment("내용1", savedMomenter);
+        Moment moment2 = new Moment("내용2", savedMomenter);
         Moment savedMoment1 = momentRepository.save(moment1);
         Moment savedMoment2 = momentRepository.save(moment2);
 

@@ -79,10 +79,17 @@ auth:
   google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
-    redirect-uri: https://connectingmoment.com/api/v1/auth/callback/google
+    redirect-uri: https://connectingmoment.com/api/v2/auth/callback/google
     client-uri: https://connectingmoment.com
+  apple:
+    client-ids: ${APPLE_CLIENT_IDS}
   password_update:
     uri: https://connectingmoment.com/passwordUpdate?token=
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
 
 server:
   forward-headers-strategy: native

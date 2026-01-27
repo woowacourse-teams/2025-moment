@@ -30,7 +30,6 @@ public class User extends BaseEntity {
 
     private static final Pattern EMAIL_REGEX = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NICKNAME_REGEX = Pattern.compile("^.{1,15}$");
-    private static final int DEFAULT_POINT = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,15 +48,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
-
-    @Column(nullable = false)
-    private Integer availableStar = DEFAULT_POINT;
-
-    @Column(nullable = false)
-    private Integer expStar = DEFAULT_POINT;
-
-    @Enumerated(EnumType.STRING)
-    private Level level = Level.ASTEROID_WHITE;
 
     private LocalDateTime deletedAt;
 
@@ -107,32 +97,13 @@ public class User extends BaseEntity {
         return password.equals(loginPassword);
     }
 
-    public void addStarAndUpdateLevel(int pointToAdd) {
-        this.availableStar += pointToAdd;
-        if (pointToAdd >= 0) {
-            this.expStar += pointToAdd;
-        }
-        this.level = Level.getLevel(this.expStar);
-    }
-
-    public void updateStarsDirectly(int newAvailableStar, int newExpStar) {
-        this.availableStar = newAvailableStar;
-        this.expStar = newExpStar;
-        this.level = Level.getLevel(this.expStar);
-    }
-
-    public boolean canNotUseStars(int requiredStars) {
-        return (availableStar + requiredStars) < 0;
-    }
-
     public void updatePassword(String newPassword) {
         validatePassword(newPassword);
         this.password = newPassword;
     }
 
-    public void updateNickname(String newNickname, int requiredStar) {
+    public void updateNickname(String newNickname) {
         validateNickname(newNickname);
-        this.availableStar += requiredStar;
         this.nickname = newNickname;
     }
 

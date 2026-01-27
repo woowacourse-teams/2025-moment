@@ -152,6 +152,74 @@ export const ComplaintButton = styled.button`
   `}
 `;
 
+export const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const DeleteButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors['red-500']};
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const IconButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    transform: scale(1.1);
+  }
+`;
+
+export const LikeButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+export const LikeCount = styled.span`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors['gray-400']};
+  margin-left: -4px;
+  margin-right: 4px;
+`;
+
 export const CommentNavigationButton = styled.button<{ position: 'left' | 'right' }>`
   display: flex;
   align-items: center;
@@ -187,7 +255,7 @@ export const MyMomentsModalHeader = styled.div`
 `;
 
 export const WriterInfoWrapper = styled.div`
-  width: 100%;
+  flex-shrink: 0;
 `;
 
 export const TitleContainer = styled.div`
@@ -199,9 +267,12 @@ export const TitleContainer = styled.div`
 `;
 
 export const TitleWrapper = styled.div`
-  width: 50%;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 12px;
+  flex: 1;
+  white-space: nowrap;
 `;
 
 export const Title = styled.span`

@@ -16,18 +16,22 @@ import io.restassured.response.Response;
 import java.util.Date;
 import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
+import moment.auth.application.AppleAuthService;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.application.TokenManager;
 import moment.auth.domain.RefreshToken;
 import moment.auth.domain.Tokens;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.AppleLoginRequest;
 import moment.auth.dto.request.LoginRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.common.DatabaseCleaner;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.user.domain.User;
@@ -72,6 +76,8 @@ class AuthControllerTest {
     private RefreshTokenRepository refreshTokenRepository;
     @MockitoBean
     private GoogleAuthService googleAuthService;
+    @MockitoBean
+    private AppleAuthService appleAuthService;
     @Autowired
     private TokenManager tokenManager;
 
@@ -95,7 +101,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email")
+                .when().post("/api/v2/auth/email")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -108,7 +114,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new EmailRequest(request.email()))
-                .when().post("/api/v1/auth/email")
+                .when().post("/api/v2/auth/email")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -116,7 +122,7 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email/verify")
+                .when().post("/api/v2/auth/email/verify")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -133,7 +139,7 @@ class AuthControllerTest {
         Response response = given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/login");
+                .when().post("/api/v2/auth/login");
         response.then().log().all().statusCode(HttpStatus.OK.value());
 
         // then
@@ -163,7 +169,7 @@ class AuthControllerTest {
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshToken)
                 .contentType(ContentType.JSON)
-                .when().post("/api/v1/auth/logout");
+                .when().post("/api/v2/auth/logout");
 
         // then
         response.then().log().all().statusCode(HttpStatus.OK.value());
@@ -177,7 +183,7 @@ class AuthControllerTest {
         given()
                 .when()
                 .redirects().follow(false)
-                .get("/api/v1/auth/login/google")
+                .get("/api/v2/auth/login/google")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
                 .header(HttpHeaders.LOCATION, containsString("https://accounts.google.com/o/oauth2/v2/auth"));
@@ -198,7 +204,7 @@ class AuthControllerTest {
                 .when()
                 .redirects().follow(false)
                 .queryParam("code", "testAuthorizationCode")
-                .get("/api/v1/auth/callback/google");
+                .get("/api/v2/auth/callback/google");
 
         // then
         response.then()
@@ -223,7 +229,7 @@ class AuthControllerTest {
         // when
         LoginCheckResponse response = given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -238,7 +244,7 @@ class AuthControllerTest {
     void 쿠키가_없으면_로그인_상태로_거짓을_반환한다() {
         // when
         LoginCheckResponse response = given().log().all()
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -255,7 +261,7 @@ class AuthControllerTest {
         // when
         LoginCheckResponse response = given().log().all()
                 .cookie("token", token) // This will send a cookie with an empty or blank value
-                .when().get("/api/v1/auth/login/check")
+                .when().get("/api/v2/auth/login/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -289,7 +295,7 @@ class AuthControllerTest {
         Response response = given().log().all()
                 .cookie("accessToken", accessToken)
                 .cookie("refreshToken", refreshTokenValue)
-                .when().post("/api/v1/auth/refresh");
+                .when().post("/api/v2/auth/refresh");
 
         // then
         response.then().log().all().statusCode(HttpStatus.OK.value());
@@ -336,8 +342,128 @@ class AuthControllerTest {
         given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/auth/email/password")
+                .when().post("/api/v2/auth/email/password")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void Apple_로그인에_성공한다() {
+        // given
+        String identityToken = "valid.identity.token";
+        AppleLoginRequest request = new AppleLoginRequest(identityToken);
+        User user = userRepository.save(UserFixture.createGoogleUser());
+        RefreshToken refreshToken = new RefreshToken("refresh-token-value", user, new Date(),
+                new Date(System.currentTimeMillis() + 100000));
+        Tokens tokens = new Tokens("access-token-value", refreshToken);
+
+        org.mockito.BDDMockito.given(appleAuthService.loginOrSignUp(identityToken)).willReturn(tokens);
+
+        // when
+        Response response = given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple");
+
+        // then
+        response.then().log().all().statusCode(HttpStatus.OK.value());
+        Headers headers = response.getHeaders();
+        List<String> setCookieHeaders = headers.getValues(HttpHeaders.SET_COOKIE);
+
+        assertAll(
+                () -> assertThat(setCookieHeaders).hasSize(2),
+                () -> assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("accessToken=")),
+                () -> assertThat(setCookieHeaders).anyMatch(cookie -> cookie.startsWith("refreshToken="))
+        );
+    }
+
+    @Test
+    void Apple_로그인_시_identityToken이_비어있으면_400_에러를_반환한다() {
+        // given
+        AppleLoginRequest request = new AppleLoginRequest("");
+
+        // when & then
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void Apple_로그인_시_유효하지_않은_토큰이면_401_에러를_반환한다() {
+        // given
+        String identityToken = "invalid.token";
+        AppleLoginRequest request = new AppleLoginRequest(identityToken);
+
+        org.mockito.BDDMockito.given(appleAuthService.loginOrSignUp(identityToken))
+                .willThrow(new MomentException(ErrorCode.APPLE_TOKEN_INVALID));
+
+        // when & then
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("code", equalTo("AP-001"));
+    }
+
+    @Test
+    void Apple_로그인_시_만료된_토큰이면_401_에러를_반환한다() {
+        // given
+        String identityToken = "expired.token";
+        AppleLoginRequest request = new AppleLoginRequest(identityToken);
+
+        org.mockito.BDDMockito.given(appleAuthService.loginOrSignUp(identityToken))
+                .willThrow(new MomentException(ErrorCode.APPLE_TOKEN_EXPIRED));
+
+        // when & then
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("code", equalTo("AP-002"));
+    }
+
+    @Test
+    void Apple_로그인_시_공개키를_찾을_수_없으면_500_에러를_반환한다() {
+        // given
+        String identityToken = "valid.token.but.key.not.found";
+        AppleLoginRequest request = new AppleLoginRequest(identityToken);
+
+        org.mockito.BDDMockito.given(appleAuthService.loginOrSignUp(identityToken))
+                .willThrow(new MomentException(ErrorCode.APPLE_PUBLIC_KEY_NOT_FOUND));
+
+        // when & then
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple")
+                .then().log().all()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .body("code", equalTo("AP-003"));
+    }
+
+    @Test
+    void Apple_로그인_시_Apple_서버_오류이면_503_에러를_반환한다() {
+        // given
+        String identityToken = "valid.token";
+        AppleLoginRequest request = new AppleLoginRequest(identityToken);
+
+        org.mockito.BDDMockito.given(appleAuthService.loginOrSignUp(identityToken))
+                .willThrow(new MomentException(ErrorCode.APPLE_AUTH_SERVER_ERROR));
+
+        // when & then
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/api/v2/auth/apple")
+                .then().log().all()
+                .statusCode(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .body("code", equalTo("AP-005"));
     }
 }

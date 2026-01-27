@@ -55,7 +55,7 @@ class NotificationFacadeServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        notificationFacadeService.createNotificationAndSendSse(userId, contentId, reason, contentType);
+        notificationFacadeService.createNotificationAndSendSse(userId, contentId, reason, contentType, null);
 
         // then
         List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);

@@ -2,8 +2,6 @@ package moment.moment.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
 import moment.global.page.Cursorable;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -39,33 +39,32 @@ public class Moment extends BaseEntity implements Cursorable {
     @Column(nullable = false, length = 200)
     private String content;
 
-    @Column(nullable = false)
-    private boolean isMatched;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "momenter_id")
     private User momenter;
 
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private WriteType writeType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private GroupMember member;
 
     private LocalDateTime deletedAt;
 
-    public Moment(String content, User momenter, WriteType writeType) {
+    public Moment(String content, User momenter) {
         validate(content, momenter);
         this.content = content;
-        this.isMatched = false;
         this.momenter = momenter;
-        this.writeType = writeType;
     }
 
-    public Moment(String content, boolean isMatched, User momenter, WriteType writeType) {
+    public Moment(User momenter, Group group, GroupMember member, String content) {
         validate(content, momenter);
-        this.content = content;
-        this.isMatched = isMatched;
         this.momenter = momenter;
-        this.writeType = writeType;
+        this.group = group;
+        this.member = member;
+        this.content = content;
     }
 
     private void validate(String content, User momenter) {

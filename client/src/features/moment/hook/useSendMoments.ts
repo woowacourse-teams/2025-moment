@@ -3,12 +3,11 @@ import { useMomentsMutation } from '../api/useMomentsMutation';
 import { track } from '@/shared/lib/ga/track';
 import { useEffect } from 'react';
 
-export const useSendMoments = () => {
+export const useSendMoments = (groupId: string | undefined) => {
   const [content, setContent] = useState('');
   const [imageData, setImageData] = useState<{ imageUrl: string; imageName: string } | null>(null);
-  const [tagNames, setTagNames] = useState<string[]>([]);
 
-  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation();
+  const { mutateAsync: sendMoments, isSuccess } = useMomentsMutation(groupId || '');
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
@@ -18,19 +17,17 @@ export const useSendMoments = () => {
   const handleImageChange = (newImageData: { imageUrl: string; imageName: string } | null) => {
     setImageData(newImageData);
   };
-  const handleTagNameClick = (tagName: string) => {
-    if (tagNames.includes(tagName)) {
-      setTagNames(tagNames.filter(tag => tag !== tagName));
-      return;
-    }
-    setTagNames([...tagNames, tagName]);
-  };
 
   const handleSendContent = async () => {
+    if (!groupId) {
+      console.error('No group selected');
+      return;
+    }
+
     try {
       const payload = imageData
-        ? { content, tagNames, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
-        : { content, tagNames };
+        ? { content, imageUrl: imageData.imageUrl, imageName: imageData.imageName }
+        : { content };
 
       await sendMoments(payload);
     } catch (error) {
@@ -40,31 +37,27 @@ export const useSendMoments = () => {
 
   useEffect(() => {
     return () => {
-      const typed = content.trim().length > 0 || imageData != null || tagNames.length > 0;
+      const typed = content.trim().length > 0 || imageData != null;
       if (!isSuccess && typed) {
         const length = content.length;
         const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
         const has_media = Boolean(imageData);
-        const mood_tag = tagNames?.[0];
         track('abandon_composer', {
           stage: 'typed',
           composer: 'moment',
           has_media,
           content_length_bucket,
-          ...(mood_tag ? { mood_tag } : {}),
         });
       }
     };
-  }, [content, imageData, tagNames, isSuccess]);
+  }, [content, imageData, isSuccess]);
 
   return {
     handleContentChange,
     handleImageChange,
     handleSendContent,
-    handleTagNameClick,
     content,
     imageData,
-    tagNames,
     isSuccess,
   };
 };

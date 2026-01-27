@@ -10,8 +10,9 @@ import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -29,8 +30,8 @@ public class MomentService {
     private final MomentRepository momentRepository;
 
     @Transactional
-    public Moment create(String content, User momenter, WriteType writeType) {
-        Moment moment = new Moment(content, momenter, writeType);
+    public Moment create(String content, User momenter) {
+        Moment moment = new Moment(content, momenter);
         return momentRepository.save(moment);
     }
 
@@ -107,5 +108,62 @@ public class MomentService {
     public Moment getMomentBy(Long momentId) {
         return momentRepository.findById(momentId)
                 .orElseThrow(() -> new MomentException(ErrorCode.MOMENT_NOT_FOUND));
+    }
+
+    @Transactional
+    public Moment createInGroup(User momenter, Group group, GroupMember member, String content) {
+        Moment moment = new Moment(momenter, group, member, content);
+        return momentRepository.save(moment);
+    }
+
+    public List<Moment> getByGroup(Long groupId, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdOrderByIdDesc(groupId, pageable);
+        }
+        return momentRepository.findByGroupIdAndIdLessThanOrderByIdDesc(groupId, cursor, pageable);
+    }
+
+    public List<Moment> getMyMomentsInGroup(Long groupId, Long memberId, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdAndMemberIdOrderByIdDesc(groupId, memberId, pageable);
+        }
+        return momentRepository.findByGroupIdAndMemberIdAndIdLessThanOrderByIdDesc(
+            groupId, memberId, cursor, pageable
+        );
+    }
+
+    public List<Moment> getCommentableMomentsInGroup(Long groupId, User user, List<Long> reportedMomentIds) {
+        LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
+
+        List<Long> momentIds;
+        if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
+            momentIds = momentRepository.findMomentIdsInGroup(groupId, user.getId(), cutoffDateTime);
+        } else {
+            momentIds = momentRepository.findMomentIdsInGroupExcludingReported(
+                    groupId, user.getId(), cutoffDateTime, reportedMomentIds);
+        }
+
+        if (momentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        int randomIndex = RANDOM.nextInt(momentIds.size());
+        Long randomId = momentIds.get(randomIndex);
+
+        return momentRepository.findById(randomId)
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<Moment> getUnreadMyMomentsInGroup(
+            Long groupId, Long memberId, List<Long> momentIds, Long cursor, int limit) {
+        PageRequest pageable = PageRequest.of(0, limit);
+        if (cursor == null) {
+            return momentRepository.findByGroupIdAndMemberIdAndIdIn(groupId, memberId, momentIds, pageable);
+        }
+        return momentRepository.findByGroupIdAndMemberIdAndIdInAndIdLessThan(
+                groupId, memberId, momentIds, cursor, pageable);
     }
 }

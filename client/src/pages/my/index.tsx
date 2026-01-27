@@ -1,33 +1,20 @@
-import { LEVEL_MAP } from '@/app/layout/data/navItems';
-
+import { isApp, isDevice, isPWA } from '@/shared/utils/device';
 import { useProfileQuery } from '@/features/my/api/useProfileQuery';
-import { useRewardHistoryQuery } from '@/features/my/api/useRewardHistory';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 import { NotificationSettings } from '@/features/my/ui/NotificationSettings';
-import { RewardHistoryPagination } from '@/features/my/ui/RewardHistoryPagination';
-import { RewardHistoryTable } from '@/features/my/ui/RewardHistoryTable';
-import { getLevelText } from '@/features/my/utils/rewardHistoryTableHelper';
 import { useModal } from '@/shared/design-system/modal';
 import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
-import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { Modal } from '@/shared/design-system/modal/Modal';
-import { EXPBar } from '@/widgets/EXPBar/EXPBar';
-import { LevelTable } from '@/widgets/levelTable/LevelTable';
-import { AlertCircle } from 'lucide-react';
+import { MyGroupList } from '@/features/group/ui/MyGroupList';
 import { useState } from 'react';
 import * as S from './index.styles';
-import { NotFound } from '@/shared/ui/notFound/NotFound';
+import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
 export default function MyPage() {
-  const {
-    isOpen: isLevelOpen,
-    handleOpen: handleOpenLevelModal,
-    handleClose: handleCloseLevelModal,
-  } = useModal();
   const {
     isOpen: isPasswordOpen,
     handleOpen: handleOpenPasswordModal,
@@ -38,34 +25,18 @@ export default function MyPage() {
     handleOpen: handleOpenNicknameModal,
     handleClose: handleCloseNicknameModal,
   } = useModal();
-  const [currentPage, setCurrentPage] = useState(0);
   const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
-
-  const {
-    data: rewardHistory,
-    isLoading,
-    error,
-  } = useRewardHistoryQuery({
-    pageNum: currentPage,
-    pageSize: DEFAULT_PAGE_SIZE,
-  });
+  const logoutMutation = useLogoutMutation();
+  const showNotificationSettings = (isDevice() || isPWA()) && !isApp();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
   if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
   if (!myProfile) return <div>프로필 데이터가 없습니다.</div>;
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const handleNicknameChange = (nickname: string) => {
     setLocalNickname(nickname);
   };
-
-  const EXPBarProgress = (myProfile.expStar / myProfile.nextStepExp) * 100;
-
-  const totalExp = myProfile.nextStepExp;
 
   return (
     <S.MyPageWrapper>
@@ -81,7 +52,6 @@ export default function MyPage() {
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
                   <Button variant="primary" title="닉네임 변경" onClick={handleOpenNicknameModal} />
-
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -89,92 +59,39 @@ export default function MyPage() {
                       onClick={handleOpenPasswordModal}
                     />
                   )}
+                  <Button
+                    variant="primary"
+                    title="로그아웃"
+                    onClick={() => logoutMutation.mutate()}
+                  />
                 </S.ButtonContainer>
               </S.UserInfo>
             </S.UserProfileSection>
-
-            <S.EXPSection>
-              <S.EXPLabel>경험치</S.EXPLabel>
-              <S.EXPContainer>
-                <S.EXPStatsContainer>
-                  <S.LevelWrapper>
-                    <S.LevelBadge>{getLevelText(myProfile.level)}</S.LevelBadge>
-                    <S.LevelIcon
-                      src={LEVEL_MAP[myProfile.level as keyof typeof LEVEL_MAP]}
-                      alt="레벨 등급표"
-                    />
-                  </S.LevelWrapper>
-                  <EXPBar progress={EXPBarProgress} />
-                  <S.EXPStats>
-                    <span className="current">{myProfile.expStar}</span>
-                    <span className="separator">/</span>
-                    <span className="total">{totalExp}</span>
-                  </S.EXPStats>
-                </S.EXPStatsContainer>
-                <S.LevelButtonContainer>
-                  <Button variant="primary" title="레벨 등급표" onClick={handleOpenLevelModal} />
-                </S.LevelButtonContainer>
-              </S.EXPContainer>
-            </S.EXPSection>
-            <S.AvailableStar>사용가능한 별조각: {myProfile.availableStar}</S.AvailableStar>
           </S.UserInfoContainer>
         </Card>
       </S.UserInfoSection>
 
-      <S.UserInfoSection>
-        <S.SectionTitleContainer>
-          <S.SectionTitle>알림 설정</S.SectionTitle>
-        </S.SectionTitleContainer>
-        <Card width="large">
-          <NotificationSettings />
-        </Card>
-      </S.UserInfoSection>
+      {showNotificationSettings && (
+        <S.UserInfoSection>
+          <S.SectionTitleContainer>
+            <S.SectionTitle>알림 설정</S.SectionTitle>
+          </S.SectionTitleContainer>
+          <Card width="large">
+            <NotificationSettings />
+          </Card>
+        </S.UserInfoSection>
+      )}
 
       <S.RewardHistorySection>
         <S.SectionTitleContainer>
-          <S.SectionTitle>별조각 이력</S.SectionTitle>
+          <S.SectionTitle>그룹 관리</S.SectionTitle>
         </S.SectionTitleContainer>
         <Card width="large">
-          <S.RewardHistoryContainer>
-            {isLoading ? (
-              <CommonSkeletonCard variant="rewardHistory" />
-            ) : error ? (
-              <NotFound
-                title="데이터를 불러올 수 없습니다"
-                subtitle="잠시 후 다시 시도해주세요"
-                icon={AlertCircle}
-                size="large"
-              />
-            ) : rewardHistory ? (
-              <>
-                <RewardHistoryTable items={rewardHistory.items} />
-                <RewardHistoryPagination
-                  currentPage={rewardHistory.currentPageNum}
-                  totalPages={rewardHistory.totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </>
-            ) : (
-              <p>데이터가 없습니다.</p>
-            )}
-          </S.RewardHistoryContainer>
+          <MyGroupList />
         </Card>
       </S.RewardHistorySection>
 
       <S.Divider />
-
-      <Modal
-        isOpen={isLevelOpen}
-        position="center"
-        size="medium"
-        height="80vh"
-        onClose={handleCloseLevelModal}
-      >
-        <Modal.Header title="레벨 등급표" />
-        <Modal.Content>
-          <LevelTable />
-        </Modal.Content>
-      </Modal>
 
       <Modal
         isOpen={isPasswordOpen}
@@ -194,17 +111,13 @@ export default function MyPage() {
         size="small"
         onClose={handleCloseNicknameModal}
       >
-        <Modal.Header title={myProfile.expStar < 100 ? '<별조각 보유 부족>' : '<닉네임 변경>'} />
+        <Modal.Header title="<닉네임 변경>" />
         <Modal.Content>
-          {myProfile.expStar < 100 ? (
-            <p>별조각 100개 이상 보유 시 닉네임 변경이 가능합니다.</p>
-          ) : (
-            <ChangeNicknameForm
-              nickname={localNickname}
-              updateNickname={handleNicknameChange}
-              handleCloseNicknameModal={handleCloseNicknameModal}
-            />
-          )}
+          <ChangeNicknameForm
+            nickname={localNickname}
+            updateNickname={handleNicknameChange}
+            handleCloseNicknameModal={handleCloseNicknameModal}
+          />
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>

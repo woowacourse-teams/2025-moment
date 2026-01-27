@@ -17,7 +17,6 @@ import moment.user.dto.request.Authentication;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
 import moment.user.dto.response.MyPageProfileResponse;
-import moment.user.dto.response.MyRewardHistoryPageResponse;
 import moment.user.dto.response.NicknameChangeResponse;
 import moment.user.service.facade.MyPageFacadeService;
 import org.springframework.http.HttpHeaders;
@@ -28,13 +27,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "MyPage API", description = "마이페이지 API 명세")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/me")
+@RequestMapping("/api/v2/me")
 public class MyPageController {
 
     private final MyPageFacadeService myPageFacadeService;
@@ -62,37 +60,11 @@ public class MyPageController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "마이페이지 나의 보상 기록 페이징 조회", description = "마이페이지에서 나의 보상 기록을 페이지 별로 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "마이페이지 나의 보상 기록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = """
-                    - [T-005] 토큰을 찾을 수 없습니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            ),
-            @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
-                    """,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @GetMapping("/reward/history")
-    public ResponseEntity<SuccessResponse<MyRewardHistoryPageResponse>> readMyRewardHistoryPage(
-            @RequestParam(defaultValue = "0") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @AuthenticationPrincipal Authentication authentication
-    ) {
-        MyRewardHistoryPageResponse response = myPageFacadeService.getMyRewardHistory(authentication.id(), pageNum,
-                pageSize);
-        HttpStatus status = HttpStatus.OK;
-        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
-    }
-
-    @Operation(summary = "마이페이지 닉네임 변경", description = "리워드를 사용하여 닉네임을 변경합니다")
+    @Operation(summary = "마이페이지 닉네임 변경", description = "닉네임을 변경합니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
             @ApiResponse(responseCode = "400", description = """
                     - [U-006] 유효하지 않은 닉네임 형식입니다.
-                    - [U-011] 사용 가능한 별조각을 확인해주세요.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),

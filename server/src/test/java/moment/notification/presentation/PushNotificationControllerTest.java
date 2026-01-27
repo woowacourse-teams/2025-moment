@@ -74,7 +74,7 @@ class PushNotificationControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", accessToken)
                 .body(request)
-                .when().post("/api/v1/push-notifications")
+                .when().post("/api/v2/push-notifications")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -97,7 +97,7 @@ class PushNotificationControllerTest {
                 .contentType(ContentType.JSON)
                 .cookie("accessToken", accessToken)
                 .body(request)
-                .when().delete("/api/v1/push-notifications")
+                .when().delete("/api/v2/push-notifications")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 

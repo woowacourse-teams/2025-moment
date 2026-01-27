@@ -49,9 +49,19 @@ public class NotificationApplicationService {
             Long userId,
             Long targetId,
             NotificationType notificationType,
-            TargetType targetType) {
+            TargetType targetType,
+            Long groupId) {
 
         User user = userService.getUserBy(userId);
+
+        if (groupId != null) {
+            return notificationService.saveNotificationWithGroupId(
+                    user,
+                    targetId,
+                    notificationType,
+                    targetType,
+                    groupId);
+        }
 
         return notificationService.saveNotificationWithNewTransaction(
                 user,

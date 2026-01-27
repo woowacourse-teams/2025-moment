@@ -39,10 +39,8 @@ public class AdminUserService {
         User user = getUserById(userId);
 
         if (!user.getNickname().equals(request.nickname())) {
-            user.updateNickname(request.nickname(), 0);
+            user.updateNickname(request.nickname());
         }
-
-        user.updateStarsDirectly(request.availableStar(), request.expStar());
     }
 
     @Transactional

@@ -70,7 +70,7 @@ class UserControllerTest {
         SuccessResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/users/signup")
+                .when().post("/api/v2/users/signup")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().as(SuccessResponse.class);
@@ -90,14 +90,12 @@ class UserControllerTest {
         User savedUser = userRepository.save(user);
 
         String token = tokenManager.createAccessToken(savedUser.getId(), savedUser.getEmail());
-        UserProfileResponse expect = new UserProfileResponse(savedUser.getNickname(), savedUser.getAvailableStar(),
-                savedUser.getLevel(),
-                savedUser.getLevel().getNextLevelRequiredStars());
+        UserProfileResponse expect = new UserProfileResponse(savedUser.getNickname());
 
         // when
         SuccessResponse<UserProfileResponse> response = RestAssured.given().log().all()
                 .cookie("accessToken", token)
-                .when().get("/api/v1/users/me")
+                .when().get("/api/v2/users/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -122,7 +120,7 @@ class UserControllerTest {
         SuccessResponse<NicknameConflictCheckResponse> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/api/v1/users/signup/nickname/check")
+                .when().post("/api/v2/users/signup/nickname/check")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {
@@ -142,7 +140,7 @@ class UserControllerTest {
     void 회원가입에_사용_가능한_랜덤_닉네임_조회에_성공한다() {
         // given
         SuccessResponse<MomentRandomNicknameResponse> response = RestAssured.given().log().all()
-                .when().get("/api/v1/users/signup/nickname")
+                .when().get("/api/v2/users/signup/nickname")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(new TypeRef<>() {

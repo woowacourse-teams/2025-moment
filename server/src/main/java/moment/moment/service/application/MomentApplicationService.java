@@ -6,25 +6,26 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import moment.comment.service.comment.CommentService;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
-import moment.moment.domain.BasicMomentCreatePolicy;
-import moment.moment.domain.ExtraMomentCreatePolicy;
+import moment.group.domain.GroupMember;
+import moment.group.service.group.GroupMemberService;
+import moment.like.service.MomentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
-import moment.moment.domain.MomentTag;
-import moment.moment.domain.Tag;
-import moment.moment.domain.WriteType;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
+import moment.moment.dto.response.GroupFeedResponse;
+import moment.moment.dto.response.GroupMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
 import moment.moment.dto.response.tobe.MomentComposition;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.service.moment.MomentImageService;
 import moment.moment.service.moment.MomentService;
-import moment.moment.service.moment.MomentTagService;
-import moment.moment.service.moment.TagService;
 import moment.report.application.report.ReportService;
 import moment.storage.application.PhotoUrlResolver;
 import moment.user.domain.User;
@@ -40,52 +41,33 @@ public class MomentApplicationService {
     private final static Random RANDOM = new Random();
     private static final int MOMENT_DELETE_THRESHOLD = 3;
 
+    private static final int DEFAULT_PAGE_SIZE = 20;
+
     private final UserService userService;
-    private final BasicMomentCreatePolicy basicMomentCreatePolicy;
-    private final ExtraMomentCreatePolicy extraMomentCreatePolicy;
     private final MomentService momentService;
     private final MomentImageService momentImageService;
-    private final MomentTagService momentTagService;
-    private final TagService tagService;
     private final ReportService reportService;
     private final PhotoUrlResolver photoUrlResolver;
+    private final GroupMemberService memberService;
+    private final MomentLikeService momentLikeService;
+    private final CommentService commentService;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
         User momenter = userService.getUserBy(momenterId);
 
-        basicMomentCreatePolicy.validate(momenter);
-
-        Moment savedMoment = momentService.create(request.content(), momenter, WriteType.BASIC);
+        Moment savedMoment = momentService.create(request.content(), momenter);
 
         Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(),
                 request.imageName());
 
-        List<Tag> tags = tagService.getOrCreate(request.tagNames());
-
-        List<MomentTag> savedMomentTags = momentTagService.createAll(savedMoment, tags);
-
-        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
-                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
+        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage))
+                .orElseGet(() -> MomentCreateResponse.of(savedMoment));
     }
 
     @Transactional
     public MomentCreateResponse createExtraMoment(MomentCreateRequest request, Long momenterId) {
-        User momenter = userService.getUserBy(momenterId);
-
-        extraMomentCreatePolicy.validate(momenter);
-
-        Moment savedMoment = momentService.create(request.content(), momenter, WriteType.EXTRA);
-
-        Optional<MomentImage> savedMomentImage = momentImageService.create(savedMoment, request.imageUrl(),
-                request.imageName());
-
-        List<Tag> tags = tagService.getOrCreate(request.tagNames());
-
-        List<MomentTag> savedMomentTags = momentTagService.createAll(savedMoment, tags);
-
-        return savedMomentImage.map(momentImage -> MomentCreateResponse.of(savedMoment, momentImage, savedMomentTags))
-                .orElseGet(() -> MomentCreateResponse.of(savedMoment, savedMomentTags));
+        return createBasicMoment(request, momenterId);
     }
 
     public MomentCompositions getMyMomentCompositions(Cursor cursor, PageSize pageSize, Long momenterId) {
@@ -126,7 +108,6 @@ public class MomentApplicationService {
     private List<MomentComposition> mapMomentCompositionInfoBy(
             List<Moment> moments
     ) {
-        Map<Moment, List<MomentTag>> momentTagsByMoment = momentTagService.getMomentTagsByMoment(moments);
         Map<Moment, MomentImage> momentImageByMoment = momentImageService.getMomentImageByMoment(moments);
 
         return moments.stream()
@@ -134,10 +115,7 @@ public class MomentApplicationService {
                     MomentImage image = momentImageByMoment.get(moment);
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
-                    return MomentComposition.of(
-                            moment, momentTagsByMoment.get(moment),
-                            resolvedImageUrl
-                    );
+                    return MomentComposition.of(moment, resolvedImageUrl);
                 })
                 .toList();
     }
@@ -150,41 +128,23 @@ public class MomentApplicationService {
     }
 
     public MomentCreationStatusResponse canCreateMoment(Long id) {
-        User user = userService.getUserBy(id);
-
-        if (basicMomentCreatePolicy.canCreate(user)) {
-            return MomentCreationStatusResponse.createAllowedStatus();
-        }
-
-        return MomentCreationStatusResponse.createDeniedStatus();
-    }
-
-    public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
-        User user = userService.getUserBy(id);
-
-        if (extraMomentCreatePolicy.canNotCreate(user)) {
-            return MomentCreationStatusResponse.createDeniedStatus();
-        }
+        userService.getUserBy(id);
         return MomentCreationStatusResponse.createAllowedStatus();
     }
 
-    public List<Long> getCommentableMoment(Long id) {
-        User user = userService.getUserBy(id);
-
-        List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
-
-        List<Moment> commentableMoments = momentService.getCommentableMoments(user, reportedMomentIds);
-
-        return commentableMoments.stream()
-                .map(Moment::getId)
-                .toList();
+    public MomentCreationStatusResponse canCreateExtraMoment(Long id) {
+        userService.getUserBy(id);
+        return MomentCreationStatusResponse.createAllowedStatus();
     }
 
-    public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds, List<String> tagNames) {
-        if (!tagNames.isEmpty()) {
-            momentIds = momentTagService.getMomentIdsByTags(momentIds, tagNames);
-        }
+    public List<Long> getCommentableMomentInGroup(Long groupId, Long userId) {
+        User user = userService.getUserBy(userId);
+        List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
+        List<Moment> commentableMoments = momentService.getCommentableMomentsInGroup(groupId, user, reportedMomentIds);
+        return commentableMoments.stream().map(Moment::getId).toList();
+    }
 
+    public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds) {
         List<Moment> commentableMoments = momentService.getMomentsBy(momentIds);
         if (commentableMoments.isEmpty()) {
             return CommentableMomentResponse.empty();
@@ -199,7 +159,6 @@ public class MomentApplicationService {
     public void deleteByReport(Long momentId, Long reportCount) {
         if (reportCount >= MOMENT_DELETE_THRESHOLD) {
             momentImageService.deleteBy(momentId);
-            momentTagService.deleteBy(momentId);
             momentService.deleteBy(momentId);
         }
     }
@@ -216,5 +175,68 @@ public class MomentApplicationService {
     public void validateMomenter(Long momentId, Long momenterId) {
         User momenter = userService.getUserBy(momenterId);
         momentService.validateMomenter(momentId, momenter);
+    }
+
+    public GroupFeedResponse getGroupFeed(Long groupId, Long userId, Long cursor) {
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE);
+
+        List<GroupMomentResponse> responses = moments.stream()
+                .map(moment -> {
+                    long likeCount = momentLikeService.getCount(moment.getId());
+                    boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                    long commentCount = commentService.countByMomentId(moment.getId());
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                })
+                .toList();
+
+        Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
+        return GroupFeedResponse.of(responses, nextCursor);
+    }
+
+    public GroupFeedResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        List<Moment> moments = momentService.getMyMomentsInGroup(groupId, member.getId(), cursor, DEFAULT_PAGE_SIZE);
+
+        List<GroupMomentResponse> responses = moments.stream()
+                .map(moment -> {
+                    long likeCount = momentLikeService.getCount(moment.getId());
+                    boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
+                    long commentCount = commentService.countByMomentId(moment.getId());
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                })
+                .toList();
+
+        Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
+        return GroupFeedResponse.of(responses, nextCursor);
+    }
+
+    @Transactional
+    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content) {
+        User momenter = userService.getUserBy(userId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        moment.group.domain.Group group = member.getGroup();
+
+        Moment moment = momentService.createInGroup(momenter, group, member, content);
+        return GroupMomentResponse.from(moment, 0L, false, 0L);
+    }
+
+    @Transactional
+    public void deleteMomentInGroup(Long groupId, Long momentId, Long userId) {
+        Moment momentToDelete = momentService.getMomentBy(momentId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+
+        if (!momentToDelete.getMember().getId().equals(member.getId())) {
+            throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
+        }
+
+        momentService.deleteBy(momentId);
+    }
+
+    @Transactional
+    public boolean toggleMomentLike(Long groupId, Long momentId, Long userId) {
+        Moment moment = momentService.getMomentBy(momentId);
+        GroupMember member = memberService.getByGroupAndUser(groupId, userId);
+        return momentLikeService.toggle(moment, member);
     }
 }

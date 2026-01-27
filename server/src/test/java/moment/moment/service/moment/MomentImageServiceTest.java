@@ -10,7 +10,6 @@ import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentImageRepository;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
@@ -56,7 +55,7 @@ class MomentImageServiceTest {
     @Test
     void 모멘트_이미지를_생성한다() {
         // given
-        Moment savedMoment = momentRepository.save(new Moment("hello!", momenter, WriteType.BASIC));
+        Moment savedMoment = momentRepository.save(new Moment("hello!", momenter));
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
 
@@ -74,7 +73,7 @@ class MomentImageServiceTest {
     @Test
     void 이미지_없는_경우_모멘트_이미지는_생성하지_않는다() {
         // given
-        Moment savedMoment = momentRepository.save(new Moment("hello!", momenter, WriteType.BASIC));
+        Moment savedMoment = momentRepository.save(new Moment("hello!", momenter));
         String imageUrl = null;
         String imageName = null;
 
@@ -88,8 +87,8 @@ class MomentImageServiceTest {
     @Test
     void 모멘트에_달린_모멘트_이미지를_조회한다() {
         // given
-        Moment noImageMoment = momentRepository.save(new Moment("no Image in here!", momenter, WriteType.BASIC));
-        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter, WriteType.BASIC));
+        Moment noImageMoment = momentRepository.save(new Moment("no Image in here!", momenter));
+        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter));
 
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
@@ -113,7 +112,7 @@ class MomentImageServiceTest {
     @Test
     void 이미지가_없는_모멘트는_모멘트_이미지를_조회할_수_없다() {
         // given
-        Moment noImageMoment = momentRepository.save(new Moment("no Image in here!", momenter, WriteType.BASIC));
+        Moment noImageMoment = momentRepository.save(new Moment("no Image in here!", momenter));
 
         // when
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(noImageMoment);
@@ -125,7 +124,7 @@ class MomentImageServiceTest {
     @Test
     void 이미지가_있는_모멘트는_모멘트_이미지를_조회할_수_있다() {
         // given
-        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter, WriteType.BASIC));
+        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter));
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
 
@@ -144,7 +143,7 @@ class MomentImageServiceTest {
     @Test
     void 모멘트_이미지를_삭제한다() {
         // given
-        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter, WriteType.BASIC));
+        Moment imageMoment = momentRepository.save(new Moment("I have Image!", momenter));
         String imageUrl = "https://test.com/image.jpg";
         String imageName = "image.jpg";
         momentImageRepository.save(new MomentImage(imageMoment, imageUrl, imageName));

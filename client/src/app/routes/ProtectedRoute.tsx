@@ -4,6 +4,14 @@ import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { ROUTES } from './routes';
 import { AxiosError } from 'axios';
+import styled from '@emotion/styled';
+
+const LoadingContainer = styled.div`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export const ProtectedRoute: React.FC = () => {
   const location = useLocation();
@@ -11,7 +19,7 @@ export const ProtectedRoute: React.FC = () => {
   const { data: isLoggedIn, isLoading, isError, error } = useCheckIfLoggedInQuery();
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <LoadingContainer />;
   }
 
   if (isLoggedIn === false || (isError && (error as AxiosError)?.response?.status === 401)) {

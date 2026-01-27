@@ -13,16 +13,16 @@ export default function Hero({
   const { isVisible } = useDelayedVisible({ delay: 100 });
 
   return (
-    <S.HeroWrapper isVisible={isVisible}>
-      <S.TitleContainer isVisible={isVisible}>
+    <S.HeroWrapper $isVisible={isVisible}>
+      <S.TitleContainer $isVisible={isVisible}>
         {title.map((text, index) => (
           <S.Title key={`hero-title-${index}`}>{text}</S.Title>
         ))}
       </S.TitleContainer>
 
-      <S.AccentLine isVisible={isVisible} />
+      <S.AccentLine $isVisible={isVisible} />
 
-      <S.SubtitleContainer isVisible={isVisible}>
+      <S.SubtitleContainer $isVisible={isVisible}>
         {subtitle.map((text, index) => (
           <S.Subtitle key={`hero-subtitle-${index}`}>{text}</S.Subtitle>
         ))}

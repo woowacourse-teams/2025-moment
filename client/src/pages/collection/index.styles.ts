@@ -21,10 +21,12 @@ export const CollectionHeaderContainer = styled.div`
   gap: 60px;
   margin: 0 auto;
   padding: 20px;
+  min-height: 80px;
 
   @media (max-width: 768px) {
     width: 100%;
     gap: 20px;
+    min-height: 60px;
   }
 `;
 
@@ -71,6 +73,9 @@ export const CollectionHeaderLinkContainer = styled(Link, {
   color: ${({ theme }) => theme.colors.white};
   font-size: 2rem;
   font-weight: bold;
+  min-width: 280px; /* CLS 방지: 고정 너비 */
+  text-align: center;
+  display: inline-block;
 
   &.active {
     font-size: 2.4rem;
@@ -85,6 +90,7 @@ export const CollectionHeaderLinkContainer = styled(Link, {
 
   @media (max-width: 1024px) {
     font-size: 1.6rem;
+    min-width: 220px;
 
     &.active {
       font-size: 2rem;
@@ -93,6 +99,7 @@ export const CollectionHeaderLinkContainer = styled(Link, {
 
   @media (max-width: 768px) {
     font-size: 1.2rem;
+    min-width: 160px;
 
     &.active {
       font-size: 1.6rem;

@@ -9,6 +9,12 @@ import moment.user.dto.request.UserCreateRequest;
 
 public class UserFixture {
 
+    public static User createUserWithId(Long id) {
+        User user = new User(getEmail(), "password123!@#", getNickname(), ProviderType.EMAIL);
+        setId(user, id);
+        return user;
+    }
+
     public static User createUser() {
         return new User(getEmail(), "password123!@#", getNickname(), ProviderType.EMAIL);
     }
@@ -71,5 +77,15 @@ public class UserFixture {
     private static String getNickname() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(0, 8);
+    }
+
+    private static void setId(User user, Long id) {
+        try {
+            java.lang.reflect.Field idField = User.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(user, id);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Failed to set id via reflection", e);
+        }
     }
 }

@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.moment.infrastructure.MomentRepository;
 import moment.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,8 @@ public class MomentCreatedAtHelper {
     MomentRepository momentRepository;
 
     @Transactional
-    public Moment saveMomentWithCreatedAt(String content, User momenter, WriteType writeType, LocalDateTime createdAt) {
-        Moment moment = momentRepository.save(new Moment(content, momenter, writeType));
+    public Moment saveMomentWithCreatedAt(String content, User momenter, LocalDateTime createdAt) {
+        Moment moment = momentRepository.save(new Moment(content, momenter));
         entityManager.flush();
 
         entityManager.createNativeQuery("UPDATE moments SET created_at = ? WHERE id = ?")

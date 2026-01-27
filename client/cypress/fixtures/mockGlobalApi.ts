@@ -3,7 +3,7 @@
 import { userData } from './userData';
 
 export const mockGlobalAPIs = () => {
-  cy.intercept('GET', '**/api/v1/auth/login/check', {
+  cy.intercept('GET', '**/api/v2/auth/login/check', {
     statusCode: 200,
     body: {
       status: 200,
@@ -11,20 +11,19 @@ export const mockGlobalAPIs = () => {
     },
   }).as('checkLogin');
 
-  cy.intercept('GET', '**/api/v1/users/me', {
+  cy.intercept('GET', /api\/v2\/(me\/profile|users\/me)/, {
     statusCode: 200,
     body: {
       status: 200,
       data: {
+        email: userData.email,
         nickname: userData.nickname,
-        level: userData.level,
-        expStar: userData.expStar,
-        nextStepExp: userData.nextStepExp,
+        loginType: userData.loginType,
       },
     },
   }).as('getProfile');
 
-  cy.intercept('GET', '**/api/v1/notifications*', {
+  cy.intercept('GET', '**/api/v2/notifications*', {
     statusCode: 200,
     body: {
       status: 200,
@@ -32,11 +31,27 @@ export const mockGlobalAPIs = () => {
     },
   }).as('getNotifications');
 
-  cy.intercept('GET', '**/api/v1/notifications/subscribe', {
+  cy.intercept('GET', '**/api/v2/notifications/subscribe', {
     statusCode: 200,
     headers: {
       'content-type': 'text/event-stream',
     },
     body: '',
   }).as('notificationSubscribe');
+
+  cy.intercept('GET', '**/api/v2/groups', {
+    statusCode: 200,
+    body: {
+      status: 200,
+      data: [
+        {
+          groupId: 1,
+          name: '테스트 그룹',
+          description: '테스트용 그룹입니다.',
+          isOwner: true,
+          memberCount: 5,
+        },
+      ],
+    },
+  }).as('getGroups');
 };

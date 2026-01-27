@@ -3,7 +3,6 @@ package moment.moment.infrastructure;
 import java.time.LocalDateTime;
 import java.util.List;
 import moment.moment.domain.Moment;
-import moment.moment.domain.WriteType;
 import moment.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,13 +51,6 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
                                             @Param("cursorId") Long cursorId,
                                             Pageable pageable);
 
-    int countByMomenterAndWriteTypeAndCreatedAtBetween(
-            User user,
-            WriteType writeType,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay
-    );
-
     @Query("""
         SELECT m.id FROM moments m
         WHERE 
@@ -89,4 +81,114 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
           WHERE m.id IN :momentIds
            """)
     List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdOrderByIdDesc(@Param("groupId") Long groupId, Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndIdLessThanOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("cursor") Long cursor,
+        Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.member.id = :memberId
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("memberId") Long memberId,
+        Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId AND m.member.id = :memberId AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdLessThanOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("memberId") Long memberId,
+        @Param("cursor") Long cursor,
+        Pageable pageable);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+    """)
+    List<Long> findMomentIdsInGroup(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo);
+
+    @Query("""
+        SELECT m.id FROM moments m
+        WHERE
+            m.group.id = :groupId
+            AND m.momenter.id <> :userId
+            AND m.createdAt >= :someDaysAgo
+            AND m.id NOT IN :reportedMoments
+    """)
+    List<Long> findMomentIdsInGroupExcludingReported(
+            @Param("groupId") Long groupId,
+            @Param("userId") Long userId,
+            @Param("someDaysAgo") LocalDateTime someDaysAgo,
+            @Param("reportedMoments") List<Long> reportedMoments);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+            AND m.member.id = :memberId
+            AND m.id IN :momentIds
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdIn(
+            @Param("groupId") Long groupId,
+            @Param("memberId") Long memberId,
+            @Param("momentIds") List<Long> momentIds,
+            Pageable pageable);
+
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.member
+          WHERE m.group.id = :groupId
+            AND m.member.id = :memberId
+            AND m.id IN :momentIds
+            AND m.id < :cursor
+          ORDER BY m.id DESC
+           """)
+    List<Moment> findByGroupIdAndMemberIdAndIdInAndIdLessThan(
+            @Param("groupId") Long groupId,
+            @Param("memberId") Long memberId,
+            @Param("momentIds") List<Long> momentIds,
+            @Param("cursor") Long cursor,
+            Pageable pageable);
 }

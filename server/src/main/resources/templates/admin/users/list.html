@@ -40,16 +40,13 @@
                             <th class="px-6 py-3 font-semibold text-gray-900">이메일</th>
                             <th class="px-6 py-3 font-semibold text-gray-900">닉네임</th>
                             <th class="px-6 py-3 font-semibold text-gray-900">제공자</th>
-                            <th class="px-6 py-3 font-semibold text-gray-900">보유 별조각</th>
-                            <th class="px-6 py-3 font-semibold text-gray-900">경험치</th>
-                            <th class="px-6 py-3 font-semibold text-gray-900">레벨</th>
                             <th class="px-6 py-3 font-semibold text-gray-900">가입일</th>
                             <th class="px-6 py-3 font-semibold text-gray-900">작업</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:if="${#lists.isEmpty(users)}">
-                            <td colspan="9" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                 <i data-lucide="users" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
                                 <p>표시할 사용자가 없습니다.</p>
                             </td>
@@ -66,14 +63,6 @@
                                                 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800')">
                                     EMAIL
                                 </span>
-                            </td>
-                            <td class="px-6 py-3" th:text="${#numbers.formatInteger(user.availableStar, 0, 'COMMA')}">
-                                0
-                            </td>
-                            <td class="px-6 py-3" th:text="${#numbers.formatInteger(user.expStar, 0, 'COMMA')}">0</td>
-                            <td class="px-6 py-3">
-                                <span class="text-xs font-medium"
-                                      th:text="${#strings.replace(user.level, '_', ' ')}">LEVEL</span>
                             </td>
                             <td class="px-6 py-3 text-sm text-gray-600"
                                 th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">
