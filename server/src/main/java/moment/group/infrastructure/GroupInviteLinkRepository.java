@@ -9,4 +9,9 @@ public interface GroupInviteLinkRepository extends JpaRepository<GroupInviteLink
     Optional<GroupInviteLink> findByCode(String code);
 
     Optional<GroupInviteLink> findByGroupIdAndIsActiveTrue(Long groupId);
+
+    /**
+     * Admin용: 그룹의 초대링크 조회 (활성/비활성 모두)
+     */
+    Optional<GroupInviteLink> findFirstByGroupIdOrderByCreatedAtDesc(Long groupId);
 }
