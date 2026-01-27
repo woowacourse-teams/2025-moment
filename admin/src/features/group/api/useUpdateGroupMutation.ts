@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@shared/api';
-import { queryKeys } from '@shared/api/queryKeys';
-import type { UpdateGroupRequest } from '../types/group';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@shared/api";
+import { queryKeys } from "@shared/api/queryKeys";
+import type { UpdateGroupRequest } from "../types/group";
 
 export const useUpdateGroupMutation = (groupId: string) => {
   const queryClient = useQueryClient();
@@ -14,6 +14,9 @@ export const useUpdateGroupMutation = (groupId: string) => {
   });
 };
 
-const updateGroup = async (groupId: string, data: UpdateGroupRequest): Promise<void> => {
+const updateGroup = async (
+  groupId: string,
+  data: UpdateGroupRequest,
+): Promise<void> => {
   await apiClient.put(`/groups/${groupId}`, data);
 };

@@ -1,5 +1,5 @@
 // Member
-export type MemberRole = 'OWNER' | 'MEMBER';
+export type MemberRole = "OWNER" | "MEMBER";
 
 export interface Member {
   id: number;

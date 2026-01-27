@@ -1,6 +1,6 @@
-import type { Member } from '../types/member';
-import { Button } from '@shared/ui';
-import * as S from './MemberTable.styles';
+import type { Member } from "../types/member";
+import { Button } from "@shared/ui";
+import * as S from "./MemberTable.styles";
 
 interface MemberTableProps {
   members: Member[];
@@ -11,14 +11,20 @@ interface MemberTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
-export function MemberTable({ members, isLoading, isAdmin, onKick, onTransfer }: MemberTableProps) {
+export function MemberTable({
+  members,
+  isLoading,
+  isAdmin,
+  onKick,
+  onTransfer,
+}: MemberTableProps) {
   if (isLoading) {
     return <S.LoadingState>Loading...</S.LoadingState>;
   }
@@ -50,12 +56,20 @@ export function MemberTable({ members, isLoading, isAdmin, onKick, onTransfer }:
               <S.Td>{formatDate(member.joinedAt)}</S.Td>
               {isAdmin && (
                 <S.Td>
-                  {member.role !== 'OWNER' && (
+                  {member.role !== "OWNER" && (
                     <S.ActionCell>
-                      <Button variant="danger" size="sm" onClick={() => onKick(member.id)}>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => onKick(member.id)}
+                      >
                         Kick
                       </Button>
-                      <Button variant="secondary" size="sm" onClick={() => onTransfer(member.id)}>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => onTransfer(member.id)}
+                      >
                         Transfer
                       </Button>
                     </S.ActionCell>

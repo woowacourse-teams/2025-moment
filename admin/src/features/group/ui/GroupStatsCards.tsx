@@ -1,11 +1,17 @@
-import { useGroupStatsQuery } from '../api/useGroupStatsQuery';
-import * as S from './GroupStatsCards.styles';
+import { useGroupStatsQuery } from "../api/useGroupStatsQuery";
+import * as S from "./GroupStatsCards.styles";
 
 export function GroupStatsCards() {
   const { data: stats, isLoading, isError } = useGroupStatsQuery();
 
   if (isLoading) {
-    return <S.Grid><S.Card><S.CardLabel>Loading...</S.CardLabel></S.Card></S.Grid>;
+    return (
+      <S.Grid>
+        <S.Card>
+          <S.CardLabel>Loading...</S.CardLabel>
+        </S.Card>
+      </S.Grid>
+    );
   }
 
   if (isError || !stats) {

@@ -1,21 +1,22 @@
-import { useState, type FormEvent } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@shared/auth/useAuth';
+import { useState, type FormEvent } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@shared/auth/useAuth";
 
 interface LocationState {
   from?: { pathname: string };
 }
 
 export function useLoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as LocationState)?.from?.pathname || '/dashboard';
+  const from =
+    (location.state as LocationState)?.from?.pathname || "/dashboard";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -25,7 +26,7 @@ export function useLoginForm() {
       await login(email, password);
       navigate(from, { replace: true });
     } catch {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
     }
   };
 

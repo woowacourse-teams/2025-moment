@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useGroupDetailQuery } from '../api/useGroupDetailQuery';
-import { useDeleteGroupMutation } from '../api/useDeleteGroupMutation';
-import { useRestoreGroupMutation } from '../api/useRestoreGroupMutation';
-import { useUpdateGroupMutation } from '../api/useUpdateGroupMutation';
-import type { UpdateGroupRequest } from '../types/group';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGroupDetailQuery } from "../api/useGroupDetailQuery";
+import { useDeleteGroupMutation } from "../api/useDeleteGroupMutation";
+import { useRestoreGroupMutation } from "../api/useRestoreGroupMutation";
+import { useUpdateGroupMutation } from "../api/useUpdateGroupMutation";
+import type { UpdateGroupRequest } from "../types/group";
 
 export function useGroupDetail(groupId: string) {
   const navigate = useNavigate();
@@ -14,20 +14,20 @@ export function useGroupDetail(groupId: string) {
   const updateMutation = useUpdateGroupMutation(groupId);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteReason, setDeleteReason] = useState("");
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
-    setDeleteReason('');
+    setDeleteReason("");
   };
 
   const handleDelete = async () => {
     if (!deleteReason.trim()) return;
     await deleteMutation.mutateAsync({ reason: deleteReason.trim() });
     closeDeleteModal();
-    navigate('/groups');
+    navigate("/groups");
   };
 
   const handleRestore = async () => {

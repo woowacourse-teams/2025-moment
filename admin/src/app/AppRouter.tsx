@@ -1,12 +1,12 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthGuard } from '@shared/auth/AuthGuard';
-import { AdminLayout } from '@widgets/layout';
-import LoginPage from '@pages/LoginPage';
-import DashboardPage from '@pages/DashboardPage';
-import UserListPage from '@pages/UserListPage';
-import UserDetailPage from '@pages/UserDetailPage';
-import GroupListPage from '@pages/GroupListPage';
-import GroupDetailPage from '@pages/GroupDetailPage';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthGuard } from "@shared/auth/AuthGuard";
+import { AdminLayout } from "@widgets/layout";
+import LoginPage from "@pages/LoginPage";
+import DashboardPage from "@pages/DashboardPage";
+import UserListPage from "@pages/UserListPage";
+import UserDetailPage from "@pages/UserDetailPage";
+import GroupListPage from "@pages/GroupListPage";
+import GroupDetailPage from "@pages/GroupDetailPage";
 
 export function AppRouter() {
   return (

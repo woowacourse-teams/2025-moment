@@ -1,6 +1,6 @@
-import { Modal } from '@shared/ui';
-import { Button } from '@shared/ui';
-import * as S from './UserEditModal.styles';
+import { Modal } from "@shared/ui";
+import { Button } from "@shared/ui";
+import * as S from "./UserEditModal.styles";
 
 interface UserDeleteModalProps {
   isOpen: boolean;

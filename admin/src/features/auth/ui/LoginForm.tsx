@@ -1,8 +1,16 @@
-import { useLoginForm } from '../hooks/useLoginForm';
-import * as S from './LoginForm.styles';
+import { useLoginForm } from "../hooks/useLoginForm";
+import * as S from "./LoginForm.styles";
 
 export function LoginForm() {
-  const { email, password, error, isLoading, setEmail, setPassword, handleSubmit } = useLoginForm();
+  const {
+    email,
+    password,
+    error,
+    isLoading,
+    setEmail,
+    setPassword,
+    handleSubmit,
+  } = useLoginForm();
 
   return (
     <S.Form onSubmit={handleSubmit}>
@@ -31,7 +39,7 @@ export function LoginForm() {
         />
       </S.InputGroup>
       <S.SubmitButton type="submit" disabled={isLoading}>
-        {isLoading ? 'Logging in...' : 'Login'}
+        {isLoading ? "Logging in..." : "Login"}
       </S.SubmitButton>
     </S.Form>
   );

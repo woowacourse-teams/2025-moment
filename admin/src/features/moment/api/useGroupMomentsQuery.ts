@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { apiClient, type ApiResponse } from '@shared/api';
-import { queryKeys } from '@shared/api/queryKeys';
-import type { GroupMomentListData } from '../types/moment';
+import { useQuery } from "@tanstack/react-query";
+import { apiClient, type ApiResponse } from "@shared/api";
+import { queryKeys } from "@shared/api/queryKeys";
+import type { GroupMomentListData } from "../types/moment";
 
 interface Params {
   groupId: string;

@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
+export type ButtonSize = "sm" | "md" | "lg";
 
 export const variantStyles = {
   primary: css`
@@ -50,7 +50,10 @@ export const sizeStyles = {
   `,
 };
 
-export const StyledButton = styled.button<{ variant: ButtonVariant; size: ButtonSize }>`
+export const StyledButton = styled.button<{
+  variant: ButtonVariant;
+  size: ButtonSize;
+}>`
   display: inline-flex;
   align-items: center;
   justify-content: center;

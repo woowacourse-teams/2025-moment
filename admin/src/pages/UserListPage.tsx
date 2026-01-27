@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
-import { useNavigate } from 'react-router-dom';
-import { UserTable } from '@features/user/ui/UserTable';
-import { Pagination } from '@features/user/ui/Pagination';
-import { useUserList } from '@features/user/hooks/useUserList';
+import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
+import { UserTable } from "@features/user/ui/UserTable";
+import { Pagination } from "@features/user/ui/Pagination";
+import { useUserList } from "@features/user/hooks/useUserList";
 
 const Container = styled.div`
   padding: 2rem;
@@ -27,8 +27,15 @@ const TotalCount = styled.span`
 
 export default function UserListPage() {
   const navigate = useNavigate();
-  const { users, totalPages, totalElements, currentPage, isLoading, isError, handlePageChange } =
-    useUserList();
+  const {
+    users,
+    totalPages,
+    totalElements,
+    currentPage,
+    isLoading,
+    isError,
+    handlePageChange,
+  } = useUserList();
 
   const handleUserClick = (userId: number) => {
     navigate(`/users/${userId}`);
@@ -38,7 +45,9 @@ export default function UserListPage() {
     <Container>
       <Header>
         <Title>Users</Title>
-        {!isLoading && !isError && <TotalCount>Total: {totalElements}</TotalCount>}
+        {!isLoading && !isError && (
+          <TotalCount>Total: {totalElements}</TotalCount>
+        )}
       </Header>
 
       <UserTable

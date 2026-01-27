@@ -1,17 +1,22 @@
-import { useState } from 'react';
-import { useGroupsQuery } from '../api/useGroupsQuery';
-import type { GroupStatus } from '../types/group';
+import { useState } from "react";
+import { useGroupsQuery } from "../api/useGroupsQuery";
+import type { GroupStatus } from "../types/group";
 
 const DEFAULT_PAGE_SIZE = 20;
 
 export function useGroupList() {
   const [page, setPage] = useState(0);
   const [size] = useState(DEFAULT_PAGE_SIZE);
-  const [keyword, setKeyword] = useState('');
-  const [status, setStatus] = useState<GroupStatus | ''>('');
-  const [searchInput, setSearchInput] = useState('');
+  const [keyword, setKeyword] = useState("");
+  const [status, setStatus] = useState<GroupStatus | "">("");
+  const [searchInput, setSearchInput] = useState("");
 
-  const { data, isLoading, isError } = useGroupsQuery({ page, size, keyword, status });
+  const { data, isLoading, isError } = useGroupsQuery({
+    page,
+    size,
+    keyword,
+    status,
+  });
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -22,7 +27,7 @@ export function useGroupList() {
     setPage(0);
   };
 
-  const handleStatusChange = (newStatus: GroupStatus | '') => {
+  const handleStatusChange = (newStatus: GroupStatus | "") => {
     setStatus(newStatus);
     setPage(0);
   };

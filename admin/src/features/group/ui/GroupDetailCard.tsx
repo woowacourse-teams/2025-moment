@@ -1,6 +1,6 @@
-import type { GroupDetail } from '../types/group';
-import { Button } from '@shared/ui';
-import * as S from './GroupDetailCard.styles';
+import type { GroupDetail } from "../types/group";
+import { Button } from "@shared/ui";
+import * as S from "./GroupDetailCard.styles";
 
 interface GroupDetailCardProps {
   group: GroupDetail;
@@ -12,12 +12,12 @@ interface GroupDetailCardProps {
 }
 
 const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
@@ -29,7 +29,7 @@ export function GroupDetailCard({
   onRestore,
   isRestoring,
 }: GroupDetailCardProps) {
-  const isDeleted = group.status === 'DELETED';
+  const isDeleted = group.status === "DELETED";
 
   return (
     <S.Card>
@@ -38,7 +38,12 @@ export function GroupDetailCard({
         {isAdmin && (
           <S.ActionButtons>
             {isDeleted ? (
-              <Button variant="primary" size="sm" onClick={onRestore} isLoading={isRestoring}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={onRestore}
+                isLoading={isRestoring}
+              >
                 Restore
               </Button>
             ) : (
@@ -91,8 +96,8 @@ export function GroupDetailCard({
         <S.FieldRow>
           <S.FieldLabel>Status</S.FieldLabel>
           <S.FieldValue>
-            <S.StatusBadge $variant={isDeleted ? 'deleted' : 'active'}>
-              {isDeleted ? 'Deleted' : 'Active'}
+            <S.StatusBadge $variant={isDeleted ? "deleted" : "active"}>
+              {isDeleted ? "Deleted" : "Active"}
             </S.StatusBadge>
           </S.FieldValue>
         </S.FieldRow>

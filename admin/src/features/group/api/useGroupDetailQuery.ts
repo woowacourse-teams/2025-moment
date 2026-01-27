@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { apiClient, type ApiResponse } from '@shared/api';
-import { queryKeys } from '@shared/api/queryKeys';
-import type { GroupDetail } from '../types/group';
+import { useQuery } from "@tanstack/react-query";
+import { apiClient, type ApiResponse } from "@shared/api";
+import { queryKeys } from "@shared/api/queryKeys";
+import type { GroupDetail } from "../types/group";
 
 export const useGroupDetailQuery = (groupId: string) => {
   return useQuery({
@@ -12,6 +12,8 @@ export const useGroupDetailQuery = (groupId: string) => {
 };
 
 const fetchGroupDetail = async (groupId: string): Promise<GroupDetail> => {
-  const response = await apiClient.get<ApiResponse<GroupDetail>>(`/groups/${groupId}`);
+  const response = await apiClient.get<ApiResponse<GroupDetail>>(
+    `/groups/${groupId}`,
+  );
   return response.data.data;
 };

@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const TableContainer = styled.div`
   width: 100%;
@@ -43,15 +43,15 @@ export const Td = styled.td`
   white-space: nowrap;
 `;
 
-export const RoleBadge = styled.span<{ $role: 'OWNER' | 'MEMBER' }>`
+export const RoleBadge = styled.span<{ $role: "OWNER" | "MEMBER" }>`
   display: inline-block;
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
   background-color: ${({ $role }) =>
-    $role === 'OWNER' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)'};
-  color: ${({ $role }) => ($role === 'OWNER' ? '#2563eb' : '#6b7280')};
+    $role === "OWNER" ? "rgba(59, 130, 246, 0.1)" : "rgba(107, 114, 128, 0.1)"};
+  color: ${({ $role }) => ($role === "OWNER" ? "#2563eb" : "#6b7280")};
 `;
 
 export const ActionCell = styled.div`

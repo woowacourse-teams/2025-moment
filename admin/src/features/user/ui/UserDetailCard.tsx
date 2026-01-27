@@ -1,6 +1,6 @@
-import type { User } from '../api/useUsersQuery';
-import { Button } from '@shared/ui';
-import * as S from './UserDetailCard.styles';
+import type { User } from "../api/useUsersQuery";
+import { Button } from "@shared/ui";
+import * as S from "./UserDetailCard.styles";
 
 interface UserDetailCardProps {
   user: User;
@@ -10,16 +10,21 @@ interface UserDetailCardProps {
 }
 
 const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
-export function UserDetailCard({ user, isAdmin, onEdit, onDelete }: UserDetailCardProps) {
+export function UserDetailCard({
+  user,
+  isAdmin,
+  onEdit,
+  onDelete,
+}: UserDetailCardProps) {
   const isDeleted = !!user.deletedAt;
 
   return (
@@ -62,8 +67,8 @@ export function UserDetailCard({ user, isAdmin, onEdit, onDelete }: UserDetailCa
         <S.FieldRow>
           <S.FieldLabel>Status</S.FieldLabel>
           <S.FieldValue>
-            <S.StatusBadge $variant={isDeleted ? 'deleted' : 'active'}>
-              {isDeleted ? 'Deleted' : 'Active'}
+            <S.StatusBadge $variant={isDeleted ? "deleted" : "active"}>
+              {isDeleted ? "Deleted" : "Active"}
             </S.StatusBadge>
           </S.FieldValue>
         </S.FieldRow>

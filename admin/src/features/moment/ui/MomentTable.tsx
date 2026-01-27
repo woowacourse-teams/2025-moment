@@ -1,6 +1,6 @@
-import type { GroupMoment } from '../types/moment';
-import { Button } from '@shared/ui';
-import * as S from './MomentTable.styles';
+import type { GroupMoment } from "../types/moment";
+import { Button } from "@shared/ui";
+import * as S from "./MomentTable.styles";
 
 interface MomentTableProps {
   moments: GroupMoment[];
@@ -11,10 +11,10 @@ interface MomentTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 

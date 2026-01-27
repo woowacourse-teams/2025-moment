@@ -1,6 +1,6 @@
-import type { GroupComment } from '../types/comment';
-import { Button } from '@shared/ui';
-import * as S from './CommentTable.styles';
+import type { GroupComment } from "../types/comment";
+import { Button } from "@shared/ui";
+import * as S from "./CommentTable.styles";
 
 interface CommentTableProps {
   comments: GroupComment[];
@@ -12,10 +12,10 @@ interface CommentTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
@@ -34,7 +34,13 @@ export function CommentTable({
   return (
     <div>
       <S.BackButton onClick={onBack}>&larr; Back to moments</S.BackButton>
-      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+      <p
+        style={{
+          fontSize: "0.875rem",
+          color: "#6b7280",
+          marginBottom: "0.75rem",
+        }}
+      >
         Comments for Moment #{momentId}
       </p>
 

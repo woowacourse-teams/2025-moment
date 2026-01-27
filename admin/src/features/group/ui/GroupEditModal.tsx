@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Modal, Button } from '@shared/ui';
-import type { UpdateGroupRequest } from '../types/group';
-import * as S from './GroupEditModal.styles';
+import { useState, useEffect } from "react";
+import { Modal, Button } from "@shared/ui";
+import type { UpdateGroupRequest } from "../types/group";
+import * as S from "./GroupEditModal.styles";
 
 interface GroupEditModalProps {
   isOpen: boolean;

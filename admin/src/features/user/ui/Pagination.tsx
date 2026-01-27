@@ -1,4 +1,4 @@
-import * as S from './Pagination.styles';
+import * as S from "./Pagination.styles";
 
 interface PaginationProps {
   currentPage: number;
@@ -6,7 +6,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
@@ -41,7 +45,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           $active={page === currentPage}
           onClick={() => onPageChange(page)}
           aria-label={`Page ${page + 1}`}
-          aria-current={page === currentPage ? 'page' : undefined}
+          aria-current={page === currentPage ? "page" : undefined}
         >
           {page + 1}
         </S.PageButton>

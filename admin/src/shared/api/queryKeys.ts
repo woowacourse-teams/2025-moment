@@ -4,53 +4,68 @@
 export const queryKeys = {
   // Users
   users: {
-    all: ['users'] as const,
-    lists: () => [...queryKeys.users.all, 'list'] as const,
-    list: (filters: Record<string, unknown>) => [...queryKeys.users.lists(), filters] as const,
-    details: () => [...queryKeys.users.all, 'detail'] as const,
+    all: ["users"] as const,
+    lists: () => [...queryKeys.users.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.users.lists(), filters] as const,
+    details: () => [...queryKeys.users.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.users.details(), id] as const,
   },
 
   // Groups
   groups: {
-    all: ['groups'] as const,
-    stats: () => [...queryKeys.groups.all, 'stats'] as const,
-    lists: () => [...queryKeys.groups.all, 'list'] as const,
-    list: (filters: Record<string, unknown>) => [...queryKeys.groups.lists(), filters] as const,
-    details: () => [...queryKeys.groups.all, 'detail'] as const,
+    all: ["groups"] as const,
+    stats: () => [...queryKeys.groups.all, "stats"] as const,
+    lists: () => [...queryKeys.groups.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.groups.lists(), filters] as const,
+    details: () => [...queryKeys.groups.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.groups.details(), id] as const,
     members: (id: string, filters: Record<string, unknown>) =>
-      [...queryKeys.groups.detail(id), 'members', filters] as const,
+      [...queryKeys.groups.detail(id), "members", filters] as const,
     pendingMembers: (id: string, filters: Record<string, unknown>) =>
-      [...queryKeys.groups.detail(id), 'pending-members', filters] as const,
+      [...queryKeys.groups.detail(id), "pending-members", filters] as const,
     moments: (id: string, filters: Record<string, unknown>) =>
-      [...queryKeys.groups.detail(id), 'moments', filters] as const,
-    comments: (groupId: string, momentId: string, filters: Record<string, unknown>) =>
-      [...queryKeys.groups.detail(groupId), 'moments', momentId, 'comments', filters] as const,
+      [...queryKeys.groups.detail(id), "moments", filters] as const,
+    comments: (
+      groupId: string,
+      momentId: string,
+      filters: Record<string, unknown>,
+    ) =>
+      [
+        ...queryKeys.groups.detail(groupId),
+        "moments",
+        momentId,
+        "comments",
+        filters,
+      ] as const,
   },
 
   // Moments
   moments: {
-    all: ['moments'] as const,
-    lists: () => [...queryKeys.moments.all, 'list'] as const,
-    list: (filters: Record<string, unknown>) => [...queryKeys.moments.lists(), filters] as const,
-    details: () => [...queryKeys.moments.all, 'detail'] as const,
+    all: ["moments"] as const,
+    lists: () => [...queryKeys.moments.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.moments.lists(), filters] as const,
+    details: () => [...queryKeys.moments.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.moments.details(), id] as const,
   },
 
   // Complaints
   complaints: {
-    all: ['complaints'] as const,
-    lists: () => [...queryKeys.complaints.all, 'list'] as const,
-    list: (filters: Record<string, unknown>) => [...queryKeys.complaints.lists(), filters] as const,
-    details: () => [...queryKeys.complaints.all, 'detail'] as const,
+    all: ["complaints"] as const,
+    lists: () => [...queryKeys.complaints.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.complaints.lists(), filters] as const,
+    details: () => [...queryKeys.complaints.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.complaints.details(), id] as const,
   },
 
   // Audit Logs
   auditLogs: {
-    all: ['auditLogs'] as const,
-    lists: () => [...queryKeys.auditLogs.all, 'list'] as const,
-    list: (filters: Record<string, unknown>) => [...queryKeys.auditLogs.lists(), filters] as const,
+    all: ["auditLogs"] as const,
+    lists: () => [...queryKeys.auditLogs.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.auditLogs.lists(), filters] as const,
   },
 };

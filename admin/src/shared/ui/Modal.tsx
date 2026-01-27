@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { Button } from './Button';
-import * as S from './Modal.styles';
+import type { ReactNode } from "react";
+import { Button } from "./Button";
+import * as S from "./Modal.styles";
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,7 +10,13 @@ interface ModalProps {
   footer?: ReactNode;
 }
 
-export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  footer,
+}: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -44,7 +50,7 @@ export function ConfirmModal({
   onConfirm,
   title,
   message,
-  confirmLabel = 'Confirm',
+  confirmLabel = "Confirm",
   isDestructive = false,
   isLoading = false,
 }: ConfirmModalProps) {
@@ -59,7 +65,7 @@ export function ConfirmModal({
             Cancel
           </Button>
           <Button
-            variant={isDestructive ? 'danger' : 'primary'}
+            variant={isDestructive ? "danger" : "primary"}
             onClick={onConfirm}
             isLoading={isLoading}
           >

@@ -1,5 +1,5 @@
-import type { Group } from '../types/group';
-import * as S from './GroupTable.styles';
+import type { Group } from "../types/group";
+import * as S from "./GroupTable.styles";
 
 interface GroupTableProps {
   groups: Group[];
@@ -9,14 +9,19 @@ interface GroupTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
-export function GroupTable({ groups, isLoading, isError, onGroupClick }: GroupTableProps) {
+export function GroupTable({
+  groups,
+  isLoading,
+  isError,
+  onGroupClick,
+}: GroupTableProps) {
   if (isLoading) {
     return <S.LoadingState>Loading...</S.LoadingState>;
   }
@@ -55,8 +60,10 @@ export function GroupTable({ groups, isLoading, isError, onGroupClick }: GroupTa
               <S.Td>{group.momentCount}</S.Td>
               <S.Td>{formatDate(group.createdAt)}</S.Td>
               <S.Td>
-                <S.Badge $variant={group.status === 'DELETED' ? 'deleted' : 'active'}>
-                  {group.status === 'DELETED' ? 'Deleted' : 'Active'}
+                <S.Badge
+                  $variant={group.status === "DELETED" ? "deleted" : "active"}
+                >
+                  {group.status === "DELETED" ? "Deleted" : "Active"}
                 </S.Badge>
               </S.Td>
             </S.Tr>

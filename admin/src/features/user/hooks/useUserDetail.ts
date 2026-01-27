@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUserDetailQuery } from '../api/useUserDetailQuery';
-import { useDeleteUserMutation } from '../api/useDeleteUserMutation';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserDetailQuery } from "../api/useUserDetailQuery";
+import { useDeleteUserMutation } from "../api/useDeleteUserMutation";
 
 export function useUserDetail(userId: string) {
   const navigate = useNavigate();
@@ -9,12 +9,12 @@ export function useUserDetail(userId: string) {
   const deleteUserMutation = useDeleteUserMutation(userId);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteReason, setDeleteReason] = useState("");
 
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
-    setDeleteReason('');
+    setDeleteReason("");
   };
 
   const handleDelete = async () => {
@@ -22,7 +22,7 @@ export function useUserDetail(userId: string) {
 
     await deleteUserMutation.mutateAsync({ reason: deleteReason.trim() });
     closeDeleteModal();
-    navigate('/users');
+    navigate("/users");
   };
 
   return {

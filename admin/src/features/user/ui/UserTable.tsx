@@ -1,5 +1,5 @@
-import type { User } from '../api/useUsersQuery';
-import * as S from './UserTable.styles';
+import type { User } from "../api/useUsersQuery";
+import * as S from "./UserTable.styles";
 
 interface UserTableProps {
   users: User[];
@@ -9,14 +9,19 @@ interface UserTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
-export function UserTable({ users, isLoading, isError, onUserClick }: UserTableProps) {
+export function UserTable({
+  users,
+  isLoading,
+  isError,
+  onUserClick,
+}: UserTableProps) {
   if (isLoading) {
     return <S.LoadingState>Loading...</S.LoadingState>;
   }
@@ -51,8 +56,8 @@ export function UserTable({ users, isLoading, isError, onUserClick }: UserTableP
               <S.Td>{user.providerType}</S.Td>
               <S.Td>{formatDate(user.createdAt)}</S.Td>
               <S.Td>
-                <S.Badge $variant={user.deletedAt ? 'deleted' : 'active'}>
-                  {user.deletedAt ? 'Deleted' : 'Active'}
+                <S.Badge $variant={user.deletedAt ? "deleted" : "active"}>
+                  {user.deletedAt ? "Deleted" : "Active"}
                 </S.Badge>
               </S.Td>
             </S.Tr>

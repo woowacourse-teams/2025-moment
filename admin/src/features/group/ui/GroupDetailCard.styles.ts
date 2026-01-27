@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const Card = styled.div`
   width: 100%;
@@ -55,13 +55,15 @@ export const FieldValue = styled.dd`
   margin: 0;
 `;
 
-export const StatusBadge = styled.span<{ $variant: 'active' | 'deleted' }>`
+export const StatusBadge = styled.span<{ $variant: "active" | "deleted" }>`
   display: inline-block;
   padding: 0.125rem 0.625rem;
   border-radius: 9999px;
   font-size: 0.8125rem;
   font-weight: 500;
   background-color: ${({ $variant }) =>
-    $variant === 'deleted' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)'};
-  color: ${({ $variant }) => ($variant === 'deleted' ? '#dc2626' : '#16a34a')};
+    $variant === "deleted"
+      ? "rgba(239, 68, 68, 0.1)"
+      : "rgba(34, 197, 94, 0.1)"};
+  color: ${({ $variant }) => ($variant === "deleted" ? "#dc2626" : "#16a34a")};
 `;

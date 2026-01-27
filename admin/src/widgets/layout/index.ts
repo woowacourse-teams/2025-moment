@@ -1,1 +1,1 @@
-export { AdminLayout } from './ui/AdminLayout';
+export { AdminLayout } from "./ui/AdminLayout";

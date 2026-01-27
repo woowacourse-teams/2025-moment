@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useUsersQuery } from '../api/useUsersQuery';
+import { useState } from "react";
+import { useUsersQuery } from "../api/useUsersQuery";
 
 const DEFAULT_PAGE_SIZE = 20;
 

@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
-import { NavLink } from 'react-router-dom';
+import styled from "@emotion/styled";
+import { NavLink } from "react-router-dom";
 
 export const LayoutWrapper = styled.div`
   display: flex;
@@ -43,7 +43,9 @@ export const SidebarNavLink = styled(NavLink)`
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background-color: #334155;
@@ -91,7 +93,9 @@ export const LogoutButton = styled.button`
   color: #94a3b8;
   font-size: 0.8125rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background-color: #ef4444;

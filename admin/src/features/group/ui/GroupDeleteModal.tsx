@@ -1,5 +1,5 @@
-import { Modal, Button } from '@shared/ui';
-import * as S from './GroupEditModal.styles';
+import { Modal, Button } from "@shared/ui";
+import * as S from "./GroupEditModal.styles";
 
 interface GroupDeleteModalProps {
   isOpen: boolean;

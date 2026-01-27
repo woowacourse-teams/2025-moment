@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -17,7 +17,7 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 

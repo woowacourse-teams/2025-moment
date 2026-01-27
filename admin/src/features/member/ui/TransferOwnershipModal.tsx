@@ -1,4 +1,4 @@
-import { ConfirmModal } from '@shared/ui';
+import { ConfirmModal } from "@shared/ui";
 
 interface TransferOwnershipModalProps {
   isOpen: boolean;

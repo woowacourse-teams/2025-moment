@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
-import { useNavigate } from 'react-router-dom';
-import { GroupTable } from '@features/group/ui/GroupTable';
-import { GroupSearchFilter } from '@features/group/ui/GroupSearchFilter';
-import { Pagination } from '@features/user/ui/Pagination';
-import { useGroupList } from '@features/group/hooks/useGroupList';
+import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
+import { GroupTable } from "@features/group/ui/GroupTable";
+import { GroupSearchFilter } from "@features/group/ui/GroupSearchFilter";
+import { Pagination } from "@features/user/ui/Pagination";
+import { useGroupList } from "@features/group/hooks/useGroupList";
 
 const Container = styled.div`
   padding: 2rem;
@@ -52,7 +52,9 @@ export default function GroupListPage() {
     <Container>
       <Header>
         <Title>Groups</Title>
-        {!isLoading && !isError && <TotalCount>Total: {totalElements}</TotalCount>}
+        {!isLoading && !isError && (
+          <TotalCount>Total: {totalElements}</TotalCount>
+        )}
       </Header>
 
       <GroupSearchFilter

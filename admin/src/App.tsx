@@ -1,5 +1,5 @@
-import { AuthProvider } from '@shared/auth/AuthProvider';
-import { AppRouter } from '@app/index';
+import { AuthProvider } from "@shared/auth/AuthProvider";
+import { AppRouter } from "@app/index";
 
 function App() {
   return (

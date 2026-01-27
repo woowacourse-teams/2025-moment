@@ -1,5 +1,5 @@
 // Group status enum
-export type GroupStatus = 'ACTIVE' | 'DELETED';
+export type GroupStatus = "ACTIVE" | "DELETED";
 
 // Group list item
 export interface Group {
@@ -51,7 +51,7 @@ export interface GroupListParams {
   page: number;
   size: number;
   keyword?: string;
-  status?: GroupStatus | '';
+  status?: GroupStatus | "";
 }
 
 // Update group request

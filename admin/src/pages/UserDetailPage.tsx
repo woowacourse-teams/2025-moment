@@ -1,11 +1,11 @@
-import styled from '@emotion/styled';
-import { useParams, useNavigate } from 'react-router-dom';
-import { UserDetailCard } from '@features/user/ui/UserDetailCard';
-import { UserEditModal } from '@features/user/ui/UserEditModal';
-import { UserDeleteModal } from '@features/user/ui/UserDeleteModal';
-import { useUserDetail } from '@features/user/hooks/useUserDetail';
-import { useAuth } from '@shared/auth/useAuth';
-import { useState } from 'react';
+import styled from "@emotion/styled";
+import { useParams, useNavigate } from "react-router-dom";
+import { UserDetailCard } from "@features/user/ui/UserDetailCard";
+import { UserEditModal } from "@features/user/ui/UserEditModal";
+import { UserDeleteModal } from "@features/user/ui/UserDeleteModal";
+import { useUserDetail } from "@features/user/hooks/useUserDetail";
+import { useAuth } from "@shared/auth/useAuth";
+import { useState } from "react";
 
 const Container = styled.div`
   padding: 2rem;
@@ -44,7 +44,7 @@ export default function UserDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const isAdmin = authUser?.role === 'ADMIN';
+  const isAdmin = authUser?.role === "ADMIN";
 
   const {
     user,
@@ -79,7 +79,9 @@ export default function UserDetailPage() {
 
   return (
     <Container>
-      <BackLink onClick={() => navigate('/users')}>&larr; Back to Users</BackLink>
+      <BackLink onClick={() => navigate("/users")}>
+        &larr; Back to Users
+      </BackLink>
 
       <UserDetailCard
         user={user}

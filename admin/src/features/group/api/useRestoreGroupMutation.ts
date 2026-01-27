@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@shared/api';
-import { queryKeys } from '@shared/api/queryKeys';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@shared/api";
+import { queryKeys } from "@shared/api/queryKeys";
 
 export const useRestoreGroupMutation = (groupId: string) => {
   const queryClient = useQueryClient();

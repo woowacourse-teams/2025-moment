@@ -1,7 +1,7 @@
-import { Modal } from '@shared/ui';
-import { Button } from '@shared/ui';
-import { useUserEdit } from '../hooks/useUserEdit';
-import * as S from './UserEditModal.styles';
+import { Modal } from "@shared/ui";
+import { Button } from "@shared/ui";
+import { useUserEdit } from "../hooks/useUserEdit";
+import * as S from "./UserEditModal.styles";
 
 interface UserEditModalProps {
   isOpen: boolean;
@@ -10,13 +10,24 @@ interface UserEditModalProps {
   currentNickname: string;
 }
 
-export function UserEditModal({ isOpen, onClose, userId, currentNickname }: UserEditModalProps) {
-  const { nickname, setNickname, isValid, isPending, handleSubmit, MAX_NICKNAME_LENGTH } =
-    useUserEdit({
-      userId,
-      initialNickname: currentNickname,
-      onSuccess: onClose,
-    });
+export function UserEditModal({
+  isOpen,
+  onClose,
+  userId,
+  currentNickname,
+}: UserEditModalProps) {
+  const {
+    nickname,
+    setNickname,
+    isValid,
+    isPending,
+    handleSubmit,
+    MAX_NICKNAME_LENGTH,
+  } = useUserEdit({
+    userId,
+    initialNickname: currentNickname,
+    onSuccess: onClose,
+  });
 
   return (
     <Modal
@@ -30,7 +41,9 @@ export function UserEditModal({ isOpen, onClose, userId, currentNickname }: User
           </Button>
           <Button
             variant="primary"
-            onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
+            onClick={() =>
+              handleSubmit({ preventDefault: () => {} } as React.FormEvent)
+            }
             disabled={!isValid || isPending}
             isLoading={isPending}
           >

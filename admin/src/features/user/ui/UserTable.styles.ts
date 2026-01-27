@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const TableContainer = styled.div`
   width: 100%;
@@ -50,15 +50,17 @@ export const Td = styled.td`
   white-space: nowrap;
 `;
 
-export const Badge = styled.span<{ $variant: 'active' | 'deleted' }>`
+export const Badge = styled.span<{ $variant: "active" | "deleted" }>`
   display: inline-block;
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
   background-color: ${({ $variant }) =>
-    $variant === 'deleted' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)'};
-  color: ${({ $variant }) => ($variant === 'deleted' ? '#ef4444' : '#22c55e')};
+    $variant === "deleted"
+      ? "rgba(239, 68, 68, 0.15)"
+      : "rgba(34, 197, 94, 0.15)"};
+  color: ${({ $variant }) => ($variant === "deleted" ? "#ef4444" : "#22c55e")};
 `;
 
 export const EmptyState = styled.div`

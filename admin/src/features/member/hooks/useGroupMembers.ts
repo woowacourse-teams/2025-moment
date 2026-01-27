@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useGroupMembersQuery } from '../api/useGroupMembersQuery';
-import { useGroupPendingMembersQuery } from '../api/useGroupPendingMembersQuery';
-import { useApproveMemberMutation } from '../api/useApproveMemberMutation';
-import { useRejectMemberMutation } from '../api/useRejectMemberMutation';
-import { useKickMemberMutation } from '../api/useKickMemberMutation';
-import { useTransferOwnershipMutation } from '../api/useTransferOwnershipMutation';
+import { useState } from "react";
+import { useGroupMembersQuery } from "../api/useGroupMembersQuery";
+import { useGroupPendingMembersQuery } from "../api/useGroupPendingMembersQuery";
+import { useApproveMemberMutation } from "../api/useApproveMemberMutation";
+import { useRejectMemberMutation } from "../api/useRejectMemberMutation";
+import { useKickMemberMutation } from "../api/useKickMemberMutation";
+import { useTransferOwnershipMutation } from "../api/useTransferOwnershipMutation";
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -45,7 +45,8 @@ export function useGroupMembers(groupId: string) {
     approveMember: (memberId: number) => approveMutation.mutateAsync(memberId),
     rejectMember: (memberId: number) => rejectMutation.mutateAsync(memberId),
     kickMember: (memberId: number) => kickMutation.mutateAsync(memberId),
-    transferOwnership: (memberId: number) => transferMutation.mutateAsync(memberId),
+    transferOwnership: (memberId: number) =>
+      transferMutation.mutateAsync(memberId),
     isApproving: approveMutation.isPending,
     isRejecting: rejectMutation.isPending,
     isKicking: kickMutation.isPending,

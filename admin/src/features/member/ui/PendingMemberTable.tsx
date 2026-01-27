@@ -1,6 +1,6 @@
-import type { PendingMember } from '../types/member';
-import { Button } from '@shared/ui';
-import * as S from './PendingMemberTable.styles';
+import type { PendingMember } from "../types/member";
+import { Button } from "@shared/ui";
+import * as S from "./PendingMemberTable.styles";
 
 interface PendingMemberTableProps {
   pendingMembers: PendingMember[];
@@ -11,10 +11,10 @@ interface PendingMemberTableProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
@@ -53,10 +53,18 @@ export function PendingMemberTable({
               {isAdmin && (
                 <S.Td>
                   <S.ActionCell>
-                    <Button variant="primary" size="sm" onClick={() => onApprove(member.id)}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => onApprove(member.id)}
+                    >
                       Approve
                     </Button>
-                    <Button variant="danger" size="sm" onClick={() => onReject(member.id)}>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => onReject(member.id)}
+                    >
                       Reject
                     </Button>
                   </S.ActionCell>

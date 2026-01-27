@@ -1,25 +1,25 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '@shared/auth/useAuth';
-import { ConfirmModal } from '@shared/ui';
-import { Pagination } from '@features/user/ui/Pagination';
-import { GroupDetailCard } from '@features/group/ui/GroupDetailCard';
-import { GroupEditModal } from '@features/group/ui/GroupEditModal';
-import { GroupDeleteModal } from '@features/group/ui/GroupDeleteModal';
-import { useGroupDetail } from '@features/group/hooks/useGroupDetail';
-import { MemberTable } from '@features/member/ui/MemberTable';
-import { PendingMemberTable } from '@features/member/ui/PendingMemberTable';
-import { TransferOwnershipModal } from '@features/member/ui/TransferOwnershipModal';
-import { useGroupMembers } from '@features/member/hooks/useGroupMembers';
-import { MomentTable } from '@features/moment/ui/MomentTable';
-import { useGroupMomentsQuery } from '@features/moment/api/useGroupMomentsQuery';
-import { useDeleteMomentMutation } from '@features/moment/api/useDeleteMomentMutation';
-import { CommentTable } from '@features/comment/ui/CommentTable';
-import { useGroupCommentsQuery } from '@features/comment/api/useGroupCommentsQuery';
-import { useDeleteCommentMutation } from '@features/comment/api/useDeleteCommentMutation';
+import styled from "@emotion/styled";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@shared/auth/useAuth";
+import { ConfirmModal } from "@shared/ui";
+import { Pagination } from "@features/user/ui/Pagination";
+import { GroupDetailCard } from "@features/group/ui/GroupDetailCard";
+import { GroupEditModal } from "@features/group/ui/GroupEditModal";
+import { GroupDeleteModal } from "@features/group/ui/GroupDeleteModal";
+import { useGroupDetail } from "@features/group/hooks/useGroupDetail";
+import { MemberTable } from "@features/member/ui/MemberTable";
+import { PendingMemberTable } from "@features/member/ui/PendingMemberTable";
+import { TransferOwnershipModal } from "@features/member/ui/TransferOwnershipModal";
+import { useGroupMembers } from "@features/member/hooks/useGroupMembers";
+import { MomentTable } from "@features/moment/ui/MomentTable";
+import { useGroupMomentsQuery } from "@features/moment/api/useGroupMomentsQuery";
+import { useDeleteMomentMutation } from "@features/moment/api/useDeleteMomentMutation";
+import { CommentTable } from "@features/comment/ui/CommentTable";
+import { useGroupCommentsQuery } from "@features/comment/api/useGroupCommentsQuery";
+import { useDeleteCommentMutation } from "@features/comment/api/useDeleteCommentMutation";
 
-type TabType = 'members' | 'pending' | 'moments';
+type TabType = "members" | "pending" | "moments";
 
 const Container = styled.div`
   padding: 2rem;
@@ -57,13 +57,16 @@ const Tab = styled.button<{ $active: boolean }>`
   font-weight: 500;
   background: none;
   border: none;
-  border-bottom: 2px solid ${({ $active }) => ($active ? '#3b82f6' : 'transparent')};
-  color: ${({ $active }) => ($active ? '#3b82f6' : '#6b7280')};
+  border-bottom: 2px solid
+    ${({ $active }) => ($active ? "#3b82f6" : "transparent")};
+  color: ${({ $active }) => ($active ? "#3b82f6" : "#6b7280")};
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 
   &:hover {
-    color: ${({ $active }) => ($active ? '#3b82f6' : '#1f2937')};
+    color: ${({ $active }) => ($active ? "#3b82f6" : "#1f2937")};
   }
 `;
 
@@ -85,9 +88,9 @@ export default function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const isAdmin = authUser?.role === 'ADMIN';
+  const isAdmin = authUser?.role === "ADMIN";
 
-  const [activeTab, setActiveTab] = useState<TabType>('members');
+  const [activeTab, setActiveTab] = useState<TabType>("members");
   const [momentPage, setMomentPage] = useState(0);
   const [commentPage, setCommentPage] = useState(0);
   const [selectedMomentId, setSelectedMomentId] = useState<string | null>(null);
@@ -142,13 +145,16 @@ export default function GroupDetailPage() {
 
   const commentsQuery = useGroupCommentsQuery({
     groupId: id!,
-    momentId: selectedMomentId ?? '',
+    momentId: selectedMomentId ?? "",
     page: commentPage,
     size: 20,
   });
 
   const deleteMomentMutation = useDeleteMomentMutation(id!);
-  const deleteCommentMutation = useDeleteCommentMutation(id!, selectedMomentId ?? '');
+  const deleteCommentMutation = useDeleteCommentMutation(
+    id!,
+    selectedMomentId ?? "",
+  );
 
   if (isLoading) {
     return (
@@ -192,7 +198,9 @@ export default function GroupDetailPage() {
 
   return (
     <Container>
-      <BackLink onClick={() => navigate('/groups')}>&larr; Back to Groups</BackLink>
+      <BackLink onClick={() => navigate("/groups")}>
+        &larr; Back to Groups
+      </BackLink>
 
       <GroupDetailCard
         group={group}
@@ -205,16 +213,22 @@ export default function GroupDetailPage() {
 
       <TabContainer>
         <TabList>
-          <Tab $active={activeTab === 'members'} onClick={() => setActiveTab('members')}>
+          <Tab
+            $active={activeTab === "members"}
+            onClick={() => setActiveTab("members")}
+          >
             Members
           </Tab>
-          <Tab $active={activeTab === 'pending'} onClick={() => setActiveTab('pending')}>
+          <Tab
+            $active={activeTab === "pending"}
+            onClick={() => setActiveTab("pending")}
+          >
             Pending
           </Tab>
           <Tab
-            $active={activeTab === 'moments'}
+            $active={activeTab === "moments"}
             onClick={() => {
-              setActiveTab('moments');
+              setActiveTab("moments");
               setSelectedMomentId(null);
             }}
           >
@@ -222,7 +236,7 @@ export default function GroupDetailPage() {
           </Tab>
         </TabList>
 
-        {activeTab === 'members' && (
+        {activeTab === "members" && (
           <>
             <MemberTable
               members={members}
@@ -239,7 +253,7 @@ export default function GroupDetailPage() {
           </>
         )}
 
-        {activeTab === 'pending' && (
+        {activeTab === "pending" && (
           <>
             <PendingMemberTable
               pendingMembers={pendingMembers}
@@ -256,7 +270,7 @@ export default function GroupDetailPage() {
           </>
         )}
 
-        {activeTab === 'moments' && !selectedMomentId && (
+        {activeTab === "moments" && !selectedMomentId && (
           <>
             <MomentTable
               moments={momentsQuery.data?.content ?? []}
@@ -273,7 +287,7 @@ export default function GroupDetailPage() {
           </>
         )}
 
-        {activeTab === 'moments' && selectedMomentId && (
+        {activeTab === "moments" && selectedMomentId && (
           <>
             <CommentTable
               comments={commentsQuery.data?.content ?? []}
@@ -326,7 +340,7 @@ export default function GroupDetailPage() {
         isOpen={transferTarget !== null}
         onClose={() => setTransferTarget(null)}
         onConfirm={handleTransferConfirm}
-        memberNickname={transferMember?.nickname ?? ''}
+        memberNickname={transferMember?.nickname ?? ""}
         isLoading={isTransferring}
       />
     </Container>

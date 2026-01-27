@@ -1,12 +1,12 @@
-import type { GroupStatus } from '../types/group';
-import * as S from './GroupSearchFilter.styles';
+import type { GroupStatus } from "../types/group";
+import * as S from "./GroupSearchFilter.styles";
 
 interface GroupSearchFilterProps {
   searchInput: string;
   onSearchInputChange: (value: string) => void;
   onSearch: () => void;
-  status: GroupStatus | '';
-  onStatusChange: (status: GroupStatus | '') => void;
+  status: GroupStatus | "";
+  onStatusChange: (status: GroupStatus | "") => void;
 }
 
 export function GroupSearchFilter({
@@ -17,7 +17,7 @@ export function GroupSearchFilter({
   onStatusChange,
 }: GroupSearchFilterProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       onSearch();
     }
   };
@@ -33,7 +33,7 @@ export function GroupSearchFilter({
       />
       <S.Select
         value={status}
-        onChange={(e) => onStatusChange(e.target.value as GroupStatus | '')}
+        onChange={(e) => onStatusChange(e.target.value as GroupStatus | "")}
       >
         <option value="">All Status</option>
         <option value="ACTIVE">Active</option>

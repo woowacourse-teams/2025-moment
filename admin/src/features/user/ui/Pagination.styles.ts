@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const PaginationContainer = styled.div`
   display: flex;
@@ -14,10 +14,11 @@ export const PageButton = styled.button<{ $active?: boolean }>`
   padding: 0 0.5rem;
   border-radius: 4px;
   font-size: 0.875rem;
-  font-weight: ${({ $active }) => ($active ? '600' : '400')};
-  color: ${({ $active }) => ($active ? '#3b82f6' : '#9ca3af')};
-  background-color: ${({ $active }) => ($active ? 'rgba(59, 130, 246, 0.1)' : 'transparent')};
-  border: 1px solid ${({ $active }) => ($active ? '#3b82f6' : 'transparent')};
+  font-weight: ${({ $active }) => ($active ? "600" : "400")};
+  color: ${({ $active }) => ($active ? "#3b82f6" : "#9ca3af")};
+  background-color: ${({ $active }) =>
+    $active ? "rgba(59, 130, 246, 0.1)" : "transparent"};
+  border: 1px solid ${({ $active }) => ($active ? "#3b82f6" : "transparent")};
   cursor: pointer;
   transition: all 0.15s ease;
 

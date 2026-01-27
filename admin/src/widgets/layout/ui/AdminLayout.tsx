@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom';
-import { useAuth } from '@shared/auth/useAuth';
+import { Outlet } from "react-router-dom";
+import { useAuth } from "@shared/auth/useAuth";
 import {
   LayoutWrapper,
   Sidebar,
@@ -12,7 +12,7 @@ import {
   UserRole,
   LogoutButton,
   Content,
-} from './AdminLayout.styles';
+} from "./AdminLayout.styles";
 
 export function AdminLayout() {
   const { user, logout } = useAuth();

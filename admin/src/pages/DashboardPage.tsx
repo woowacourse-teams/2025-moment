@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
-import { GroupStatsCards } from '@features/group/ui/GroupStatsCards';
+import styled from "@emotion/styled";
+import { GroupStatsCards } from "@features/group/ui/GroupStatsCards";
 
 const Container = styled.div`
   padding: 2rem;

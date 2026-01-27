@@ -52,6 +52,7 @@ This enforces the **Separation of Concerns** rule in `CLAUDE.md`.
 - Must NOT contain `useEffect`.
 - Must merely bind the hook's return values to tags.
 - **Pattern**:
+
   ```tsx
   export const GroupList = () => {
     const { state, handlers } = useGroupListLogic();

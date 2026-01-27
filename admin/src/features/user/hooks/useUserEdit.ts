@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useUpdateUserMutation } from '../api/useUpdateUserMutation';
+import { useState, useEffect } from "react";
+import { useUpdateUserMutation } from "../api/useUpdateUserMutation";
 
 const MAX_NICKNAME_LENGTH = 20;
 
@@ -9,7 +9,11 @@ interface UseUserEditProps {
   onSuccess?: () => void;
 }
 
-export function useUserEdit({ userId, initialNickname, onSuccess }: UseUserEditProps) {
+export function useUserEdit({
+  userId,
+  initialNickname,
+  onSuccess,
+}: UseUserEditProps) {
   const [nickname, setNickname] = useState(initialNickname);
   const updateUserMutation = useUpdateUserMutation(userId);
 

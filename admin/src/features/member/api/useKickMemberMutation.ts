@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@shared/api';
-import { queryKeys } from '@shared/api/queryKeys';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@shared/api";
+import { queryKeys } from "@shared/api/queryKeys";
 
 export const useKickMemberMutation = (groupId: string) => {
   const queryClient = useQueryClient();
@@ -8,7 +8,9 @@ export const useKickMemberMutation = (groupId: string) => {
   return useMutation({
     mutationFn: (memberId: number) => kickMember(groupId, memberId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.groups.detail(groupId) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.groups.detail(groupId),
+      });
     },
   });
 };

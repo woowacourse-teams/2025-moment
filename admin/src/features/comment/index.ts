@@ -1,9 +1,6 @@
-export { useGroupCommentsQuery } from './api/useGroupCommentsQuery';
-export { useDeleteCommentMutation } from './api/useDeleteCommentMutation';
+export { useGroupCommentsQuery } from "./api/useGroupCommentsQuery";
+export { useDeleteCommentMutation } from "./api/useDeleteCommentMutation";
 
-export { CommentTable } from './ui/CommentTable';
+export { CommentTable } from "./ui/CommentTable";
 
-export type {
-  GroupComment,
-  GroupCommentListData,
-} from './types/comment';
+export type { GroupComment, GroupCommentListData } from "./types/comment";
