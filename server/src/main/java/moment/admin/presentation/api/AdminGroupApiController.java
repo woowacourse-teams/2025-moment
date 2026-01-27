@@ -1,5 +1,11 @@
 package moment.admin.presentation.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +14,7 @@ import moment.admin.domain.GroupStatusFilter;
 import moment.admin.dto.request.AdminGroupUpdateRequest;
 import moment.admin.domain.AdminGroupLogType;
 import moment.admin.dto.response.AdminCommentListResponse;
+import moment.admin.dto.response.AdminErrorResponse;
 import moment.admin.dto.response.AdminGroupDetailResponse;
 import moment.admin.dto.response.AdminGroupInviteLinkResponse;
 import moment.admin.dto.response.AdminGroupListResponse;
@@ -35,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Admin Group API", description = "관리자용 그룹 관리 API")
 @RestController
 @RequestMapping("/api/admin/groups")
 @RequiredArgsConstructor
@@ -48,6 +56,16 @@ public class AdminGroupApiController {
     private final AdminSessionManager adminSessionManager;
     private final AdminService adminService;
 
+    @Operation(summary = "그룹 통계 조회", description = "전체 그룹 통계 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 통계 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "[A-008] 세션을 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/stats")
     public ResponseEntity<SuccessResponse<AdminGroupStatsResponse>> getGroupStats() {
         AdminGroupStatsResponse response = adminGroupQueryService.getGroupStats();
@@ -55,6 +73,16 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "그룹 목록 조회", description = "그룹 목록을 페이지네이션과 필터링으로 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "[A-008] 세션을 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<SuccessResponse<AdminGroupListResponse>> getGroupList(
         @RequestParam(defaultValue = "0") int page,
@@ -67,6 +95,19 @@ public class AdminGroupApiController {
         return ResponseEntity.status(httpStatus).body(SuccessResponse.of(httpStatus, response));
     }
 
+    @Operation(summary = "그룹 상세 조회", description = "특정 그룹의 상세 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 상세 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}")
     public ResponseEntity<SuccessResponse<AdminGroupDetailResponse>> getGroupDetail(
         @PathVariable Long groupId
@@ -76,6 +117,19 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "승인된 멤버 목록 조회", description = "그룹의 승인된 멤버 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "승인된 멤버 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}/members")
     public ResponseEntity<SuccessResponse<AdminGroupMemberListResponse>> getApprovedMembers(
         @PathVariable Long groupId,
@@ -87,6 +141,19 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "대기 중인 멤버 목록 조회", description = "그룹의 승인 대기 중인 멤버 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "대기 중인 멤버 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}/pending-members")
     public ResponseEntity<SuccessResponse<AdminGroupMemberListResponse>> getPendingMembers(
         @PathVariable Long groupId,
@@ -98,6 +165,21 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "그룹 정보 수정", description = "그룹의 이름과 설명을 수정합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 정보 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "[AG-003] 이미 삭제된 그룹입니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PutMapping("/{groupId}")
     public ResponseEntity<SuccessResponse<Void>> updateGroup(
         @PathVariable Long groupId,
@@ -108,6 +190,21 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "그룹 삭제", description = "그룹을 삭제합니다 (Soft Delete).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "그룹 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "[AG-003] 이미 삭제된 그룹입니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @DeleteMapping("/{groupId}")
     public ResponseEntity<SuccessResponse<Void>> deleteGroup(
         @PathVariable Long groupId
@@ -117,6 +214,21 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "삭제된 그룹 복구", description = "삭제된 그룹을 복구합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 복구 성공"),
+            @ApiResponse(responseCode = "400", description = "[AG-002] 삭제되지 않은 그룹은 복원할 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PostMapping("/{groupId}/restore")
     public ResponseEntity<SuccessResponse<Void>> restoreGroup(
         @PathVariable Long groupId
@@ -128,6 +240,25 @@ public class AdminGroupApiController {
 
     // ===== 멤버 관리 API =====
 
+    @Operation(summary = "멤버 승인", description = "대기 중인 멤버를 승인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "멤버 승인 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [AM-003] 승인 대기 중인 멤버가 아닙니다.
+                    - [AM-006] 이미 승인된 멤버입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AM-001] 멤버를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PostMapping("/{groupId}/members/{memberId}/approve")
     public ResponseEntity<SuccessResponse<Void>> approveMember(
         @PathVariable Long groupId,
@@ -138,6 +269,22 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "멤버 거절", description = "대기 중인 멤버의 가입을 거절합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "멤버 거절 성공"),
+            @ApiResponse(responseCode = "400", description = "[AM-003] 승인 대기 중인 멤버가 아닙니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AM-001] 멤버를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PostMapping("/{groupId}/members/{memberId}/reject")
     public ResponseEntity<SuccessResponse<Void>> rejectMember(
         @PathVariable Long groupId,
@@ -148,6 +295,25 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "멤버 강제 퇴장", description = "승인된 멤버를 그룹에서 강제 퇴장시킵니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "멤버 강제 퇴장 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [AM-002] 그룹장은 추방할 수 없습니다.
+                    - [AM-004] 승인된 멤버만 그룹장이 될 수 있습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AM-001] 멤버를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @DeleteMapping("/{groupId}/members/{memberId}")
     public ResponseEntity<SuccessResponse<Void>> kickMember(
         @PathVariable Long groupId,
@@ -158,6 +324,25 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "방장 권한 이전", description = "그룹의 방장 권한을 다른 멤버에게 이전합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "방장 권한 이전 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [AM-004] 승인된 멤버만 그룹장이 될 수 있습니다.
+                    - [AM-005] 이미 그룹장인 멤버입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AM-001] 멤버를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PostMapping("/{groupId}/transfer-ownership/{newOwnerMemberId}")
     public ResponseEntity<SuccessResponse<Void>> transferOwnership(
         @PathVariable Long groupId,
@@ -170,6 +355,19 @@ public class AdminGroupApiController {
 
     // ===== 초대 링크 API =====
 
+    @Operation(summary = "초대 링크 조회", description = "그룹의 초대 링크 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "초대 링크 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}/invite-link")
     public ResponseEntity<SuccessResponse<AdminGroupInviteLinkResponse>> getInviteLink(
         @PathVariable Long groupId
@@ -181,6 +379,16 @@ public class AdminGroupApiController {
 
     // ===== Admin 로그 조회 API =====
 
+    @Operation(summary = "Admin 로그 조회", description = "관리자의 그룹 관련 활동 로그를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Admin 로그 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "[A-008] 세션을 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/logs")
     public ResponseEntity<SuccessResponse<AdminGroupLogListResponse>> getGroupLogs(
         @RequestParam(required = false) Long groupId,
@@ -195,6 +403,19 @@ public class AdminGroupApiController {
 
     // ===== 콘텐츠 관리 API =====
 
+    @Operation(summary = "그룹 내 모멘트 목록 조회", description = "그룹에 속한 모멘트 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "모멘트 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}/moments")
     public ResponseEntity<SuccessResponse<AdminMomentListResponse>> getMoments(
         @PathVariable Long groupId,
@@ -206,6 +427,22 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "모멘트 삭제", description = "특정 모멘트를 삭제합니다 (Soft Delete).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "모멘트 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "[AC-003] 이미 삭제된 모멘트입니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AC-001] 모멘트를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @DeleteMapping("/{groupId}/moments/{momentId}")
     public ResponseEntity<SuccessResponse<Void>> deleteMoment(
         @PathVariable Long groupId,
@@ -219,6 +456,20 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 
+    @Operation(summary = "모멘트 내 댓글 목록 조회", description = "특정 모멘트에 달린 댓글 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AC-001] 모멘트를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{groupId}/moments/{momentId}/comments")
     public ResponseEntity<SuccessResponse<AdminCommentListResponse>> getComments(
         @PathVariable Long groupId,
@@ -231,6 +482,22 @@ public class AdminGroupApiController {
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
 
+    @Operation(summary = "댓글 삭제", description = "특정 댓글을 삭제합니다 (Soft Delete).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "댓글 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "[AC-004] 이미 삭제된 코멘트입니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [AG-001] 그룹을 찾을 수 없습니다.
+                    - [AC-002] 코멘트를 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @DeleteMapping("/{groupId}/comments/{commentId}")
     public ResponseEntity<SuccessResponse<Void>> deleteComment(
         @PathVariable Long groupId,
