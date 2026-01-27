@@ -1,24 +1,28 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { AuthGuard } from '../AuthGuard';
-import { AuthContext, type AuthContextValue, type AdminUser } from '../AuthProvider';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { AuthGuard } from "../AuthGuard";
+import {
+  AuthContext,
+  type AuthContextValue,
+  type AdminUser,
+} from "../AuthContext";
 
 const mockUser: AdminUser = {
-  id: '1',
-  email: 'admin@test.com',
-  role: 'ADMIN',
+  id: "1",
+  email: "admin@test.com",
+  role: "ADMIN",
 };
 
 const mockViewerUser: AdminUser = {
-  id: '2',
-  email: 'viewer@test.com',
-  role: 'VIEWER',
+  id: "2",
+  email: "viewer@test.com",
+  role: "VIEWER",
 };
 
 const renderWithAuth = (
   authValue: AuthContextValue,
-  initialPath: string = '/protected'
+  initialPath: string = "/protected",
 ) => {
   return render(
     <AuthContext.Provider value={authValue}>
@@ -44,12 +48,12 @@ const renderWithAuth = (
           />
         </Routes>
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 };
 
-describe('AuthGuard', () => {
-  it('shows loading state while checking auth', () => {
+describe("AuthGuard", () => {
+  it("shows loading state while checking auth", () => {
     const authValue: AuthContextValue = {
       user: null,
       isAuthenticated: false,
@@ -59,10 +63,10 @@ describe('AuthGuard', () => {
     };
 
     renderWithAuth(authValue);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  it('redirects to login when not authenticated', () => {
+  it("redirects to login when not authenticated", () => {
     const authValue: AuthContextValue = {
       user: null,
       isAuthenticated: false,
@@ -72,10 +76,10 @@ describe('AuthGuard', () => {
     };
 
     renderWithAuth(authValue);
-    expect(screen.getByText('Login Page')).toBeInTheDocument();
+    expect(screen.getByText("Login Page")).toBeInTheDocument();
   });
 
-  it('renders children when authenticated', () => {
+  it("renders children when authenticated", () => {
     const authValue: AuthContextValue = {
       user: mockUser,
       isAuthenticated: true,
@@ -85,10 +89,10 @@ describe('AuthGuard', () => {
     };
 
     renderWithAuth(authValue);
-    expect(screen.getByText('Protected Content')).toBeInTheDocument();
+    expect(screen.getByText("Protected Content")).toBeInTheDocument();
   });
 
-  it('redirects VIEWER to dashboard when ADMIN role is required', () => {
+  it("redirects VIEWER to dashboard when ADMIN role is required", () => {
     const authValue: AuthContextValue = {
       user: mockViewerUser,
       isAuthenticated: true,
@@ -97,11 +101,11 @@ describe('AuthGuard', () => {
       logout: vi.fn(),
     };
 
-    renderWithAuth(authValue, '/admin-only');
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    renderWithAuth(authValue, "/admin-only");
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
-  it('allows ADMIN to access admin-only routes', () => {
+  it("allows ADMIN to access admin-only routes", () => {
     const authValue: AuthContextValue = {
       user: mockUser,
       isAuthenticated: true,
@@ -110,7 +114,7 @@ describe('AuthGuard', () => {
       logout: vi.fn(),
     };
 
-    renderWithAuth(authValue, '/admin-only');
-    expect(screen.getByText('Admin Only Content')).toBeInTheDocument();
+    renderWithAuth(authValue, "/admin-only");
+    expect(screen.getByText("Admin Only Content")).toBeInTheDocument();
   });
 });
