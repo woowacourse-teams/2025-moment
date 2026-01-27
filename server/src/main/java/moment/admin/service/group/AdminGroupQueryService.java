@@ -23,7 +23,6 @@ import moment.moment.infrastructure.MomentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +55,48 @@ public class AdminGroupQueryService {
     }
 
     public AdminGroupListResponse getGroupList(int page, int size, String keyword, GroupStatusFilter status) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Native query에 이미 ORDER BY created_at DESC가 포함되어 있으므로 Sort 제외
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Group> groupPage = findGroupsByFilter(keyword, status, pageable);
+
+        Page<AdminGroupSummary> summaryPage = groupPage.map(group -> {
+            GroupMember owner = groupMemberRepository.findOwnerByGroupId(group.getId()).orElse(null);
+            int memberCount = (int) groupMemberRepository.countByGroupIdAndStatus(group.getId(), MemberStatus.APPROVED);
+            int momentCount = 0; // TODO: 실제 모멘트 수 조회 구현
+
+            return new AdminGroupSummary(
+                group.getId(),
+                group.getName(),
+                group.getDescription(),
+                memberCount,
+                momentCount,
+                owner != null ? AdminGroupOwnerInfo.from(owner) : null,
+                group.getCreatedAt(),
+                group.getDeletedAt(),
+                group.getDeletedAt() != null
+            );
+        });
+
+        return AdminGroupListResponse.from(summaryPage);
+    }
+
+    private Page<Group> findGroupsByFilter(String keyword, GroupStatusFilter status, Pageable pageable) {
+        boolean hasKeyword = keyword != null && !keyword.isBlank();
+
+        if (hasKeyword) {
+            return switch (status) {
+                case ACTIVE -> groupRepository.findByNameContainingAndActive(keyword, pageable);
+                case DELETED -> groupRepository.findByNameContainingAndDeleted(keyword, pageable);
+                case ALL -> groupRepository.findByNameContainingIncludingDeleted(keyword, pageable);
+            };
+        } else {
+            return switch (status) {
+                case ACTIVE -> groupRepository.findActiveGroups(pageable);
+                case DELETED -> groupRepository.findDeletedGroups(pageable);
+                case ALL -> groupRepository.findAllIncludingDeleted(pageable);
+            };
+        }
     }
 
     public AdminGroupDetailResponse getGroupDetail(Long groupId) {

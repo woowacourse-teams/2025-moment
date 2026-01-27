@@ -55,4 +55,44 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
      */
     @Query(value = "SELECT COUNT(*) FROM moment_groups WHERE DATE(created_at) = CURRENT_DATE", nativeQuery = true)
     long countTodayCreatedGroups();
+
+    /**
+     * 키워드로 그룹 검색 (삭제된 그룹 포함) - 그룹명 검색
+     */
+    @Query(value = "SELECT * FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%') ORDER BY created_at DESC",
+           countQuery = "SELECT COUNT(*) FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%')",
+           nativeQuery = true)
+    Page<Group> findByNameContainingIncludingDeleted(@Param("keyword") String keyword, Pageable pageable);
+
+    /**
+     * 활성 그룹만 조회 (페이지네이션)
+     */
+    @Query(value = "SELECT * FROM moment_groups WHERE deleted_at IS NULL ORDER BY created_at DESC",
+           countQuery = "SELECT COUNT(*) FROM moment_groups WHERE deleted_at IS NULL",
+           nativeQuery = true)
+    Page<Group> findActiveGroups(Pageable pageable);
+
+    /**
+     * 삭제된 그룹만 조회 (페이지네이션)
+     */
+    @Query(value = "SELECT * FROM moment_groups WHERE deleted_at IS NOT NULL ORDER BY created_at DESC",
+           countQuery = "SELECT COUNT(*) FROM moment_groups WHERE deleted_at IS NOT NULL",
+           nativeQuery = true)
+    Page<Group> findDeletedGroups(Pageable pageable);
+
+    /**
+     * 키워드와 상태로 그룹 검색 (활성)
+     */
+    @Query(value = "SELECT * FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%') AND deleted_at IS NULL ORDER BY created_at DESC",
+           countQuery = "SELECT COUNT(*) FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%') AND deleted_at IS NULL",
+           nativeQuery = true)
+    Page<Group> findByNameContainingAndActive(@Param("keyword") String keyword, Pageable pageable);
+
+    /**
+     * 키워드와 상태로 그룹 검색 (삭제됨)
+     */
+    @Query(value = "SELECT * FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%') AND deleted_at IS NOT NULL ORDER BY created_at DESC",
+           countQuery = "SELECT COUNT(*) FROM moment_groups WHERE name LIKE CONCAT('%', :keyword, '%') AND deleted_at IS NOT NULL",
+           nativeQuery = true)
+    Page<Group> findByNameContainingAndDeleted(@Param("keyword") String keyword, Pageable pageable);
 }
