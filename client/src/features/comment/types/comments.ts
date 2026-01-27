@@ -1,8 +1,8 @@
 export interface CommentsResponse {
   status: number;
   data: {
-    items: CommentItem[];
-    nextCursor: string | null;
+    comments: CommentItem[];
+    nextCursor: string | number | null;
     hasNextPage: boolean;
     pageSize: number;
   };
@@ -13,65 +13,36 @@ export interface CommentItem {
   content: string;
   createdAt: string;
   imageUrl?: string | null;
+  likeCount: number;
+  hasLiked: boolean;
   moment: {
     content: string;
     createdAt: string;
     id: number;
-    level: string;
     nickName: string;
+    memberNickname?: string;
     imageUrl?: string | null;
-    tagNames: string[];
+    likeCount: number;
+    hasLiked: boolean;
   } | null;
-  echos: Echo[];
   commentNotification: {
     isRead: boolean;
     notificationIds: number[];
   };
 }
 
-export interface Echo {
-  id: number;
-  echoType: string;
-  userId: number;
-}
-
-export interface SendCommentsData {
-  content: string;
-  momentId: number;
-  imageUrl?: string;
-  imageName?: string;
-}
-
-export interface SendCommentsResponse {
-  status: number;
-  data: {
-    commentId: number;
-    content: string;
-    createdAt: string;
-  };
-}
-
-export interface SendCommentsError {
-  code: string;
-  message: string;
-  status: number;
-}
-
-export interface GetCommentableMomentsResponse {
-  status: number;
-  data: GetCommentableMoments;
-}
-
 export interface GetCommentableMoments {
   id: number;
   nickname: string;
-  level: string;
   content: string;
   imageUrl?: string | null;
   createdAt: string;
+  likeCount?: number;
+  hasLiked?: boolean;
 }
+
 export interface GetComments {
-  pageParam?: string | null;
+  pageParam?: string | number | null;
 }
 
 export type FilterType = 'all' | 'unread';

@@ -23,7 +23,9 @@ const fadeInScale = keyframes`
   }
 `;
 
-export const HeroWrapper = styled.section<{ isVisible: boolean }>`
+export const HeroWrapper = styled('section', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   color: white;
   display: flex;
   flex-direction: column;
@@ -34,16 +36,18 @@ export const HeroWrapper = styled.section<{ isVisible: boolean }>`
   position: relative;
   overflow: hidden;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(20px)')};
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transform: ${({ $isVisible }) => ($isVisible ? 'translateY(0)' : 'translateY(20px)')};
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
-export const TitleContainer = styled.div<{ isVisible: boolean }>`
+export const TitleContainer = styled('div', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   margin-bottom: 2rem;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.2s backwards;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  animation: ${({ $isVisible }) => ($isVisible ? fadeInUp : 'none')} 0.8s ease-out 0.2s backwards;
 `;
 
 export const Title = styled.h1`
@@ -69,11 +73,13 @@ export const Title = styled.h1`
   }
 `;
 
-export const SubtitleContainer = styled.div<{ isVisible: boolean }>`
+export const SubtitleContainer = styled('div', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   max-width: 600px;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  animation: ${({ isVisible }) => (isVisible ? fadeInScale : 'none')} 0.8s ease-out 0.6s backwards;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  animation: ${({ $isVisible }) => ($isVisible ? fadeInScale : 'none')} 0.8s ease-out 0.6s backwards;
 `;
 
 export const Subtitle = styled.p`
@@ -94,14 +100,16 @@ export const Subtitle = styled.p`
   }
 `;
 
-export const AccentLine = styled.div<{ isVisible: boolean }>`
+export const AccentLine = styled('div', {
+  shouldForwardProp: prop => prop !== '$isVisible',
+})<{ $isVisible: boolean }>`
   width: 60px;
   height: 3px;
   background: linear-gradient(90deg, #4f46e5, #06b6d4);
   margin: 1.5rem auto;
   border-radius: 2px;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transform: ${({ isVisible }) => (isVisible ? 'scaleX(1)' : 'scaleX(0)')};
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transform: ${({ $isVisible }) => ($isVisible ? 'scaleX(1)' : 'scaleX(0)')};
   transition: all 0.6s ease-out 0.4s;
 `;

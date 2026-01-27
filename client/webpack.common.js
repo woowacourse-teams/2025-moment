@@ -68,11 +68,11 @@ const config = {
     new ForkTsCheckerWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env.REACT_APP_BASE_URL': JSON.stringify(
-        process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v1',
+        process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v2',
       ),
       'process.env.REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL': JSON.stringify(
         process.env.REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL ||
-          'http://localhost:8080/api/v1/auth/login/google',
+          'http://localhost:8080/api/v2/auth/login/google',
       ),
       'process.env.REACT_APP_GA_ID': JSON.stringify(process.env.REACT_APP_GA_ID || ''),
       'process.env.REACT_APP_SENTRY_DSN': JSON.stringify(process.env.REACT_APP_SENTRY_DSN || ''),

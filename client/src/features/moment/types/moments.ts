@@ -1,15 +1,8 @@
-import type { Echos } from '@/features/echo/type/echos';
-
-export interface MomentsRequest {
-  content: string;
-  tagNames: string[];
-}
-
 export interface MomentsResponse {
   status: number;
   data: {
-    items: MyMomentsItem[];
-    nextCursor: string | null;
+    moments: MyMomentsItem[];
+    nextCursor: string | number | null;
     hasNextPage: boolean;
     pageSize: number;
   };
@@ -17,12 +10,17 @@ export interface MomentsResponse {
 
 export interface MyMomentsItem {
   id: number;
+  momentId: number;
   momenterId: number;
+  memberId: number;
   content: string;
+  memberNickname: string;
   createdAt: string;
   imageUrl?: string | null;
+  likeCount: number;
+  hasLiked: boolean;
+  commentCount: number;
   comments: Comment[] | null;
-  tagNames: string[];
   momentNotification: {
     isRead: boolean;
     notificationIds: number[];
@@ -33,29 +31,11 @@ export interface Comment {
   id: number;
   content: string;
   nickname: string;
-  level: string;
+  memberNickname: string; // V2
   createdAt: string;
   imageUrl?: string | null;
-  echos: Echos[];
+  likeCount: number;
+  hasLiked: boolean;
 }
 
-export interface MomentWritingStatusResponse {
-  data: {
-    status: 'DENIED' | 'ALLOWED';
-  };
-}
-
-export interface MomentExtraWritableResponse {
-  data: {
-    status: 'DENIED' | 'ALLOWED';
-  };
-}
-
-export interface MatchMomentsResponse {
-  status: number;
-  data: {
-    id: number;
-    content: string;
-    createdAt: string;
-  };
-}
+export type FilterType = 'all' | 'unread';

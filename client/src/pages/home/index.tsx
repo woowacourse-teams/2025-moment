@@ -15,28 +15,60 @@ import { NotificationButton } from '@/shared/lib/notifications/NotificationButto
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { isDevice, isPWA } from '@/shared/utils/device';
 import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
+import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
+import { GroupList } from '@/features/group/ui/GroupList';
+import { GroupCreateForm } from '@/features/group/ui/GroupCreateForm';
+import { GroupJoinForm } from '@/features/group/ui/GroupJoinForm';
+import { GroupCreateSuccess } from '@/features/group/ui/GroupCreateSuccess';
 
 export default function HomePage() {
   useScrollDepth();
 
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
-  const { isOpen, handleClose, handleOpen } = useModal();
-  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
+  const { isOpen: isNotiOpen, handleClose: closeNoti, handleOpen: openNoti } = useModal();
+  const { data: isLoggedInQuery } = useCheckIfLoggedInQuery();
+  const isLoggedIn = !!isLoggedInQuery;
+
+  const { data: groupsResponse, refetch: refetchGroups } = useGroupsQuery({ enabled: isLoggedIn });
+
+  const [modalType, setModalType] = useState<'none' | 'create' | 'join' | 'invite'>('none');
+  const [createdGroupInfo, setCreatedGroupInfo] = useState<{
+    groupId: number;
+    code: string;
+  } | null>(null);
 
   const shouldShowNotificationModal =
     isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
 
+  const groups = groupsResponse?.data || [];
+  const hasGroups = isLoggedIn && groups.length > 0;
+
   useEffect(() => {
     if (shouldShowNotificationModal) {
-      handleOpen();
+      openNoti();
     }
-  }, [handleOpen, shouldShowNotificationModal]);
+  }, [openNoti, shouldShowNotificationModal]);
 
   const handleClick = () => {
-    handleOpen();
+    openNoti();
     track('click_cta', { target: 'today_moment', cta_type: 'primary' });
-    navigate(ROUTES.TODAY_MOMENT, { state: { entry: 'cta' } });
+    navigate(ROUTES.LOGIN);
+  };
+
+  const handleCreateGroupCtx = () => setModalType('create');
+  const handleJoinGroupCtx = () => setModalType('join');
+  const handleCloseModal = () => setModalType('none');
+
+  const handleJoinSuccess = async () => {
+    await refetchGroups();
+    handleCloseModal();
+  };
+
+  const handleCreateSuccess = async (groupId: number, code: string) => {
+    await refetchGroups();
+    setCreatedGroupInfo({ groupId, code });
+    setModalType('invite');
   };
 
   return (
@@ -47,12 +79,43 @@ export default function HomePage() {
           <S.HeroSection>
             <Hero />
           </S.HeroSection>
-          <S.ContentSection isVisible={isVisible}>
-            <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
+
+          <S.ContentSection $isVisible={isVisible}>
+            {isLoggedIn ? (
+              hasGroups ? (
+                <S.GroupListContainer>
+                  <GroupList />
+                  <S.ActionButtons>
+                    <Button title="그룹 생성" variant="secondary" onClick={handleCreateGroupCtx} />
+                    <Button title="그룹 참여" variant="secondary" onClick={handleJoinGroupCtx} />
+                  </S.ActionButtons>
+                </S.GroupListContainer>
+              ) : (
+                <S.OnboardingContainer>
+                  <S.OnboardingTitle>시작하기</S.OnboardingTitle>
+                  <S.OnboardingDescription>
+                    그룹을 만들거나 초대 코드를 통해 참여해보세요.
+                  </S.OnboardingDescription>
+                  <S.OnboardingButtonGroup>
+                    <S.OnboardingCard onClick={handleCreateGroupCtx}>
+                      <h3>그룹 만들기</h3>
+                      <p>새로운 공간을 만들어보세요</p>
+                    </S.OnboardingCard>
+                    <S.OnboardingCard onClick={handleJoinGroupCtx}>
+                      <h3>그룹 참여하기</h3>
+                      <p>초대 코드로 참여해보세요</p>
+                    </S.OnboardingCard>
+                  </S.OnboardingButtonGroup>
+                </S.OnboardingContainer>
+              )
+            ) : (
+              <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
+            )}
           </S.ContentSection>
-          <S.ContentSection isVisible={isVisible}>
+
+          <S.ContentSection $isVisible={isVisible}>
             <S.BottomArrow
-              isVisible={isVisible}
+              $isVisible={isVisible}
               webpSrc="/images/belowAirplane.webp"
               fallbackSrc="/images/fallback/belowAirplane.png"
               alt="아래로 스크롤하세요"
@@ -60,7 +123,7 @@ export default function HomePage() {
             />
           </S.ContentSection>
           <S.HighlightedTextContainer
-            isVisible={isVisible}
+            $isVisible={isVisible}
             role="region"
             aria-label="서비스 핵심 가치"
           >
@@ -110,14 +173,47 @@ export default function HomePage() {
           </AnimatedIntroSection>
         ))}
       </S.HomePageWrapper>
-      <Modal size="small" isOpen={isOpen} onClose={handleClose} titleId="notification-modal-title">
+
+      <Modal
+        size="small"
+        isOpen={isNotiOpen}
+        onClose={closeNoti}
+        titleId="notification-modal-title"
+      >
         <Modal.Header
           title="모멘트와 코멘트 알림을 받아보세요!"
           showCloseButton={true}
           id="notification-modal-title"
         />
         <Modal.Content>
-          <NotificationButton onClose={handleClose} />
+          <NotificationButton onClose={closeNoti} />
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={modalType === 'create'} onClose={handleCloseModal}>
+        <Modal.Header title="그룹 생성" showCloseButton />
+        <Modal.Content>
+          <GroupCreateForm onSuccess={handleCreateSuccess} onCancel={handleCloseModal} />
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={modalType === 'join'} onClose={handleCloseModal}>
+        <Modal.Header title="그룹 참여" showCloseButton />
+        <Modal.Content>
+          <GroupJoinForm onSuccess={handleJoinSuccess} onCancel={handleCloseModal} />
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={modalType === 'invite'} onClose={handleCloseModal}>
+        <Modal.Header title="참여 코드" showCloseButton />
+        <Modal.Content>
+          {createdGroupInfo && (
+            <GroupCreateSuccess
+              groupId={createdGroupInfo.groupId}
+              inviteCode={createdGroupInfo.code}
+              onClose={handleCloseModal}
+            />
+          )}
         </Modal.Content>
       </Modal>
     </>
@@ -131,7 +227,7 @@ const AnimatedIntroSection = ({ children }: PropsWithChildren) => {
   });
 
   return (
-    <S.IntroSectionWrapper ref={ref} isVisible={isVisible}>
+    <S.IntroSectionWrapper ref={ref} $isVisible={isVisible}>
       {children}
     </S.IntroSectionWrapper>
   );

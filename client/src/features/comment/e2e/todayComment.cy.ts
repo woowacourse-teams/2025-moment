@@ -42,7 +42,7 @@ describe('오늘의 코멘트 페이지', () => {
     mockGlobalAPIs();
 
     let momentCallCount = 0;
-    cy.intercept('GET', '**/api/v1/moments/commentable*', req => {
+    cy.intercept('GET', '**/api/v2/groups/1/moments/commentable*', req => {
       const momentData = momentsData[momentCallCount % momentsData.length];
       momentCallCount++;
 
@@ -55,7 +55,7 @@ describe('오늘의 코멘트 페이지', () => {
       });
     }).as('getMoments');
 
-    cy.intercept('POST', '**/api/v1/comments', {
+    cy.intercept('POST', '**/api/v2/groups/1/moments/*/comments', {
       statusCode: 201,
       body: {
         status: 201,
@@ -63,7 +63,7 @@ describe('오늘의 코멘트 페이지', () => {
       },
     }).as('sendComment');
 
-    cy.visit('/today-comment');
+    cy.visit('/groups/1/today-comment');
 
     cy.wait('@checkLogin');
     cy.wait('@getProfile');
@@ -127,7 +127,7 @@ describe('오늘의 코멘트 페이지', () => {
 
   describe('시나리오 3: 신고하기', () => {
     beforeEach(() => {
-      cy.intercept('POST', '**/api/v1/moments/*/reports', req => {
+      cy.intercept('POST', '**/api/v2/moments/*/reports', req => {
         expect(req.body).to.have.property('reason');
         expect(req.body.reason).to.be.oneOf(Object.values(COMPLAINT_REASONS));
 
@@ -140,7 +140,7 @@ describe('오늘의 코멘트 페이지', () => {
         });
       }).as('momentComplaint');
 
-      cy.intercept('GET', '**/api/v1/moments/commentable*', {
+      cy.intercept('GET', '**/api/v2/groups/1/moments/commentable*', {
         statusCode: 200,
         body: {
           status: 200,

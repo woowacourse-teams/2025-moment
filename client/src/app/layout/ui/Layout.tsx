@@ -1,4 +1,5 @@
 import { Navbar } from '@/app/layout/ui/Navbar';
+import { BottomNavbar } from '@/app/layout/ui/BottomNavbar';
 import { StarField } from '@/app/layout/ui/StarField';
 import { useSSENotifications } from '@/features/notification/hooks/useSSENotifications';
 import { Toast } from '@/shared/ui/toast';
@@ -36,6 +37,7 @@ const LayoutContent: React.FC = () => {
           <Outlet />
         </ErrorBoundary>
       </S.Main>
+      <BottomNavbar />
       <Footer />
       <Toast />
     </S.Wrapper>

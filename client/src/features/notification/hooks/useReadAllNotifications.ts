@@ -1,12 +1,12 @@
 import { useReadAllNotificationsMutation } from '../api/useReadAllNotificationsMutation';
 
-export const useReadAllNotifications = () => {
+export const useReadAllNotifications = (groupId?: number | string) => {
   const {
     mutate: mutateAllNotification,
     isPending,
     error,
     isError,
-  } = useReadAllNotificationsMutation();
+  } = useReadAllNotificationsMutation(groupId);
   const handleReadAllNotifications = (ids: number[]) => {
     if (isPending) return;
     mutateAllNotification(ids);

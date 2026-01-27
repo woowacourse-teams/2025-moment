@@ -1,72 +1,64 @@
-import { useEchoSelection } from '@/features/echo/hooks/useEchoSelection';
-import { SendEchoForm } from '@/features/echo/ui/SendEchoForm';
-import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
-import { useMemo, useState } from 'react';
-import { useReadAllNotifications } from '../../notification/hooks/useReadAllNotifications';
-import { useCommentNavigation } from '../hook/useCommentNavigation';
 import * as S from './MyMomentsCard.styles';
 import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
-import { useSendComplaint } from '@/features/complaint/hooks/useSendComplaint';
-import { useShowFullImage } from '@/shared/hooks/useShowFullImage';
 import { MyMomentsItem } from '../types/moments';
-import { Tag } from '@/shared/design-system/tag';
 import { convertToWebp } from '@/shared/utils/convertToWebp';
+import { useMyMomentsCard } from '../hook/useMyMomentsCard';
+import { useDeleteMomentMutation } from '../api/useDeleteMomentMutation';
+import { useCommentLikeMutation } from '@/features/comment/api/useCommentLikeMutation';
+import { useDeleteCommentMutation } from '@/features/comment/api/useDeleteCommentMutation';
+import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
+import { Trash2, Heart } from 'lucide-react';
+import { useMomentLikeMutation } from '../api/useMomentLikeMutation';
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
-  const [complainedCommentId, setComplainedCommentId] = useState<Set<number>>(new Set());
-
-  const { handleReadAllNotifications, isLoading: isReadingNotification } =
-    useReadAllNotifications();
-  const { handleOpen, handleClose, isOpen } = useModal();
+  const { currentGroupId } = useCurrentGroup();
   const {
-    handleOpen: handleComplaintOpen,
-    handleClose: handleComplaintClose,
-    isOpen: isComplaintOpen,
-  } = useModal();
-  useEchoSelection();
+    isOpen,
+    isComplaintOpen,
+    currentComment,
+    fullImageSrc,
+    sortedComments,
+    navigation,
+    handleModalClose,
+    handleMomentClick,
+    handleComplaintOpen,
+    handleComplaintClose,
+    handleComplaintSubmit,
+    handleImageClick,
+    closeFullImage,
+    ImageOverlayPortal,
+  } = useMyMomentsCard(myMoment, currentGroupId || '');
 
-  const filteredComments = useMemo(() => {
-    return myMoment.comments?.filter(comment => !complainedCommentId.has(comment.id)) || [];
-  }, [myMoment.comments, complainedCommentId]);
+  const deleteMomentMutation = useDeleteMomentMutation(currentGroupId || '');
+  const likeMomentMutation = useMomentLikeMutation(currentGroupId || '');
+  const likeCommentMutation = useCommentLikeMutation(currentGroupId || '');
+  const deleteCommentMutation = useDeleteCommentMutation(currentGroupId || '');
 
-  const { fullImageSrc, handleImageClick, closeFullImage, ImageOverlayPortal } = useShowFullImage();
-  const sortedComments = useMemo(() => {
-    return filteredComments?.slice().reverse() || [];
-  }, [filteredComments]);
-
-  const navigation = useCommentNavigation(sortedComments?.length || 0);
-  const currentComment = sortedComments?.[navigation.currentIndex];
-
-  const { handleComplaintSubmit } = useSendComplaint(() => {
-    handleComplaintClose();
-
-    if (currentComment) {
-      setComplainedCommentId(prev => new Set([...prev, currentComment.id]));
+  const handleDeleteMoment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('정말로 이 모멘트를 삭제하시겠습니까?')) {
+      deleteMomentMutation.mutate(myMoment.momentId || myMoment.id);
     }
-
-    if (filteredComments.length <= 1) {
-      handleModalClose();
-    } else if (navigation.currentIndex >= filteredComments.length - 1) {
-      navigation.goToPrevious();
-    }
-  });
-
-  const handleModalClose = () => {
-    navigation.reset();
-    handleClose();
   };
 
-  const handleMomentClick = () => {
-    handleOpen();
-    navigation.reset();
-    if (myMoment.momentNotification.isRead || isReadingNotification) return;
+  const handleLikeMoment = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    likeMomentMutation.mutate(myMoment.momentId || myMoment.id);
+  };
 
-    handleReadAllNotifications(myMoment.momentNotification.notificationIds);
+  const handleLikeComment = (commentId: number) => {
+    likeCommentMutation.mutate(commentId);
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    if (window.confirm('정말로 이 코멘트를 삭제하시겠습니까?')) {
+      deleteCommentMutation.mutate(commentId);
+    }
   };
 
   const hasComments = myMoment.comments ? myMoment.comments.length > 0 : false;
@@ -74,7 +66,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   return (
     <>
       <S.MyMomentsCard
-        key={myMoment.id}
+        key={myMoment.momentId || myMoment.id}
         $hasComment={hasComments}
         onClick={hasComments ? handleMomentClick : undefined}
         $shadow={!myMoment.momentNotification.isRead}
@@ -93,11 +85,29 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         aria-label={`${myMoment.content}에 달린 코멘트 확인하기`}
       >
         <S.MyMomentsTitleWrapper>
-          <S.CommentCountWrapper aria-label={`달린 코멘트 수: ${sortedComments?.length}개`}>
-            <Mail size={16} aria-hidden="true" />
-            <span aria-hidden="true">{sortedComments?.length}</span>
-          </S.CommentCountWrapper>
-          <WriteTime date={myMoment.createdAt} />
+          <S.ActionWrapper>
+            <S.CommentCountWrapper aria-label={`좋아요 수: ${myMoment.likeCount}개`}>
+              <S.LikeButton onClick={handleLikeMoment} aria-label="모멘트 좋아요">
+                <Heart
+                  size={16}
+                  aria-hidden="true"
+                  color={theme.colors['red-500']}
+                  fill={myMoment.hasLiked ? theme.colors['red-500'] : 'none'}
+                />
+              </S.LikeButton>
+              <span aria-hidden="true">{myMoment.likeCount}</span>
+            </S.CommentCountWrapper>
+
+            <S.CommentCountWrapper aria-label={`코멘트 수: ${sortedComments?.length}개`}>
+              <Mail size={16} aria-hidden="true" />
+              <span aria-hidden="true">{sortedComments?.length}</span>
+            </S.CommentCountWrapper>
+
+            <WriteTime date={myMoment.createdAt} />
+            <S.DeleteButton onClick={handleDeleteMoment} aria-label="모멘트 삭제">
+              <Trash2 size={24} color={theme.colors['red-500']} />
+            </S.DeleteButton>
+          </S.ActionWrapper>
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsBottomWrapper>
@@ -112,11 +122,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           ) : (
             <div />
           )}
-          <S.MyMomentsTagWrapper>
-            {myMoment.tagNames.map((tag: string) => (
-              <Tag key={tag} tag={tag} />
-            ))}
-          </S.MyMomentsTagWrapper>
         </S.MyMomentsBottomWrapper>
       </S.MyMomentsCard>
       {isOpen && (
@@ -138,16 +143,38 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                   <S.CommentContentWrapper>
                     <S.MyMomentsModalHeader>
                       <S.WriterInfoWrapper>
-                        <WriterInfo writer={currentComment.nickname} level={currentComment.level} />
+                        <WriterInfo
+                          writer={currentComment.memberNickname || currentComment.nickname}
+                        />
                       </S.WriterInfoWrapper>
                       <S.TitleWrapper>
                         <WriteTime date={currentComment.createdAt} />
-                        <S.ComplaintButton
-                          onClick={handleComplaintOpen}
-                          aria-label="코멘트 신고하기"
-                        >
-                          <Siren size={28} color={theme.colors['red-500']} />
-                        </S.ComplaintButton>
+                        <S.ActionWrapper>
+                          <S.IconButton
+                            onClick={() => handleLikeComment(currentComment.id)}
+                            aria-label="코멘트 좋아요"
+                          >
+                            <Heart
+                              size={28}
+                              color={theme.colors['red-500']}
+                              fill={currentComment.hasLiked ? theme.colors['red-500'] : 'none'}
+                            />
+                          </S.IconButton>
+                          <S.LikeCount>{currentComment.likeCount || 0}</S.LikeCount>
+                          <S.IconButton
+                            onClick={() => handleDeleteComment(currentComment.id)}
+                            className="danger"
+                            aria-label="코멘트 삭제"
+                          >
+                            <Trash2 size={28} color={theme.colors['red-500']} />
+                          </S.IconButton>
+                          <S.ComplaintButton
+                            onClick={handleComplaintOpen}
+                            aria-label="코멘트 신고하기"
+                          >
+                            <Siren size={28} color={theme.colors['red-500']} />
+                          </S.ComplaintButton>
+                        </S.ActionWrapper>
                       </S.TitleWrapper>
                     </S.MyMomentsModalHeader>
                     <S.CommentContainer>
@@ -188,7 +215,6 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       {navigation.currentIndex + 1} / {sortedComments?.length || 0}
                     </S.CommentIndicator>
                   </S.CommentContentWrapper>
-                  <SendEchoForm currentComment={currentComment} />
                 </S.MyMomentsModalContent>
               </>
             )}

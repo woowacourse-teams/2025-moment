@@ -6,7 +6,12 @@ import { useToast } from '@/shared/hooks/useToast';
 import { useEffect } from 'react';
 import { track } from '@/shared/lib/ga/track';
 
-export const useSendComments = (momentId: number) => {
+interface UseSendCommentsProps {
+  groupId: number | string;
+  momentId: number;
+}
+
+export const useSendComments = ({ groupId, momentId }: UseSendCommentsProps) => {
   const [comment, setComment] = useState('');
   const { showError } = useToast();
   const [imageData, setImageData] = useState<ImageUploadData | null>(null);
@@ -17,7 +22,7 @@ export const useSendComments = (momentId: number) => {
     error,
     isError,
     isSuccess,
-  } = useSendCommentsMutation();
+  } = useSendCommentsMutation(groupId, momentId);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
@@ -34,7 +39,6 @@ export const useSendComments = (momentId: number) => {
     }
     await sendComments({
       content: comment,
-      momentId: momentId,
       imageUrl: imageData?.imageUrl,
       imageName: imageData?.imageName,
     });
