@@ -55,7 +55,8 @@ export function GroupEditModal({
           </Button>
           <Button
             variant="primary"
-            onClick={handleSubmit as () => void}
+            type="submit"
+            form="edit-group-form"
             disabled={!isValid || isLoading}
             isLoading={isLoading}
           >
@@ -64,7 +65,7 @@ export function GroupEditModal({
         </>
       }
     >
-      <S.Form onSubmit={handleSubmit}>
+      <S.Form id="edit-group-form" onSubmit={handleSubmit}>
         <S.InputGroup>
           <S.Label htmlFor="edit-group-name">Name</S.Label>
           <S.Input
