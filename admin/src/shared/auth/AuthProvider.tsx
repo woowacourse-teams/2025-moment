@@ -1,29 +1,6 @@
-import {
-  createContext,
-  useState,
-  useCallback,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { useState, useCallback, useEffect, type ReactNode } from "react";
 import { apiClient } from "@shared/api";
-
-export type AdminRole = "ADMIN" | "VIEWER";
-
-export interface AdminUser {
-  id: string;
-  email: string;
-  role: AdminRole;
-}
-
-export interface AuthContextValue {
-  user: AdminUser | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
+import { AuthContext, type AdminUser } from "./AuthContext";
 
 interface AuthProviderProps {
   children: ReactNode;
