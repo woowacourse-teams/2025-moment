@@ -86,6 +86,12 @@ public enum ErrorCode {
     APPLE_PUBLIC_KEY_NOT_FOUND("AP-003", "Apple 공개키를 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     APPLE_PUBLIC_KEY_GENERATION_FAILED("AP-004", "Apple 공개키 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     APPLE_AUTH_SERVER_ERROR("AP-005", "Apple 인증 서버 오류입니다.", HttpStatus.SERVICE_UNAVAILABLE),
+
+    // Admin Content (AC)
+    ADMIN_MOMENT_NOT_FOUND("AC-001", "모멘트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    ADMIN_COMMENT_NOT_FOUND("AC-002", "코멘트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    ADMIN_MOMENT_ALREADY_DELETED("AC-003", "이미 삭제된 모멘트입니다.", HttpStatus.BAD_REQUEST),
+    ADMIN_COMMENT_ALREADY_DELETED("AC-004", "이미 삭제된 코멘트입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

@@ -2,8 +2,10 @@ package moment.moment.infrastructure;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import moment.moment.domain.Moment;
 import moment.user.domain.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -229,4 +231,30 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
      */
     @Query(value = "SELECT id FROM moments WHERE member_id = :memberId", nativeQuery = true)
     List<Long> findAllIdsByMemberId(@Param("memberId") Long memberId);
+
+    // ===== Admin 콘텐츠 관리용 메서드 =====
+
+    /**
+     * 그룹의 모멘트 목록 페이지네이션 조회
+     */
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.member mem
+          JOIN FETCH mem.user
+          WHERE m.group.id = :groupId
+          """)
+    Page<Moment> findByGroupId(@Param("groupId") Long groupId, Pageable pageable);
+
+    /**
+     * 그룹 내 특정 모멘트 조회
+     */
+    @Query("""
+          SELECT m
+          FROM moments m
+          JOIN FETCH m.member mem
+          JOIN FETCH mem.user
+          WHERE m.id = :momentId AND m.group.id = :groupId
+          """)
+    Optional<Moment> findByIdAndGroupId(@Param("momentId") Long momentId, @Param("groupId") Long groupId);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.user.domain.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -157,4 +158,38 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query(value = "UPDATE comments SET deleted_at = NOW() WHERE member_id = :memberId AND deleted_at IS NULL", nativeQuery = true)
     int softDeleteByMemberId(@Param("memberId") Long memberId);
+
+    // ===== Admin 콘텐츠 관리용 메서드 =====
+
+    /**
+     * 모멘트의 코멘트 목록 페이지네이션 조회
+     */
+    @Query("""
+          SELECT c
+          FROM comments c
+          JOIN FETCH c.member mem
+          JOIN FETCH mem.user
+          WHERE c.momentId = :momentId
+          """)
+    Page<Comment> findByMomentId(@Param("momentId") Long momentId, Pageable pageable);
+
+    /**
+     * 그룹 내 특정 코멘트 조회
+     */
+    @Query("""
+          SELECT c
+          FROM comments c
+          JOIN FETCH c.member mem
+          JOIN FETCH mem.user
+          JOIN moments m ON c.momentId = m.id
+          WHERE c.id = :commentId AND m.group.id = :groupId
+          """)
+    Optional<Comment> findByIdAndGroupId(@Param("commentId") Long commentId, @Param("groupId") Long groupId);
+
+    /**
+     * 특정 모멘트의 코멘트 전체 Soft Delete
+     */
+    @Modifying
+    @Query(value = "UPDATE comments SET deleted_at = NOW() WHERE moment_id = :momentId AND deleted_at IS NULL", nativeQuery = true)
+    int softDeleteByMomentId(@Param("momentId") Long momentId);
 }
