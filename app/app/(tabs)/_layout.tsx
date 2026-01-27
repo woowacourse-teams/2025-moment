@@ -19,6 +19,11 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="index"
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
         options={{
           title: "모멘트",
           tabBarIcon: ({ color }) => (
@@ -28,6 +33,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="comment"
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
         options={{
           title: "코멘트",
           href: currentGroupId ? "/comment" : null,
@@ -38,6 +48,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="collection"
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
         options={{
           title: "모음집",
           href: currentGroupId ? "/collection" : null,
@@ -48,6 +63,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="my"
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
         options={{
           title: "마이",
           tabBarIcon: ({ color }) => (

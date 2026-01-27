@@ -29,10 +29,11 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
 
   useEffect(() => {
     GoogleSignin.configure({
+      // iosClientId is required if GoogleService-Info.plist is missing.
+      // We use a placeholder here to prevent immediate crash, but Google Login will fail until plist is added.
+      iosClientId: "PLACEHOLDER_CLIENT_ID_FOR_DEV",
       webClientId:
-        "567889139262-rn77174628f804562095819385800000.apps.googleusercontent.com", // This is usually not needed for iOS if using plist, but good for safety. Actually, for iOS plist handles it.
-      // But we need to make sure. I will omit webClientId for now and rely on plist, or ask user later.
-      // Actually, standard practice: relies on plist for iOS.
+        "567889139262-rn77174628f804562095819385800000.apps.googleusercontent.com",
     });
   }, []);
 
@@ -143,7 +144,10 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
           userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
           onLoadStart={handlers.onLoadStart}
           onLoadEnd={handlers.onLoadEnd}
-          onNavigationStateChange={handlers.onNavigationStateChange}
+          onNavigationStateChange={(navState) => {
+            console.log(`[WebView - ${url}] Navigated to: ${navState.url}`);
+            handlers.onNavigationStateChange(navState);
+          }}
           onError={handlers.onError}
           onHttpError={handlers.onHttpError}
           onMessage={handleMessage}
