@@ -100,7 +100,32 @@ public class AdminGroupQueryService {
     }
 
     public AdminGroupDetailResponse getGroupDetail(Long groupId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Group group = groupRepository.findByIdIncludingDeleted(groupId)
+            .orElseThrow(() -> new AdminException(AdminErrorCode.GROUP_NOT_FOUND));
+
+        GroupMember owner = groupMemberRepository.findOwnerByGroupId(groupId).orElse(null);
+        int memberCount = (int) groupMemberRepository.countByGroupIdAndStatus(groupId, MemberStatus.APPROVED);
+        int pendingMemberCount = (int) groupMemberRepository.countByGroupIdAndStatus(groupId, MemberStatus.PENDING);
+        int momentCount = 0; // TODO: 그룹별 모멘트 수 조회 구현
+        int commentCount = 0; // TODO: 그룹별 댓글 수 조회 구현
+
+        GroupInviteLink inviteLink = groupInviteLinkRepository.findFirstByGroupIdOrderByCreatedAtDesc(groupId)
+            .orElse(null);
+
+        return new AdminGroupDetailResponse(
+            group.getId(),
+            group.getName(),
+            group.getDescription(),
+            memberCount,
+            pendingMemberCount,
+            momentCount,
+            commentCount,
+            owner != null ? AdminGroupOwnerInfo.from(owner) : null,
+            AdminInviteLinkInfo.from(inviteLink),
+            group.getCreatedAt(),
+            group.getDeletedAt(),
+            group.getDeletedAt() != null
+        );
     }
 
     public AdminGroupMemberListResponse getApprovedMembers(Long groupId, int page, int size) {
