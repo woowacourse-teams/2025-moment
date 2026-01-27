@@ -1,8 +1,7 @@
 import React from "react";
 import { WebViewScreen } from "@/components/WebViewScreen";
-
-const WEB_URL = "https://connectingmoment.com";
+import { BASE_URL } from "@/constants/config";
 
 export default function HomeScreen() {
-  return <WebViewScreen url={WEB_URL} />;
+  return <WebViewScreen url={BASE_URL} />;
 }
