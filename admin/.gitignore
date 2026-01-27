@@ -29,3 +29,5 @@ cypress/screenshots
 
 # OS
 .DS_Store
+
+.vite
