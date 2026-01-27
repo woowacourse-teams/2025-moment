@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, router } from "expo-router";
 import { useWebView } from "@/hooks/useWebview";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
@@ -11,6 +11,11 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useGroup } from "@/context/GroupContext";
 
 import * as AppleAuthentication from "expo-apple-authentication";
+
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 interface WebViewScreenProps {
   url: string;
@@ -21,6 +26,16 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
 
   const { expoPushToken } = usePushNotifications();
   const { setGroupId } = useGroup();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      // iosClientId is required if GoogleService-Info.plist is missing.
+      // We use a placeholder here to prevent immediate crash, but Google Login will fail until plist is added.
+      iosClientId: "PLACEHOLDER_CLIENT_ID_FOR_DEV",
+      webClientId:
+        "567889139262-rn77174628f804562095819385800000.apps.googleusercontent.com",
+    });
+  }, []);
 
   // 탭이 포커스될 때 로그인 상태 동기화를 위해 웹뷰에 알림 전송
   useFocusEffect(
@@ -77,10 +92,49 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
             console.error(e);
           }
         }
+      } else if (data.type === "LOGIN_GOOGLE") {
+        try {
+          await GoogleSignin.hasPlayServices();
+          const userInfo = await GoogleSignin.signIn();
+          if (userInfo.data?.idToken) {
+            const script = `
+              if (window.onGoogleLoginSuccess) {
+                window.onGoogleLoginSuccess('${userInfo.data.idToken}');
+              }
+            `;
+            webViewRef.current?.injectJavaScript(script);
+          }
+        } catch (error: any) {
+          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            // user cancelled the login flow
+          } else if (error.code === statusCodes.IN_PROGRESS) {
+            // operation (e.g. sign in) is in progress already
+          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            // play services not available or outdated
+          } else {
+            // some other error happened
+            console.error(error);
+          }
+        }
       } else if (data.type === "GROUP_CHANGED") {
         if (data.groupId) {
           setGroupId(data.groupId);
           console.log("Native: Group Changed to", data.groupId);
+        }
+      } else if (data.type === "SWITCH_TAB") {
+        if (data.groupId) {
+          setGroupId(data.groupId);
+        }
+        if (data.tab === "comment") {
+          // Navigate to the comment tab
+          // We use a small timeout to ensure state update propagates if needed, though usually not strictly necessary with expo-router's declarative navigation but helpful for context
+          setTimeout(() => {
+            router.push("/(tabs)/comment");
+          }, 0);
+        } else if (data.tab === "index") {
+          setTimeout(() => {
+            router.push("/(tabs)");
+          }, 0);
         }
       }
     } catch (e) {
@@ -102,10 +156,13 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
           domStorageEnabled
           sharedCookiesEnabled
           thirdPartyCookiesEnabled
-          userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
+          userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 MomentApp"
           onLoadStart={handlers.onLoadStart}
           onLoadEnd={handlers.onLoadEnd}
-          onNavigationStateChange={handlers.onNavigationStateChange}
+          onNavigationStateChange={(navState) => {
+            console.log(`[WebView - ${url}] Navigated to: ${navState.url}`);
+            handlers.onNavigationStateChange(navState);
+          }}
           onError={handlers.onError}
           onHttpError={handlers.onHttpError}
           onMessage={handleMessage}

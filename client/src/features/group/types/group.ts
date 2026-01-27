@@ -11,7 +11,7 @@ export interface Group {
 }
 
 export interface GroupMember {
-  id: number;
+  memberId: number;
   userId: number;
   nickname: string;
   role: 'OWNER' | 'MEMBER';
@@ -21,7 +21,7 @@ export interface GroupMember {
 }
 
 export interface PendingMember {
-  id: number;
+  memberId: number;
   userId: number;
   nickname: string;
   requestedAt: string;
