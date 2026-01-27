@@ -1,10 +1,15 @@
 package moment.admin.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.admin.dto.request.AdminUserUpdateRequest;
+import moment.admin.dto.response.AdminErrorResponse;
 import moment.admin.dto.response.AdminSuccessResponse;
 import moment.admin.dto.response.AdminUserDetailResponse;
 import moment.admin.dto.response.AdminUserListResponse;
@@ -30,7 +35,16 @@ public class AdminUserApiController {
 
     private final AdminUserService adminUserService;
 
-    @Operation(summary = "사용자 목록 조회")
+    @Operation(summary = "사용자 목록 조회", description = "전체 사용자 목록을 페이지네이션으로 조회합니다. Soft Delete된 사용자도 포함됩니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "사용자 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "[A-008] 세션을 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<AdminSuccessResponse<Page<AdminUserListResponse>>> getUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +58,19 @@ public class AdminUserApiController {
                 .body(AdminSuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "사용자 상세 조회")
+    @Operation(summary = "사용자 상세 조회", description = "특정 사용자의 상세 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "사용자 상세 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [A-010] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<AdminSuccessResponse<AdminUserDetailResponse>> getUser(
             @PathVariable Long id) {
@@ -57,7 +83,21 @@ public class AdminUserApiController {
                 .body(AdminSuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "사용자 정보 수정")
+    @Operation(summary = "사용자 정보 수정", description = "특정 사용자의 정보를 수정합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "사용자 정보 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "[A-005] 유효하지 않은 입력 정보입니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [A-010] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<AdminSuccessResponse<AdminUserDetailResponse>> updateUser(
             @PathVariable Long id,
@@ -72,7 +112,19 @@ public class AdminUserApiController {
                 .body(AdminSuccessResponse.of(status, response));
     }
 
-    @Operation(summary = "사용자 삭제")
+    @Operation(summary = "사용자 삭제", description = "특정 사용자를 삭제합니다 (Soft Delete).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "사용자 삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "[A-009] 세션이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "[A-003] 관리자 권한이 없습니다.",
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    - [A-008] 세션을 찾을 수 없습니다.
+                    - [A-010] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = AdminErrorResponse.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<AdminSuccessResponse<Void>> deleteUser(
             @PathVariable Long id) {
