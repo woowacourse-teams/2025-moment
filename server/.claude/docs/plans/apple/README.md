@@ -8,13 +8,13 @@ Expo 앱에서 전달받은 Apple `identityToken`(JWT)을 검증하고 회원가
 
 ## Phase 목록
 
-| Phase | 파일                                                               | 설명                      | 상태 |
-|-------|------------------------------------------------------------------|-------------------------|----|
-| 1     | [phase1-domain-dto.md](./phase1-domain-dto.md)                   | 도메인 및 DTO 구현            | ⬜  |
-| 2     | [phase2-infrastructure.md](./phase2-infrastructure.md)           | AppleAuthClient 구현      | ⬜  |
-| 3     | [phase3-application-service.md](./phase3-application-service.md) | AppleAuthService 구현     | ⬜  |
-| 4     | [phase4-presentation.md](./phase4-presentation.md)               | AuthController 엔드포인트 추가 | ⬜  |
-| 5     | [phase5-configuration.md](./phase5-configuration.md)             | 환경 설정                   | ⬜  |
+| Phase | 파일                                                             | 설명                      | 상태 |
+|-------|----------------------------------------------------------------|-------------------------|----|
+| 1     | [phase1-domain-dto.md](phase1-domain-dto.md)                   | 도메인 및 DTO 구현            | ⬜  |
+| 2     | [phase2-infrastructure.md](phase2-infrastructure.md)           | AppleAuthClient 구현      | ⬜  |
+| 3     | [phase3-application-service.md](phase3-application-service.md) | AppleAuthService 구현     | ⬜  |
+| 4     | [phase4-presentation.md](phase4-presentation.md)               | AuthController 엔드포인트 추가 | ⬜  |
+| 5     | [phase5-configuration.md](phase5-configuration.md)             | 환경 설정                   | ⬜  |
 
 ---
 

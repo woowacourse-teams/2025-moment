@@ -26,6 +26,24 @@ public enum AdminErrorCode {
     // User 관련 (Admin이 User를 관리할 때 사용)
     USER_NOT_FOUND("A-010", "존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
 
+    // 그룹 관련
+    GROUP_NOT_FOUND("AG-001", "그룹을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    GROUP_NOT_DELETED("AG-002", "삭제되지 않은 그룹은 복원할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    GROUP_ALREADY_DELETED("AG-003", "이미 삭제된 그룹입니다.", HttpStatus.BAD_REQUEST),
+
+    // 멤버 관련
+    MEMBER_NOT_FOUND("AM-001", "멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    CANNOT_KICK_OWNER("AM-002", "그룹장은 추방할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    MEMBER_NOT_PENDING("AM-003", "승인 대기 중인 멤버가 아닙니다.", HttpStatus.BAD_REQUEST),
+    MEMBER_NOT_APPROVED("AM-004", "승인된 멤버만 그룹장이 될 수 있습니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_OWNER("AM-005", "이미 그룹장인 멤버입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_APPROVED("AM-006", "이미 승인된 멤버입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REJECTED("AM-007", "이미 거절/삭제된 멤버입니다.", HttpStatus.BAD_REQUEST),
+
+    // 콘텐츠 관련
+    MOMENT_NOT_FOUND("AC-001", "모멘트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_FOUND("AC-002", "코멘트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // 서버 오류
     INTERNAL_SERVER_ERROR("A-500", "서버 내부 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
