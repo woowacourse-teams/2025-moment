@@ -10,6 +10,7 @@ To create **atomic, well-structured commits** with **clear Korean messages**, st
 2.  **Atomic Commits**: Split unrelated changes into separate commits. Do not mix refactoring with new features if possible.
 3.  **Language**: Write all commit messages in **Korean**.
 4.  **Verification**: Verify the changes using `git diff` before committing.
+5.  Do not add add Co-Authored-By line.
 
 ## Commit Message Convention
 
