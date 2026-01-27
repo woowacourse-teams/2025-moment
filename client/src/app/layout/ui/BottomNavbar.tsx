@@ -2,12 +2,20 @@ import { ROUTES } from '@/app/routes/routes';
 import { Picture } from '@/shared/design-system/picture';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { Link, useLocation, useParams } from 'react-router';
+import { useEffect, useState } from 'react';
 import * as S from './BottomNavbar.styles';
 
 export const BottomNavbar = () => {
   const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
   const { data: notifications } = useReadNotificationsQuery();
+  const [isWebView, setIsWebView] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) {
+      setIsWebView(true);
+    }
+  }, []);
 
   const currentPath = location.pathname;
 
@@ -27,7 +35,7 @@ export const BottomNavbar = () => {
     return false;
   };
 
-  if (!groupId) return null;
+  if (!groupId || isWebView) return null;
 
   return (
     <S.BottomNavContainer>

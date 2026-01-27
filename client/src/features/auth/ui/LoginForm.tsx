@@ -2,6 +2,7 @@ import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
 import { Input } from '@/shared/design-system/input/Input';
 import { useNavigate } from 'react-router';
 import { GoogleLoginButton } from './GoogleLoginButton';
+import { AppleLoginButton } from './AppleLoginButton';
 import * as S from './LoginForm.styles';
 
 export const LoginForm = () => {
@@ -74,6 +75,7 @@ export const LoginForm = () => {
       </S.LoginFormContainer>
       <S.LoginFooter>
         <GoogleLoginButton />
+        <AppleLoginButton />
         <S.LoginFooterContent>
           <S.LoginSignupContainer>
             <S.NewPasswordLink type="button" onClick={handleNewPassword}>

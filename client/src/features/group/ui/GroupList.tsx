@@ -3,11 +3,21 @@ import { useNavigate } from 'react-router';
 import { GroupCard } from './GroupCard';
 import * as S from './GroupList.styles';
 
+import { storageService } from '@/shared/utils/storageService';
+
 export function GroupList() {
   const { data: groupsData, isLoading } = useGroupsQuery();
   const navigate = useNavigate();
 
   const handleGroupClick = (group: any) => {
+    storageService.local.set('lastVisitedGroupId', group.groupId);
+
+    if ((window as any).ReactNativeWebView) {
+      (window as any).ReactNativeWebView.postMessage(
+        JSON.stringify({ type: 'GROUP_CHANGED', groupId: group.groupId }),
+      );
+    }
+
     navigate(`/groups/${group.groupId}/today-comment`);
   };
 
