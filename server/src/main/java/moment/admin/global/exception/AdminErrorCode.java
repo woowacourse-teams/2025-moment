@@ -11,6 +11,7 @@ public enum AdminErrorCode {
     LOGIN_FAILED("A-001", "관리자 로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
     NOT_FOUND("A-002", "존재하지 않는 관리자입니다.", HttpStatus.NOT_FOUND),
     UNAUTHORIZED("A-003", "관리자 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    FORBIDDEN("A-011", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
 
     // 비즈니스 규칙
     DUPLICATE_EMAIL("A-004", "이미 등록된 관리자 이메일입니다.", HttpStatus.CONFLICT),
