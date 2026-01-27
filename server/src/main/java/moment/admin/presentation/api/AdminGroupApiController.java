@@ -1,13 +1,20 @@
 package moment.admin.presentation.api;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import moment.admin.domain.Admin;
 import moment.admin.domain.GroupStatusFilter;
 import moment.admin.dto.request.AdminGroupUpdateRequest;
+import moment.admin.dto.response.AdminCommentListResponse;
 import moment.admin.dto.response.AdminGroupDetailResponse;
 import moment.admin.dto.response.AdminGroupListResponse;
 import moment.admin.dto.response.AdminGroupMemberListResponse;
 import moment.admin.dto.response.AdminGroupStatsResponse;
+import moment.admin.dto.response.AdminMomentListResponse;
+import moment.admin.global.util.AdminSessionManager;
+import moment.admin.service.admin.AdminService;
+import moment.admin.service.content.AdminContentService;
 import moment.admin.service.group.AdminGroupMemberService;
 import moment.admin.service.group.AdminGroupQueryService;
 import moment.admin.service.group.AdminGroupService;
@@ -32,6 +39,9 @@ public class AdminGroupApiController {
     private final AdminGroupQueryService adminGroupQueryService;
     private final AdminGroupService adminGroupService;
     private final AdminGroupMemberService adminGroupMemberService;
+    private final AdminContentService adminContentService;
+    private final AdminSessionManager adminSessionManager;
+    private final AdminService adminService;
 
     @GetMapping("/stats")
     public ResponseEntity<SuccessResponse<AdminGroupStatsResponse>> getGroupStats() {
@@ -150,6 +160,57 @@ public class AdminGroupApiController {
     ) {
         adminGroupMemberService.transferOwnership(groupId, newOwnerMemberId);
         HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
+    }
+
+    // ===== 콘텐츠 관리 API =====
+
+    @GetMapping("/{groupId}/moments")
+    public ResponseEntity<SuccessResponse<AdminMomentListResponse>> getMoments(
+        @PathVariable Long groupId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size
+    ) {
+        AdminMomentListResponse response = adminContentService.getMoments(groupId, page, size);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @DeleteMapping("/{groupId}/moments/{momentId}")
+    public ResponseEntity<SuccessResponse<Void>> deleteMoment(
+        @PathVariable Long groupId,
+        @PathVariable Long momentId,
+        HttpSession session
+    ) {
+        Long adminId = adminSessionManager.getId(session);
+        Admin admin = adminService.getAdminById(adminId);
+        adminContentService.deleteMoment(groupId, momentId, adminId, admin.getEmail());
+        HttpStatus status = HttpStatus.NO_CONTENT;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
+    }
+
+    @GetMapping("/{groupId}/moments/{momentId}/comments")
+    public ResponseEntity<SuccessResponse<AdminCommentListResponse>> getComments(
+        @PathVariable Long groupId,
+        @PathVariable Long momentId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size
+    ) {
+        AdminCommentListResponse response = adminContentService.getComments(groupId, momentId, page, size);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @DeleteMapping("/{groupId}/comments/{commentId}")
+    public ResponseEntity<SuccessResponse<Void>> deleteComment(
+        @PathVariable Long groupId,
+        @PathVariable Long commentId,
+        HttpSession session
+    ) {
+        Long adminId = adminSessionManager.getId(session);
+        Admin admin = adminService.getAdminById(adminId);
+        adminContentService.deleteComment(groupId, commentId, adminId, admin.getEmail());
+        HttpStatus status = HttpStatus.NO_CONTENT;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, null));
     }
 }

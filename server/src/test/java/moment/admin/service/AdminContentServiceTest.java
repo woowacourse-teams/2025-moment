@@ -18,8 +18,8 @@ import moment.admin.infrastructure.AdminGroupLogRepository;
 import moment.admin.service.content.AdminContentService;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import moment.group.domain.Group;
 import moment.group.domain.GroupMember;
 import moment.group.infrastructure.GroupRepository;
@@ -179,9 +179,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.getMoments(999L, 0, 20))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.GROUP_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.GROUP_NOT_FOUND);
         }
     }
 
@@ -248,9 +248,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteMoment(1L, 1L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.ADMIN_MOMENT_ALREADY_DELETED);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.MOMENT_ALREADY_DELETED);
         }
 
         @Test
@@ -263,9 +263,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteMoment(1L, 999L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.ADMIN_MOMENT_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.MOMENT_NOT_FOUND);
         }
 
         @Test
@@ -275,9 +275,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteMoment(999L, 1L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.GROUP_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.GROUP_NOT_FOUND);
         }
     }
 
@@ -366,9 +366,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.getComments(1L, 999L, 0, 20))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.ADMIN_MOMENT_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.MOMENT_NOT_FOUND);
         }
 
         @Test
@@ -378,9 +378,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.getComments(999L, 1L, 0, 20))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.GROUP_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.GROUP_NOT_FOUND);
         }
     }
 
@@ -431,9 +431,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteComment(1L, 1L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.ADMIN_COMMENT_ALREADY_DELETED);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.COMMENT_ALREADY_DELETED);
         }
 
         @Test
@@ -446,9 +446,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteComment(1L, 999L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.ADMIN_COMMENT_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.COMMENT_NOT_FOUND);
         }
 
         @Test
@@ -458,9 +458,9 @@ class AdminContentServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminContentService.deleteComment(999L, 1L, 1L, "admin@test.com"))
-                .isInstanceOf(MomentException.class)
-                .extracting(e -> ((MomentException) e).getErrorCode())
-                .isEqualTo(ErrorCode.GROUP_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .extracting(e -> ((AdminException) e).getErrorCode())
+                .isEqualTo(AdminErrorCode.GROUP_NOT_FOUND);
         }
     }
 }

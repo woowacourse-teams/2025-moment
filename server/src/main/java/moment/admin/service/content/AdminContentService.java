@@ -11,8 +11,8 @@ import moment.admin.dto.response.AdminMomentResponse;
 import moment.admin.infrastructure.AdminGroupLogRepository;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import moment.group.domain.Group;
 import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
@@ -61,7 +61,7 @@ public class AdminContentService {
         Moment moment = findMomentOrThrow(groupId, momentId);
 
         if (moment.getDeletedAt() != null) {
-            throw new MomentException(ErrorCode.ADMIN_MOMENT_ALREADY_DELETED);
+            throw new AdminException(AdminErrorCode.MOMENT_ALREADY_DELETED);
         }
 
         // 해당 모멘트의 코멘트 전체 soft delete
@@ -107,7 +107,7 @@ public class AdminContentService {
         Comment comment = findCommentOrThrow(groupId, commentId);
 
         if (comment.getDeletedAt() != null) {
-            throw new MomentException(ErrorCode.ADMIN_COMMENT_ALREADY_DELETED);
+            throw new AdminException(AdminErrorCode.COMMENT_ALREADY_DELETED);
         }
 
         // 코멘트 soft delete
@@ -126,16 +126,16 @@ public class AdminContentService {
 
     private Group findGroupOrThrow(Long groupId) {
         return groupRepository.findByIdIncludingDeleted(groupId)
-            .orElseThrow(() -> new MomentException(ErrorCode.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new AdminException(AdminErrorCode.GROUP_NOT_FOUND));
     }
 
     private Moment findMomentOrThrow(Long groupId, Long momentId) {
         return momentRepository.findByIdAndGroupId(momentId, groupId)
-            .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_MOMENT_NOT_FOUND));
+            .orElseThrow(() -> new AdminException(AdminErrorCode.MOMENT_NOT_FOUND));
     }
 
     private Comment findCommentOrThrow(Long groupId, Long commentId) {
         return commentRepository.findByIdAndGroupId(commentId, groupId)
-            .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_COMMENT_NOT_FOUND));
+            .orElseThrow(() -> new AdminException(AdminErrorCode.COMMENT_NOT_FOUND));
     }
 }
