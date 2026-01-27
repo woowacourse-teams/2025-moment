@@ -1,6 +1,13 @@
 import { useState, useCallback, useEffect, type ReactNode } from "react";
 import { apiClient } from "@shared/api";
-import { AuthContext, type AdminUser } from "./AuthContext";
+import {
+  AuthContext,
+  type AdminUser,
+  type AuthContextValue,
+  type AdminRole,
+} from "./AuthContext";
+
+export { AuthContext, type AdminUser, type AuthContextValue, type AdminRole };
 
 interface AuthProviderProps {
   children: ReactNode;
