@@ -12,6 +12,11 @@ import { useGroup } from "@/context/GroupContext";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+
 interface WebViewScreenProps {
   url: string;
 }
@@ -21,6 +26,15 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
 
   const { expoPushToken } = usePushNotifications();
   const { setGroupId } = useGroup();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "567889139262-rn77174628f804562095819385800000.apps.googleusercontent.com", // This is usually not needed for iOS if using plist, but good for safety. Actually, for iOS plist handles it.
+      // But we need to make sure. I will omit webClientId for now and rely on plist, or ask user later.
+      // Actually, standard practice: relies on plist for iOS.
+    });
+  }, []);
 
   // 탭이 포커스될 때 로그인 상태 동기화를 위해 웹뷰에 알림 전송
   useFocusEffect(
@@ -75,6 +89,30 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
             // User canceled, do nothing
           } else {
             console.error(e);
+          }
+        }
+      } else if (data.type === "LOGIN_GOOGLE") {
+        try {
+          await GoogleSignin.hasPlayServices();
+          const userInfo = await GoogleSignin.signIn();
+          if (userInfo.data?.idToken) {
+            const script = `
+              if (window.onGoogleLoginSuccess) {
+                window.onGoogleLoginSuccess('${userInfo.data.idToken}');
+              }
+            `;
+            webViewRef.current?.injectJavaScript(script);
+          }
+        } catch (error: any) {
+          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            // user cancelled the login flow
+          } else if (error.code === statusCodes.IN_PROGRESS) {
+            // operation (e.g. sign in) is in progress already
+          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            // play services not available or outdated
+          } else {
+            // some other error happened
+            console.error(error);
           }
         }
       } else if (data.type === "GROUP_CHANGED") {

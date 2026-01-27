@@ -39,7 +39,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#0a0a0f"
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true,
