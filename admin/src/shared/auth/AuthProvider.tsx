@@ -1,6 +1,13 @@
-import { createContext, useState, useCallback, useEffect, type ReactNode } from 'react';
+import {
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { apiClient } from "@shared/api";
 
-export type AdminRole = 'ADMIN' | 'VIEWER';
+export type AdminRole = "ADMIN" | "VIEWER";
 
 export interface AdminUser {
   id: string;
@@ -27,38 +34,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session on mount
-    const storedUser = localStorage.getItem('admin_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem('admin_user');
-      }
-    }
-    setIsLoading(false);
+    apiClient
+      .get<AdminUser>("/auth/me")
+      .then((res) => setUser(res.data))
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    // TODO: Replace with actual API call
     setIsLoading(true);
     try {
-      // Mock login - replace with actual API call
-      const mockUser: AdminUser = {
-        id: '1',
+      const { data } = await apiClient.post<AdminUser>("/admin/auth/login", {
         email,
-        role: password === 'admin' ? 'ADMIN' : 'VIEWER',
-      };
-      setUser(mockUser);
-      localStorage.setItem('admin_user', JSON.stringify(mockUser));
+        password,
+      });
+      setUser(data);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const logout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem('admin_user');
+  const logout = useCallback(async () => {
+    try {
+      await apiClient.post("/auth/logout");
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   return (
