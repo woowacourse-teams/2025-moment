@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": ["WebSearch"],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./dist)",
+      "Read(./node_modules)"
+    ]
+  }
+}
