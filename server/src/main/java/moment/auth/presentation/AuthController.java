@@ -11,10 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import moment.auth.application.AppleAuthService;
 import moment.auth.application.AuthService;
 import moment.auth.application.EmailService;
 import moment.auth.application.GoogleAuthService;
 import moment.auth.domain.Tokens;
+import moment.auth.dto.request.AppleLoginRequest;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
@@ -52,6 +54,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final GoogleAuthService googleAuthService;
+    private final AppleAuthService appleAuthService;
     private final EmailService emailService;
 
     @Value("${auth.google.client-id}")
@@ -308,5 +311,58 @@ public class AuthController {
     ) {
         authService.resetPassword(request);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));
+    }
+
+    @Operation(summary = "Apple 로그인", description = "Apple Identity Token을 검증하고 로그인/회원가입을 처리합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Apple 로그인 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [AP-001] 유효하지 않은 Apple 토큰입니다.
+                    - [AP-002] 만료된 Apple 토큰입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = """
+                    - [AP-003] Apple 공개키를 찾을 수 없습니다.
+                    - [AP-004] Apple 공개키 생성에 실패했습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "503", description = """
+                    - [AP-005] Apple 인증 서버 오류입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PostMapping("/apple")
+    public ResponseEntity<SuccessResponse<Void>> appleLogin(
+            @Valid @RequestBody AppleLoginRequest request
+    ) {
+        Tokens tokens = appleAuthService.loginOrSignUp(request.identityToken());
+        String accessToken = tokens.getAccessToken();
+        String refreshToken = tokens.getRefreshToken().getTokenValue();
+
+        ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, accessToken)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(ACCESS_TOKEN_TIME)
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(REFRESH_TOKEN_TIME)
+                .build();
+
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .body(SuccessResponse.of(status, null));
     }
 }
