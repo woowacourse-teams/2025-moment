@@ -1,3 +1,4 @@
+import { isApp } from '@/shared/utils/device';
 import { useGroupsQuery } from '../api/useGroupsQuery';
 import { GroupCard } from './GroupCard';
 import { Button } from '@/shared/design-system/button/Button';
@@ -57,6 +58,16 @@ export const MyGroupList = () => {
   };
 
   const handleGroupClick = (groupId: number) => {
+    if (isApp() && window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({
+          type: 'SWITCH_TAB',
+          tab: 'comment',
+          groupId: groupId,
+        }),
+      );
+      return;
+    }
     const path = ROUTES.TODAY_COMMENT.replace(':groupId', String(groupId));
     navigate(path);
   };

@@ -17,3 +17,11 @@ export const isPWA = () => {
 export const isApp = () => {
   return /MomentApp/.test(navigator.userAgent);
 };
+
+declare global {
+  interface Window {
+    ReactNativeWebView: {
+      postMessage: (message: string) => void;
+    };
+  }
+}

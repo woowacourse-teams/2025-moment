@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, router } from "expo-router";
 import { useWebView } from "@/hooks/useWebview";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
@@ -120,6 +120,21 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
         if (data.groupId) {
           setGroupId(data.groupId);
           console.log("Native: Group Changed to", data.groupId);
+        }
+      } else if (data.type === "SWITCH_TAB") {
+        if (data.groupId) {
+          setGroupId(data.groupId);
+        }
+        if (data.tab === "comment") {
+          // Navigate to the comment tab
+          // We use a small timeout to ensure state update propagates if needed, though usually not strictly necessary with expo-router's declarative navigation but helpful for context
+          setTimeout(() => {
+            router.push("/(tabs)/comment");
+          }, 0);
+        } else if (data.tab === "index") {
+          setTimeout(() => {
+            router.push("/(tabs)");
+          }, 0);
         }
       }
     } catch (e) {
