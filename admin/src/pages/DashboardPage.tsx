@@ -1,58 +1,36 @@
 import styled from '@emotion/styled';
-import { useAuth } from '@shared/auth/useAuth';
+import { GroupStatsCards } from '@features/group/ui/GroupStatsCards';
 
 const Container = styled.div`
   padding: 2rem;
 `;
 
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-`;
-
 const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
 `;
 
-const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+const Section = styled.section`
+  margin-bottom: 2rem;
 `;
 
-const LogoutButton = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #ef4444;
-  color: white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #dc2626;
-  }
+const SectionTitle = styled.h2`
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
 `;
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
-
   return (
     <Container>
-      <Header>
-        <Title>Moment Admin Dashboard</Title>
-        <UserInfo>
-          <span>
-            {user?.email} ({user?.role})
-          </span>
-          <LogoutButton onClick={logout}>Logout</LogoutButton>
-        </UserInfo>
-      </Header>
-      <main>
-        <p>Welcome to the Moment Admin Panel.</p>
-      </main>
+      <Title>Dashboard</Title>
+      <Section>
+        <SectionTitle>Group Statistics</SectionTitle>
+        <GroupStatsCards />
+      </Section>
     </Container>
   );
 }
