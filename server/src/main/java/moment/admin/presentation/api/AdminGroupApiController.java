@@ -6,16 +6,19 @@ import lombok.RequiredArgsConstructor;
 import moment.admin.domain.Admin;
 import moment.admin.domain.GroupStatusFilter;
 import moment.admin.dto.request.AdminGroupUpdateRequest;
+import moment.admin.domain.AdminGroupLogType;
 import moment.admin.dto.response.AdminCommentListResponse;
 import moment.admin.dto.response.AdminGroupDetailResponse;
 import moment.admin.dto.response.AdminGroupInviteLinkResponse;
 import moment.admin.dto.response.AdminGroupListResponse;
+import moment.admin.dto.response.AdminGroupLogListResponse;
 import moment.admin.dto.response.AdminGroupMemberListResponse;
 import moment.admin.dto.response.AdminGroupStatsResponse;
 import moment.admin.dto.response.AdminMomentListResponse;
 import moment.admin.global.util.AdminSessionManager;
 import moment.admin.service.admin.AdminService;
 import moment.admin.service.content.AdminContentService;
+import moment.admin.service.group.AdminGroupLogService;
 import moment.admin.service.group.AdminGroupMemberService;
 import moment.admin.service.group.AdminGroupQueryService;
 import moment.admin.service.group.AdminGroupService;
@@ -40,6 +43,7 @@ public class AdminGroupApiController {
     private final AdminGroupQueryService adminGroupQueryService;
     private final AdminGroupService adminGroupService;
     private final AdminGroupMemberService adminGroupMemberService;
+    private final AdminGroupLogService adminGroupLogService;
     private final AdminContentService adminContentService;
     private final AdminSessionManager adminSessionManager;
     private final AdminService adminService;
@@ -171,6 +175,20 @@ public class AdminGroupApiController {
         @PathVariable Long groupId
     ) {
         AdminGroupInviteLinkResponse response = adminGroupService.getInviteLink(groupId);
+        HttpStatus status = HttpStatus.OK;
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    // ===== Admin 로그 조회 API =====
+
+    @GetMapping("/logs")
+    public ResponseEntity<SuccessResponse<AdminGroupLogListResponse>> getGroupLogs(
+        @RequestParam(required = false) Long groupId,
+        @RequestParam(required = false) AdminGroupLogType type,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size
+    ) {
+        AdminGroupLogListResponse response = adminGroupLogService.getGroupLogs(groupId, type, page, size);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

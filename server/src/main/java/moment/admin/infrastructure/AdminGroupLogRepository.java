@@ -12,4 +12,8 @@ public interface AdminGroupLogRepository extends JpaRepository<AdminGroupLog, Lo
     Page<AdminGroupLog> findByGroupId(Long groupId, Pageable pageable);
 
     List<AdminGroupLog> findByGroupIdAndType(Long groupId, AdminGroupLogType type);
+
+    Page<AdminGroupLog> findByGroupIdAndType(Long groupId, AdminGroupLogType type, Pageable pageable);
+
+    Page<AdminGroupLog> findByType(AdminGroupLogType type, Pageable pageable);
 }
