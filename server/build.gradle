@@ -49,6 +49,13 @@ dependencies {
     // Spring Session JDBC
     implementation 'org.springframework.session:spring-session-jdbc'
 
+    // Thymeleaf for Admin pages
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
+
+    // Spring Session JDBC
+    implementation 'org.springframework.session:spring-session-jdbc'
+
     compileOnly 'org.projectlombok:lombok'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
