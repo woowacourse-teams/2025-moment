@@ -1,4 +1,6 @@
 import { ROUTES } from '@/app/routes/routes';
+import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
+import { usePendingMembersQuery } from '@/features/group/api/usePendingMembersQuery';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { Picture } from '@/shared/design-system/picture';
 import { Link, useLocation, useParams } from 'react-router';
@@ -6,16 +8,17 @@ import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
-  const { data: notifications } = useReadNotificationsQuery();
-  const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
+  const { data: notifications } = useReadNotificationsQuery();
+  const { data: groupsData } = useGroupsQuery();
+  const { data: pendingMembers } = usePendingMembersQuery(groupId || '');
+  const location = useLocation();
 
-  const isTodayMomentActive = location.pathname.includes('/today-moment');
-  const isTodayCommentActive = location.pathname.includes('/today-comment');
-  const isCollectionActive = location.pathname.includes('/collection');
+  const isOwner = groupsData?.data.find(g => g.groupId === Number(groupId))?.isOwner;
 
   const isNotificationExisting =
-    notifications?.data.length && notifications?.data.length > 0 ? true : false;
+    (notifications?.data && notifications.data.length > 0) ||
+    (isOwner && pendingMembers?.data && pendingMembers.data.length > 0);
 
   const replaceGroupId = (path: string) => {
     if (!groupId) return '#';
@@ -33,6 +36,10 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   const handleCollectionClick = () => {
     track('click_navigation', { destination: 'collection', source: 'navbar' });
   };
+
+  const isTodayMomentActive = location.pathname.includes('/today-moment');
+  const isTodayCommentActive = location.pathname.includes('/today-comment');
+  const isCollectionActive = location.pathname.includes('/collection');
 
   if (!groupId) return null;
 

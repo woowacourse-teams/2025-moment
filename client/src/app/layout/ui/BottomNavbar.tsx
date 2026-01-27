@@ -1,6 +1,8 @@
 import { ROUTES } from '@/app/routes/routes';
 import { Picture } from '@/shared/design-system/picture';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
+import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
+import { usePendingMembersQuery } from '@/features/group/api/usePendingMembersQuery';
 import { Link, useLocation, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { isApp } from '@/shared/utils/device';
@@ -10,6 +12,8 @@ export const BottomNavbar = () => {
   const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
   const { data: notifications } = useReadNotificationsQuery();
+  const { data: groupsData } = useGroupsQuery();
+  const { data: pendingMembers } = usePendingMembersQuery(groupId || '');
 
   const currentPath = location.pathname;
 
@@ -18,8 +22,11 @@ export const BottomNavbar = () => {
     return path.replace(':groupId', groupId);
   };
 
+  const isOwner = groupsData?.data.find(g => g.groupId === Number(groupId))?.isOwner;
+
   const isNotificationExisting =
-    notifications?.data.length && notifications?.data.length > 0 ? true : false;
+    (notifications?.data && notifications.data.length > 0) ||
+    (isOwner && pendingMembers?.data && pendingMembers.data.length > 0);
 
   const isActive = (path: string) => {
     if (path === ROUTES.TODAY_MOMENT && currentPath.includes('/today-moment')) return true;
