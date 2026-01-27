@@ -10,6 +10,7 @@ import { Modal } from '@/shared/design-system/modal/Modal';
 import { MyGroupList } from '@/features/group/ui/MyGroupList';
 import { useState } from 'react';
 import * as S from './index.styles';
+import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -26,6 +27,7 @@ export default function MyPage() {
   } = useModal();
   const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
+  const logoutMutation = useLogoutMutation();
   const showNotificationSettings = isDevice() || isPWA();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
@@ -50,7 +52,6 @@ export default function MyPage() {
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
                   <Button variant="primary" title="닉네임 변경" onClick={handleOpenNicknameModal} />
-
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -58,6 +59,11 @@ export default function MyPage() {
                       onClick={handleOpenPasswordModal}
                     />
                   )}
+                  <Button
+                    variant="primary"
+                    title="로그아웃"
+                    onClick={() => logoutMutation.mutate()}
+                  />
                 </S.ButtonContainer>
               </S.UserInfo>
             </S.UserProfileSection>

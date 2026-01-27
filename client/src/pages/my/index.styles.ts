@@ -104,20 +104,12 @@ export const UserInfoContainer = styled.div`
   position: relative;
 `;
 
-export const RewardHistoryContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: relative;
-`;
-
 export const UserProfileSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 8px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.colors['gray-700']};
 
   @media (max-width: 768px) {
     flex-direction: column;
