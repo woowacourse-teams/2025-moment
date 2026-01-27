@@ -9,8 +9,8 @@ import moment.admin.dto.response.AdminSessionHistoryResponse;
 import moment.admin.dto.response.AdminSessionResponse;
 import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class AdminSessionService {
      */
     public AdminSession getSessionBySessionId(String sessionId) {
         return adminSessionRepository.findBySessionId(sessionId)
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_SESSION_NOT_FOUND));
+                .orElseThrow(() -> new AdminException(AdminErrorCode.SESSION_NOT_FOUND));
     }
 
     /**
@@ -71,10 +71,10 @@ public class AdminSessionService {
      */
     public AdminSessionDetailResponse getSessionDetail(Long id) {
         AdminSession session = adminSessionRepository.findById(id)
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_SESSION_NOT_FOUND));
+                .orElseThrow(() -> new AdminException(AdminErrorCode.SESSION_NOT_FOUND));
 
         Admin admin = adminRepository.findById(session.getAdminId())
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_NOT_FOUND));
+                .orElseThrow(() -> new AdminException(AdminErrorCode.NOT_FOUND));
 
         return AdminSessionDetailResponse.from(session, admin);
     }
@@ -186,7 +186,7 @@ public class AdminSessionService {
                 .map(session -> {
                     Admin admin = adminMap.get(session.getAdminId());
                     if (admin == null) {
-                        throw new MomentException(ErrorCode.ADMIN_NOT_FOUND);
+                        throw new AdminException(AdminErrorCode.NOT_FOUND);
                     }
                     return AdminSessionResponse.from(session, admin);
                 })

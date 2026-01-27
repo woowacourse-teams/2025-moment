@@ -8,8 +8,8 @@ import moment.admin.domain.AdminRole;
 import moment.admin.domain.AdminSession;
 import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ public class AdminSessionManager {
     public void validateAuthorized(HttpSession session) {
         if (session == null || session.getAttribute(ADMIN_SESSION_KEY) == null
                 || session.getAttribute(ADMIN_ROLE_KEY) == null) {
-            throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+            throw new AdminException(AdminErrorCode.UNAUTHORIZED);
         }
     }
 
@@ -49,7 +49,7 @@ public class AdminSessionManager {
         if (adminId instanceof Long id) {
             return id;
         }
-        throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        throw new AdminException(AdminErrorCode.UNAUTHORIZED);
     }
 
     public AdminRole getRole(HttpSession session) {
@@ -58,7 +58,7 @@ public class AdminSessionManager {
         if (role instanceof AdminRole adminRole) {
             return adminRole;
         }
-        throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+        throw new AdminException(AdminErrorCode.UNAUTHORIZED);
     }
 
     public boolean isSuperAdmin(HttpSession session) {

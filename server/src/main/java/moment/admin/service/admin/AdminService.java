@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import moment.admin.domain.Admin;
 import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,18 +24,18 @@ public class AdminService {
 
     public Admin authenticateAdmin(String email, String password) {
         Admin admin = adminRepository.findByEmail(email)
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_LOGIN_FAILED));
+                .orElseThrow(() -> new AdminException(AdminErrorCode.LOGIN_FAILED));
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, admin.getPassword())) {
-            throw new MomentException(ErrorCode.ADMIN_LOGIN_FAILED);
+            throw new AdminException(AdminErrorCode.LOGIN_FAILED);
         }
 
         // 차단된 관리자 검증 (방어적 프로그래밍)
         // @SQLRestriction으로 인해 이미 차단된 관리자는 조회되지 않지만, 명시적으로 검증
         if (admin.isBlocked()) {
             log.warn("Blocked admin login attempt: email={}", email);
-            throw new MomentException(ErrorCode.ADMIN_LOGIN_FAILED);
+            throw new AdminException(AdminErrorCode.LOGIN_FAILED);
         }
 
         return admin;
@@ -43,7 +43,7 @@ public class AdminService {
 
     public Admin getAdminById(Long id) {
         return adminRepository.findById(id)
-                .orElseThrow(() -> new MomentException(ErrorCode.ADMIN_NOT_FOUND));
+                .orElseThrow(() -> new AdminException(AdminErrorCode.NOT_FOUND));
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class AdminService {
     @Transactional
     public Admin createAdmin(String email, String name, String password, AdminRole role) {
         if (adminRepository.existsByEmail(email)) {
-            throw new MomentException(ErrorCode.ADMIN_EMAIL_CONFLICT);
+            throw new AdminException(AdminErrorCode.DUPLICATE_EMAIL);
         }
 
         String hashedPassword = passwordEncoder.encode(password);
@@ -69,7 +69,7 @@ public class AdminService {
     public void validateAdminRegistrationPermission(Long adminId) {
         Admin admin = getAdminById(adminId);
         if (!admin.canRegisterAdmin()) {
-            throw new MomentException(ErrorCode.ADMIN_UNAUTHORIZED);
+            throw new AdminException(AdminErrorCode.UNAUTHORIZED);
         }
     }
 
@@ -134,7 +134,7 @@ public class AdminService {
      */
     public void validateNotSelfBlock(Long currentAdminId, Long targetAdminId) {
         if (currentAdminId.equals(targetAdminId)) {
-            throw new MomentException(ErrorCode.ADMIN_CANNOT_BLOCK_SELF);
+            throw new AdminException(AdminErrorCode.CANNOT_BLOCK_SELF);
         }
     }
 
@@ -148,7 +148,7 @@ public class AdminService {
         if (admin.isSuperAdmin()) {
             long superAdminCount = adminRepository.countByRole(AdminRole.SUPER_ADMIN);
             if (superAdminCount <= 1) {
-                throw new MomentException(ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+                throw new AdminException(AdminErrorCode.CANNOT_BLOCK_LAST_SUPER_ADMIN);
             }
         }
     }

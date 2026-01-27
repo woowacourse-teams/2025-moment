@@ -10,8 +10,8 @@ import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -78,8 +78,8 @@ class AdminServiceTest {
     void 존재하지_않는_이메일로_인증_시_ADMIN_LOGIN_FAILED_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> adminService.authenticateAdmin("nonexistent@test.com", "password"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LOGIN_FAILED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.LOGIN_FAILED);
     }
 
     @Test
@@ -92,8 +92,8 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.authenticateAdmin("admin@test.com", "wrongPassword"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LOGIN_FAILED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.LOGIN_FAILED);
     }
 
     @Test
@@ -118,8 +118,8 @@ class AdminServiceTest {
     void 존재하지_않는_ID로_조회_시_ADMIN_NOT_FOUND_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> adminService.getAdminById(999L))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.NOT_FOUND);
     }
 
     @Test
@@ -178,8 +178,8 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.createAdmin(duplicateEmail, "Admin2", "password456!@#"))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_EMAIL_CONFLICT);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.DUPLICATE_EMAIL);
 
         // 데이터베이스에 한 개만 존재하는지 확인
         long count = adminRepository.findAll().stream()
@@ -254,16 +254,16 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.validateAdminRegistrationPermission(normalAdmin.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test
     void 존재하지_않는_관리자_ID로_권한_검증_시_ADMIN_NOT_FOUND_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> adminService.validateAdminRegistrationPermission(999L))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_NOT_FOUND);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.NOT_FOUND);
     }
 
     @Test
@@ -277,8 +277,8 @@ class AdminServiceTest {
 
         // then
         assertThatThrownBy(() -> adminService.createAdmin(email, "Admin2", password))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_EMAIL_CONFLICT);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.DUPLICATE_EMAIL);
 
         // 최종적으로 한 명만 존재
         long count = adminRepository.findAll().stream()
@@ -296,8 +296,8 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.validateNotSelfBlock(adminId, adminId))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_CANNOT_BLOCK_SELF);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.CANNOT_BLOCK_SELF);
     }
 
     @Test
@@ -324,8 +324,8 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.validateNotLastSuperAdmin(superAdmin.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.CANNOT_BLOCK_LAST_SUPER_ADMIN);
     }
 
     @Test
@@ -382,8 +382,8 @@ class AdminServiceTest {
 
         // when & then
         assertThatThrownBy(() -> adminService.blockAdmin(superAdmin.getId()))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_LAST_SUPER_ADMIN_DELETE);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.CANNOT_BLOCK_LAST_SUPER_ADMIN);
     }
 
     @Test
