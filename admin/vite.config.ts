@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://dev.connectingmoment.com",
+        target: "https:/connectingmoment.com",
         changeOrigin: true,
         secure: false,
         cookieDomainRewrite: {
