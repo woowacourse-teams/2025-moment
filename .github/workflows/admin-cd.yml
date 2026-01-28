@@ -1,4 +1,4 @@
-name: Dev Moment Admin CD
+name: Admin CD
 
 on:
   push:
