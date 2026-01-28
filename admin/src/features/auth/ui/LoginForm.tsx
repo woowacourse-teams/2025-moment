@@ -23,7 +23,7 @@ export function LoginForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@moment.com"
+          placeholder="admin@gmail.com"
           required
         />
       </S.InputGroup>
