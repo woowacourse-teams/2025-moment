@@ -12,8 +12,8 @@ import moment.admin.domain.AdminSession;
 import moment.admin.dto.response.AdminSessionDetailResponse;
 import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -79,8 +79,8 @@ class AdminSessionServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminSessionService.getSessionDetail(sessionId))
-                    .isInstanceOf(MomentException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_SESSION_NOT_FOUND);
+                    .isInstanceOf(AdminException.class)
+                    .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.SESSION_NOT_FOUND);
         }
 
         @Test
@@ -92,8 +92,8 @@ class AdminSessionServiceTest {
 
             // when & then
             assertThatThrownBy(() -> adminSessionService.getSessionDetail(sessionId))
-                    .isInstanceOf(MomentException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_NOT_FOUND);
+                    .isInstanceOf(AdminException.class)
+                    .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.NOT_FOUND);
         }
     }
 

@@ -69,4 +69,25 @@ class AdminUserServiceTest {
 
         assertThat(userRepository.findById(savedUser.getId())).isEmpty();
     }
+
+    @Test
+    void soft_delete된_사용자도_목록에_포함된다() {
+        // given - 3명의 사용자 생성
+        List<User> users = UserFixture.createUsersByAmount(3);
+        users.forEach(userRepository::save);
+
+        // 1명 soft delete
+        adminUserService.deleteUser(users.get(0).getId());
+
+        // when
+        Page<User> page = adminUserService.getAllUsers(0, 10);
+
+        // then
+        assertAll(
+            () -> assertThat(page.getTotalElements()).isEqualTo(3),  // 삭제된 사용자 포함
+            () -> assertThat(page.getContent()).hasSize(3),
+            () -> assertThat(page.getContent())
+                .anyMatch(user -> user.getDeletedAt() != null)  // deletedAt이 설정된 사용자 존재
+        );
+    }
 }

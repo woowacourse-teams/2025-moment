@@ -9,8 +9,8 @@ import java.lang.reflect.Field;
 import moment.admin.domain.AdminRole;
 import moment.admin.infrastructure.AdminRepository;
 import moment.admin.infrastructure.AdminSessionRepository;
-import moment.global.exception.ErrorCode;
-import moment.global.exception.MomentException;
+import moment.admin.global.exception.AdminErrorCode;
+import moment.admin.global.exception.AdminException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -68,8 +68,8 @@ class AdminSessionManagerTest {
     void 세션이_null이면_ADMIN_UNAUTHORIZED_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> sessionManager.validateAuthorized(null))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test
@@ -79,8 +79,8 @@ class AdminSessionManagerTest {
 
         // when & then
         assertThatThrownBy(() -> sessionManager.validateAuthorized(session))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test
@@ -90,8 +90,8 @@ class AdminSessionManagerTest {
 
         // when & then
         assertThatThrownBy(() -> sessionManager.validateAuthorized(session))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test
@@ -111,8 +111,8 @@ class AdminSessionManagerTest {
     void ID_조회_시_세션에_값이_없으면_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> sessionManager.getId(session))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test
@@ -132,8 +132,8 @@ class AdminSessionManagerTest {
     void 역할_조회_시_세션에_값이_없으면_예외를_던진다() {
         // when & then
         assertThatThrownBy(() -> sessionManager.getRole(session))
-                .isInstanceOf(MomentException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ADMIN_UNAUTHORIZED);
+                .isInstanceOf(AdminException.class)
+                .hasFieldOrPropertyWithValue("errorCode", AdminErrorCode.UNAUTHORIZED);
     }
 
     @Test

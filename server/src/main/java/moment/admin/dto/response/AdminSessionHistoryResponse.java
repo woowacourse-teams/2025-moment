@@ -1,5 +1,6 @@
 package moment.admin.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import moment.admin.domain.Admin;
 import moment.admin.domain.AdminSession;
 
@@ -8,13 +9,27 @@ import java.time.LocalDateTime;
 /**
  * 세션 히스토리 응답 DTO
  */
+@Schema(description = "세션 히스토리 응답")
 public record AdminSessionHistoryResponse(
+        @Schema(description = "세션 레코드 ID", example = "1")
         Long id,
+
+        @Schema(description = "관리자 이름", example = "홍길동")
         String adminName,
+
+        @Schema(description = "관리자 이메일", example = "admin@moment.com")
         String adminEmail,
+
+        @Schema(description = "로그인 일시", example = "2024-01-15T10:30:00")
         LocalDateTime loginTime,
+
+        @Schema(description = "로그아웃 일시", example = "2024-01-15T12:00:00")
         LocalDateTime logoutTime,
+
+        @Schema(description = "접속 IP 주소", example = "192.168.1.1")
         String ipAddress,
+
+        @Schema(description = "세션 상태 (ACTIVE, LOGGED_OUT, FORCED_LOGOUT, EXPIRED)", example = "LOGGED_OUT")
         String sessionStatus
 ) {
     public static AdminSessionHistoryResponse from(AdminSession session, Admin admin) {
