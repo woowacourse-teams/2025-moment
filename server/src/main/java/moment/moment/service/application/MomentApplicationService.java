@@ -18,7 +18,7 @@ import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.dto.request.MomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
-import moment.moment.dto.response.GroupFeedResponse;
+import moment.moment.dto.response.GroupMomentListResponse;
 import moment.moment.dto.response.GroupMomentResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.MomentCreationStatusResponse;
@@ -177,48 +177,62 @@ public class MomentApplicationService {
         momentService.validateMomenter(momentId, momenter);
     }
 
-    public GroupFeedResponse getGroupFeed(Long groupId, Long userId, Long cursor) {
+    public GroupMomentListResponse getGroupMoments(Long groupId, Long userId, Long cursor) {
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE);
 
+        Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
+
         List<GroupMomentResponse> responses = moments.stream()
                 .map(moment -> {
                     long likeCount = momentLikeService.getCount(moment.getId());
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
                     long commentCount = commentService.countByMomentId(moment.getId());
-                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                    MomentImage image = momentImageMap.get(moment);
+                    String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, imageUrl);
                 })
                 .toList();
 
         Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
-        return GroupFeedResponse.of(responses, nextCursor);
+        return GroupMomentListResponse.of(responses, nextCursor);
     }
 
-    public GroupFeedResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
+    public GroupMomentListResponse getMyMomentsInGroupSimple(Long groupId, Long userId, Long cursor) {
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         List<Moment> moments = momentService.getMyMomentsInGroup(groupId, member.getId(), cursor, DEFAULT_PAGE_SIZE);
 
+        Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
+
         List<GroupMomentResponse> responses = moments.stream()
                 .map(moment -> {
                     long likeCount = momentLikeService.getCount(moment.getId());
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
                     long commentCount = commentService.countByMomentId(moment.getId());
-                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount);
+                    MomentImage image = momentImageMap.get(moment);
+                    String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, imageUrl);
                 })
                 .toList();
 
         Long nextCursor = moments.isEmpty() ? null : moments.get(moments.size() - 1).getId();
-        return GroupFeedResponse.of(responses, nextCursor);
+        return GroupMomentListResponse.of(responses, nextCursor);
     }
 
     @Transactional
-    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content) {
+    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content, String imageUrl, String imageName) {
         User momenter = userService.getUserBy(userId);
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         moment.group.domain.Group group = member.getGroup();
 
         Moment moment = momentService.createInGroup(momenter, group, member, content);
-        return GroupMomentResponse.from(moment, 0L, false, 0L);
+
+        Optional<MomentImage> savedImage = momentImageService.create(moment, imageUrl, imageName);
+        String resolvedImageUrl = savedImage
+                .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
+                .orElse(null);
+
+        return GroupMomentResponse.from(moment, 0L, false, 0L, resolvedImageUrl);
     }
 
     @Transactional
@@ -230,6 +244,7 @@ public class MomentApplicationService {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
 
+        momentImageService.deleteBy(momentId);
         momentService.deleteBy(momentId);
     }
 

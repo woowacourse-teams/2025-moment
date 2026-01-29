@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
-import moment.comment.dto.response.MyGroupCommentFeedResponse;
+import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.comment.dto.response.MyGroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
@@ -37,40 +37,40 @@ public class MyGroupCommentPageFacadeService {
     private final CommentLikeService commentLikeService;
     private final MomentLikeService momentLikeService;
 
-    public MyGroupCommentFeedResponse getMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
+    public MyGroupCommentListResponse getMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
         List<Comment> comments = commentService.getMyCommentsInGroup(
                 member.getId(), cursor, DEFAULT_PAGE_SIZE);
 
         if (comments.isEmpty()) {
-            return MyGroupCommentFeedResponse.empty();
+            return MyGroupCommentListResponse.empty();
         }
 
-        return buildFeedResponse(comments, member.getId());
+        return buildCommentListResponse(comments, member.getId());
     }
 
-    public MyGroupCommentFeedResponse getUnreadMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
+    public MyGroupCommentListResponse getUnreadMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
         List<Long> unreadCommentIds = notificationApplicationService.getUnreadNotifications(
                 userId, TargetType.COMMENT);
 
         if (unreadCommentIds == null || unreadCommentIds.isEmpty()) {
-            return MyGroupCommentFeedResponse.empty();
+            return MyGroupCommentListResponse.empty();
         }
 
         List<Comment> comments = commentService.getUnreadMyCommentsInGroup(
                 member.getId(), unreadCommentIds, cursor, DEFAULT_PAGE_SIZE);
 
         if (comments.isEmpty()) {
-            return MyGroupCommentFeedResponse.empty();
+            return MyGroupCommentListResponse.empty();
         }
 
-        return buildFeedResponse(comments, member.getId());
+        return buildCommentListResponse(comments, member.getId());
     }
 
-    private MyGroupCommentFeedResponse buildFeedResponse(List<Comment> comments, Long memberId) {
+    private MyGroupCommentListResponse buildCommentListResponse(List<Comment> comments, Long memberId) {
         List<Long> commentIds = comments.stream().map(Comment::getId).toList();
         List<Long> momentIds = comments.stream().map(Comment::getMomentId).toList();
 
@@ -102,7 +102,7 @@ public class MyGroupCommentPageFacadeService {
                 ? null
                 : comments.get(comments.size() - 1).getId();
 
-        return MyGroupCommentFeedResponse.of(responses, nextCursor);
+        return MyGroupCommentListResponse.of(responses, nextCursor);
     }
 
     private MyGroupCommentResponse createMyGroupCommentResponse(

@@ -13,12 +13,15 @@ import moment.group.service.group.GroupMemberService;
 import moment.like.service.CommentLikeService;
 import moment.like.service.MomentLikeService;
 import moment.moment.domain.Moment;
+import moment.moment.domain.MomentImage;
 import moment.moment.dto.response.MomentNotificationResponse;
-import moment.moment.dto.response.MyGroupFeedResponse;
+import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.moment.dto.response.MyGroupMomentCommentResponse;
 import moment.moment.dto.response.MyGroupMomentResponse;
+import moment.moment.service.moment.MomentImageService;
 import moment.moment.service.moment.MomentService;
 import moment.notification.service.application.NotificationApplicationService;
+import moment.storage.application.PhotoUrlResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,47 +33,51 @@ public class MyGroupMomentPageFacadeService {
     private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final MomentService momentService;
+    private final MomentImageService momentImageService;
     private final GroupMemberService groupMemberService;
     private final CommentApplicationService commentApplicationService;
     private final NotificationApplicationService notificationApplicationService;
     private final MomentLikeService momentLikeService;
     private final CommentLikeService commentLikeService;
+    private final PhotoUrlResolver photoUrlResolver;
 
-    public MyGroupFeedResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
+    public MyGroupMomentListResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
         List<Moment> moments = momentService.getMyMomentsInGroup(
                 groupId, member.getId(), cursor, DEFAULT_PAGE_SIZE);
 
         if (moments.isEmpty()) {
-            return MyGroupFeedResponse.empty();
+            return MyGroupMomentListResponse.empty();
         }
 
-        return buildFeedResponse(moments, member.getId());
+        return buildMomentListResponse(moments, member.getId());
     }
 
-    public MyGroupFeedResponse getUnreadMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
+    public MyGroupMomentListResponse getUnreadMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
         List<Long> unreadMomentIds = notificationApplicationService.getUnreadNotifications(
                 userId, TargetType.MOMENT);
 
         if (unreadMomentIds == null || unreadMomentIds.isEmpty()) {
-            return MyGroupFeedResponse.empty();
+            return MyGroupMomentListResponse.empty();
         }
 
         List<Moment> moments = momentService.getUnreadMyMomentsInGroup(
                 groupId, member.getId(), unreadMomentIds, cursor, DEFAULT_PAGE_SIZE);
 
         if (moments.isEmpty()) {
-            return MyGroupFeedResponse.empty();
+            return MyGroupMomentListResponse.empty();
         }
 
-        return buildFeedResponse(moments, member.getId());
+        return buildMomentListResponse(moments, member.getId());
     }
 
-    private MyGroupFeedResponse buildFeedResponse(List<Moment> moments, Long memberId) {
+    private MyGroupMomentListResponse buildMomentListResponse(List<Moment> moments, Long memberId) {
         List<Long> momentIds = moments.stream().map(Moment::getId).toList();
+
+        Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
 
         List<CommentComposition> allComments = commentApplicationService.getMyCommentCompositionsBy(momentIds);
         Map<Long, List<CommentComposition>> commentsMap = allComments.stream()
@@ -88,7 +95,7 @@ public class MyGroupMomentPageFacadeService {
 
         List<MyGroupMomentResponse> responses = moments.stream()
                 .map(moment -> createMyGroupMomentResponse(
-                        moment, memberId, commentsMap, notificationsMap,
+                        moment, memberId, momentImageMap, commentsMap, notificationsMap,
                         commentLikeCountMap, likedCommentIds))
                 .toList();
 
@@ -96,12 +103,13 @@ public class MyGroupMomentPageFacadeService {
                 ? null
                 : moments.get(moments.size() - 1).getId();
 
-        return MyGroupFeedResponse.of(responses, nextCursor);
+        return MyGroupMomentListResponse.of(responses, nextCursor);
     }
 
     private MyGroupMomentResponse createMyGroupMomentResponse(
             Moment moment,
             Long memberId,
+            Map<Moment, MomentImage> momentImageMap,
             Map<Long, List<CommentComposition>> commentsMap,
             Map<Long, List<Long>> notificationsMap,
             Map<Long, Long> commentLikeCountMap,
@@ -111,6 +119,9 @@ public class MyGroupMomentPageFacadeService {
 
         long likeCount = momentLikeService.getCount(momentId);
         boolean hasLiked = momentLikeService.hasLiked(momentId, memberId);
+
+        MomentImage momentImage = momentImageMap.get(moment);
+        String imageUrl = (momentImage != null) ? photoUrlResolver.resolve(momentImage.getImageUrl()) : null;
 
         List<CommentComposition> compositions = commentsMap.getOrDefault(momentId, List.of());
         List<MyGroupMomentCommentResponse> comments = compositions.stream()
@@ -126,6 +137,6 @@ public class MyGroupMomentPageFacadeService {
         MomentNotificationResponse notification = MomentNotificationResponse.from(notificationIds);
 
         return MyGroupMomentResponse.of(
-                moment, likeCount, hasLiked, commentCount, comments, notification);
+                moment, likeCount, hasLiked, commentCount, imageUrl, comments, notification);
     }
 }

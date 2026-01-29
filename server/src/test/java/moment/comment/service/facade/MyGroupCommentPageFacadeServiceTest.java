@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.ArrayList;
 import java.util.List;
 import moment.comment.domain.Comment;
-import moment.comment.dto.response.MyGroupCommentFeedResponse;
+import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
 import moment.fixture.CommentFixture;
@@ -83,7 +83,7 @@ class MyGroupCommentPageFacadeServiceTest {
         commentRepository.save(comment);
 
         // when
-        MyGroupCommentFeedResponse response = facadeService.getMyCommentsInGroup(
+        MyGroupCommentListResponse response = facadeService.getMyCommentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -104,7 +104,7 @@ class MyGroupCommentPageFacadeServiceTest {
         // 코멘트 없음
 
         // when
-        MyGroupCommentFeedResponse response = facadeService.getMyCommentsInGroup(
+        MyGroupCommentListResponse response = facadeService.getMyCommentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -124,7 +124,7 @@ class MyGroupCommentPageFacadeServiceTest {
         notificationRepository.save(notification);
 
         // when
-        MyGroupCommentFeedResponse response = facadeService.getUnreadMyCommentsInGroup(
+        MyGroupCommentListResponse response = facadeService.getUnreadMyCommentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -146,7 +146,7 @@ class MyGroupCommentPageFacadeServiceTest {
         // 알림 없음
 
         // when
-        MyGroupCommentFeedResponse response = facadeService.getUnreadMyCommentsInGroup(
+        MyGroupCommentListResponse response = facadeService.getUnreadMyCommentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -163,7 +163,7 @@ class MyGroupCommentPageFacadeServiceTest {
         }
 
         // when - 첫 페이지
-        MyGroupCommentFeedResponse firstPage = facadeService.getMyCommentsInGroup(
+        MyGroupCommentListResponse firstPage = facadeService.getMyCommentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -174,7 +174,7 @@ class MyGroupCommentPageFacadeServiceTest {
         );
 
         // when - 두 번째 페이지
-        MyGroupCommentFeedResponse secondPage = facadeService.getMyCommentsInGroup(
+        MyGroupCommentListResponse secondPage = facadeService.getMyCommentsInGroup(
                 group.getId(), user.getId(), firstPage.nextCursor());
 
         // then

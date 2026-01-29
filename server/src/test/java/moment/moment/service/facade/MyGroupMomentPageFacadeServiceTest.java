@@ -19,7 +19,7 @@ import moment.group.domain.GroupMember;
 import moment.group.infrastructure.GroupMemberRepository;
 import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
-import moment.moment.dto.response.MyGroupFeedResponse;
+import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
@@ -84,7 +84,7 @@ class MyGroupMomentPageFacadeServiceTest {
         commentRepository.save(comment);
 
         // when
-        MyGroupFeedResponse response = facadeService.getMyMomentsInGroup(
+        MyGroupMomentListResponse response = facadeService.getMyMomentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -101,7 +101,7 @@ class MyGroupMomentPageFacadeServiceTest {
         // 모멘트 없음
 
         // when
-        MyGroupFeedResponse response = facadeService.getMyMomentsInGroup(
+        MyGroupMomentListResponse response = facadeService.getMyMomentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -120,7 +120,7 @@ class MyGroupMomentPageFacadeServiceTest {
         notificationRepository.save(notification);
 
         // when
-        MyGroupFeedResponse response = facadeService.getUnreadMyMomentsInGroup(
+        MyGroupMomentListResponse response = facadeService.getUnreadMyMomentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -137,7 +137,7 @@ class MyGroupMomentPageFacadeServiceTest {
         // 알림 없음
 
         // when
-        MyGroupFeedResponse response = facadeService.getUnreadMyMomentsInGroup(
+        MyGroupMomentListResponse response = facadeService.getUnreadMyMomentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -153,7 +153,7 @@ class MyGroupMomentPageFacadeServiceTest {
         }
 
         // when - 첫 페이지
-        MyGroupFeedResponse firstPage = facadeService.getMyMomentsInGroup(
+        MyGroupMomentListResponse firstPage = facadeService.getMyMomentsInGroup(
                 group.getId(), user.getId(), null);
 
         // then
@@ -164,7 +164,7 @@ class MyGroupMomentPageFacadeServiceTest {
         );
 
         // when - 두 번째 페이지
-        MyGroupFeedResponse secondPage = facadeService.getMyMomentsInGroup(
+        MyGroupMomentListResponse secondPage = facadeService.getMyMomentsInGroup(
                 group.getId(), user.getId(), firstPage.nextCursor());
 
         // then
