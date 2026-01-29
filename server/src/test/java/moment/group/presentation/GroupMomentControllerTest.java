@@ -15,9 +15,9 @@ import moment.group.dto.response.GroupCreateResponse;
 import moment.like.dto.response.LikeToggleResponse;
 import moment.moment.dto.request.GroupMomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
-import moment.moment.dto.response.GroupFeedResponse;
+import moment.moment.dto.response.GroupMomentListResponse;
 import moment.moment.dto.response.GroupMomentResponse;
-import moment.moment.dto.response.MyGroupFeedResponse;
+import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -71,7 +71,7 @@ class GroupMomentControllerTest {
 
         GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
 
-        GroupMomentCreateRequest request = new GroupMomentCreateRequest("오늘의 모멘트입니다");
+        GroupMomentCreateRequest request = new GroupMomentCreateRequest("오늘의 모멘트입니다", null, null);
 
         // when
         GroupMomentResponse response = RestAssured.given().log().all()
@@ -107,14 +107,14 @@ class GroupMomentControllerTest {
         모멘트_작성(token, group.groupId(), "두 번째 모멘트");
 
         // when
-        GroupFeedResponse response = RestAssured.given().log().all()
+        GroupMomentListResponse response = RestAssured.given().log().all()
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/moments", group.groupId())
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", GroupFeedResponse.class);
+            .getObject("data", GroupMomentListResponse.class);
 
         // then
         assertThat(response.moments()).hasSize(2);
@@ -133,14 +133,14 @@ class GroupMomentControllerTest {
         모멘트_작성(token, group.groupId(), "내 모멘트");
 
         // when
-        MyGroupFeedResponse response = RestAssured.given().log().all()
+        MyGroupMomentListResponse response = RestAssured.given().log().all()
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/my-moments", group.groupId())
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", MyGroupFeedResponse.class);
+            .getObject("data", MyGroupMomentListResponse.class);
 
         // then
         assertAll(
@@ -164,14 +164,14 @@ class GroupMomentControllerTest {
         모멘트_작성(token, group.groupId(), "내 모멘트");
 
         // when
-        MyGroupFeedResponse response = RestAssured.given().log().all()
+        MyGroupMomentListResponse response = RestAssured.given().log().all()
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/my-moments/unread", group.groupId())
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", MyGroupFeedResponse.class);
+            .getObject("data", MyGroupMomentListResponse.class);
 
         // then - 알림이 없으므로 빈 응답
         assertThat(response.moments()).isEmpty();
@@ -217,13 +217,13 @@ class GroupMomentControllerTest {
             .statusCode(HttpStatus.NO_CONTENT.value());
 
         // then - 피드가 비어있어야 함
-        GroupFeedResponse feed = RestAssured.given()
+        GroupMomentListResponse feed = RestAssured.given()
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/moments", group.groupId())
             .then()
             .extract()
             .jsonPath()
-            .getObject("data", GroupFeedResponse.class);
+            .getObject("data", GroupMomentListResponse.class);
 
         assertThat(feed.moments()).isEmpty();
     }
@@ -271,7 +271,7 @@ class GroupMomentControllerTest {
     }
 
     private GroupMomentResponse 모멘트_작성(String token, Long groupId, String content) {
-        GroupMomentCreateRequest request = new GroupMomentCreateRequest(content);
+        GroupMomentCreateRequest request = new GroupMomentCreateRequest(content, null, null);
         return RestAssured.given()
             .contentType(ContentType.JSON)
             .cookie("accessToken", token)

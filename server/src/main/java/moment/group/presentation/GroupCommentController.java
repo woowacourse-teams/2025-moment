@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
-import moment.comment.dto.response.MyGroupCommentFeedResponse;
+import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.comment.service.facade.MyGroupCommentPageFacadeService;
 import moment.global.dto.response.ErrorResponse;
@@ -65,7 +65,7 @@ public class GroupCommentController {
             @PathVariable Long momentId,
             @Valid @RequestBody GroupCommentCreateRequest request) {
         GroupCommentResponse response = commentApplicationService.createCommentInGroup(
-            groupId, momentId, authentication.id(), request.content());
+            groupId, momentId, authentication.id(), request.content(), request.imageUrl(), request.imageName());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -171,11 +171,11 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-comments")
-    public ResponseEntity<SuccessResponse<MyGroupCommentFeedResponse>> getMyComments(
+    public ResponseEntity<SuccessResponse<MyGroupCommentListResponse>> getMyComments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        MyGroupCommentFeedResponse response = myGroupCommentPageFacadeService.getMyCommentsInGroup(
+        MyGroupCommentListResponse response = myGroupCommentPageFacadeService.getMyCommentsInGroup(
                 groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -199,11 +199,11 @@ public class GroupCommentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-comments/unread")
-    public ResponseEntity<SuccessResponse<MyGroupCommentFeedResponse>> getUnreadMyComments(
+    public ResponseEntity<SuccessResponse<MyGroupCommentListResponse>> getUnreadMyComments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        MyGroupCommentFeedResponse response = myGroupCommentPageFacadeService.getUnreadMyCommentsInGroup(
+        MyGroupCommentListResponse response = myGroupCommentPageFacadeService.getUnreadMyCommentsInGroup(
                 groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

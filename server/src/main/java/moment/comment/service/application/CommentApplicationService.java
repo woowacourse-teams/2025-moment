@@ -177,24 +177,34 @@ public class CommentApplicationService {
     }
 
     @Transactional
-    public GroupCommentResponse createCommentInGroup(Long groupId, Long momentId, Long userId, String content) {
+    public GroupCommentResponse createCommentInGroup(Long groupId, Long momentId, Long userId, String content, String imageUrl, String imageName) {
         User commenter = userService.getUserBy(userId);
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         Moment moment = momentService.getMomentBy(momentId);
 
         Comment comment = commentService.createWithMember(moment, commenter, member, content);
-        return GroupCommentResponse.from(comment, 0L, false);
+
+        Optional<CommentImage> savedImage = commentImageService.create(comment, imageUrl, imageName);
+        String resolvedImageUrl = savedImage
+                .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
+                .orElse(null);
+
+        return GroupCommentResponse.from(comment, 0L, false, resolvedImageUrl);
     }
 
     public List<GroupCommentResponse> getCommentsInGroup(Long groupId, Long momentId, Long userId) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         List<Comment> comments = commentService.getAllByMomentIds(List.of(momentId));
 
+        Map<Comment, CommentImage> commentImageMap = commentImageService.getCommentImageByComment(comments);
+
         return comments.stream()
             .map(comment -> {
                 long likeCount = commentLikeService.getCount(comment.getId());
                 boolean hasLiked = commentLikeService.hasLiked(comment.getId(), member.getId());
-                return GroupCommentResponse.from(comment, likeCount, hasLiked);
+                CommentImage image = commentImageMap.get(comment);
+                String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+                return GroupCommentResponse.from(comment, likeCount, hasLiked, imageUrl);
             })
             .toList();
     }
@@ -208,6 +218,7 @@ public class CommentApplicationService {
             throw new MomentException(ErrorCode.USER_UNAUTHORIZED);
         }
 
+        commentImageService.deleteBy(commentId);
         commentService.deleteBy(commentId);
     }
 
