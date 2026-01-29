@@ -15,9 +15,9 @@ import moment.like.dto.response.LikeToggleResponse;
 import moment.like.service.MomentLikeService;
 import moment.moment.dto.request.GroupMomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
-import moment.moment.dto.response.GroupFeedResponse;
+import moment.moment.dto.response.GroupMomentListResponse;
 import moment.moment.dto.response.GroupMomentResponse;
-import moment.moment.dto.response.MyGroupFeedResponse;
+import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.moment.service.application.MomentApplicationService;
 import moment.moment.service.facade.CommentableMomentFacadeService;
 import moment.moment.service.facade.MyGroupMomentPageFacadeService;
@@ -66,7 +66,7 @@ public class GroupMomentController {
             @PathVariable Long groupId,
             @Valid @RequestBody GroupMomentCreateRequest request) {
         GroupMomentResponse response = momentApplicationService.createMomentInGroup(
-            groupId, authentication.id(), request.content());
+            groupId, authentication.id(), request.content(), request.imageUrl(), request.imageName());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -88,11 +88,11 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/moments")
-    public ResponseEntity<SuccessResponse<GroupFeedResponse>> getGroupFeed(
+    public ResponseEntity<SuccessResponse<GroupMomentListResponse>> getGroupMoments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        GroupFeedResponse response = momentApplicationService.getGroupFeed(groupId, authentication.id(), cursor);
+        GroupMomentListResponse response = momentApplicationService.getGroupMoments(groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -115,11 +115,11 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-moments")
-    public ResponseEntity<SuccessResponse<MyGroupFeedResponse>> getMyMoments(
+    public ResponseEntity<SuccessResponse<MyGroupMomentListResponse>> getMyMoments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        MyGroupFeedResponse response = myGroupMomentPageFacadeService.getMyMomentsInGroup(
+        MyGroupMomentListResponse response = myGroupMomentPageFacadeService.getMyMomentsInGroup(
                 groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
@@ -143,11 +143,11 @@ public class GroupMomentController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/my-moments/unread")
-    public ResponseEntity<SuccessResponse<MyGroupFeedResponse>> getUnreadMyMoments(
+    public ResponseEntity<SuccessResponse<MyGroupMomentListResponse>> getUnreadMyMoments(
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        MyGroupFeedResponse response = myGroupMomentPageFacadeService.getUnreadMyMomentsInGroup(
+        MyGroupMomentListResponse response = myGroupMomentPageFacadeService.getUnreadMyMomentsInGroup(
                 groupId, authentication.id(), cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

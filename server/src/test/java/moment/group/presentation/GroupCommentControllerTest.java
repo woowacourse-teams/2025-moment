@@ -9,7 +9,7 @@ import java.util.List;
 import moment.auth.application.TokenManager;
 import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
-import moment.comment.dto.response.MyGroupCommentFeedResponse;
+import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
@@ -72,7 +72,7 @@ class GroupCommentControllerTest {
         GroupCreateResponse group = 그룹_생성(token, "테스트 그룹", "설명", "그룹장닉네임");
         GroupMomentResponse moment = 모멘트_작성(token, group.groupId(), "테스트 모멘트");
 
-        GroupCommentCreateRequest request = new GroupCommentCreateRequest("테스트 코멘트입니다");
+        GroupCommentCreateRequest request = new GroupCommentCreateRequest("테스트 코멘트입니다", null, null);
 
         // when
         GroupCommentResponse response = RestAssured.given().log().all()
@@ -194,7 +194,7 @@ class GroupCommentControllerTest {
     }
 
     private GroupMomentResponse 모멘트_작성(String token, Long groupId, String content) {
-        GroupMomentCreateRequest request = new GroupMomentCreateRequest(content);
+        GroupMomentCreateRequest request = new GroupMomentCreateRequest(content, null, null);
         return RestAssured.given()
             .contentType(ContentType.JSON)
             .cookie("accessToken", token)
@@ -208,7 +208,7 @@ class GroupCommentControllerTest {
     }
 
     private GroupCommentResponse 코멘트_작성(String token, Long groupId, Long momentId, String content) {
-        GroupCommentCreateRequest request = new GroupCommentCreateRequest(content);
+        GroupCommentCreateRequest request = new GroupCommentCreateRequest(content, null, null);
         return RestAssured.given()
             .contentType(ContentType.JSON)
             .cookie("accessToken", token)
@@ -234,7 +234,7 @@ class GroupCommentControllerTest {
         코멘트_작성(token, group.groupId(), moment.momentId(), "두 번째 코멘트");
 
         // when
-        MyGroupCommentFeedResponse response = RestAssured.given().log().all()
+        MyGroupCommentListResponse response = RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/my-comments", group.groupId())
@@ -242,7 +242,7 @@ class GroupCommentControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", MyGroupCommentFeedResponse.class);
+            .getObject("data", MyGroupCommentListResponse.class);
 
         // then
         assertAll(
@@ -265,7 +265,7 @@ class GroupCommentControllerTest {
         // 읽지 않은 알림이 없으므로 빈 응답 예상
 
         // when
-        MyGroupCommentFeedResponse response = RestAssured.given().log().all()
+        MyGroupCommentListResponse response = RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .cookie("accessToken", token)
             .when().get("/api/v2/groups/{groupId}/my-comments/unread", group.groupId())
@@ -273,7 +273,7 @@ class GroupCommentControllerTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .jsonPath()
-            .getObject("data", MyGroupCommentFeedResponse.class);
+            .getObject("data", MyGroupCommentListResponse.class);
 
         // then
         assertThat(response.comments()).isEmpty();
