@@ -25,9 +25,10 @@ export const useFileUpload = ({ onImageChange }: UseFileUploadProps) => {
 
     setUploading(true);
     try {
+      const extension = file.name.split('.').pop() || '';
       const { presignedUrl, filePath } = await getPresignedUrl({
         imageName: file.name,
-        imageType: file.type,
+        imageType: extension,
       });
 
       // 로컬 미리보기 URL 생성
