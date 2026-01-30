@@ -9,6 +9,7 @@ import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useGroup } from "@/context/GroupContext";
+import { BridgeMessage } from "@/types/bridge";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 
@@ -65,80 +66,124 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
   }, [expoPushToken]);
 
   const handleMessage = async (event: any) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      if (data.type === "LOGIN_APPLE") {
-        try {
-          const credential = await AppleAuthentication.signInAsync({
-            requestedScopes: [
-              AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-              AppleAuthentication.AppleAuthenticationScope.EMAIL,
-            ],
-          });
+    let data: BridgeMessage;
 
-          if (credential.identityToken) {
-            // Send token back to WebView
-            const script = `
-              if (window.onAppleLoginSuccess) {
-                window.onAppleLoginSuccess('${credential.identityToken}');
+    try {
+      data = JSON.parse(event.nativeEvent.data);
+    } catch (e) {
+      console.warn("Bridge: Failed to parse message", event.nativeEvent.data);
+      return;
+    }
+
+    // 타입이 없으면 무시
+    if (!data.type) {
+      console.log("Bridge: Message ignored (no type)");
+      return;
+    }
+
+    try {
+      switch (data.type) {
+        case "AUTH_REQUEST": {
+          if (data.provider === "apple") {
+            try {
+              const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                  AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+              });
+
+              if (credential.identityToken) {
+                // Send token back to WebView
+                // TODO: 추후 AUTH_RESULT 메시지로 통일 고려
+                const script = `
+                  if (window.onAppleLoginSuccess) {
+                    window.onAppleLoginSuccess('${credential.identityToken}');
+                  }
+                `;
+                webViewRef.current?.injectJavaScript(script);
               }
-            `;
-            webViewRef.current?.injectJavaScript(script);
-          }
-        } catch (e: any) {
-          if (e.code === "ERR_CANCELED") {
-            // User canceled, do nothing
-          } else {
-            console.error(e);
-          }
-        }
-      } else if (data.type === "LOGIN_GOOGLE") {
-        try {
-          await GoogleSignin.hasPlayServices();
-          const userInfo = await GoogleSignin.signIn();
-          if (userInfo.data?.idToken) {
-            const script = `
-              if (window.onGoogleLoginSuccess) {
-                window.onGoogleLoginSuccess('${userInfo.data.idToken}');
+            } catch (e: any) {
+              if (e.code === "ERR_CANCELED") {
+                // User canceled
+              } else {
+                console.error(e);
               }
-            `;
-            webViewRef.current?.injectJavaScript(script);
-          }
-        } catch (error: any) {
-          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            // user cancelled the login flow
-          } else if (error.code === statusCodes.IN_PROGRESS) {
-            // operation (e.g. sign in) is in progress already
-          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            // play services not available or outdated
+            }
+          } else if (data.provider === "google") {
+            try {
+              await GoogleSignin.hasPlayServices();
+              const userInfo = await GoogleSignin.signIn();
+              if (userInfo.data?.idToken) {
+                const script = `
+                  if (window.onGoogleLoginSuccess) {
+                    window.onGoogleLoginSuccess('${userInfo.data.idToken}');
+                  }
+                `;
+                webViewRef.current?.injectJavaScript(script);
+              }
+            } catch (error: any) {
+              if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled
+              } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation in progress
+              } else if (
+                error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE
+              ) {
+                // play services not available
+              } else {
+                console.error(error);
+              }
+            }
           } else {
-            // some other error happened
-            console.error(error);
+            console.warn("Bridge: AUTH_REQUEST missing valid provider", data);
           }
+          break;
         }
-      } else if (data.type === "GROUP_CHANGED") {
-        if (data.groupId) {
-          setGroupId(data.groupId);
-          console.log("Native: Group Changed to", data.groupId);
+
+        case "GROUP_CHANGED": {
+          if (data.groupId) {
+            setGroupId(data.groupId);
+            console.log("Native: Group Changed to", data.groupId);
+          } else {
+            console.warn("Bridge: GROUP_CHANGED missing groupId", data);
+          }
+          break;
         }
-      } else if (data.type === "SWITCH_TAB") {
-        if (data.groupId) {
-          setGroupId(data.groupId);
+
+        case "TAB_FOCUS": {
+          const { tab } = data;
+          if (tab === "comment") {
+            // We use a small timeout to ensure state update propagates if needed
+            setTimeout(() => {
+              router.push("/(tabs)/comment");
+            }, 0);
+          } else if (tab === "home") {
+            setTimeout(() => {
+              router.push("/(tabs)");
+            }, 0);
+          } else {
+            console.warn("Bridge: TAB_FOCUS missing or invalid tab", data);
+          }
+          break;
         }
-        if (data.tab === "comment") {
-          // Navigate to the comment tab
-          // We use a small timeout to ensure state update propagates if needed, though usually not strictly necessary with expo-router's declarative navigation but helpful for context
-          setTimeout(() => {
-            router.push("/(tabs)/comment");
-          }, 0);
-        } else if (data.tab === "index") {
-          setTimeout(() => {
-            router.push("/(tabs)");
-          }, 0);
-        }
+
+        case "APP_READY":
+        case "ROUTE":
+        case "AUTH_RESULT":
+        case "PUSH_TOKEN":
+        case "ERROR":
+          // 아직 처리 로직이 없거나 Native -> Web 메시지인 경우
+          console.log(`Bridge: Received ${data.type} (not handled)`);
+          break;
+
+        default:
+          console.log("Bridge: Unknown message type", (data as any).type);
+          break;
       }
     } catch (e) {
-      console.error("Failed to parse message", e);
+      // 메시지 처리 중 에러가 발생해도 앱이 죽지 않도록
+      console.error("Bridge: Error handling message", e);
     }
   };
 

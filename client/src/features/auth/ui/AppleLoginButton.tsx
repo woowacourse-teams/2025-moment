@@ -47,7 +47,9 @@ export const AppleLoginButton = () => {
 
   const handleAppleLogin = () => {
     if (isWebView && (window as any).ReactNativeWebView) {
-      (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGIN_APPLE' }));
+      (window as any).ReactNativeWebView.postMessage(
+        JSON.stringify({ type: 'AUTH_REQUEST', provider: 'apple' }),
+      );
     } else {
       alert('Apple 로그인은 앱에서만 가능합니다.');
     }
