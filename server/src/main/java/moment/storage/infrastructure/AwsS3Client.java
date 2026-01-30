@@ -1,5 +1,6 @@
 package moment.storage.infrastructure;
 
+import java.net.URISyntaxException;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import moment.storage.dto.response.UploadUrlResponse;
@@ -30,11 +31,19 @@ public class AwsS3Client {
         PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
 
         String presignedUrl = presignedRequest.url().toString();
-        String path = presignedRequest.url().getPath();
+        String path = extractRawPath(presignedRequest);
 
         String cloudfrontUrl = cloudfrontDomain + path;
 
         return new UploadUrlResponse(presignedUrl, cloudfrontUrl);
+    }
+
+    private String extractRawPath(PresignedPutObjectRequest presignedRequest) {
+        try {
+            return presignedRequest.url().toURI().getRawPath();
+        } catch (URISyntaxException e) {
+            return presignedRequest.url().getPath();
+        }
     }
 
     private PutObjectPresignRequest buildPresignedRequest(String filePath) {

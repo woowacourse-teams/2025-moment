@@ -22,7 +22,7 @@ public class FileStorageService {
     public UploadUrlResponse getUploadUrl(UploadUrlRequest request, Long id) {
         userService.getUserBy(id);
 
-        String filePath = bucketPath + UUID.randomUUID() + request.imageName();
+        String filePath = bucketPath + "/" + UUID.randomUUID() + "." + request.imageType();
 
         return awsS3Client.getUploadUrl(filePath);
     }
