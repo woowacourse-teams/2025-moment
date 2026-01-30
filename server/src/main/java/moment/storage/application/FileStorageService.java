@@ -22,8 +22,16 @@ public class FileStorageService {
     public UploadUrlResponse getUploadUrl(UploadUrlRequest request, Long id) {
         userService.getUserBy(id);
 
-        String filePath = bucketPath + "/" + UUID.randomUUID() + "." + request.imageType();
+        String extension = extractExtension(request.imageType());
+        String filePath = bucketPath + "/" + UUID.randomUUID() + "." + extension;
 
         return awsS3Client.getUploadUrl(filePath);
+    }
+
+    private String extractExtension(String imageType) {
+        if (imageType.contains("/")) {
+            return imageType.substring(imageType.lastIndexOf("/") + 1);
+        }
+        return imageType;
     }
 }

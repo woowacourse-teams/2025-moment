@@ -96,4 +96,26 @@ class FileStorageServiceTest {
         assertThat(actualFilePath).doesNotContain(" ");
         assertThat(actualFilePath).doesNotContain("Screenshot");
     }
+
+    @Test
+    void MIME_타입으로_imageType이_전달되어도_확장자만_추출하여_S3_key를_생성한다() {
+        // given
+        String fixedUuidString = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
+        UUID fixedUuid = UUID.fromString(fixedUuidString);
+        UploadUrlRequest request = new UploadUrlRequest("photo.jpg", "image/jpeg");
+        UploadUrlResponse expected = new UploadUrlResponse("presigned-url", "cloudfront-url");
+        given(awsS3Client.getUploadUrl(any(String.class))).willReturn(expected);
+        ArgumentCaptor<String> filePathCaptor = ArgumentCaptor.forClass(String.class);
+
+        // when
+        try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+            mockedUuid.when(UUID::randomUUID).thenReturn(fixedUuid);
+            fileStorageService.getUploadUrl(request, 1L);
+        }
+
+        // then
+        verify(awsS3Client).getUploadUrl(filePathCaptor.capture());
+        String actualFilePath = filePathCaptor.getValue();
+        assertThat(actualFilePath).isEqualTo("test/images/" + fixedUuidString + ".jpeg");
+    }
 }
