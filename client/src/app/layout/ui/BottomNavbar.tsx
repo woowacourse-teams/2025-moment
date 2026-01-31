@@ -70,6 +70,21 @@ export const BottomNavbar = () => {
         </Link>
       </S.NavItem>
 
+      <S.NavItem $isActive={currentPath === ROUTES.ROOT}>
+        <Link to={ROUTES.ROOT}>
+          <S.IconWrapper>
+            <Picture
+              webpSrc="/images/rocket.webp"
+              fallbackSrc="/images/fallback/rocket.png"
+              alt="홈"
+              width="24"
+              height="24"
+            />
+          </S.IconWrapper>
+          <S.Label>홈</S.Label>
+        </Link>
+      </S.NavItem>
+
       <S.NavItem $isActive={isActive(ROUTES.COLLECTION_MYMOMENT)} $shadow={isNotificationExisting}>
         <Link to={replaceGroupId(ROUTES.COLLECTION_MYMOMENT)}>
           <S.IconWrapper>

@@ -20,7 +20,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         listeners={({ navigation }) => ({
-          tabPress: (e) => {
+          tabPress: () => {
             navigation.setParams({ refresh: Date.now() });
           },
         })}
@@ -34,7 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="comment"
         listeners={({ navigation }) => ({
-          tabPress: (e) => {
+          tabPress: () => {
             navigation.setParams({ refresh: Date.now() });
           },
         })}
@@ -47,9 +47,23 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="home"
+        listeners={({ navigation }) => ({
+          tabPress: () => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
+        options={{
+          title: "홈",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="collection"
         listeners={({ navigation }) => ({
-          tabPress: (e) => {
+          tabPress: () => {
             navigation.setParams({ refresh: Date.now() });
           },
         })}
@@ -64,7 +78,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my"
         listeners={({ navigation }) => ({
-          tabPress: (e) => {
+          tabPress: () => {
             navigation.setParams({ refresh: Date.now() });
           },
         })}
