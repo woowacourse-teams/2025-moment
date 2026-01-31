@@ -25,7 +25,22 @@ export default function TabLayout() {
           },
         })}
         options={{
+          title: "홈",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="moment"
+        listeners={({ navigation }) => ({
+          tabPress: () => {
+            navigation.setParams({ refresh: Date.now() });
+          },
+        })}
+        options={{
           title: "모멘트",
+          href: currentGroupId ? "/moment" : null,
           tabBarIcon: ({ color }) => (
             <Ionicons name="paper-plane-outline" size={24} color={color} />
           ),
@@ -43,20 +58,6 @@ export default function TabLayout() {
           href: currentGroupId ? "/comment" : null,
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbubble-outline" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="home"
-        listeners={({ navigation }) => ({
-          tabPress: () => {
-            navigation.setParams({ refresh: Date.now() });
-          },
-        })}
-        options={{
-          title: "홈",
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home-outline" size={24} color={color} />
           ),
         }}
       />
