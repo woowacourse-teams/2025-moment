@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type TabType = "home" | "moment" | "comment" | "collection" | "my";
@@ -12,11 +12,11 @@ interface TabConfig {
 }
 
 const TABS: TabConfig[] = [
-  { key: "home", title: "홈", icon: require("@/assets/images/rocket.webp"), requiresGroup: false },
   { key: "moment", title: "모멘트", icon: require("@/assets/images/paperAirplane.webp"), requiresGroup: true },
   { key: "comment", title: "코멘트", icon: require("@/assets/images/bluePlanet.webp"), requiresGroup: true },
+  { key: "home", title: "홈", icon: require("@/assets/images/rocket.webp"), requiresGroup: false },
   { key: "collection", title: "모음집", icon: require("@/assets/images/starPlanet.webp"), requiresGroup: true },
-  { key: "my", title: "마이", icon: require("@/assets/images/spaceMan.webp"), requiresGroup: false },
+  { key: "my", title: "마이페이지", icon: require("@/assets/images/spaceMan.webp"), requiresGroup: false },
 ];
 
 interface CustomTabBarProps {
@@ -50,6 +50,9 @@ export function CustomTabBar({ currentTab, onTabPress, hasGroup }: CustomTabBarP
                 { opacity: isActive ? 1 : 0.5 },
               ]}
             />
+            <Text style={[styles.label, { opacity: isActive ? 1 : 0.5 }]}>
+              {tab.title}
+            </Text>
           </TouchableOpacity>
         );
       })}
@@ -73,5 +76,10 @@ const styles = StyleSheet.create({
   icon: {
     width: 24,
     height: 24,
+  },
+  label: {
+    color: "#ffffff",
+    fontSize: 10,
+    marginTop: 4,
   },
 });
