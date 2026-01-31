@@ -7,7 +7,7 @@ type WebError = {
   message: string;
 };
 
-export function useWebView(webUrl: string) {
+export function useWebView() {
   const webViewRef = useRef<WebView>(null);
 
   const [isLoading, setIsLoading] = useState(true);
