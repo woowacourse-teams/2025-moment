@@ -1,10 +1,121 @@
-import React from "react";
-import { WebViewScreen } from "@/components/WebViewScreen";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
+
+import { CustomTabBar, TabType } from "@/components/CustomTabBar";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { ErrorScreen } from "@/components/ErrorScreen";
+import { COLORS } from "@/constants/theme";
 import { BASE_URL } from "@/constants/config";
-import { useLocalSearchParams } from "expo-router";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useGroup } from "@/context/GroupContext";
+import { useBridgeMessageHandler } from "@/bridge/useBridgeMessageHandler";
+import { getTabFromUrl, getUrlForTab } from "@/utils/tabRouting";
+import { useWebView } from "@/hooks/useWebview";
 
-export default function HomeScreen() {
-  const { refresh } = useLocalSearchParams();
+export default function MainScreen() {
+  const [currentTab, setCurrentTab] = useState<TabType>("home");
+  const { currentGroupId, setGroupId } = useGroup();
 
-  return <WebViewScreen url={BASE_URL} key={refresh as string} />;
+  const { webViewRef, isLoading, error, reload, handlers } = useWebView();
+
+  const { expoPushToken } = usePushNotifications();
+  const { handleMessage } = useBridgeMessageHandler({ webViewRef, setGroupId });
+
+  // 푸시 토큰 전달
+  useEffect(() => {
+    if (expoPushToken && webViewRef.current) {
+      webViewRef.current.injectJavaScript(`
+        if (window.onExpoPushToken) {
+          window.onExpoPushToken('${expoPushToken}');
+        }
+      `);
+    }
+  }, [expoPushToken]);
+
+  // 탭 선택 시 URL 변경
+  const handleTabPress = useCallback(
+    (tab: TabType) => {
+      if (tab === currentTab) return;
+
+      const url = getUrlForTab(tab, currentGroupId);
+      setCurrentTab(tab);
+
+      webViewRef.current?.injectJavaScript(`
+        window.location.href = '${url}';
+        true;
+      `);
+    },
+    [currentTab, currentGroupId],
+  );
+
+  // WebView URL 변경 감지 → 탭 동기화
+  const handleNavigationStateChange = useCallback(
+    (navState: any) => {
+      handlers.onNavigationStateChange(navState);
+
+      const detectedTab = getTabFromUrl(navState.url);
+      if (detectedTab && detectedTab !== currentTab) {
+        setCurrentTab(detectedTab);
+      }
+    },
+    [handlers, currentTab],
+  );
+
+  return (
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
+        {!error && (
+          <WebView
+            ref={webViewRef}
+            source={{ uri: BASE_URL }}
+            style={styles.webview}
+            javaScriptEnabled
+            domStorageEnabled
+            sharedCookiesEnabled
+            thirdPartyCookiesEnabled
+            userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 MomentApp"
+            onLoadStart={handlers.onLoadStart}
+            onLoadEnd={handlers.onLoadEnd}
+            onNavigationStateChange={handleNavigationStateChange}
+            onError={handlers.onError}
+            onHttpError={handlers.onHttpError}
+            onMessage={handleMessage}
+          />
+        )}
+
+        {isLoading && !error && <LoadingOverlay />}
+
+        {error && (
+          <ErrorScreen
+            title={error.title}
+            message={error.message}
+            onRetry={reload}
+            backgroundColor={COLORS.BACKGROUND}
+          />
+        )}
+      </SafeAreaView>
+
+      <CustomTabBar
+        currentTab={currentTab}
+        onTabPress={handleTabPress}
+        hasGroup={!!currentGroupId}
+      />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.BACKGROUND,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  webview: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+});
