@@ -1,6 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type TabType = "home" | "moment" | "comment" | "collection" | "my";
@@ -8,16 +7,16 @@ export type TabType = "home" | "moment" | "comment" | "collection" | "my";
 interface TabConfig {
   key: TabType;
   title: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: ImageSourcePropType;
   requiresGroup: boolean;
 }
 
 const TABS: TabConfig[] = [
-  { key: "home", title: "홈", icon: "home-outline", requiresGroup: false },
-  { key: "moment", title: "모멘트", icon: "paper-plane-outline", requiresGroup: true },
-  { key: "comment", title: "코멘트", icon: "chatbubble-outline", requiresGroup: true },
-  { key: "collection", title: "모음집", icon: "star-outline", requiresGroup: true },
-  { key: "my", title: "마이", icon: "person-outline", requiresGroup: false },
+  { key: "home", title: "홈", icon: require("@/assets/images/rocket.webp"), requiresGroup: false },
+  { key: "moment", title: "모멘트", icon: require("@/assets/images/paperAirplane.webp"), requiresGroup: true },
+  { key: "comment", title: "코멘트", icon: require("@/assets/images/bluePlanet.webp"), requiresGroup: true },
+  { key: "collection", title: "모음집", icon: require("@/assets/images/starPlanet.webp"), requiresGroup: true },
+  { key: "my", title: "마이", icon: require("@/assets/images/spaceMan.webp"), requiresGroup: false },
 ];
 
 interface CustomTabBarProps {
@@ -44,10 +43,12 @@ export function CustomTabBar({ currentTab, onTabPress, hasGroup }: CustomTabBarP
             onPress={() => onTabPress(tab.key)}
             activeOpacity={0.7}
           >
-            <Ionicons
-              name={tab.icon}
-              size={24}
-              color={isActive ? "#ffffff" : "#888888"}
+            <Image
+              source={tab.icon}
+              style={[
+                styles.icon,
+                { opacity: isActive ? 1 : 0.5 },
+              ]}
             />
           </TouchableOpacity>
         );
@@ -68,5 +69,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingVertical: 8,
+  },
+  icon: {
+    width: 24,
+    height: 24,
   },
 });
