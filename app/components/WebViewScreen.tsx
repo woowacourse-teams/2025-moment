@@ -145,6 +145,13 @@ export function WebViewScreen({ url }: WebViewScreenProps) {
           if (data.groupId) {
             setGroupId(data.groupId);
             console.log("Native: Group Changed to", data.groupId);
+            // 홈 탭으로 이동하여 해당 그룹의 피드를 보여줌
+            setTimeout(() => {
+              router.push({
+                pathname: "/(tabs)",
+                params: { refresh: Date.now().toString() },
+              });
+            }, 0);
           } else {
             console.warn("Bridge: GROUP_CHANGED missing groupId", data);
           }
