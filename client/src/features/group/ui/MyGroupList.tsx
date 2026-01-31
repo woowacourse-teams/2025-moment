@@ -60,12 +60,9 @@ export const MyGroupList = () => {
   const handleGroupClick = (groupId: number) => {
     if (isApp() && window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(
-        JSON.stringify({
-          type: 'SWITCH_TAB',
-          tab: 'comment',
-          groupId: groupId,
-        }),
+        JSON.stringify({ type: 'GROUP_CHANGED', groupId: groupId }),
       );
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TAB_FOCUS', tab: 'comment' }));
       return;
     }
     const path = ROUTES.TODAY_COMMENT.replace(':groupId', String(groupId));
