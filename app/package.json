@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:ios": "eas build --platform ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
