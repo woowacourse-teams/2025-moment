@@ -14,6 +14,23 @@ import { useBridgeMessageHandler } from "@/bridge/useBridgeMessageHandler";
 import { getTabFromUrl, getUrlForTab } from "@/utils/tabRouting";
 import { useWebView } from "@/hooks/useWebview";
 
+const DISABLE_ZOOM_SCRIPT = `
+  (function() {
+    var meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'viewport';
+      document.head.appendChild(meta);
+    }
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+
+    document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
+  })();
+  true;
+`;
+
 export default function MainScreen() {
   const [currentTab, setCurrentTab] = useState<TabType>("home");
   const { currentGroupId, setGroupId } = useGroup();
@@ -78,6 +95,7 @@ export default function MainScreen() {
             userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 MomentApp"
             scalesPageToFit={false}
             setBuiltInZoomControls={false}
+            injectedJavaScript={DISABLE_ZOOM_SCRIPT}
             onLoadStart={handlers.onLoadStart}
             onLoadEnd={handlers.onLoadEnd}
             onNavigationStateChange={handleNavigationStateChange}
