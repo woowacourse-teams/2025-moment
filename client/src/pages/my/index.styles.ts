@@ -27,7 +27,7 @@ export const UserInfoSection = styled.div`
   gap: 4px;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -40,7 +40,7 @@ export const RewardHistorySection = styled.div`
   gap: 4px;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -62,7 +62,7 @@ export const SectionTitleContainer = styled.div`
   gap: 12px;
   align-items: flex-start;
   width: 90%;
-  max-width: 800px;
+  max-width: 900px;
 `;
 
 export const SectionTitle = styled.p`
@@ -82,6 +82,7 @@ export const SectionTitle = styled.p`
 export const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
     flex-direction: column;
