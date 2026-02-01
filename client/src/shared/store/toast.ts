@@ -8,6 +8,14 @@ const generateId = () => `toast-${Date.now()}-${Math.random().toString(36).slice
 export const useToasts = () => useStore(toastStore);
 
 function addToast(toast: Omit<ToastData, 'id'>) {
+  const currentToasts = toastStore.getState().toasts;
+  const duplicate = currentToasts.find(
+    t => t.message === toast.message && t.variant === toast.variant
+  );
+  if (duplicate) {
+    return duplicate.id;
+  }
+
   const id = generateId();
   const newToast = { ...toast, id };
 
