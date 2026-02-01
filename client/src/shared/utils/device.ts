@@ -20,8 +20,9 @@ export const isApp = () => {
 
 declare global {
   interface Window {
-    ReactNativeWebView: {
+    ReactNativeWebView?: {
       postMessage: (message: string) => void;
     };
+    onAppleLoginSuccess?: (token: string) => void;
   }
 }

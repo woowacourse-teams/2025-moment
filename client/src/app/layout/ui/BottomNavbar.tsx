@@ -4,7 +4,6 @@ import { useReadNotificationsQuery } from '@/features/notification/api/useReadNo
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { usePendingMembersQuery } from '@/features/group/api/usePendingMembersQuery';
 import { Link, useLocation, useParams } from 'react-router';
-import { useEffect, useState } from 'react';
 import { isApp } from '@/shared/utils/device';
 import * as S from './BottomNavbar.styles';
 

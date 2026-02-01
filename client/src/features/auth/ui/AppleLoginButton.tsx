@@ -8,20 +8,20 @@ export const AppleLoginButton = () => {
   const { mutate: appleLogin } = useAppleLoginMutation();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) {
+    if (typeof window !== 'undefined' && window.ReactNativeWebView) {
       setIsWebView(true);
     }
   }, []);
 
   useEffect(() => {
-    const handleMessage = (event: any) => {
+    const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'APPLE_LOGIN_SUCCESS') {
           console.log('Apple Login Success:', data.token);
           appleLogin({ identityToken: data.token });
         }
-      } catch (e) {
+      } catch {
         // Ignore non-JSON messages
       }
     };
@@ -32,7 +32,7 @@ export const AppleLoginButton = () => {
       // For iOS WebView, messages might come differently, but typically document or window.
       // react-native-webview injectJavaScript usually executes code.
       // So we might need to expose a global function.
-      (window as any).onAppleLoginSuccess = (token: string) => {
+      window.onAppleLoginSuccess = (token: string) => {
         console.log('Apple Login Success:', token);
         appleLogin({ identityToken: token });
       };
@@ -46,8 +46,8 @@ export const AppleLoginButton = () => {
   }, [appleLogin]);
 
   const handleAppleLogin = () => {
-    if (isWebView && (window as any).ReactNativeWebView) {
-      (window as any).ReactNativeWebView.postMessage(
+    if (isWebView && window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(
         JSON.stringify({ type: 'AUTH_REQUEST', provider: 'apple' }),
       );
     } else {

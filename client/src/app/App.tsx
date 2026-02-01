@@ -1,4 +1,3 @@
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from '@/app/lib/queryClient';
 import { router } from '@/app/routes';
 import { ThemeProvider } from '@emotion/react';
@@ -9,6 +8,12 @@ import GlobalStyles from './styles/GlobalStyles';
 import { theme } from '../shared/styles/theme';
 import { useInitializeFCM } from '@/shared/lib/notifications/useInitializeFCM';
 import { ErrorBoundary } from '@/shared/ui/errorBoundary';
+
+declare global {
+  interface Window {
+    onTabFocus?: () => void;
+  }
+}
 
 const AppContent = () => {
   return (
@@ -25,7 +30,7 @@ const AppContentWithFCM = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as any).onTabFocus = () => {
+      window.onTabFocus = () => {
         queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
         console.log('Tab Focused: Refetching login state');
       };
