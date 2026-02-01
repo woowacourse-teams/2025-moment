@@ -106,6 +106,7 @@ public class GroupMemberApplicationService {
 
         GroupMember newOwner = memberService.getById(newOwnerMemberId);
         Group group = groupService.getById(groupId);
+        group.changeOwner(newOwner.getUser());
     }
 
     @Transactional
