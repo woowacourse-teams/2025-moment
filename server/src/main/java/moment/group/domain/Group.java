@@ -54,6 +54,10 @@ public class Group extends BaseEntity {
         this.description = description;
     }
 
+    public void changeOwner(User newOwner) {
+        this.owner = newOwner;
+    }
+
     public boolean isOwner(User user) {
         return this.owner.getId().equals(user.getId());
     }
