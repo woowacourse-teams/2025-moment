@@ -200,6 +200,7 @@ class GroupMemberApplicationServiceTest {
 
         // Then
         verify(memberService).transferOwnership(1L, 1L, 2L);
+        assertThat(group.getOwner().getId()).isEqualTo(2L);
     }
 
     @Test
