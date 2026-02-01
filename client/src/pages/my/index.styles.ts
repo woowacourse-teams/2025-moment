@@ -155,6 +155,7 @@ export const UserInfo = styled.div`
       font-weight: 600;
       color: ${({ theme }) => theme.colors['yellow-300']};
       font-size: 20px;
+      white-space: nowrap;
 
       @media (max-width: 768px) {
         font-size: 16px;
