@@ -34,7 +34,7 @@ export const UserInfoSection = styled.div`
   }
 `;
 
-export const RewardHistorySection = styled.div`
+export const GroupSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -45,15 +45,6 @@ export const RewardHistorySection = styled.div`
   @media (max-width: 768px) {
     max-width: 100%;
   }
-`;
-
-export const SettingSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
 `;
 
 export const SectionTitleContainer = styled.div`

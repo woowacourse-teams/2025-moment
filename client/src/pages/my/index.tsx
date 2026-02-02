@@ -82,14 +82,14 @@ export default function MyPage() {
         </S.UserInfoSection>
       )}
 
-      <S.RewardHistorySection>
+      <S.GroupSection>
         <S.SectionTitleContainer>
           <S.SectionTitle>그룹 관리</S.SectionTitle>
         </S.SectionTitleContainer>
         <Card width="large">
           <MyGroupList />
         </Card>
-      </S.RewardHistorySection>
+      </S.GroupSection>
 
       <S.Divider />
 
