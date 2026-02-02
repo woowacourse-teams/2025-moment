@@ -1,90 +1,99 @@
-# Skill: Query Conventions (Vite + TS + TanStack Query)
+# Skill: Query Conventions
 
-## Purpose
-
-Enforce consistent data-layer conventions for the Admin app.
-
-These rules are **mandatory** whenever writing `useQuery` / `useMutation` and related API calls.
+Rules for TanStack Query hooks.
 
 ---
 
-## Key Rules (Must Follow)
+## File Naming
 
-### 1) File naming: `use~Query.ts` / `use~Mutation.ts`
+| Type | Pattern | Example |
+|------|---------|---------|
+| List Query | `use<Entity>sQuery.ts` | `useUsersQuery.ts` |
+| Detail Query | `use<Entity>DetailQuery.ts` | `useUserDetailQuery.ts` |
+| Nested Query | `use<Parent><Child>Query.ts` | `useGroupMembersQuery.ts` |
+| Mutation | `use<Action><Entity>Mutation.ts` | `useDeleteUserMutation.ts` |
 
-API hook 파일명은 **훅 이름과 동일하게** 작성한다.
+## Location
 
-- Query: `use[Name]Query.ts` (예: `useUsersQuery.ts`, `useUserDetailQuery.ts`)
-- Mutation: `use[Name]Mutation.ts` (예: `useUpdateUserMutation.ts`, `useDeleteUserMutation.ts`)
-
-❌ `complaintsList.query.ts`, `userUpdate.mutation.ts` 같은 네이밍은 사용하지 않는다.
-
-### 2) Co-locate when used in one place (inside `api/`)
-
-If a query/mutation is used by only one page/feature:
-
-- Place it under `features/<feature>/api/`
-- Keep **hook + request function + local types** in the **same file**
-- Do NOT create separate `types/` or `constants/` folders prematurely
-
-✅ Good:
-
-- `features/admin-complaint/api/useAdminComplaintsQuery.ts` contains:
-  - `useAdminComplaintsQuery`
-  - `fetchAdminComplaints`
-  - local request/response types only needed here
-
-❌ Avoid:
-
-- Splitting into `features/<feature>/api/*` + `features/<feature>/types/*` for single-use code
-- Creating deep folder hierarchies for one hook
-
-### 3) Extract only when reused (2+ call sites)
-
-Extract shared code only when:
-
-- A request function or type is used in **2+ locations**, or
-- The type belongs to a stable cross-feature domain model
-
-When extracting:
-
-- Put shared query keys in `admin/src/shared/queryKeys.ts`
-- Put shared API client logic in `admin/src/shared/api/*`
-- Put shared types in `admin/src/shared/types/*` (only if truly shared)
-
-### 4) Query keys are centralized
-
-All query keys must be defined in:
-
-- `admin/src/shared/queryKeys.ts`
-
-Hooks must reference keys from this module.
-No ad-hoc keys inside feature files.
-
-### 5) Deterministic keys + stable params
-
-- Query keys must be deterministic and serializable
-- Use a **single params object** and keep its shape stable
-- Prefer explicit params (avoid spreading random objects)
-
-### 5) Error handling must be normalized
-
-- All requests must go through the shared API client
-- UI must handle loading/empty/error states explicitly
-
-### 6) Invalidate strategy
-
-After mutations:
-
-- Prefer invalidating only the minimal affected keys
-- If unsure, invalidate the list + detail keys for the entity
+All hooks in `features/<entity>/api/`
 
 ---
 
-## Checklist (Before You Finish)
+## Query Keys
 
-- [ ] Key is defined in `admin/src/shared/queryKeys.ts`
-- [ ] Hook file lives under `features/<feature>/api/`
-- [ ] Co-location respected (single usage → single file includes hook+fetch+local types)
-- [ ] Loading/empty/error states exist
+Centralized in `shared/api/queryKeys.ts`:
+
+```typescript
+export const queryKeys = {
+  users: {
+    all: ["users"] as const,
+    lists: () => [...queryKeys.users.all, "list"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.users.lists(), filters] as const,
+    details: () => [...queryKeys.users.all, "detail"] as const,
+    detail: (id: string) => [...queryKeys.users.details(), id] as const,
+  },
+};
+```
+
+---
+
+## Query Hook Template
+
+```typescript
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@shared/api/client";
+import { queryKeys } from "@shared/api/queryKeys";
+
+async function fetchUsers(params: UserListParams) {
+  const { data } = await apiClient.get("/admin/users", { params });
+  return data;
+}
+
+export function useUsersQuery(params: UserListParams) {
+  return useQuery({
+    queryKey: queryKeys.users.list(params),
+    queryFn: () => fetchUsers(params),
+  });
+}
+```
+
+---
+
+## Mutation Hook Template
+
+```typescript
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@shared/api/client";
+import { queryKeys } from "@shared/api/queryKeys";
+
+export function useDeleteUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ userId, reason }) =>
+      apiClient.delete(`/admin/users/${userId}`, { data: { reason } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
+    },
+  });
+}
+```
+
+---
+
+## Invalidation Strategy
+
+| Action | Invalidate |
+|--------|------------|
+| Delete item | `queryKeys.<entity>.all` |
+| Update item | `queryKeys.<entity>.all` |
+| Update detail | `queryKeys.<entity>.detail(id)` |
+
+---
+
+## Checklist
+
+- [ ] Key defined in `shared/api/queryKeys.ts`
+- [ ] Hook in `features/<entity>/api/`
 - [ ] Mutation invalidates correct keys

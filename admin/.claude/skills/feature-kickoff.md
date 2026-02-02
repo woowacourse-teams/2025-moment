@@ -1,103 +1,73 @@
-# Skill: Feature Kickoff (Admin)
+# Skill: Feature Kickoff
 
-## Purpose
-
-Create a high-quality implementation plan **before coding**.
-This skill outputs:
-
-- scope and acceptance criteria
-- file-level implementation plan
-- PR slicing plan (small, reviewable PRs)
-- edge cases + guardrails
-- test plan (unit + E2E)
-- docs update checklist
-
-Do NOT write code in this step unless explicitly requested.
+Create implementation plan **before coding**.
 
 ---
 
 ## Input
 
-Provide (or infer) the following:
-
-- Feature name (e.g., "Complaint moderation")
-- Target roles: ADMIN / VIEWER behaviors
-- Entity endpoints involved (from `../docs/admin/api-contract.md`)
-- MVP scope vs out-of-scope
-- Any deadlines or constraints (optional)
+- Feature name
+- Target roles (ADMIN / VIEWER)
+- Entity endpoints
+- Scope (MVP vs out-of-scope)
 
 ---
 
-## Output Format (STRICT)
+## Output Format
 
 ### 1) Scope
-
 - In scope:
 - Out of scope:
 
-### 2) User Stories & Acceptance Criteria
-
-- Story 1:
-  - AC:
-- Story 2:
-  - AC:
-
-(Keep AC testable and unambiguous.)
+### 2) User Stories & AC
+- Story 1: AC...
+- Story 2: AC...
 
 ### 3) UI/UX Notes
-
 - States: loading / empty / error
-- Guardrails (confirm + reason) for destructive actions
-- What VIEWER can see vs cannot do
+- Guardrails for destructive actions
+- VIEWER vs ADMIN visibility
 
-### 4) Data & Query Plan
-
-- Which query keys will be added (names only)
-- Query params (search/filter/sort/pagination)
-- Mutation invalidation strategy
+### 4) Query Plan
+```typescript
+<entity>: {
+  all: ["<entity>"] as const,
+  list: (filters) => [..., "list", filters] as const,
+  detail: (id) => [..., "detail", id] as const,
+}
+```
 
 ### 5) File Plan
+```
+features/<entity>/
+├── api/          # useXQuery.ts, useXMutation.ts
+├── hooks/        # useXList.ts, useXDetail.ts
+├── ui/           # Table, Modal, Filter + styles
+├── types/        # entity.ts
+└── index.ts
 
-List exact files to create/modify, grouped by:
+pages/
+└── <Entity>ListPage.tsx, <Entity>DetailPage.tsx
 
-- pages/
-- features/
-- shared/
-- docs/
+shared/api/queryKeys.ts  # Add keys
+```
 
-### 6) PR Plan (Small & Scoped)
+### 6) PR Plan (2-4 PRs)
+1. API + Types + Query Keys
+2. Logic Hooks
+3. UI Components
+4. Pages + Routing
 
-Propose 2–4 PRs maximum.
-For each PR:
-
-- Goal
-- Files touched
-- Validation
-
-### 7) Edge Cases / Risks
-
-- e.g., 401/403, already-resolved, concurrent updates, stale lists
-- performance risks (large lists) and mitigations
+### 7) Edge Cases
+- 401/403, concurrent updates, stale data
 
 ### 8) Tests
-
-- Unit (Jest):
-- E2E (Cypress):
-  - Scenario 1:
-  - Scenario 2:
-
-### 9) Docs Updates Checklist
-
-- [ ] ../docs/admin/requirements.md
-- [ ] ../docs/admin/architecture.md
-- [ ] ../docs/admin/api-contract.md
-- [ ] ../docs/admin/test-plan.md
+- Unit: auth logic, validation
+- E2E: ADMIN flow, VIEWER restriction
 
 ---
 
 ## Rules
 
-- Base all API assumptions on `../docs/admin/api-contract.md`
-- Keep the plan realistic for a frontend-only implementation
-- If backend is missing, explicitly propose MSW mocking
-- Avoid large refactors; prefer incremental PRs
+- Base API on `docs/admin/api-contract.md`
+- Incremental PRs over large refactors

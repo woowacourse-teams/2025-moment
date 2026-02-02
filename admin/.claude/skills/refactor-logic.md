@@ -1,72 +1,109 @@
 # Skill: Refactor Logic Separation
 
-## Purpose
-
-Refactor a "fat" UI component by extracting business logic, state, and effects into a dedicated custom hook.
-This enforces the **Separation of Concerns** rule in `CLAUDE.md`.
+Extract business logic from UI components into custom hooks.
 
 ---
 
 ## Input
 
-- Target component file (e.g., `GroupList.tsx`)
-- (Optional) Desired hook name (default: `use<ComponentName>Logic`)
+- Target component file
+- Context: List / Detail / Edit
 
 ---
 
-## Process
+## Naming Convention
 
-1.  **Analyze**:
-    - Identify **UI** (JSX, pure rendering).
-    - Identify **Logic** (`useState`, `useEffect`, `useQuery`, event handlers, data transformations).
+| Context | File | Hook |
+|---------|------|------|
+| List Page | `use<Entity>List.ts` | `use<Entity>List` |
+| Detail Page | `use<Entity>Detail.ts` | `use<Entity>Detail` |
+| Edit Modal | `use<Entity>Edit.ts` | `use<Entity>Edit` |
 
-2.  **Extract**:
-    - Move all Logic into a new custom hook file.
-    - Ensure the hook returns _only_ what the UI needs (data + handlers).
-
-3.  **Simplify**:
-    - Replace the logic in the original component with the hook call.
-    - The component should become a "dumb" presenter.
+Location: `features/<entity>/hooks/`
 
 ---
 
-## Output Rules
+## List Hook Template
 
-### 1. The Logic Hook (`useXLogic.ts`)
+```typescript
+export function useUserList() {
+  const [page, setPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-- Must contain **ALL** `useEffect`, `useQuery`, and complex `useState`.
-- Must return a clean interface for the view.
-- **Pattern**:
-  ```typescript
-  export const useGroupListLogic = () => {
-    // ... logic ...
-    return {
-      state: { data, isLoading, isError }, // Data
-      handlers: { handleCreate, handleDelete }, // Actions
-    };
+  const { data, isLoading, isError } = useUsersQuery({
+    page, size: 20, keyword: searchKeyword,
+  });
+
+  return {
+    users: data?.content ?? [],
+    totalPages: data?.totalPages ?? 0,
+    currentPage: page,
+    isLoading, isError,
+    keyword, setKeyword,
+    handleSearch: () => { setSearchKeyword(keyword); setPage(0); },
+    handlePageChange: setPage,
   };
-  ```
+}
+```
 
-### 2. The UI Component (`X.tsx`)
+---
 
-- Must NOT contain `useEffect`.
-- Must merely bind the hook's return values to tags.
-- **Pattern**:
+## Detail Hook Template
 
-  ```tsx
-  export const GroupList = () => {
-    const { state, handlers } = useGroupListLogic();
+```typescript
+export function useGroupDetail(groupId: string) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    if (state.isLoading) return <Loader />;
-    return <div onClick={handlers.handleCreate}>...</div>;
+  const { data: group, isLoading, isError } = useGroupDetailQuery(groupId);
+  const deleteGroupMutation = useDeleteGroupMutation();
+
+  return {
+    group, isLoading, isError,
+    isDeleting: deleteGroupMutation.isPending,
+    // Edit Modal
+    isEditModalOpen,
+    handleOpenEditModal: () => setIsEditModalOpen(true),
+    handleCloseEditModal: () => setIsEditModalOpen(false),
+    // Delete Modal
+    isDeleteModalOpen,
+    handleOpenDeleteModal: () => setIsDeleteModalOpen(true),
+    handleCloseDeleteModal: () => setIsDeleteModalOpen(false),
+    handleDelete: async (reason: string) => {
+      await deleteGroupMutation.mutateAsync({ groupId, reason });
+    },
   };
-  ```
+}
+```
+
+---
+
+## Edit Hook Template
+
+```typescript
+export function useUserEdit({ userId, initialNickname, onSuccess }) {
+  const [nickname, setNickname] = useState(initialNickname);
+  const updateUserMutation = useUpdateUserMutation();
+
+  useEffect(() => { setNickname(initialNickname); }, [initialNickname]);
+
+  return {
+    nickname, setNickname,
+    isValid: nickname.trim() && nickname !== initialNickname,
+    isPending: updateUserMutation.isPending,
+    handleSubmit: async () => {
+      await updateUserMutation.mutateAsync({ userId, nickname });
+      onSuccess();
+    },
+  };
+}
+```
 
 ---
 
 ## Checklist
 
-- [ ] Original component represents **View only**.
-- [ ] No business logic remains in `.tsx`.
-- [ ] Hook is co-located in the same directory (or `hooks/` subdir).
-- [ ] Types are properly exported and shared.
+- [ ] Hook in `features/<entity>/hooks/`
+- [ ] UI component has no `useState`, `useEffect`, `useQuery`
+- [ ] Hook returns only needed data and handlers

@@ -1,83 +1,89 @@
-# Skill: Page Scaffold (Admin)
+# Skill: Page Scaffold
 
-## Purpose
-
-Generate a clean, consistent starting scaffold for a new Admin page.
-
-A scaffold is a **starter skeleton** (layout + states + TODOs) that:
-
-- compiles immediately
-- includes loading/empty/error states
-- provides a predictable place to plug in hooks and UI components
-
-Do NOT implement full business logic unless explicitly asked.
+Generate starter skeleton for new Admin pages.
 
 ---
 
-## Input (What you must ask for / infer)
+## Input
 
-- Page name and route (e.g., `Complaints`, `/admin/complaints`)
-- Entity (users, groups, moments, complaints)
-- Page type: `List` or `Detail`
-- Whether actions exist (ADMIN-only mutations) or read-only (VIEWER)
-
----
-
-## Output (What to generate)
-
-### For List Pages
-
-Generate:
-
-1. `Page` component (route-level composition only)
-2. Basic UI layout:
-   - Title + short description
-   - Filter/Search bar placeholder
-   - Table/List placeholder
-   - Pagination placeholder
-3. Data states:
-   - Loading
-   - Error
-   - Empty
-4. A TODO section listing what must be wired next:
-   - query hook to call
-   - columns / row actions
-   - filters to implement
-   - URL query sync (optional)
-
-### For Detail Pages
-
-Generate:
-
-1. `Page` component
-2. Summary header
-3. Sections placeholders (Overview, Activity, Actions)
-4. Data states
-5. TODOs for actions + audit log view
+- Page name and route
+- Entity (users, groups, moments)
+- Page type: List / Detail
 
 ---
 
-## Required UI State Conventions
+## List Page Output
 
-- Loading: show a skeleton or simple loading block
-- Error: show message + retry button
-- Empty: show empty state copy
+**Files to generate:**
+1. `pages/<Entity>ListPage.tsx` - Page component
+2. `features/<entity>/hooks/use<Entity>List.ts` - Logic hook
+3. `features/<entity>/ui/<Entity>Table.tsx` + styles
+4. `features/<entity>/ui/<Entity>SearchFilter.tsx` + styles
+
+**Page Template:**
+```tsx
+export default function <Entity>ListPage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
+
+  const {
+    <entities>, totalPages, currentPage,
+    isLoading, isError,
+    keyword, setKeyword, handleSearch, handlePageChange,
+  } = use<Entity>List();
+
+  if (isLoading) return <Loading />;
+  if (isError) return <Error />;
+
+  return (
+    <Container>
+      <Header><Title><Entity> Management</Title></Header>
+      <<Entity>SearchFilter ... />
+      <<Entity>Table ... />
+      <Pagination ... />
+    </Container>
+  );
+}
+```
+
+**Logic Hook Template:**
+```typescript
+export function use<Entity>List() {
+  const [page, setPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const { data, isLoading, isError } = use<Entity>sQuery({
+    page, size: 20, keyword: searchKeyword,
+  });
+
+  return {
+    <entities>: data?.content ?? [],
+    totalPages: data?.totalPages ?? 0,
+    currentPage: page,
+    isLoading, isError,
+    keyword, setKeyword,
+    handleSearch: () => { setSearchKeyword(keyword); setPage(0); },
+    handlePageChange: setPage,
+  };
+}
+```
 
 ---
 
-## Output Example Structure (List Page)
+## Detail Page Output
 
-- `pages/admin/<entity>/<Entity>ListPage.tsx`
-  - Uses a hook (placeholder import)
-  - Renders `Filters`, `Table`, `Pagination`
-  - Handles loading/error/empty
-  - Contains TODO comments for wiring
+**Files to generate:**
+1. `pages/<Entity>DetailPage.tsx`
+2. `features/<entity>/hooks/use<Entity>Detail.ts`
+3. `features/<entity>/ui/<Entity>DetailCard.tsx` + styles
+4. `features/<entity>/ui/<Entity>EditModal.tsx` + styles
+5. `features/<entity>/ui/<Entity>DeleteModal.tsx` + styles
 
 ---
 
 ## Rules
 
-- Pages must remain thin (composition only)
-- Domain logic must live in `features/*`
-- Use shared components if available; otherwise create minimal placeholders
-- Keep code TypeScript-safe with explicit types
+- Pages are thin (composition only)
+- Logic lives in `features/<entity>/hooks/`
+- Styles in separate `*.styles.ts` files

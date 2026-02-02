@@ -1,64 +1,56 @@
-# Skill: Smart Git Commit
+# Skill: Smart Commit
 
-## Purpose
+Create atomic, well-structured commits.
 
-To create **atomic, well-structured commits** with **clear Korean messages**, strictly on the **current branch**.
+---
 
 ## Rules
 
-1.  **Current Branch Only**: NEVER switch branches unless explicitly requested. Always verify you are on the expected branch.
-2.  **Atomic Commits**: Split unrelated changes into separate commits. Do not mix refactoring with new features if possible.
-3.  **Language**: Write all commit messages in **Korean**.
-4.  **Verification**: Verify the changes using `git diff` before committing.
-5.  Do not add add Co-Authored-By line.
+1. **Current branch only**: Never switch branches
+2. **Atomic commits**: One logical change per commit
+3. **Korean messages**: All commit messages in Korean
+4. **No Co-Authored-By**: Do not add co-author line
 
-## Commit Message Convention
+---
 
-Follow the format: `type: Subject`
+## Commit Format
 
-### Types
+```
+<type>: <subject>
+```
 
-- `feat`: 새로운 기능 추가 (New feature)
-- `fix`: 버그 수정 (Bug fix)
-- `refactor`: 기능 변경 없는 코드 구조 개선 (Refactoring)
-- `style`: 코드 포맷팅, 세미콜론 누락 등 (Formatting)
-- `docs`: 문서 수정 (Documentation)
-- `test`: 테스트 코드 추가/수정 (Tests)
-- `chore`: 빌드 업무 수정, 패키지 매니저 설정 등 (Chores)
+| Type | Usage |
+|------|-------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `refactor` | Code restructuring |
+| `style` | Formatting |
+| `docs` | Documentation |
+| `test` | Tests |
+| `chore` | Build/config |
 
-### Subject
-
-- Use Korean.
-- Be concise and descriptive.
-- Example: `feat: 로그인 페이지 UI 구현`
+---
 
 ## Workflow
 
-1.  **Check Status**: `git status`
-2.  **Analyze Diff**: `git diff` (Check what actually changed)
-3.  **Group Changes**: Identify logical groups of changes.
-4.  **Commit Loop**:
-    - `git add <files>`
-    - `git commit -m "<type>: <subject>"`
-    - Repeat until `git status` is clean.
-5.  **Final Check**: `git log -n <count>` to show what was committed.
+1. `git status` - Check changes
+2. `git diff` - Review changes
+3. Group by logical unit
+4. For each group:
+   - `git add <files>`
+   - `git commit -m "<type>: <subject>"`
+5. `git log -n <count>` - Verify commits
+
+---
 
 ## Example
 
-If `login.ts` (logic) and `Login.css` (style) and `README.md` (docs) are modified:
+```bash
+# Commit 1: Feature
+git add src/features/auth/login.ts
+git commit -m "feat: 로그인 유효성 검사 로직 추가"
 
-1.  **Commit 1**:
-    ```bash
-    git add src/features/auth/login.ts
-    git commit -m "feat: 로그인 유효성 검사 로직 추가"
-    ```
-2.  **Commit 2**:
-    ```bash
-    git add src/features/auth/Login.css
-    git commit -m "style: 로그인 폼 반응형 스타일 적용"
-    ```
-3.  **Commit 3**:
-    ```bash
-    git add README.md
-    git commit -m "docs: 프로젝트 실행 방법 업데이트"
-    ```
+# Commit 2: Style
+git add src/features/auth/Login.styles.ts
+git commit -m "style: 로그인 폼 반응형 스타일 적용"
+```
