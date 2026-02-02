@@ -1,4 +1,7 @@
 {
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true
+  },
   "permissions": {
     "allow": [
       "WebSearch"
