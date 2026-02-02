@@ -42,10 +42,7 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
 
       const length = variables.content?.length ?? 0;
       const length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
-      track('submit_comment', {
-        item_id: String(momentId),
-        length_bucket,
-      });
+      track('submit_comment', { length_bucket });
     },
     onError: () => {
       const errorMessage = '코멘트 등록에 실패했습니다. 다시 시도해주세요.';
