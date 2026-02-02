@@ -20,11 +20,7 @@ export function useScrollDepth() {
       const p = maxDepth.current;
       const bucket: '0' | '25' | '50' | '75' | '100' =
         p >= 100 ? '100' : p >= 75 ? '75' : p >= 50 ? '50' : p >= 25 ? '25' : '0';
-      track('scroll_depth', {
-        percent_bucket: bucket,
-        screen_height: window.innerHeight,
-        doc_height: document.documentElement.scrollHeight,
-      });
+      track('scroll_depth', { percent_bucket: bucket });
     };
   }, []);
 }

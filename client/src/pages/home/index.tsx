@@ -52,7 +52,7 @@ export default function HomePage() {
 
   const handleClick = () => {
     openNoti();
-    track('click_cta', { target: 'today_moment', cta_type: 'primary' });
+    track('click_cta', { cta_type: 'primary' });
     navigate(ROUTES.LOGIN);
   };
 

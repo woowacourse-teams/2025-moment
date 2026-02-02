@@ -1,11 +1,13 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useMutation } from '@tanstack/react-query';
+import { track } from '@/shared/lib/ga/track';
 
 export const useMomentLikeMutation = (groupId: number | string) => {
   return useMutation({
     mutationFn: (momentId: number) => toggleMomentLike(groupId, momentId),
     onSuccess: (_data, momentId) => {
+      track('give_likes', { item_type: 'moment' });
       const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
       queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moment', momentId] });

@@ -52,7 +52,6 @@ export const useSendComments = ({ groupId, momentId }: UseSendCommentsProps) => 
         const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
         const has_media = Boolean(imageData);
         track('abandon_composer', {
-          stage: 'typed',
           composer: 'comment',
           has_media,
           content_length_bucket,

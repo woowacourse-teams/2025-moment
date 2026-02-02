@@ -2,6 +2,7 @@ import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
+import { track } from '@/shared/lib/ga/track';
 import { GroupActionResponse } from '../types/group';
 
 export const useLeaveGroupMutation = () => {
@@ -13,6 +14,7 @@ export const useLeaveGroupMutation = () => {
       return response.data;
     },
     onSuccess: () => {
+      track('leave_group', {});
       queryClient.invalidateQueries({ queryKey: ['groups'] });
       showSuccess('그룹에서 탈퇴했습니다.');
     },
