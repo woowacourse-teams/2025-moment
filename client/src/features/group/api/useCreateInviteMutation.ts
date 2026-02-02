@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation } from '@tanstack/react-query';
+import { track } from '@/shared/lib/ga/track';
 import { InviteResponse } from '../types/group';
 
 export const useCreateInviteMutation = (groupId: number | string) => {
@@ -12,6 +13,7 @@ export const useCreateInviteMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
+      track('invite_member', {});
       showSuccess('초대 링크가 생성되었습니다!');
     },
     onError: () => {

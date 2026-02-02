@@ -15,7 +15,7 @@ export const useMomentsMutation = (groupId: number | string) => {
 
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
       queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
@@ -28,13 +28,7 @@ export const useMomentsMutation = (groupId: number | string) => {
       const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
       const has_media = Boolean(variables.imageUrl && variables.imageName);
 
-      const momentId = data?.data?.id ?? data?.data?.momentId ?? data?.id ?? data?.momentId;
-
-      track('publish_moment', {
-        item_id: momentId ?? '',
-        has_media,
-        content_length_bucket,
-      });
+      track('publish_moment', { has_media, content_length_bucket });
     },
     onError: () => {
       const errorMessage = '모멘트 등록에 실패했습니다. 다시 시도해주세요.';
