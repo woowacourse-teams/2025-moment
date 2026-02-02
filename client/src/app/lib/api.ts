@@ -38,8 +38,15 @@ const refreshToken = async (): Promise<void> => {
   }
 };
 
+const PUBLIC_PATHS = ['/', '/login', '/signup', '/find-password', '/new-password'];
+
 const redirectToLogin = (): void => {
-  if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+  if (typeof window === 'undefined') return;
+
+  const currentPath = window.location.pathname;
+  const isPublicPath = PUBLIC_PATHS.some(path => currentPath === path || currentPath.startsWith(path + '/'));
+
+  if (!isPublicPath) {
     window.location.href = '/login';
   }
 };
