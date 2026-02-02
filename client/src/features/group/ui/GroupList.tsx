@@ -2,8 +2,8 @@ import { useGroupsQuery } from '../api/useGroupsQuery';
 import { useNavigate } from 'react-router';
 import { GroupCard } from './GroupCard';
 import * as S from './GroupList.styles';
-
 import { storageService } from '@/shared/utils/storageService';
+import { track } from '@/shared/lib/ga/track';
 
 export function GroupList() {
   const { data: groupsData, isLoading } = useGroupsQuery();
@@ -11,6 +11,7 @@ export function GroupList() {
 
   const handleGroupClick = (group: any) => {
     storageService.local.set('lastVisitedGroupId', group.groupId);
+    track('select_group', { source: 'home' });
 
     if ((window as any).ReactNativeWebView) {
       (window as any).ReactNativeWebView.postMessage(

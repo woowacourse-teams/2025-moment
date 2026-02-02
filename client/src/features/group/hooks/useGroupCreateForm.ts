@@ -3,6 +3,7 @@ import { useCreateGroupMutation } from '../api/useCreateGroupMutation';
 import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { useGroupsQuery } from '../api/useGroupsQuery';
 import { api } from '@/app/lib/api';
+import { track } from '@/shared/lib/ga/track';
 
 const MAX_NAME_LENGTH = 50;
 const MAX_DESCRIPTION_LENGTH = 200;
@@ -37,6 +38,7 @@ export function useGroupCreateForm({ onSuccess }: UseGroupCreateFormProps) {
       const newestGroup = groups.sort((a, b) => b.groupId - a.groupId)[0];
 
       if (newestGroup) {
+        track('create_group', {});
         const inviteResponse = await api.post(`/groups/${newestGroup.groupId}/invite`);
         const code = inviteResponse.data.data;
 
