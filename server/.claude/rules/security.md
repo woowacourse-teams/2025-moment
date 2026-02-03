@@ -14,15 +14,20 @@ Before ANY commit:
 
 ## Secret Management
 
-```typescript
+```java
 // NEVER: Hardcoded secrets
-const apiKey = "sk-proj-xxxxx"
+private final String apiKey = "sk-proj-xxxxx";
 
-// ALWAYS: Environment variables
-const apiKey = process.env.OPENAI_API_KEY
+// ALWAYS: Environment variables via @Value
+@Value("${openai.api-key}")
+private String apiKey;
 
-if (!apiKey) {
-  throw new Error('OPENAI_API_KEY not configured')
+// OR: @ConfigurationProperties (recommended for grouped settings)
+@Configuration
+@ConfigurationProperties(prefix = "openai")
+public class OpenAiProperties {
+    private String apiKey;
+    // getter, setter
 }
 ```
 
