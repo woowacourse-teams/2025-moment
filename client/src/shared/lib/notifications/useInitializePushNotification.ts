@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useToast } from '../../hooks/useToast';
 
-import { registerFCMToken } from './registerFCMToken';
+import { registerPushToken } from './registerPushToken';
 
 interface PushNotificationData {
   title?: string;
@@ -10,14 +10,14 @@ interface PushNotificationData {
   data?: Record<string, unknown>;
 }
 
-export const useInitializeFCM = () => {
+export const useInitializePushNotification = () => {
   const { showMessage } = useToast();
 
   useEffect(() => {
     // Native 앱에서 Expo 푸시 토큰 수신 시 서버에 등록
     const handleExpoPushToken = async (token: string) => {
       try {
-        await registerFCMToken(token);
+        await registerPushToken(token);
         console.log('Registered Expo Push Token from Native:', token);
       } catch (e) {
         console.error('Failed to register Expo Push Token:', e);
