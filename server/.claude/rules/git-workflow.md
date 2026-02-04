@@ -23,7 +23,7 @@ When creating PRs:
 ## Feature Implementation Workflow
 
 1. **Plan First**
-    - Use **planner** agent to create implementation plan
+    - Use **Plan Mode** (`EnterPlanMode`)로 코드베이스 탐색 및 구현 계획 수립
     - Identify dependencies and risks
     - Break down into phases
 
