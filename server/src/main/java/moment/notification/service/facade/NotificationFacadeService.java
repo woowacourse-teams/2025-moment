@@ -1,10 +1,9 @@
 package moment.notification.service.facade;
 
 import lombok.RequiredArgsConstructor;
-import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
-import moment.notification.domain.NotificationType;
-import moment.notification.domain.PushNotificationMessage;
+import moment.notification.domain.NotificationCommand;
+import moment.notification.domain.NotificationPayload;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.service.application.NotificationApplicationService;
 import moment.notification.service.application.PushNotificationApplicationService;
@@ -19,39 +18,19 @@ public class NotificationFacadeService {
     private final SseNotificationService sseNotificationService;
     private final PushNotificationApplicationService pushNotificationApplicationService;
 
-    public void createNotificationAndSendSse(
-            Long userId,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType,
-            Long groupId
-    ) {
+    public void notify(NotificationCommand command) {
         Notification savedNotification = notificationApplicationService.createNotification(
-                userId,
-                targetId,
-                notificationType,
-                targetType,
-                groupId);
+                command.userId(), command.targetId(), command.notificationType(),
+                command.targetType(), command.groupId());
 
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                savedNotification.getId(),
-                notificationType,
-                targetType,
-                targetId,
-                groupId);
+        NotificationPayload payload = NotificationPayload.from(savedNotification);
 
-        sseNotificationService.sendToClient(userId, "notification", response);
-    }
+        sseNotificationService.sendToClient(command.userId(), "notification",
+                NotificationSseResponse.of(payload));
 
-    public void createNotificationAndSendSseAndPush(
-            Long userId,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType,
-            Long groupId,
-            PushNotificationMessage message
-    ) {
-        createNotificationAndSendSse(userId, targetId, notificationType, targetType, groupId);
-        pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
+        if (command.pushMessage() != null) {
+            pushNotificationApplicationService.sendToDeviceEndpoint(
+                    command.userId(), command.pushMessage());
+        }
     }
 }

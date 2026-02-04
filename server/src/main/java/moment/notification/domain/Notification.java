@@ -79,7 +79,7 @@ public class Notification extends BaseEntity {
         this.isRead = false;
     }
 
-    public void checkNotification() {
+    public void markAsRead() {
         isRead = true;
     }
 }

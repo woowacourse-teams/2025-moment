@@ -115,8 +115,9 @@ s3:
   optimized-bucket-path: ${S3_DEV_BUCKET_OPTIMIZED_PATH}
   cloudfront-domain: ${CLOUDFRONT_DOMAIN}
 
-fcm:
-  service-account-json: ${FCM_CREDENTIALS}
+expo:
+  push:
+    enabled: true
 
 admin:
   initial:

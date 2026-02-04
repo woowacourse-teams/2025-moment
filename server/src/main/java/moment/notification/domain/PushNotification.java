@@ -29,7 +29,7 @@ import org.hibernate.annotations.SQLRestriction;
 public class PushNotification extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
