@@ -20,4 +20,15 @@ public enum PushNotificationMessage {
 
     private final String title;
     private final String body;
+
+    public static PushNotificationMessage from(NotificationType type) {
+        return switch (type) {
+            case NEW_COMMENT_ON_MOMENT -> REPLY_TO_MOMENT;
+            case GROUP_JOIN_REQUEST -> GROUP_JOIN_REQUEST;
+            case GROUP_JOIN_APPROVED -> GROUP_JOIN_APPROVED;
+            case GROUP_KICKED -> GROUP_KICKED;
+            case MOMENT_LIKED -> MOMENT_LIKED;
+            case COMMENT_LIKED -> COMMENT_LIKED;
+        };
+    }
 }

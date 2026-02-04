@@ -11,7 +11,9 @@ import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationCommand;
 import moment.notification.domain.NotificationType;
+import moment.notification.domain.PushNotificationMessage;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.notification.service.notification.SseNotificationService;
 import moment.user.domain.User;
@@ -55,7 +57,9 @@ class NotificationFacadeServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        notificationFacadeService.createNotificationAndSendSse(userId, contentId, reason, contentType, null);
+        notificationFacadeService.notify(new NotificationCommand(
+                userId, contentId, reason, contentType,
+                null, PushNotificationMessage.REPLY_TO_MOMENT));
 
         // then
         List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
