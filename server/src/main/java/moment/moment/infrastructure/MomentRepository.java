@@ -80,7 +80,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           WHERE m.id IN :momentIds
            """)
     List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
@@ -88,7 +88,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId
           ORDER BY m.id DESC
@@ -98,7 +98,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId AND m.id < :cursor
           ORDER BY m.id DESC
@@ -111,7 +111,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId AND m.member.id = :memberId
           ORDER BY m.id DESC
@@ -124,7 +124,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId AND m.member.id = :memberId AND m.id < :cursor
           ORDER BY m.id DESC
@@ -164,7 +164,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId
             AND m.member.id = :memberId
@@ -180,7 +180,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
     @Query("""
           SELECT m
           FROM moments m
-          JOIN FETCH m.momenter
+          LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId
             AND m.member.id = :memberId

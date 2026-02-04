@@ -22,6 +22,7 @@ public enum ErrorCode {
     USER_NICKNAME_GENERATION_FAILED("U-010", "사용 가능한 닉네임을 생성할 수 없습니다.", HttpStatus.CONFLICT),
     PASSWORD_SAME_AS_OLD("U-012", "새 비밀번호가 기존의 비밀번호와 동일합니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_CHANGE_UNSUPPORTED_PROVIDER("U-013", "일반 회원가입 사용자가 아닌 경우 비밀번호를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    USER_HAS_OWNED_GROUP("U-014", "소유한 그룹이 있어 탈퇴할 수 없습니다. 그룹을 삭제하거나 소유자를 변경해 주세요.", HttpStatus.BAD_REQUEST),
 
     TOKEN_INVALID("T-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_EXPIRED("T-002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
