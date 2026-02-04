@@ -35,34 +35,45 @@ public class AppleAuthService {
         // 1. Identity Token 검증 및 사용자 정보 추출
         AppleUserInfo appleUserInfo = appleAuthClient.verifyAndGetUserInfo(identityToken);
 
-        // 2. sub 기반 고유 이메일 생성
-        String appleEmail = appleUserInfo.toAppleEmail();
+        // 2. 새 형식 이메일 결정 (실제 Apple 이메일 or hash 이메일)
+        String displayEmail = appleUserInfo.resolveDisplayEmail();
 
-        // 3. 기존 사용자 조회
+        // 3. 새 형식 이메일로 기존 사용자 조회
         Optional<User> findUser = userRepository.findByEmailAndProviderType(
-                appleEmail,
-                ProviderType.APPLE
+                displayEmail, ProviderType.APPLE
         );
 
-        // 4. 기존 사용자면 토큰 발급
         if (findUser.isPresent()) {
             return tokensIssuer.issueTokens(findUser.get());
         }
 
-        // 5. 신규 사용자 회원가입 후 토큰 발급
-        User savedUser = createUser(appleUserInfo.sub(), appleEmail);
+        // 4. 기존 sub@apple.user 형식으로 fallback 조회
+        String legacyEmail = appleUserInfo.toLegacyEmail();
+        Optional<User> legacyUser = userRepository.findByEmailAndProviderType(
+                legacyEmail, ProviderType.APPLE
+        );
+
+        if (legacyUser.isPresent()) {
+            // 기존 사용자 발견 → 이메일을 새 형식으로 업데이트 후 토큰 발급
+            User user = legacyUser.get();
+            user.updateEmail(displayEmail);
+            return tokensIssuer.issueTokens(user);
+        }
+
+        // 5. 완전 신규 사용자 → 회원가입
+        User savedUser = createUser(appleUserInfo.sub(), displayEmail);
         return tokensIssuer.issueTokens(savedUser);
     }
 
     /**
      * 신규 Apple 사용자 생성
      */
-    private User createUser(String appleUserId, String appleEmail) {
+    private User createUser(String appleUserId, String displayEmail) {
         // sub를 비밀번호로 인코딩 (OAuth 사용자는 비밀번호 로그인 불가)
         String encodedPassword = passwordEncoder.encode(appleUserId);
 
         User user = new User(
-                appleEmail,  // {sub}@apple.user 형태
+                displayEmail,
                 encodedPassword,
                 nicknameGenerateApplicationService.generate(),
                 ProviderType.APPLE
