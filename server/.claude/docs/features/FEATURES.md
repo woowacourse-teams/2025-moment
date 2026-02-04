@@ -6,7 +6,7 @@
 
 | 도메인 | PREFIX | 기능 수 | 상태 | 상세 문서 |
 |--------|--------|---------|------|-----------|
-| auth | AUTH | 11 | DONE | [auth.md](auth.md) |
+| auth | AUTH | 12 | DONE | [auth.md](auth.md) |
 | user | USER | 7 | DONE | [user.md](user.md) |
 | moment | MOM | 4 | DONE | [moment.md](moment.md) |
 | comment | CMT | 1 | DONE | [comment.md](comment.md) |
@@ -18,7 +18,7 @@
 | admin | ADM | 34 | DONE | [admin.md](admin.md) |
 | global | GLB | 7 | DONE | [global.md](global.md) |
 
-**총 104개 기능**
+**총 105개 기능**
 
 ## Cross-Domain Dependencies (이벤트 기반)
 
@@ -50,6 +50,7 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-04 | auth, user | AUTH-004, AUTH-012 | Apple 로그인 실제 이메일 사용, 레거시 이메일 마이그레이션, User.updateEmail() 추가 |
 | 2026-02-04 | notification | NTF-003, NTF-004 | 서비스 레이어 참조 정정, RequestBody 파라미터 추가 |
 | 2026-02-04 | comment | CMT-001 | Domain Events 테이블에 이벤트 상태 (dead code/미발행) 표기 |
 | 2026-02-04 | group | GRP-010~013 | Admin E2E 테스트 참조 제거, User API E2E 테스트 미존재 명시 |
