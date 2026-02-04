@@ -1,7 +1,13 @@
 import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'quaternary'
+  | 'quinary'
+  | 'danger';
 export type ExternalVariant = (theme: CustomTheme) => string;
 
 const buttonStyles = {
