@@ -11,7 +11,6 @@ import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { GroupList } from '@/features/group/ui/GroupList';
 import { GroupCreateForm } from '@/features/group/ui/GroupCreateForm';
@@ -59,7 +58,6 @@ export default function HomePage() {
 
   return (
     <>
-      <IOSBrowserWarning />
       <S.HomePageWrapper>
         <S.MainContainer>
           <S.HeroSection>

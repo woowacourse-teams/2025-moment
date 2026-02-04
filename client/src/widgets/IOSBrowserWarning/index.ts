@@ -1,1 +1,1 @@
-export { IOSBrowserWarning } from './IOSBrowserWarning';
+export { IOSBrowserWarning } from '../navigatorsBar/IOSBrowserWarning';
