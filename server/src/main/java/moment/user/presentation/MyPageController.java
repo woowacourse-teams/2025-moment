@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -111,6 +112,50 @@ public class MyPageController {
         myPageFacadeService.changePassword(request, authentication.id());
 
         authService.logout(authentication.id());
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", null)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(SuccessResponse.of(status, null));
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다. 소유한 그룹이 있으면 탈퇴할 수 없습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "400", description = """
+                    - [U-014] 소유한 그룹이 있어 탈퇴할 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+    })
+    @DeleteMapping
+    public ResponseEntity<SuccessResponse<Void>> withdraw(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        myPageFacadeService.withdraw(authentication.id());
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
                 .sameSite("none")

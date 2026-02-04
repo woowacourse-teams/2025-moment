@@ -3,6 +3,11 @@
 > Last Updated: 2026-02-04
 > Features: 1
 
+## 탈퇴 사용자 콘텐츠 처리
+
+- `CommentApplicationService.mapCommentsToUsers()`: commenter null-safe 처리 (HashMap으로 변환)
+- `CommentComposition.of()`: commenter null 시 "탈퇴한 사용자" 표시
+
 ## 기능 목록
 
 ### CMT-001: 댓글/Echo 생성
@@ -38,12 +43,13 @@
 - `Comment` (@Entity: "comments") - implements Cursorable
 - `CommentImage` (@Entity: "comment_images")
 
-## 관련 테스트 클래스 (9개)
+## 관련 테스트 클래스 (10개)
 
 - `CommentTest`, `CommentMemberContextTest`
 - `CommentRepositoryTest`, `CommentImageRepositoryTest`
 - `CommentApplicationServiceTest`, `CommentServiceTest`, `CommentImageServiceTest`
 - `MyGroupCommentPageFacadeServiceTest`
+- `CommentCompositionTest`
 - `CommentControllerTest` (E2E)
 
 ## DB 마이그레이션

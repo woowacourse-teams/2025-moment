@@ -2,6 +2,7 @@ package moment.moment.dto.response.tobe;
 
 import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
+import moment.user.domain.User;
 
 public record MomentComposition(
         Long id,
@@ -13,11 +14,12 @@ public record MomentComposition(
 ) {
 
     public static MomentComposition of(Moment moment, String imageUrl) {
+        User momenter = moment.getMomenter();
         return new MomentComposition(
                 moment.getId(),
-                moment.getMomenter().getId(),
+                momenter != null ? momenter.getId() : null,
                 moment.getContent(),
-                moment.getMomenter().getNickname(),
+                momenter != null ? momenter.getNickname() : "탈퇴한 사용자",
                 imageUrl,
                 moment.getCreatedAt()
         );

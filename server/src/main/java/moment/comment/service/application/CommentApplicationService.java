@@ -1,6 +1,7 @@
 package moment.comment.service.application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,11 +85,11 @@ public class CommentApplicationService {
         Map<Long, User> userById = commenters.stream()
                 .collect(Collectors.toMap(User::getId, user -> user));
 
-        return comments.stream()
-                .collect(Collectors.toMap(
-                        comment -> comment,
-                        comment -> userById.get(comment.getCommenter().getId())
-                ));
+        Map<Comment, User> result = new HashMap<>();
+        for (Comment comment : comments) {
+            result.put(comment, userById.get(comment.getCommenter().getId()));
+        }
+        return result;
     }
 
     @Transactional

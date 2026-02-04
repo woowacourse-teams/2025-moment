@@ -1,7 +1,7 @@
 # User Domain (PREFIX: USER)
 
 > Last Updated: 2026-02-04
-> Features: 7
+> Features: 8
 
 ## 기능 목록
 
@@ -90,6 +90,20 @@
 - **Tests**: `UserServiceTest`, `MyPageControllerTest` (E2E)
 - **Error Codes**: U-007 (비밀번호 불일치), U-012 (비밀번호 동일), U-013 (소셜 로그인 비밀번호 변경 불가)
 
+### USER-008: 회원 탈퇴
+
+- **Status**: DONE
+- **API**: `DELETE /api/v2/me`
+- **Key Classes**:
+    - Controller: `MyPageController`
+    - Facade: `MyPageFacadeService`
+    - Domain: `UserWithdrawService`
+    - Entity: `User`
+- **Business Rules**: 소유한 그룹이 있으면 탈퇴 불가, 탈퇴 시 로그아웃 처리 + 푸시알림 구독 삭제 + SSE 이미터 제거 + 유저 soft delete, 쿠키(accessToken/refreshToken) 초기화
+- **Dependencies**: auth (AuthService - 로그아웃), group (GroupRepository - 소유 그룹 확인), notification (PushNotificationRepository - 구독 삭제, Emitters - SSE 제거)
+- **Tests**: `UserWithdrawServiceTest`, `MyPageFacadeServiceTest`, `MyPageControllerTest` (E2E)
+- **Error Codes**: U-014 (소유한 그룹이 있어 탈퇴 불가)
+
 ## 관련 에러 코드
 
 - U-001: 이미 가입된 사용자 (409)
@@ -102,16 +116,18 @@
 - U-010: 닉네임 생성 불가 (409)
 - U-012: 비밀번호 동일 (400)
 - U-013: 소셜 로그인 비밀번호 변경 불가 (400)
+- U-014: 소유한 그룹이 있어 탈퇴 불가 (400)
 
 ## 관련 엔티티
 
-- `User` (@Entity: "users") - fields: id, email, password, nickname, providerType, deletedAt - methods: `updateEmail()`, `updatePassword()`, `updateNickname()`, `checkPassword()`, `checkProviderType()`
+- `User` (@Entity: "users") - fields: id, email, password, nickname, providerType, deletedAt - methods: `updateEmail()`, `updatePassword()`, `updateNickname()`, `checkPassword()`, `checkProviderType()` - Soft Delete 적용 (@SQLDelete + @SQLRestriction)
 
-## 관련 테스트 클래스 (7개)
+## 관련 테스트 클래스 (9개)
 
 - `UserTest`, `MomentRandomNicknameGeneratorTest`
 - `UserRepositoryTest`
-- `NicknameGenerateApplicationServiceTest`, `UserServiceTest`
+- `NicknameGenerateApplicationServiceTest`, `UserServiceTest`, `UserWithdrawServiceTest`
+- `MyPageFacadeServiceTest`
 - `MyPageControllerTest` (E2E), `UserControllerTest` (E2E)
 
 ## DB 마이그레이션

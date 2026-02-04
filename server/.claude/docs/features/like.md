@@ -1,7 +1,12 @@
 # Like Domain (PREFIX: LIK)
 
-> Last Updated: 2026-02-03
+> Last Updated: 2026-02-04
 > Features: 2
+
+## 탈퇴 사용자 콘텐츠 처리
+
+- `MomentLikeService`: momenter null 체크 추가 (탈퇴 사용자 모멘트에 좋아요 시 이벤트 발행 안 함)
+- `CommentLikeService`: commenter null 체크 추가 (탈퇴 사용자 댓글에 좋아요 시 이벤트 발행 안 함)
 
 ## 기능 목록
 

@@ -1,6 +1,6 @@
 # Feature Documentation System - 상세 계획 인덱스
 
-> Master Plan: [feature-documentation-system.md](../feature-documentation-system.md)
+> Master Plan: [feature-documentation-system.md](feature-documentation-system.md)
 > Date: 2026-02-03
 
 ## Phase 계획 파일
