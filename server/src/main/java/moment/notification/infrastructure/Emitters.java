@@ -26,6 +26,15 @@ public class Emitters {
         return emitter;
     }
 
+    public void remove(Long userId) {
+        List<SseEmitter> userEmitters = emitters.remove(userId);
+        if (userEmitters != null) {
+            for (SseEmitter emitter : userEmitters) {
+                emitter.complete();
+            }
+        }
+    }
+
     private void removeEmitter(Long userId, SseEmitter emitter) {
         List<SseEmitter> userEmitters = emitters.get(userId);
         if (userEmitters != null) {

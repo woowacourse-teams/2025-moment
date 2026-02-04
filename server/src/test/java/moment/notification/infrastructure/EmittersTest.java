@@ -153,6 +153,34 @@ class EmittersTest {
     }
 
     @Test
+    void 사용자의_모든_emitter를_제거한다() {
+        // given
+        Long userId = 1L;
+        SseEmitter emitter1 = mock(SseEmitter.class);
+        SseEmitter emitter2 = mock(SseEmitter.class);
+        List<SseEmitter> userEmitters = new CopyOnWriteArrayList<>();
+        userEmitters.add(emitter1);
+        userEmitters.add(emitter2);
+        spyEmitters.put(userId, userEmitters);
+
+        // when
+        emitters.remove(userId);
+
+        // then
+        assertThat(spyEmitters.containsKey(userId)).isFalse();
+    }
+
+    @Test
+    void 존재하지_않는_사용자의_emitter_제거는_예외_없이_무시된다() {
+        // given
+        Long nonExistentUserId = 999L;
+
+        // when & then
+        emitters.remove(nonExistentUserId);
+        assertThat(spyEmitters.containsKey(nonExistentUserId)).isFalse();
+    }
+
+    @Test
     void 마지막_emitter_제거_시_사용자_엔트리를_삭제한다() throws IOException {
         // given
         Long userId = 1L;
