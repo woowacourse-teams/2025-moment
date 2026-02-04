@@ -60,8 +60,9 @@ public class AppleAuthClient {
         // 4. JWT 검증 및 Claims 추출
         Claims claims = verifyAndGetClaims(identityToken, publicKey);
 
-        // 5. AppleUserInfo 반환
-        return new AppleUserInfo(claims.getSubject());
+        // 5. AppleUserInfo 반환 (email 클레임은 사용자가 이메일 공유를 선택한 경우에만 존재)
+        String email = claims.get("email", String.class);
+        return new AppleUserInfo(claims.getSubject(), email);
     }
 
     /**
