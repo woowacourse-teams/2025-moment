@@ -23,7 +23,7 @@ public class NotificationApplicationService {
     private final NotificationService notificationService;
     private final UserService userService;
 
-    public List<NotificationResponse> getNotificationBy(Long userId, Boolean read) {
+    public List<NotificationResponse> getNotificationBy(Long userId, boolean read) {
         userService.getUserBy(userId);
 
         List<Notification> notifications = notificationService.getAllBy(userId, read);
@@ -53,21 +53,7 @@ public class NotificationApplicationService {
             Long groupId) {
 
         User user = userService.getUserBy(userId);
-
-        if (groupId != null) {
-            return notificationService.saveNotificationWithGroupId(
-                    user,
-                    targetId,
-                    notificationType,
-                    targetType,
-                    groupId);
-        }
-
-        return notificationService.saveNotificationWithNewTransaction(
-                user,
-                targetId,
-                notificationType,
-                targetType);
+        return notificationService.save(user, targetId, notificationType, targetType, groupId);
     }
 
     public List<Long> getUnreadNotifications(Long userId, TargetType targetType) {

@@ -25,25 +25,11 @@ public class NotificationService {
     }
 
     @Transactional
-    public Notification saveNotificationWithNewTransaction(
-            User user,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType
-    ) {
-        Notification notification = new Notification(user, notificationType, targetType, targetId);
-        return notificationRepository.save(notification);
-    }
-
-    @Transactional
-    public Notification saveNotificationWithGroupId(
-            User user,
-            Long targetId,
-            NotificationType notificationType,
-            TargetType targetType,
-            Long groupId
-    ) {
-        Notification notification = new Notification(user, notificationType, targetType, targetId, groupId);
+    public Notification save(User user, Long targetId, NotificationType notificationType,
+                             TargetType targetType, Long groupId) {
+        Notification notification = (groupId != null)
+                ? new Notification(user, notificationType, targetType, targetId, groupId)
+                : new Notification(user, notificationType, targetType, targetId);
         return notificationRepository.save(notification);
     }
 
@@ -51,7 +37,7 @@ public class NotificationService {
         return notificationRepository.findNotificationsBy(targetIds, isRead, targetType);
     }
 
-    public List<Notification> getAllBy(Long userId, Boolean read) {
+    public List<Notification> getAllBy(Long userId, boolean read) {
         return notificationRepository.findAllByUserIdAndIsRead(userId, read);
     }
 
@@ -60,13 +46,13 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new MomentException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
-        notification.checkNotification();
+        notification.markAsRead();
     }
 
     @Transactional
     public void markAllAsRead(List<Long> notificationIds) {
         List<Notification> notifications = notificationRepository.findAllById(notificationIds);
 
-        notifications.forEach(Notification::checkNotification);
+        notifications.forEach(Notification::markAsRead);
     }
 }

@@ -28,6 +28,9 @@ public class NotificationEventHandler {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
+        log.info("CommentCreateEvent received: momentId={}, momenterId={}",
+            event.momentId(), event.momenterId());
+
         notificationFacadeService.createNotificationAndSendSseAndPush(
                 event.momenterId(),
                 event.momentId(),

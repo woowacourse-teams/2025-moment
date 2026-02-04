@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findAllByUserIdAndIsRead(Long userId, Boolean isRead);
+    List<Notification> findAllByUserIdAndIsRead(Long userId, boolean isRead);
 
     @Query("""
             SELECT DISTINCT n.targetId
@@ -18,7 +18,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             WHERE n.user.id = :userId AND n.isRead = :isRead AND n.targetType = :targetType
             """)
     List<Long> findAllByUserIdAndIsReadAndTargetType(@Param("userId") Long userId,
-                                                     @Param("isRead") Boolean isRead,
+                                                     @Param("isRead") boolean isRead,
                                                      @Param("targetType") TargetType targetType);
 
     @Query("""
