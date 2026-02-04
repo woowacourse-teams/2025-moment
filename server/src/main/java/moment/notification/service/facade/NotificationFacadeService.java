@@ -3,6 +3,7 @@ package moment.notification.service.facade;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
+import moment.notification.domain.NotificationPayload;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.PushNotificationMessage;
 import moment.notification.dto.response.NotificationSseResponse;
@@ -27,20 +28,11 @@ public class NotificationFacadeService {
             Long groupId
     ) {
         Notification savedNotification = notificationApplicationService.createNotification(
-                userId,
-                targetId,
-                notificationType,
-                targetType,
-                groupId);
+                userId, targetId, notificationType, targetType, groupId);
 
-        NotificationSseResponse response = NotificationSseResponse.createSseResponse(
-                savedNotification.getId(),
-                notificationType,
-                targetType,
-                targetId,
-                groupId);
-
-        sseNotificationService.sendToClient(userId, "notification", response);
+        NotificationPayload payload = NotificationPayload.from(savedNotification);
+        sseNotificationService.sendToClient(userId, "notification",
+                NotificationSseResponse.of(payload));
     }
 
     public void createNotificationAndSendSseAndPush(
@@ -51,7 +43,14 @@ public class NotificationFacadeService {
             Long groupId,
             PushNotificationMessage message
     ) {
-        createNotificationAndSendSse(userId, targetId, notificationType, targetType, groupId);
+        Notification savedNotification = notificationApplicationService.createNotification(
+                userId, targetId, notificationType, targetType, groupId);
+
+        NotificationPayload payload = NotificationPayload.from(savedNotification);
+
+        sseNotificationService.sendToClient(userId, "notification",
+                NotificationSseResponse.of(payload));
+
         pushNotificationApplicationService.sendToDeviceEndpoint(userId, message);
     }
 }
