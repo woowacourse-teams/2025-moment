@@ -11,6 +11,8 @@ import { MyGroupList } from '@/features/group/ui/MyGroupList';
 import { useState } from 'react';
 import * as S from './index.styles';
 import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
+import { useDeleteAccountMutation } from '@/features/auth/api/useDeleteAccountMutation';
+import { truncateEmail } from '@/shared/utils/email';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -25,9 +27,15 @@ export default function MyPage() {
     handleOpen: handleOpenNicknameModal,
     handleClose: handleCloseNicknameModal,
   } = useModal();
+  const {
+    isOpen: isDeleteAccountOpen,
+    handleOpen: handleOpenDeleteAccountModal,
+    handleClose: handleCloseDeleteAccountModal,
+  } = useModal();
   const [localNickname, setLocalNickname] = useState('');
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
   const logoutMutation = useLogoutMutation();
+  const deleteAccountMutation = useDeleteAccountMutation();
   const showNotificationSettings = (isDevice() || isPWA()) && !isApp();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
@@ -47,7 +55,7 @@ export default function MyPage() {
         <Card width="large">
           <S.UserInfoContainer>
             <S.UserProfileSection>
-              <S.Email>{myProfile.email}</S.Email>
+              <S.Email>{truncateEmail(myProfile.email)}</S.Email>
               <S.UserInfo>
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
@@ -63,6 +71,11 @@ export default function MyPage() {
                     variant="primary"
                     title="로그아웃"
                     onClick={() => logoutMutation.mutate()}
+                  />
+                  <Button
+                    variant="danger"
+                    title="회원 탈퇴"
+                    onClick={handleOpenDeleteAccountModal}
                   />
                 </S.ButtonContainer>
               </S.UserInfo>
@@ -118,6 +131,30 @@ export default function MyPage() {
             updateNickname={handleNicknameChange}
             handleCloseNicknameModal={handleCloseNicknameModal}
           />
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={isDeleteAccountOpen}
+        position="center"
+        size="small"
+        onClose={handleCloseDeleteAccountModal}
+      >
+        <Modal.Header title="회원 탈퇴" />
+        <Modal.Content>
+          <S.DeleteAccountContent>
+            <p>정말로 탈퇴하시겠습니까?</p>
+            <p>탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.</p>
+            <S.DeleteAccountButtonContainer>
+              <Button variant="secondary" title="취소" onClick={handleCloseDeleteAccountModal} />
+              <Button
+                variant="danger"
+                title="탈퇴하기"
+                onClick={() => deleteAccountMutation.mutate()}
+                disabled={deleteAccountMutation.isPending}
+              />
+            </S.DeleteAccountButtonContainer>
+          </S.DeleteAccountContent>
         </Modal.Content>
       </Modal>
     </S.MyPageWrapper>

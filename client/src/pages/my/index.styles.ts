@@ -184,3 +184,29 @@ export const SettingLink = styled.p`
     color: ${({ theme }) => theme.colors['yellow-300']};
   }
 `;
+
+export const DeleteAccountContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.colors['gray-200']};
+    font-size: 16px;
+
+    &:first-of-type {
+      font-size: 18px;
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors['white']};
+    }
+  }
+`;
+
+export const DeleteAccountButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+`;

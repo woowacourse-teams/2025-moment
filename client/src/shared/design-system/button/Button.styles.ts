@@ -1,7 +1,13 @@
 import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'quaternary'
+  | 'quinary'
+  | 'danger';
 export type ExternalVariant = (theme: CustomTheme) => string;
 
 const buttonStyles = {
@@ -122,6 +128,29 @@ const buttonStyles = {
       padding: 4px 10px;
       font-size: 12px;
     }`,
+
+  danger: (theme: CustomTheme) => `
+    background-color: transparent;
+    color: ${theme.colors['red-500']};
+    border: 1px solid ${theme.colors['red-500']};
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: ${theme.colors['red-500']};
+      color: #fff;
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  `,
 };
 
 export const Button = styled.button<{
