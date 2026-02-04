@@ -11,6 +11,7 @@ import { MyGroupList } from '@/features/group/ui/MyGroupList';
 import { useState } from 'react';
 import * as S from './index.styles';
 import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
+import { truncateEmail } from '@/shared/utils/email';
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -47,7 +48,7 @@ export default function MyPage() {
         <Card width="large">
           <S.UserInfoContainer>
             <S.UserProfileSection>
-              <S.Email>{myProfile.email}</S.Email>
+              <S.Email>{truncateEmail(myProfile.email)}</S.Email>
               <S.UserInfo>
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
