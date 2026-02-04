@@ -2,8 +2,6 @@ import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { getProfile } from '@/features/auth/api/useProfileQuery';
 import { useToast } from '@/shared/hooks/useToast';
-import { requestFCMPermission } from '@/shared/lib/notifications/firebase';
-import { registerFCMToken } from '@/shared/lib/notifications/registerFCMToken';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router';
@@ -18,15 +16,6 @@ export const useAppleLoginMutation = () => {
     onSuccess: async () => {
       queryClient.setQueryData(['checkIfLoggedIn'], true);
       await queryClient.prefetchQuery({ queryKey: ['profile'], queryFn: getProfile });
-
-      try {
-        const token = await requestFCMPermission();
-        if (token) {
-          await registerFCMToken(token);
-        }
-      } catch (error) {
-        console.error('FCM 토큰 등록 실패:', error);
-      }
 
       showSuccess('Apple 로그인에 성공했습니다!');
       navigate('/');

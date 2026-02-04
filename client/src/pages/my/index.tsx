@@ -1,8 +1,6 @@
-import { isApp, isDevice, isPWA } from '@/shared/utils/device';
 import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
-import { NotificationSettings } from '@/features/my/ui/NotificationSettings';
 import { useModal } from '@/shared/design-system/modal';
 import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
@@ -36,7 +34,6 @@ export default function MyPage() {
   const { data: myProfile, isLoading: isProfileLoading, error: profileError } = useProfileQuery();
   const logoutMutation = useLogoutMutation();
   const deleteAccountMutation = useDeleteAccountMutation();
-  const showNotificationSettings = (isDevice() || isPWA()) && !isApp();
 
   if (isProfileLoading) return <div>프로필 로딩 중...</div>;
   if (profileError) return <div>프로필을 불러올 수 없습니다.</div>;
@@ -83,17 +80,6 @@ export default function MyPage() {
           </S.UserInfoContainer>
         </Card>
       </S.UserInfoSection>
-
-      {showNotificationSettings && (
-        <S.UserInfoSection>
-          <S.SectionTitleContainer>
-            <S.SectionTitle>알림 설정</S.SectionTitle>
-          </S.SectionTitleContainer>
-          <Card width="large">
-            <NotificationSettings />
-          </Card>
-        </S.UserInfoSection>
-      )}
 
       <S.GroupSection>
         <S.SectionTitleContainer>

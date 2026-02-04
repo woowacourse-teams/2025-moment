@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
@@ -8,7 +8,10 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ErrorScreen } from "@/components/ErrorScreen";
 import { COLORS } from "@/constants/theme";
 import { BASE_URL } from "@/constants/config";
-import { usePushNotifications } from "@/hooks/usePushNotifications";
+import {
+  usePushNotifications,
+  PushNotificationData,
+} from "@/hooks/usePushNotifications";
 import { useGroup } from "@/context/GroupContext";
 import { useBridgeMessageHandler } from "@/bridge/useBridgeMessageHandler";
 import { getTabFromUrl, getUrlForTab } from "@/utils/tabRouting";
@@ -37,7 +40,42 @@ export default function MainScreen() {
 
   const { webViewRef, isLoading, error, reload, handlers } = useWebView();
 
-  const { expoPushToken } = usePushNotifications();
+  // 포그라운드에서 푸시 수신 시 WebView에 전달
+  const handleNotificationReceived = useCallback(
+    (data: PushNotificationData) => {
+      webViewRef.current?.injectJavaScript(`
+        if (window.onPushNotification) {
+          window.onPushNotification(${JSON.stringify(data)});
+        }
+        true;
+      `);
+    },
+    [webViewRef],
+  );
+
+  // 알림 탭 시 해당 화면으로 이동
+  const handleNotificationTapped = useCallback(
+    (data: PushNotificationData) => {
+      const link = data.data?.link as string | undefined;
+      if (link) {
+        webViewRef.current?.injectJavaScript(`
+          window.location.href = '${link}';
+          true;
+        `);
+      }
+    },
+    [webViewRef],
+  );
+
+  const pushOptions = useMemo(
+    () => ({
+      onNotificationReceived: handleNotificationReceived,
+      onNotificationTapped: handleNotificationTapped,
+    }),
+    [handleNotificationReceived, handleNotificationTapped],
+  );
+
+  const { expoPushToken } = usePushNotifications(pushOptions);
   const { handleMessage } = useBridgeMessageHandler({ webViewRef, setGroupId });
 
   // 푸시 토큰 전달
