@@ -5,15 +5,12 @@ import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
-import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
-import { NotificationButton } from '@/shared/lib/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { isDevice, isPWA } from '@/shared/utils/device';
 import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { GroupList } from '@/features/group/ui/GroupList';
@@ -26,7 +23,6 @@ export default function HomePage() {
 
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
-  const { isOpen: isNotiOpen, handleClose: closeNoti, handleOpen: openNoti } = useModal();
   const { data: isLoggedInQuery } = useCheckIfLoggedInQuery();
   const isLoggedIn = !!isLoggedInQuery;
 
@@ -38,20 +34,10 @@ export default function HomePage() {
     code: string;
   } | null>(null);
 
-  const shouldShowNotificationModal =
-    isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
-
   const groups = groupsResponse?.data || [];
   const hasGroups = isLoggedIn && groups.length > 0;
 
-  useEffect(() => {
-    if (shouldShowNotificationModal) {
-      openNoti();
-    }
-  }, [openNoti, shouldShowNotificationModal]);
-
   const handleClick = () => {
-    openNoti();
     track('click_cta', { cta_type: 'primary' });
     navigate(ROUTES.LOGIN);
   };
@@ -173,22 +159,6 @@ export default function HomePage() {
           </AnimatedIntroSection>
         ))}
       </S.HomePageWrapper>
-
-      <Modal
-        size="small"
-        isOpen={isNotiOpen}
-        onClose={closeNoti}
-        titleId="notification-modal-title"
-      >
-        <Modal.Header
-          title="모멘트와 코멘트 알림을 받아보세요!"
-          showCloseButton={true}
-          id="notification-modal-title"
-        />
-        <Modal.Content>
-          <NotificationButton onClose={closeNoti} />
-        </Modal.Content>
-      </Modal>
 
       <Modal isOpen={modalType === 'create'} onClose={handleCloseModal}>
         <Modal.Header title="그룹 생성" showCloseButton />

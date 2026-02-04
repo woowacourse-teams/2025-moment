@@ -1,14 +1,20 @@
 import { useEffect } from 'react';
 
-import * as Sentry from '@sentry/react';
+import { useToast } from '../../hooks/useToast';
 
-import { isDevice, isPWA } from '../../utils/device';
-
-import { requestFCMPermission, setupForegroundMessage } from './firebase';
 import { registerFCMToken } from './registerFCMToken';
 
+interface PushNotificationData {
+  title?: string;
+  body?: string;
+  data?: Record<string, unknown>;
+}
+
 export const useInitializeFCM = () => {
+  const { showMessage } = useToast();
+
   useEffect(() => {
+    // Native 앱에서 Expo 푸시 토큰 수신 시 서버에 등록
     const handleExpoPushToken = async (token: string) => {
       try {
         await registerFCMToken(token);
@@ -18,30 +24,17 @@ export const useInitializeFCM = () => {
       }
     };
 
-    if (typeof window !== 'undefined') {
-      (window as any).onExpoPushToken = handleExpoPushToken;
-    }
-
-    const initializeFCM = async () => {
-      if (typeof window !== 'undefined' && (window as any).ReactNativeWebView) return;
-
-      if (!('serviceWorker' in navigator)) return;
-
-      if (isDevice() && !isPWA()) return;
-
-      try {
-        await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        const token = await requestFCMPermission();
-
-        if (token) {
-          await setupForegroundMessage();
-        }
-      } catch (error) {
-        // Firebase Messaging이 지원되지 않는 브라우저에서는 무시
-        Sentry.captureException(error);
+    // 포그라운드에서 푸시 알림 수신 시 인앱 UI로 표시
+    const handlePushNotification = (data: PushNotificationData) => {
+      console.log('Push notification received (foreground):', data);
+      if (data.body) {
+        showMessage(data.body, 'moment', 5000);
       }
     };
 
-    initializeFCM();
-  }, []);
+    if (typeof window !== 'undefined') {
+      (window as any).onExpoPushToken = handleExpoPushToken;
+      (window as any).onPushNotification = handlePushNotification;
+    }
+  }, [showMessage]);
 };
