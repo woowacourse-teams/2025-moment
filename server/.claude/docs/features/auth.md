@@ -1,7 +1,7 @@
 # Auth Domain (PREFIX: AUTH)
 
 > Last Updated: 2026-02-04
-> Features: 11
+> Features: 12
 
 ## 기능 목록
 
@@ -45,9 +45,11 @@
 - **API**: `POST /api/v2/auth/apple`
 - **Key Classes**:
     - Controller: `AuthController`
-    - Domain: `AppleAuthService`
-- **Business Rules**: Apple Identity Token 검증, 신규 사용자 자동 가입
-- **Dependencies**: user (UserService)
+    - Application: `AppleAuthService`
+    - Infrastructure: `AppleAuthClient`
+    - DTO: `AppleUserInfo`
+- **Business Rules**: Apple Identity Token 검증, 실제 Apple 이메일 사용 (email 클레임), 이메일 미공유 시 MD5 해시 기반 짧은 이메일 생성 (`apple_{hash}@apple.app`), 기존 `sub@apple.user` 형식 레거시 이메일 자동 마이그레이션, 신규 사용자 자동 가입
+- **Dependencies**: user (UserRepository, NicknameGenerateApplicationService)
 - **Tests**: `AppleAuthServiceTest`, `ApplePublicKeyTest`, `ApplePublicKeysTest`, `AppleUserInfoTest`, `AppleAuthClientTest`
 - **Error Codes**: AP-001 ~ AP-005 (Apple 인증 관련)
 
@@ -132,6 +134,22 @@
 - **Dependencies**: 없음
 - **Tests**: `JwtTokenManagerTest`
 
+### AUTH-012: Apple 로그인 이메일 개선 및 레거시 마이그레이션
+
+- **Status**: DONE
+- **API**: N/A (AUTH-004 내부 로직 개선)
+- **Key Classes**:
+    - Application: `AppleAuthService`
+    - Infrastructure: `AppleAuthClient`
+    - DTO: `AppleUserInfo` (`resolveDisplayEmail()`, `toLegacyEmail()`)
+- **Business Rules**:
+    - Identity Token의 `email` 클레임에서 실제 Apple 이메일 추출
+    - 이메일 미공유 시 sub의 MD5 해시 앞 8자로 `apple_{hash}@apple.app` 형식 생성
+    - 기존 `sub@apple.user` 형식 사용자는 새 이메일 형식으로 자동 마이그레이션 (`User.updateEmail()`)
+    - 동일 sub는 항상 동일한 해시 이메일 생성 (결정적)
+- **Dependencies**: user (`User.updateEmail()`)
+- **Tests**: `AppleAuthServiceTest` (7개 테스트), `AppleUserInfoTest` (6개 테스트), `AppleAuthClientTest` (10개 테스트)
+
 ## 관련 엔티티
 
 - `RefreshToken` (@Entity: "refresh_tokens")
@@ -139,11 +157,12 @@
 
 ## 관련 테스트 클래스 (11개)
 
-- `AppleAuthServiceTest`, `TokensIssuerTest`
-- `EmailVerificationTest`, `RefreshTokenTest`
-- `ApplePublicKeyTest`, `ApplePublicKeysTest`, `AppleUserInfoTest`
-- `AppleAuthClientTest`, `JwtTokenManagerTest`
-- `RefreshTokenRepositoryTest`
+- `AppleAuthServiceTest` (7개: 이메일 있는/없는 기존 사용자, 레거시 fallback 마이그레이션, 신규 사용자 이메일/해시, 재로그인, 예외 전파)
+- `AppleUserInfoTest` (6개: resolveDisplayEmail, toLegacyEmail)
+- `AppleAuthClientTest` (10개: 토큰 검증, email 클레임 추출, 공개키 조회)
+- `TokensIssuerTest`, `EmailVerificationTest`, `RefreshTokenTest`
+- `ApplePublicKeyTest`, `ApplePublicKeysTest`
+- `JwtTokenManagerTest`, `RefreshTokenRepositoryTest`
 - `AuthControllerTest` (E2E)
 
 ## DB 마이그레이션

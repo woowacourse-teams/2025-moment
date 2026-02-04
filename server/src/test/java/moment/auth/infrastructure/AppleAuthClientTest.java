@@ -100,6 +100,40 @@ class AppleAuthClientTest {
         }
 
         @Test
+        @DisplayName("토큰에 email 클레임이 있으면 email을 포함한 사용자 정보를 반환한다")
+        void tokenWithEmail_returnsUserInfoWithEmail() {
+            // given
+            String tokenWithEmail = createValidTokenWithEmail("test-sub", "com.moment.app", "user@icloud.com");
+            ApplePublicKeys mockKeys = createMockApplePublicKeys();
+            when(restTemplate.getForObject(anyString(), eq(ApplePublicKeys.class)))
+                    .thenReturn(mockKeys);
+
+            // when
+            AppleUserInfo result = appleAuthClient.verifyAndGetUserInfo(tokenWithEmail);
+
+            // then
+            assertThat(result.sub()).isEqualTo("test-sub");
+            assertThat(result.email()).isEqualTo("user@icloud.com");
+        }
+
+        @Test
+        @DisplayName("토큰에 email 클레임이 없으면 email이 null인 사용자 정보를 반환한다")
+        void tokenWithoutEmail_returnsUserInfoWithNullEmail() {
+            // given
+            String validToken = createValidToken("test-sub", "com.moment.app");
+            ApplePublicKeys mockKeys = createMockApplePublicKeys();
+            when(restTemplate.getForObject(anyString(), eq(ApplePublicKeys.class)))
+                    .thenReturn(mockKeys);
+
+            // when
+            AppleUserInfo result = appleAuthClient.verifyAndGetUserInfo(validToken);
+
+            // then
+            assertThat(result.sub()).isEqualTo("test-sub");
+            assertThat(result.email()).isNull();
+        }
+
+        @Test
         @DisplayName("허용되지 않은 aud면 예외를 던진다")
         void invalidAudience() {
             // given
@@ -193,6 +227,19 @@ class AppleAuthClientTest {
         return Jwts.builder()
                 .header().keyId("test-kid").and()
                 .subject(sub)
+                .issuer("https://appleid.apple.com")
+                .audience().add(aud).and()
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 3600000))
+                .signWith(keyPair.getPrivate(), Jwts.SIG.RS256)
+                .compact();
+    }
+
+    private String createValidTokenWithEmail(String sub, String aud, String email) {
+        return Jwts.builder()
+                .header().keyId("test-kid").and()
+                .subject(sub)
+                .claim("email", email)
                 .issuer("https://appleid.apple.com")
                 .audience().add(aud).and()
                 .issuedAt(new Date())

@@ -1,6 +1,6 @@
 # User Domain (PREFIX: USER)
 
-> Last Updated: 2026-02-03
+> Last Updated: 2026-02-04
 > Features: 7
 
 ## 기능 목록
@@ -105,7 +105,7 @@
 
 ## 관련 엔티티
 
-- `User` (@Entity: "users") - fields: id, email, password, nickname, providerType, deletedAt
+- `User` (@Entity: "users") - fields: id, email, password, nickname, providerType, deletedAt - methods: `updateEmail()`, `updatePassword()`, `updateNickname()`, `checkPassword()`, `checkProviderType()`
 
 ## 관련 테스트 클래스 (7개)
 

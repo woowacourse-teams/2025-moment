@@ -102,6 +102,11 @@ public class User extends BaseEntity {
         this.password = newPassword;
     }
 
+    public void updateEmail(String newEmail) {
+        validateEmail(newEmail);
+        this.email = newEmail;
+    }
+
     public void updateNickname(String newNickname) {
         validateNickname(newNickname);
         this.nickname = newNickname;
