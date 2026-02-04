@@ -64,14 +64,16 @@ cd server
 
 ```
 src/main/java/moment/
-├── auth/          # 인증/인가 (JWT)
+├── admin/         # 관리자 (세션 기반 인증, 사용자/그룹/콘텐츠 관리)
+├── auth/          # 인증/인가 (JWT, Google OAuth, Apple Sign-in)
 ├── comment/       # 댓글 (도메인명: "Echo")
+├── group/         # 그룹 (CRUD, 멤버 관리, 초대, 그룹 모멘트/코멘트)
+├── like/          # 좋아요 (모멘트/코멘트 좋아요 토글)
 ├── moment/        # 핵심 모멘트 게시물
 ├── notification/  # 알림 (SSE + Firebase Push)
 ├── report/        # 콘텐츠 신고
-├── reward/        # 보상/포인트
 ├── storage/       # 파일 저장소 (AWS S3)
-├── user/          # 사용자 & 레벨
+├── user/          # 사용자 관리
 └── global/        # 공유 인프라
 ```
 
@@ -182,10 +184,6 @@ public class UserService {
 - **추가 모멘트**: 포인트 소모 (`PointDeductionPolicy`)
 - 작성 유형: `BASIC` 또는 `EXTRA`
 
-### 사용자 레벨 시스템
-- `expStar` 기반 15개 레벨: `ASTEROID_WHITE`(0) → `GAS_GIANT_SKY`(32000+)
-- `User.addStarAndUpdateLevel()`로 자동 업데이트
-
 ### 알림 시스템
 1. 도메인 이벤트 발행 (댓글 생성 등)
 2. `@TransactionalEventListener`로 이벤트 수신
@@ -208,8 +206,8 @@ public class UserService {
 Optional<User> findByEmailAndProviderType(String email, ProviderType type);
 
 // 복잡한 조건은 @Query
-@Query("SELECT u FROM users u WHERE u.expStar >= :minStar")
-List<User> findUsersAboveLevel(@Param("minStar") int minStar);
+@Query("SELECT m FROM moments m WHERE m.momenter = :momenter ORDER BY m.createdAt DESC")
+List<Moment> findByMomenter(@Param("momenter") User momenter);
 ```
 
 ### 서비스 레이어 구성
@@ -340,6 +338,11 @@ class MomentControllerTest extends AcceptanceTest {
 - [ ] DB 변경 시 Flyway 마이그레이션 추가
 
 ## 참고
+
+### Feature Registry
+- **기능 인덱스**: `.claude/docs/features/FEATURES.md` — 전체 기능 목록 및 상태
+- **도메인별 상세**: `.claude/docs/features/{domain}.md` — 도메인별 기능, API, 클래스, 테스트 매핑
+- **추적 규칙**: `.claude/rules/feature-tracking.md` — 기능 문서 유지 규칙
 
 ### 기존 구현 참조
 - **User 도메인**: `user/domain/User.java`, `user/service/user/UserService.java`
