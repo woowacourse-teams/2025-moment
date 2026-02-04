@@ -7,6 +7,7 @@ import moment.like.domain.MomentLike;
 import moment.like.dto.event.MomentLikeEvent;
 import moment.like.infrastructure.MomentLikeRepository;
 import moment.moment.domain.Moment;
+import moment.user.domain.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,8 @@ public class MomentLikeService {
             isNowLiked = true;
         }
 
-        if (isNowLiked && !moment.getMomenter().getId().equals(member.getUser().getId())) {
+        User momenter = moment.getMomenter();
+        if (isNowLiked && momenter != null && !momenter.getId().equals(member.getUser().getId())) {
             eventPublisher.publishEvent(new MomentLikeEvent(
                 moment.getId(),
                 moment.getMomenter().getId(),

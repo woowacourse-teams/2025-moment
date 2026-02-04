@@ -13,6 +13,7 @@ import moment.group.domain.GroupMember;
 import moment.like.domain.CommentLike;
 import moment.like.dto.event.CommentLikeEvent;
 import moment.like.infrastructure.CommentLikeRepository;
+import moment.user.domain.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,8 @@ public class CommentLikeService {
             isNowLiked = true;
         }
 
-        if (isNowLiked && !comment.getCommenter().getId().equals(member.getUser().getId())) {
+        User commenter = comment.getCommenter();
+        if (isNowLiked && commenter != null && !commenter.getId().equals(member.getUser().getId())) {
             eventPublisher.publishEvent(new CommentLikeEvent(
                 comment.getId(),
                 comment.getCommenter().getId(),

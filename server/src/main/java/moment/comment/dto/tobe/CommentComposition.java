@@ -18,7 +18,7 @@ public record CommentComposition(
         return new CommentComposition(
                 comment.getId(),
                 comment.getContent(),
-                commenter.getNickname(),
+                commenter != null ? commenter.getNickname() : "탈퇴한 사용자",
                 imageUrl,
                 comment.getCreatedAt(),
                 comment.getMomentId()

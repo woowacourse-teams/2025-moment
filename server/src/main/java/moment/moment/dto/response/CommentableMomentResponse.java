@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
+import moment.user.domain.User;
 
 @Schema(description = "코멘트를 달 수 있는 모멘트 응답")
 public record CommentableMomentResponse(
@@ -29,9 +30,12 @@ public record CommentableMomentResponse(
             momentImageUrl = momentImage.getImageUrl();
         }
 
+        User momenter = moment.getMomenter();
+        String nickname = momenter != null ? momenter.getNickname() : "탈퇴한 사용자";
+
         return new CommentableMomentResponse(
                 moment.getId(),
-                moment.getMomenter().getNickname(),
+                nickname,
                 moment.getContent(),
                 momentImageUrl,
                 moment.getCreatedAt());
