@@ -1,6 +1,6 @@
 # Moment Domain (PREFIX: MOM)
 
-> Last Updated: 2026-02-03
+> Last Updated: 2026-02-04
 > Features: 4
 
 ## 기능 목록
@@ -67,12 +67,19 @@
 - `Moment` (@Entity: "moments") - implements Cursorable
 - `MomentImage` (@Entity: "moment_images")
 
-## 관련 테스트 클래스 (9개)
+## 탈퇴 사용자 콘텐츠 처리
+
+- `MomentRepository`: `JOIN FETCH m.momenter` → `LEFT JOIN FETCH m.momenter`로 변경 (탈퇴 사용자 모멘트 조회 지원)
+- `MomentComposition.of()`: momenter null 시 "탈퇴한 사용자" 표시, momenterId null 반환
+- `CommentableMomentResponse.of()`: momenter null 시 "탈퇴한 사용자" 표시
+
+## 관련 테스트 클래스 (10개)
 
 - `MomentTest`, `MomentGroupContextTest`
 - `MomentRepositoryTest`, `MomentImageRepositoryTest`
 - `MomentApplicationServiceTest`, `MomentServiceTest`, `MomentImageServiceTest`
 - `MyGroupMomentPageFacadeServiceTest`
+- `MomentCompositionTest`
 - `MomentControllerTest` (E2E)
 
 ## DB 마이그레이션

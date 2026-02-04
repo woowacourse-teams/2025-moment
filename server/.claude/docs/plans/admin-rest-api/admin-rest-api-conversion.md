@@ -28,12 +28,12 @@
 
 | Phase | 파일                                                                          | 설명                                                   |
 |-------|-----------------------------------------------------------------------------|------------------------------------------------------|
-| 1     | [phase-1-infrastructure.md](admin-rest-api/phase-1-infrastructure.md)       | 인프라 설정 (ErrorCode, Exception, Response, Interceptor) |
-| 2     | [phase-2-auth-api.md](admin-rest-api/phase-2-auth-api.md)                   | 인증 API (login, logout, me)                           |
-| 3     | [phase-3-user-api.md](admin-rest-api/phase-3-user-api.md)                   | 사용자 관리 API (CRUD)                                    |
-| 4     | [phase-4-account-api.md](admin-rest-api/phase-4-account-api.md)             | 관리자 계정 API (생성, 차단)                                  |
-| 5     | [phase-5-session-api.md](admin-rest-api/phase-5-session-api.md)             | 세션 관리 API (조회, 강제 종료)                                |
-| 6     | [phase-6-service-migration.md](admin-rest-api/phase-6-service-migration.md) | 서비스 레이어 마이그레이션                                       |
+| 1     | [phase-1-infrastructure.md](phase-1-infrastructure.md)       | 인프라 설정 (ErrorCode, Exception, Response, Interceptor) |
+| 2     | [phase-2-auth-api.md](phase-2-auth-api.md)                   | 인증 API (login, logout, me)                           |
+| 3     | [phase-3-user-api.md](phase-3-user-api.md)                   | 사용자 관리 API (CRUD)                                    |
+| 4     | [phase-4-account-api.md](phase-4-account-api.md)             | 관리자 계정 API (생성, 차단)                                  |
+| 5     | [phase-5-session-api.md](phase-5-session-api.md)             | 세션 관리 API (조회, 강제 종료)                                |
+| 6     | [phase-6-service-migration.md](phase-6-service-migration.md) | 서비스 레이어 마이그레이션                                       |
 
 ---
 
