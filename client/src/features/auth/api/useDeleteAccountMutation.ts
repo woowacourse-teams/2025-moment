@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router';
 
@@ -19,8 +20,12 @@ export const useDeleteAccountMutation = () => {
       showSuccess('회원 탈퇴가 완료되었습니다.');
       navigate('/login');
     },
-    onError: () => {
-      showError('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');
+    onError: error => {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        showError(error.response.data.message);
+      } else {
+        showError('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');
+      }
     },
   });
 };
