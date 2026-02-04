@@ -14,6 +14,7 @@ import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.comment.service.application.CommentApplicationService;
+import moment.comment.service.facade.GroupCommentCreateFacadeService;
 import moment.comment.service.facade.MyGroupCommentPageFacadeService;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupCommentController {
 
     private final CommentApplicationService commentApplicationService;
+    private final GroupCommentCreateFacadeService groupCommentCreateFacadeService;
     private final CommentLikeService commentLikeService;
     private final MyGroupCommentPageFacadeService myGroupCommentPageFacadeService;
 
@@ -64,7 +66,7 @@ public class GroupCommentController {
             @PathVariable Long groupId,
             @PathVariable Long momentId,
             @Valid @RequestBody GroupCommentCreateRequest request) {
-        GroupCommentResponse response = commentApplicationService.createCommentInGroup(
+        GroupCommentResponse response = groupCommentCreateFacadeService.createGroupComment(
             groupId, momentId, authentication.id(), request.content(), request.imageUrl(), request.imageName());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));

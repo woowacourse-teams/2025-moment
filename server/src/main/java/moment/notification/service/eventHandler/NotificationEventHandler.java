@@ -104,10 +104,6 @@ public class NotificationEventHandler {
         log.info("GroupCommentCreateEvent received: momentId={}, commenter={}",
             event.momentId(), event.commenterNickname());
 
-        if (event.momentOwnerId().equals(event.commenterId())) {
-            return;
-        }
-
         notificationFacadeService.notify(new NotificationCommand(
                 event.momentOwnerId(), event.momentId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,

@@ -18,9 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("NotificationEventHandler 테스트")
@@ -124,18 +122,4 @@ class NotificationEventHandlerTest {
             1L, PushNotificationMessage.REPLY_TO_MOMENT));
     }
 
-    @Test
-    @DisplayName("자기 글에 자기가 코멘트 시 알림 미발송")
-    void 자기_글_코멘트_시_알림_미발송() {
-        // Given
-        GroupCommentCreateEvent event = new GroupCommentCreateEvent(
-            1L, 2L, 3L, 4L, 3L, "닉네임"  // momentOwnerId == commenterId
-        );
-
-        // When
-        eventHandler.handleGroupCommentCreateEvent(event);
-
-        // Then
-        verify(notificationFacadeService, never()).notify(any());
-    }
 }

@@ -28,7 +28,9 @@ public class CommentCreateFacadeService {
         Moment moment = momentApplicationService.getMomentBy(request.momentId());
         CommentCreateResponse createdComment = commentApplicationService.createComment(request, userId);
 
-        publisher.publishEvent(CommentCreateEvent.of(moment));
+        if (!moment.getMomenterId().equals(userId)) {
+            publisher.publishEvent(CommentCreateEvent.of(moment, userId));
+        }
 
         return createdComment;
     }
