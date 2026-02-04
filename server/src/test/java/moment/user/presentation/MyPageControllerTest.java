@@ -10,8 +10,12 @@ import io.restassured.response.Response;
 import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
+import moment.fixture.GroupFixture;
 import moment.fixture.UserFixture;
+import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
+import moment.group.domain.Group;
+import moment.group.infrastructure.GroupRepository;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;
@@ -47,6 +51,8 @@ class MyPageControllerTest {
     private UserRepository userRepository;
     @Autowired
     private TokenManager tokenManager;
+    @Autowired
+    private GroupRepository groupRepository;
 
     @BeforeEach
     void setUp() {
@@ -248,5 +254,58 @@ class MyPageControllerTest {
                 () -> assertThat(retryBody.status()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(retryNewNicknameUser.getNickname()).isEqualTo(retryRequest.newNickname())
         );
+    }
+
+    @Test
+    void 회원탈퇴에_성공하고_쿠키가_초기화된다() {
+        // given
+        User user = userRepository.save(UserFixture.createUser());
+        String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
+
+        // when
+        Response response = RestAssured.given().log().all()
+                .cookie("accessToken", accessToken)
+                .when().delete("/api/v2/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+
+        // then
+        assertAll(
+                () -> assertThat(response.getCookie("accessToken")).isEmpty(),
+                () -> assertThat(response.getCookie("refreshToken")).isEmpty(),
+                () -> assertThat(userRepository.findById(user.getId())).isEmpty()
+        );
+    }
+
+    @Test
+    void 그룹_소유자가_회원탈퇴를_시도하면_400_에러를_반환한다() {
+        // given
+        User user = userRepository.save(UserFixture.createUser());
+        groupRepository.save(GroupFixture.createGroup(user));
+        String accessToken = tokenManager.createAccessToken(user.getId(), user.getEmail());
+
+        // when
+        ErrorResponse response = RestAssured.given().log().all()
+                .cookie("accessToken", accessToken)
+                .when().delete("/api/v2/me")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().as(ErrorResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.code()).isEqualTo("U-014"),
+                () -> assertThat(userRepository.findById(user.getId())).isPresent()
+        );
+    }
+
+    @Test
+    void 인증되지_않은_사용자가_회원탈퇴를_시도하면_401_에러를_반환한다() {
+        // when & then
+        RestAssured.given().log().all()
+                .when().delete("/api/v2/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
