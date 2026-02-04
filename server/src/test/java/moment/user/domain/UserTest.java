@@ -99,4 +99,34 @@ class UserTest {
         // when & then
         assertThat(user.checkPassword(password)).isFalse();
     }
+
+    @Test
+    void updateEmail로_이메일을_변경할_수_있다() {
+        // given
+        String newEmail = "updated@icloud.com";
+
+        // when
+        user.updateEmail(newEmail);
+
+        // then
+        assertThat(user.getEmail()).isEqualTo(newEmail);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"null", "''", "' '"}, nullValues = "null")
+    void updateEmail_빈_값인_경우_예외가_발생한다(String email) {
+        // when & then
+        assertThatThrownBy(() -> user.updateEmail(email))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("email이 null이거나 빈 값이어서는 안 됩니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"mimi", "mimi@", "mimi@.com", "mimi@com", "mimi@icloud", "mimi@icloud."})
+    void updateEmail_형식이_유효하지_않은_경우_예외가_발생한다(String email) {
+        // when & then
+        assertThatThrownBy(() -> user.updateEmail(email))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유효하지 않은 이메일 형식입니다.");
+    }
 }
