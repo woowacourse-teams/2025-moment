@@ -20,7 +20,6 @@ export interface SendCommentsResponse {
   };
 }
 
-
 export const useSendCommentsMutation = (groupId: number | string, momentId: number) => {
   const { showSuccess, showError } = useToast();
 
