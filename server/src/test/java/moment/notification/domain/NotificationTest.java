@@ -25,7 +25,7 @@ public class NotificationTest {
         Notification notification = new Notification(user, notificationType, targetType, 1L);
         // when
 
-        notification.checkNotification();
+        notification.markAsRead();
 
         // then
         assertThat(notification.isRead()).isTrue();

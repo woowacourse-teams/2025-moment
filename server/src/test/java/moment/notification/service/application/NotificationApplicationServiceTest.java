@@ -79,7 +79,7 @@ class NotificationApplicationServiceTest {
         notificationRepository.save(new Notification(user, reason, contentType, contentId2));
 
         Notification readNotification = new Notification(user, reason, contentType, readContentId);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         Notification anotherUserNotification = new Notification(anotherUser, reason, contentType, contentId1);
@@ -155,7 +155,7 @@ class NotificationApplicationServiceTest {
         notificationRepository.save(
                 new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.COMMENT, 20L));
         Notification readNotification = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, targetType, 30L);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         // when
@@ -176,7 +176,7 @@ class NotificationApplicationServiceTest {
         NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
 
         TargetType anotherType = TargetType.COMMENT;
-        NotificationType anotherReason = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType anotherReason = NotificationType.COMMENT_LIKED;
 
         long contentId = 100L;
         long readContentId = 200L;
@@ -192,7 +192,7 @@ class NotificationApplicationServiceTest {
         notificationRepository.save(anotherTargetIdNotification);
 
         Notification readNotification = new Notification(user, reason, contentType, readContentId);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         // when

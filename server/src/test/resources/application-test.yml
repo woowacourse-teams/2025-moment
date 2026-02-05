@@ -85,8 +85,9 @@ s3:
   optimized-bucket-path: test/optimized-images
   cloudfront-domain: https://test-cloudfront.example.com
 
-fcm:
-  service-account-json: ""
+expo:
+  push:
+    enabled: false
 
 admin:
   initial:

@@ -71,8 +71,7 @@ class NotificationServiceTest {
         TargetType contentType = TargetType.MOMENT;
 
         // when
-        Notification savedNotification = notificationService.saveNotificationWithNewTransaction(user, contentId, reason,
-                contentType);
+        Notification savedNotification = notificationService.save(user, contentId, reason, contentType, null);
 
         // then
         assertAll(
@@ -97,13 +96,13 @@ class NotificationServiceTest {
         TargetType anotherType = TargetType.COMMENT;
 
         NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        NotificationType anotherReason = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType anotherReason = NotificationType.COMMENT_LIKED;
 
         Notification expectedNotification1 = new Notification(user, reason, contentType, contentId);
         notificationRepository.save(expectedNotification1);
 
         Notification readNotification = new Notification(user, reason, contentType, anotherContentId1);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         Notification anotherTypeNotification = new Notification(user, anotherReason, anotherType, anotherContentId2);
@@ -138,7 +137,7 @@ class NotificationServiceTest {
         Notification savedUnreadNotification2 = notificationRepository.save(unreadNotification2);
 
         Notification readNotification = new Notification(user, reason, targetType, contentId1);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         Notification savedReadNotification = notificationRepository.save(readNotification);
 
         Notification anotherContentIdNotification = new Notification(user, reason, targetType, anotherContentId);
@@ -176,7 +175,7 @@ class NotificationServiceTest {
         notificationRepository.save(userUnreadNotification2);
 
         Notification readNotification = new Notification(user, reason, contentType, anotherContentId);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         Notification anotherUserNotification = new Notification(anotherUser, reason, contentType, contentId1);

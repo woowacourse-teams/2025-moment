@@ -1,6 +1,7 @@
 package moment.notification.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import moment.notification.domain.NotificationPayload;
 import moment.notification.domain.NotificationType;
 import moment.global.domain.TargetType;
 
@@ -26,24 +27,22 @@ public record NotificationSseResponse(
         String message,
 
         @Schema(description = "읽음 여부", example = "false")
-        boolean isRead
+        boolean isRead,
+
+        @Schema(description = "딥링크", example = "/moments/1")
+        String link
 ) {
 
-    public static NotificationSseResponse createSseResponse(
-            Long notificationId,
-            NotificationType notificationType,
-            TargetType targetType,
-            Long targetId,
-            Long groupId
-    ) {
+    public static NotificationSseResponse of(NotificationPayload payload) {
         return new NotificationSseResponse(
-                notificationId,
-                notificationType,
-                targetType,
-                targetId,
-                groupId,
-                notificationType.getMessage(),
-                false
+                payload.notificationId(),
+                payload.notificationType(),
+                payload.targetType(),
+                payload.targetId(),
+                payload.groupId(),
+                payload.message(),
+                false,
+                payload.link()
         );
     }
 }

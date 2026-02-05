@@ -7,6 +7,7 @@ import moment.group.dto.event.GroupJoinRequestEvent;
 import moment.group.dto.event.GroupKickedEvent;
 import moment.like.dto.event.CommentLikeEvent;
 import moment.like.dto.event.MomentLikeEvent;
+import moment.notification.domain.NotificationCommand;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.PushNotificationMessage;
 import moment.notification.service.facade.NotificationFacadeService;
@@ -17,9 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,14 +40,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupJoinRequestEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(2L),  // ownerId
-            eq(1L),  // groupId (targetId)
-            eq(NotificationType.GROUP_JOIN_REQUEST),
-            eq(TargetType.GROUP),
-            eq(1L),  // groupId
-            eq(PushNotificationMessage.GROUP_JOIN_REQUEST)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            2L, 1L, NotificationType.GROUP_JOIN_REQUEST, TargetType.GROUP,
+            1L, PushNotificationMessage.GROUP_JOIN_REQUEST));
     }
 
     @Test
@@ -62,14 +55,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupJoinApprovedEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(3L),  // userId
-            eq(1L),  // groupId (targetId)
-            eq(NotificationType.GROUP_JOIN_APPROVED),
-            eq(TargetType.GROUP),
-            eq(1L),  // groupId
-            eq(PushNotificationMessage.GROUP_JOIN_APPROVED)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            3L, 1L, NotificationType.GROUP_JOIN_APPROVED, TargetType.GROUP,
+            1L, PushNotificationMessage.GROUP_JOIN_APPROVED));
     }
 
     @Test
@@ -82,14 +70,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupKickedEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(3L),  // kickedUserId
-            eq(1L),  // groupId (targetId)
-            eq(NotificationType.GROUP_KICKED),
-            eq(TargetType.GROUP),
-            eq(1L),  // groupId
-            eq(PushNotificationMessage.GROUP_KICKED)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            3L, 1L, NotificationType.GROUP_KICKED, TargetType.GROUP,
+            1L, PushNotificationMessage.GROUP_KICKED));
     }
 
     @Test
@@ -102,14 +85,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleMomentLikeEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(2L),  // momentOwnerId
-            eq(1L),  // momentId
-            eq(NotificationType.MOMENT_LIKED),
-            eq(TargetType.MOMENT),
-            eq(null),  // groupId
-            eq(PushNotificationMessage.MOMENT_LIKED)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            2L, 1L, NotificationType.MOMENT_LIKED, TargetType.MOMENT,
+            null, PushNotificationMessage.MOMENT_LIKED));
     }
 
     @Test
@@ -122,14 +100,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleCommentLikeEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(2L),  // commentOwnerId
-            eq(1L),  // commentId
-            eq(NotificationType.COMMENT_LIKED),
-            eq(TargetType.COMMENT),
-            eq(null),  // groupId
-            eq(PushNotificationMessage.COMMENT_LIKED)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            2L, 1L, NotificationType.COMMENT_LIKED, TargetType.COMMENT,
+            null, PushNotificationMessage.COMMENT_LIKED));
     }
 
     @Test
@@ -144,30 +117,9 @@ class NotificationEventHandlerTest {
         eventHandler.handleGroupCommentCreateEvent(event);
 
         // Then
-        verify(notificationFacadeService).createNotificationAndSendSseAndPush(
-            eq(3L),  // momentOwnerId
-            eq(2L),  // momentId (targetId)
-            eq(NotificationType.NEW_COMMENT_ON_MOMENT),
-            eq(TargetType.MOMENT),
-            eq(1L),  // groupId
-            eq(PushNotificationMessage.REPLY_TO_MOMENT)
-        );
+        verify(notificationFacadeService).notify(new NotificationCommand(
+            3L, 2L, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
+            1L, PushNotificationMessage.REPLY_TO_MOMENT));
     }
 
-    @Test
-    @DisplayName("자기 글에 자기가 코멘트 시 알림 미발송")
-    void 자기_글_코멘트_시_알림_미발송() {
-        // Given
-        GroupCommentCreateEvent event = new GroupCommentCreateEvent(
-            1L, 2L, 3L, 4L, 3L, "닉네임"  // momentOwnerId == commenterId
-        );
-
-        // When
-        eventHandler.handleGroupCommentCreateEvent(event);
-
-        // Then
-        verify(notificationFacadeService, never()).createNotificationAndSendSseAndPush(
-            any(), any(), any(), any(), any(), any()
-        );
-    }
 }

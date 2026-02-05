@@ -57,12 +57,12 @@ class NotificationRepositoryTest {
         NotificationType reason1 = NotificationType.NEW_COMMENT_ON_MOMENT;
 
         TargetType contentType2 = TargetType.COMMENT;
-        NotificationType reason2 = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType reason2 = NotificationType.COMMENT_LIKED;
 
         Notification expectedNotification = new Notification(user, reason1, contentType1, contentId);
 
         Notification readNotification = new Notification(user, reason2, contentType2, contentId);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
 
         Notification anotherUserNotification = new Notification(anotherUser, reason1, contentType1, contentId);
 
@@ -89,15 +89,15 @@ class NotificationRepositoryTest {
         NotificationType reason1 = NotificationType.NEW_COMMENT_ON_MOMENT;
 
         TargetType contentType2 = TargetType.COMMENT;
-        NotificationType reason2 = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType reason2 = NotificationType.COMMENT_LIKED;
 
         Notification unreadNotification = new Notification(user, reason1, contentType1, contentId);
 
         Notification readNotification = new Notification(user, reason2, contentType2, contentId);
-        readNotification.checkNotification();
+        readNotification.markAsRead();
 
         Notification anotherUserNotification = new Notification(anotherUser, reason2, contentType2, contentId);
-        anotherUserNotification.checkNotification();
+        anotherUserNotification.markAsRead();
 
         notificationRepository.saveAll(
                 List.of(unreadNotification, readNotification, anotherUserNotification)
@@ -122,7 +122,7 @@ class NotificationRepositoryTest {
         TargetType anotherContentType = TargetType.COMMENT;
 
         NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        NotificationType anotherReason = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType anotherReason = NotificationType.COMMENT_LIKED;
 
         Notification expectedNotification = new Notification(user, reason, contentType, contentId);
         Notification anotherTypeNotification = new Notification(user, anotherReason, anotherContentType, contentId);
@@ -150,10 +150,10 @@ class NotificationRepositoryTest {
         NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
 
         TargetType anotherContentType = TargetType.COMMENT;
-        NotificationType anotherReason = NotificationType.NEW_REPLY_ON_COMMENT;
+        NotificationType anotherReason = NotificationType.COMMENT_LIKED;
 
         Notification expectedNotification = new Notification(user, reason, contentType, contentId);
-        expectedNotification.checkNotification();
+        expectedNotification.markAsRead();
 
         Notification anotherTypeNotification = new Notification(user, anotherReason, anotherContentType, contentId);
         Notification anotherUserNotification = new Notification(anotherUser, reason, contentType, contentId);
@@ -230,13 +230,13 @@ class NotificationRepositoryTest {
         userRepository.save(user2);
 
         Notification expectedNotification1 = new Notification(user, reason, contentType, contentId1);
-        expectedNotification1.checkNotification();
+        expectedNotification1.markAsRead();
 
         Notification expectedNotification2 = new Notification(user, reason, contentType, contentId2);
-        expectedNotification2.checkNotification();
+        expectedNotification2.markAsRead();
 
         Notification expectedNotification3 = new Notification(user2, reason, contentType, contentId1);
-        expectedNotification3.checkNotification();
+        expectedNotification3.markAsRead();
 
         Notification anotherTypeNotification = new Notification(user, reason, anotherContentType, contentId1);
 
