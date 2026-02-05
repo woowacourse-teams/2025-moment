@@ -87,7 +87,7 @@ describe('오늘의 코멘트 페이지', () => {
 
       cy.wait('@sendComment');
 
-      cy.contains('별조각', { timeout: 5000 }).should('be.visible');
+      cy.contains('코멘트 작성이 완료되었습니다!', { timeout: 5000 }).should('be.visible');
 
       cy.wait('@getMoments');
 
