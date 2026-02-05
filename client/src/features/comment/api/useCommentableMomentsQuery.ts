@@ -15,6 +15,7 @@ export const useCommentableMomentsQuery = (
     queryKey: ['commentableMoments', groupId],
     queryFn: () => getCommentableMoments(groupId),
     enabled: !!groupId && (options?.enabled ?? true),
+    staleTime: 1000 * 60,
   });
 };
 
