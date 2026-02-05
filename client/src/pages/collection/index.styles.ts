@@ -20,7 +20,7 @@ export const CollectionHeaderContainer = styled.div`
   justify-content: center;
   gap: 60px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
   min-height: 80px;
 
   @media (max-width: 768px) {

@@ -11,7 +11,7 @@ interface SendMomentsData {
 }
 
 export const useMomentsMutation = (groupId: number | string) => {
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
 
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
@@ -29,6 +29,7 @@ export const useMomentsMutation = (groupId: number | string) => {
       const has_media = Boolean(variables.imageUrl && variables.imageName);
 
       track('publish_moment', { has_media, content_length_bucket });
+      showSuccess('모멘트 작성이 완료되었습니다!');
     },
     onError: () => {
       const errorMessage = '모멘트 등록에 실패했습니다. 다시 시도해주세요.';

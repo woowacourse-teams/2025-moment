@@ -20,8 +20,6 @@ export interface SendCommentsResponse {
   };
 }
 
-const COMMENTS_REWARD_POINT = 2;
-
 export const useSendCommentsMutation = (groupId: number | string, momentId: number) => {
   const { showSuccess, showError } = useToast();
 
@@ -38,7 +36,7 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
       queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
-      showSuccess(`별조각 ${COMMENTS_REWARD_POINT} 개를 획득했습니다!`);
+      showSuccess('코멘트 작성이 완료되었습니다!');
 
       const length = variables.content?.length ?? 0;
       const length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';

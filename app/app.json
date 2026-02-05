@@ -43,6 +43,12 @@
           "backgroundColor": "#0a0a0f"
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "sounds": []
+        }
+      ],
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication"
     ],
