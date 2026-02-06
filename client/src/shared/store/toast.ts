@@ -55,13 +55,8 @@ export const toasts = {
   warning: (message: string, duration?: number) =>
     addToast({ message, variant: 'warning', duration }),
 
-  message: (
-    message: string,
-    routeType?: ToastRouteType,
-    duration?: number,
-    groupId?: number,
-    link?: string,
-  ) => addToast({ message, variant: 'message', routeType, duration, groupId, link }),
+  message: (message: string, routeType?: ToastRouteType, duration?: number, link?: string) =>
+    addToast({ message, variant: 'message', routeType, duration, link }),
 
   hide: (id: string) => removeToast(id),
   clear: () => {
