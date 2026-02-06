@@ -126,7 +126,7 @@ public class NotificationControllerTest {
         assertAll(
                 () -> assertThat(response.notificationType()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT),
                 () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT.getMessage()),
-                () -> assertThat(response.link()).isEqualTo("/moments/" + moment.getId())
+                () -> assertThat(response.link()).isNull()
         );
     }
 
