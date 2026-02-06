@@ -3,6 +3,7 @@ package moment.notification.service.eventHandler;
 import static org.mockito.Mockito.verify;
 
 import java.util.Map;
+import moment.comment.dto.CommentCreateEvent;
 import moment.comment.dto.event.GroupCommentCreateEvent;
 import moment.group.dto.event.GroupJoinApprovedEvent;
 import moment.group.dto.event.GroupJoinRequestEvent;
@@ -31,6 +32,22 @@ class NotificationEventHandlerTest {
 
     @InjectMocks
     private NotificationEventHandler eventHandler;
+
+    @Test
+    void 코멘트_생성_이벤트_시_알림을_발송한다() {
+        // given
+        CommentCreateEvent event = new CommentCreateEvent(1L, 2L, 3L);
+
+        // when
+        eventHandler.handleCommentCreateEvent(event);
+
+        // then
+        verify(notificationFacadeService).notify(new NotificationCommand(
+                2L,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 1L)),
+                PushNotificationMessage.REPLY_TO_MOMENT));
+    }
 
     @Test
     void 그룹_가입_신청_이벤트_시_알림을_발송한다() {
