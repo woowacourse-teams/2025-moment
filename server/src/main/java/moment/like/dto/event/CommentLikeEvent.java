@@ -4,5 +4,6 @@ public record CommentLikeEvent(
     Long commentId,
     Long commentOwnerId,
     Long likeMemberId,
-    String likerNickname
+    String likerNickname,
+    Long groupId
 ) {}

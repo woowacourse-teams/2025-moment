@@ -4,5 +4,6 @@ public record MomentLikeEvent(
     Long momentId,
     Long momentOwnerId,
     Long likeMemberId,
-    String likerNickname
+    String likerNickname,
+    Long groupId
 ) {}

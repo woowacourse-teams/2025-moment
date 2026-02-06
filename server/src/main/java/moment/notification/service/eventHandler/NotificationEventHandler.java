@@ -88,7 +88,7 @@ public class NotificationEventHandler {
         notificationFacadeService.notify(new NotificationCommand(
                 event.momentOwnerId(),
                 NotificationType.MOMENT_LIKED,
-                SourceData.of(Map.of("momentId", event.momentId())),
+                SourceData.of(Map.of("momentId", event.momentId(), "groupId", event.groupId())),
                 PushNotificationMessage.MOMENT_LIKED));
     }
 
@@ -101,7 +101,7 @@ public class NotificationEventHandler {
         notificationFacadeService.notify(new NotificationCommand(
                 event.commentOwnerId(),
                 NotificationType.COMMENT_LIKED,
-                SourceData.of(Map.of("commentId", event.commentId())),
+                SourceData.of(Map.of("commentId", event.commentId(), "groupId", event.groupId())),
                 PushNotificationMessage.COMMENT_LIKED));
     }
 
