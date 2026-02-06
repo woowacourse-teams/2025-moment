@@ -36,7 +36,23 @@ class NotificationEventHandlerTest {
     @Test
     void 코멘트_생성_이벤트_시_알림을_발송한다() {
         // given
-        CommentCreateEvent event = new CommentCreateEvent(1L, 2L, 3L);
+        CommentCreateEvent event = new CommentCreateEvent(1L, 2L, 3L, 10L);
+
+        // when
+        eventHandler.handleCommentCreateEvent(event);
+
+        // then
+        verify(notificationFacadeService).notify(new NotificationCommand(
+                2L,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 1L, "groupId", 10L)),
+                PushNotificationMessage.REPLY_TO_MOMENT));
+    }
+
+    @Test
+    void groupId가_없는_코멘트_생성_이벤트_시_알림을_발송한다() {
+        // given
+        CommentCreateEvent event = new CommentCreateEvent(1L, 2L, 3L, null);
 
         // when
         eventHandler.handleCommentCreateEvent(event);

@@ -14,6 +14,16 @@ import org.junit.jupiter.api.Test;
 class DeepLinkGeneratorTest {
 
     @Test
+    void groupId가_없는_모멘트_댓글_알림의_딥링크는_null이다() {
+        SourceData sourceData = SourceData.of(Map.of("momentId", 42L));
+
+        String link = DeepLinkGenerator.generate(
+            NotificationType.NEW_COMMENT_ON_MOMENT, sourceData);
+
+        assertThat(link).isNull();
+    }
+
+    @Test
     void 그룹_모멘트_댓글_알림의_딥링크를_생성한다() {
         SourceData sourceData = SourceData.of(Map.of("momentId", 42L, "groupId", 3L));
 

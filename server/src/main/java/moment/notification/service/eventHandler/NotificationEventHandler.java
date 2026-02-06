@@ -33,10 +33,14 @@ public class NotificationEventHandler {
         log.info("CommentCreateEvent received: momentId={}, momenterId={}",
             event.momentId(), event.momenterId());
 
+        SourceData sourceData = event.groupId() != null
+                ? SourceData.of(Map.of("momentId", event.momentId(), "groupId", event.groupId()))
+                : SourceData.of(Map.of("momentId", event.momentId()));
+
         notificationFacadeService.notify(new NotificationCommand(
                 event.momenterId(),
                 NotificationType.NEW_COMMENT_ON_MOMENT,
-                SourceData.of(Map.of("momentId", event.momentId())),
+                sourceData,
                 PushNotificationMessage.REPLY_TO_MOMENT));
     }
 
