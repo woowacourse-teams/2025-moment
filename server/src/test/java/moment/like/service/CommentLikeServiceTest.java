@@ -7,6 +7,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.mockito.ArgumentCaptor;
+
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.fixture.CommentFixture;
@@ -136,7 +138,12 @@ class CommentLikeServiceTest {
         likeService.toggle(comment, likerMember);
 
         // Then
-        verify(eventPublisher).publishEvent(any(CommentLikeEvent.class));
+        ArgumentCaptor<CommentLikeEvent> captor = ArgumentCaptor.forClass(CommentLikeEvent.class);
+        verify(eventPublisher).publishEvent(captor.capture());
+        CommentLikeEvent event = captor.getValue();
+        assertThat(event.commentId()).isEqualTo(1L);
+        assertThat(event.commentOwnerId()).isEqualTo(1L);
+        assertThat(event.groupId()).isEqualTo(1L);
     }
 
     @Test

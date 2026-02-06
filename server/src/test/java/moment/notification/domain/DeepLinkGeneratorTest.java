@@ -14,13 +14,13 @@ import org.junit.jupiter.api.Test;
 class DeepLinkGeneratorTest {
 
     @Test
-    void 개인_모멘트_댓글_알림의_딥링크를_생성한다() {
+    void groupId가_없는_모멘트_댓글_알림의_딥링크는_null이다() {
         SourceData sourceData = SourceData.of(Map.of("momentId", 42L));
 
         String link = DeepLinkGenerator.generate(
             NotificationType.NEW_COMMENT_ON_MOMENT, sourceData);
 
-        assertThat(link).isEqualTo("/moments/42");
+        assertThat(link).isNull();
     }
 
     @Test
@@ -30,7 +30,7 @@ class DeepLinkGeneratorTest {
         String link = DeepLinkGenerator.generate(
             NotificationType.NEW_COMMENT_ON_MOMENT, sourceData);
 
-        assertThat(link).isEqualTo("/groups/3/moments/42");
+        assertThat(link).isEqualTo("/groups/3/collection/my-moment");
     }
 
     @Test
@@ -40,7 +40,7 @@ class DeepLinkGeneratorTest {
         String link = DeepLinkGenerator.generate(
             NotificationType.GROUP_JOIN_REQUEST, sourceData);
 
-        assertThat(link).isEqualTo("/groups/3");
+        assertThat(link).isEqualTo("/groups/3/today-moment");
     }
 
     @Test
@@ -50,7 +50,7 @@ class DeepLinkGeneratorTest {
         String link = DeepLinkGenerator.generate(
             NotificationType.GROUP_JOIN_APPROVED, sourceData);
 
-        assertThat(link).isEqualTo("/groups/3");
+        assertThat(link).isEqualTo("/groups/3/today-moment");
     }
 
     @Test
@@ -65,21 +65,21 @@ class DeepLinkGeneratorTest {
 
     @Test
     void 모멘트_좋아요_알림의_딥링크를_생성한다() {
-        SourceData sourceData = SourceData.of(Map.of("momentId", 42L));
+        SourceData sourceData = SourceData.of(Map.of("momentId", 42L, "groupId", 3L));
 
         String link = DeepLinkGenerator.generate(
             NotificationType.MOMENT_LIKED, sourceData);
 
-        assertThat(link).isEqualTo("/moments/42");
+        assertThat(link).isEqualTo("/groups/3/collection/my-moment");
     }
 
     @Test
     void 코멘트_좋아요_알림의_딥링크를_생성한다() {
-        SourceData sourceData = SourceData.of(Map.of("commentId", 15L));
+        SourceData sourceData = SourceData.of(Map.of("commentId", 15L, "groupId", 3L));
 
         String link = DeepLinkGenerator.generate(
             NotificationType.COMMENT_LIKED, sourceData);
 
-        assertThat(link).isEqualTo("/comments/15");
+        assertThat(link).isEqualTo("/groups/3/collection/my-comment");
     }
 }

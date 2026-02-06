@@ -43,7 +43,8 @@ public class MomentLikeService {
                 moment.getId(),
                 moment.getMomenter().getId(),
                 member.getId(),
-                member.getNickname()
+                member.getNickname(),
+                moment.getGroup().getId()
             ));
         }
 

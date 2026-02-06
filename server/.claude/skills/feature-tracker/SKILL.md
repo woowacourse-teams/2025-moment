@@ -19,7 +19,7 @@ description: |
 
 # Feature Registry Tracker
 
-Feature Registry 문서(`.claude/docs/features/`)를 실제 코드 상태에 맞게 최신화하는 skill입니다.
+Feature Registry 문서(`docs/features/`)를 실제 코드 상태에 맞게 최신화하는 skill입니다.
 
 ## 실행 워크플로우
 
@@ -43,21 +43,22 @@ git diff --name-only main...HEAD
 ```
 
 변경된 파일들에서 다음을 추출합니다:
+
 - **영향받는 도메인**: `src/main/java/moment/{domain}/` 경로에서 도메인 식별
 - **변경 유형**: 새 파일 추가(A), 수정(M), 삭제(D)
 - **레이어**: domain, infrastructure, service, presentation, dto 중 어디에 해당하는지
 
 #### 1-2. 변경 유형 분류
 
-| 변경 유형 | 업데이트 대상 | 예시 |
-|-----------|-------------|------|
-| 새 기능 추가 | `{domain}.md` + `FEATURES.md` | 새 API 엔드포인트, 새 서비스 |
-| 기존 기능 수정 | `{domain}.md` + `FEATURES.md` Recent Changes | 비즈니스 로직 변경, API 수정 |
-| 새 도메인 모듈 | `{domain}.md` 신규 + `FEATURES.md` Quick Reference | 새 패키지 추가 |
-| 도메인 이벤트 추가 | `{domain}.md` Events + `FEATURES.md` Cross-Domain | 새 Event record |
-| 테스트 추가 | `{domain}.md` 테스트 섹션 | 새 테스트 클래스 |
-| DB 마이그레이션 추가 | `{domain}.md` 마이그레이션 섹션 | 새 Flyway SQL |
-| 리팩토링 | `{domain}.md` Key Classes | 클래스명 변경, 레이어 이동 |
+| 변경 유형        | 업데이트 대상                                           | 예시                 |
+|--------------|---------------------------------------------------|--------------------|
+| 새 기능 추가      | `{domain}.md` + `FEATURES.md`                     | 새 API 엔드포인트, 새 서비스 |
+| 기존 기능 수정     | `{domain}.md` + `FEATURES.md` Recent Changes      | 비즈니스 로직 변경, API 수정 |
+| 새 도메인 모듈     | `{domain}.md` 신규 + `FEATURES.md` Quick Reference  | 새 패키지 추가           |
+| 도메인 이벤트 추가   | `{domain}.md` Events + `FEATURES.md` Cross-Domain | 새 Event record     |
+| 테스트 추가       | `{domain}.md` 테스트 섹션                              | 새 테스트 클래스          |
+| DB 마이그레이션 추가 | `{domain}.md` 마이그레이션 섹션                           | 새 Flyway SQL       |
+| 리팩토링         | `{domain}.md` Key Classes                         | 클래스명 변경, 레이어 이동    |
 
 ---
 
@@ -124,6 +125,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 #### 3-1. 새 기능 추가 시
 
 다음 Feature ID를 결정합니다:
+
 - 해당 도메인 문서에서 마지막 Feature ID 확인
 - `{PREFIX}-{NNN+1}` 형태로 새 ID 부여
 
@@ -150,6 +152,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 #### 3-2. 기존 기능 수정 시
 
 해당 Feature 항목의 변경된 필드만 업데이트합니다:
+
 - API 경로 변경 → **API** 필드 수정
 - 새 클래스 추가 → **Key Classes** 필드 수정
 - 비즈니스 규칙 변경 → **Business Rules** 수정
@@ -168,6 +171,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 ```
 
 상태 값:
+
 - `✅ 활성`: 발행 + 구독 모두 정상
 - `⚠️ dead code`: record만 존재, 사용되지 않음
 - `⚠️ 미발행`: handler 존재하지만 발행 코드 없음
@@ -243,6 +247,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 ```
 
 비고 값:
+
 - `✅ 활성`: publishEvent() 호출 + @TransactionalEventListener 핸들러 모두 존재
 - `⚠️ 미사용 dead code`: Event record만 존재
 - `⚠️ handler만 존재, 미발행`: 핸들러는 있지만 publishEvent() 없음
@@ -256,6 +261,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 ```
 
 규칙:
+
 - 최대 20건만 유지 (21건 이상이면 가장 오래된 항목 삭제)
 - 여러 Feature가 함께 변경된 경우 `{ID1}, {ID2}` 형태로 기재
 - 변경 내용은 간결하게 (한 줄)
@@ -268,7 +274,7 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 
 #### 5-1. 새 도메인 파일 생성
 
-`.claude/docs/features/{domain}.md` 파일을 아래 템플릿으로 생성:
+`docs/features/{domain}.md` 파일을 아래 템플릿으로 생성:
 
 ```markdown
 # {Domain} Domain (PREFIX: {PREFIX})
@@ -343,28 +349,28 @@ grep -n "\"[A-Z]*-[0-9]*\"" src/main/java/moment/global/exception/ErrorCode.java
 
 ## Feature ID 프리픽스 참조
 
-| PREFIX | 도메인 |
-|--------|--------|
-| AUTH | auth |
-| USER | user |
-| MOM | moment |
-| CMT | comment |
-| GRP | group |
-| LIK | like |
-| NTF | notification |
-| RPT | report |
-| STG | storage |
-| ADM | admin |
-| GLB | global |
+| PREFIX | 도메인          |
+|--------|--------------|
+| AUTH   | auth         |
+| USER   | user         |
+| MOM    | moment       |
+| CMT    | comment      |
+| GRP    | group        |
+| LIK    | like         |
+| NTF    | notification |
+| RPT    | report       |
+| STG    | storage      |
+| ADM    | admin        |
+| GLB    | global       |
 
 ## Status 값 참조
 
-| Status | 의미 |
-|--------|------|
-| `DONE` | 테스트 포함 완전 구현 |
-| `IN_PROGRESS` | 현재 구현 중 |
-| `PLANNED` | 설계만 완료 |
-| `DEPRECATED` | 제거 예정 |
+| Status        | 의미           |
+|---------------|--------------|
+| `DONE`        | 테스트 포함 완전 구현 |
+| `IN_PROGRESS` | 현재 구현 중      |
+| `PLANNED`     | 설계만 완료       |
+| `DEPRECATED`  | 제거 예정        |
 
 ## 주의사항
 
