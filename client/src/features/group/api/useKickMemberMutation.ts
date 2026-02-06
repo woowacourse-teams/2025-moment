@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
@@ -13,8 +14,7 @@ export const useKickMemberMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      const numericGroupId = Number(groupId);
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'members'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.members(Number(groupId)) });
       showSuccess('멤버가 강퇴되었습니다.');
     },
     onError: () => {

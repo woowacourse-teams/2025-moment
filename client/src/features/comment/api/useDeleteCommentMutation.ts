@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteCommentMutation = (groupId: number | string) => {
@@ -10,7 +11,7 @@ export const useDeleteCommentMutation = (groupId: number | string) => {
     mutationFn: (commentId: number) => deleteComment(groupId, commentId),
     onSuccess: () => {
       const numericGroupId = Number(groupId);
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.comments(numericGroupId) });
       showSuccess('코멘트가 삭제되었습니다.');
     },
     onError: () => {

@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
 
@@ -17,12 +18,12 @@ export const useMomentsMutation = (groupId: number | string) => {
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
     onSuccess: (_data, variables) => {
       const numericGroupId = Number(groupId);
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
-      queryClient.invalidateQueries({ queryKey: ['momentWritingStatus'] });
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
-      queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.moments(numericGroupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.myMoments(numericGroupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.momentWritingStatus });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
+      queryClient.invalidateQueries({ queryKey: queryKeys.my.profile });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rewardHistory });
 
       const length = variables.content?.length ?? 0;
       const content_length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';

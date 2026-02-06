@@ -1,6 +1,7 @@
 import { useComplaintMutation } from '../api/useComplaintMutation';
 import { ComplaintFormData } from '../types/complaintType';
 import { queryClient } from '@/app/lib/queryClient';
+import { queryKeys } from '@/shared/lib/queryKeys';
 
 export const useSendComplaint = (onComplete?: () => void) => {
   const { mutate: sendComplaint, isPending, error, isError } = useComplaintMutation();
@@ -10,7 +11,7 @@ export const useSendComplaint = (onComplete?: () => void) => {
       onSuccess: () => {
         if (data.targetType === 'MOMENT') {
           queryClient.invalidateQueries({
-            queryKey: ['commentableMoments'],
+            queryKey: queryKeys.commentableMoments.all,
           });
         } else {
           queryClient.invalidateQueries({ queryKey: ['comments'] });

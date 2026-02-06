@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
 
@@ -28,14 +29,14 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
     onSuccess: (_data, variables) => {
       const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({
-        queryKey: ['group', numericGroupId, 'moment', momentId, 'comments'],
+        queryKey: queryKeys.group.momentComments(numericGroupId, momentId),
       });
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['commentableMoments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      queryClient.invalidateQueries({ queryKey: ['my', 'profile'] });
-      queryClient.invalidateQueries({ queryKey: ['rewardHistory'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.moments(numericGroupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.commentableMoments.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.comments(numericGroupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
+      queryClient.invalidateQueries({ queryKey: queryKeys.my.profile });
+      queryClient.invalidateQueries({ queryKey: queryKeys.rewardHistory });
       showSuccess('코멘트 작성이 완료되었습니다!');
 
       const length = variables.content?.length ?? 0;

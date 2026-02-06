@@ -1,5 +1,6 @@
 import { api } from '@/app/lib/api';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useReadAllNotificationsMutation = (groupId?: number | string) => {
@@ -9,12 +10,12 @@ export const useReadAllNotificationsMutation = (groupId?: number | string) => {
   return useMutation({
     mutationFn: patchReadAllNotifications,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
       if (groupId) {
         const numericGroupId = Number(groupId);
-        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'comments'] });
-        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
-        queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.group.comments(numericGroupId) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.group.moments(numericGroupId) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.group.myMoments(numericGroupId) });
       }
     },
     onError: error => {

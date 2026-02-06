@@ -2,6 +2,7 @@ import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { getProfile } from '@/features/auth/api/useProfileQuery';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router';
@@ -14,8 +15,8 @@ export const useAppleLoginMutation = () => {
   return useMutation({
     mutationFn: appleLogin,
     onSuccess: async () => {
-      queryClient.setQueryData(['checkIfLoggedIn'], true);
-      await queryClient.prefetchQuery({ queryKey: ['profile'], queryFn: getProfile });
+      queryClient.setQueryData(queryKeys.auth.checkLogin, true);
+      await queryClient.prefetchQuery({ queryKey: queryKeys.auth.profile, queryFn: getProfile });
 
       showSuccess('Apple 로그인에 성공했습니다!');
       navigate('/');

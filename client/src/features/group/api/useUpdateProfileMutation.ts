@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { UpdateProfileRequest, GroupActionResponse } from '../types/group';
 
@@ -13,7 +14,7 @@ export const useUpdateProfileMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'members'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.members(Number(groupId)) });
       showSuccess('프로필이 수정되었습니다!');
     },
     onError: () => {
