@@ -12,13 +12,11 @@ import static org.mockito.BDDMockito.then;
 import io.restassured.RestAssured;
 import java.util.List;
 import moment.auth.application.TokenManager;
-import moment.comment.domain.Comment;
 import moment.comment.dto.request.CommentCreateRequest;
-import moment.comment.infrastructure.CommentRepository;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
-import moment.global.domain.TargetType;
+
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.notification.domain.Notification;
@@ -60,9 +58,6 @@ public class NotificationControllerTest {
 
     @Autowired
     private MomentRepository momentRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -130,10 +125,8 @@ public class NotificationControllerTest {
 
         assertAll(
                 () -> assertThat(response.notificationType()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT),
-                () -> assertThat(response.targetType()).isEqualTo(TargetType.MOMENT),
-                () -> assertThat(response.targetId()).isEqualTo(moment.getId()),
                 () -> assertThat(response.message()).isEqualTo(NotificationType.NEW_COMMENT_ON_MOMENT.getMessage()),
-                () -> assertThat(response.isRead()).isFalse()
+                () -> assertThat(response.link()).isEqualTo("/moments/" + moment.getId())
         );
     }
 
@@ -243,11 +236,11 @@ public class NotificationControllerTest {
                 .statusCode(201);
 
         await().atMost(2, SECONDS).until(() ->
-                notificationRepository.findAllByUserIdAndIsReadAndTargetType(
-                        momenter.getId(), false, TargetType.MOMENT).size() == 2);
+                notificationRepository.findAllByUserIdAndIsRead(
+                        momenter.getId(), false).size() == 2);
 
-        List<Long> unReadNotificationsIds = notificationRepository.findAllByUserIdAndIsReadAndTargetType(
-                momenter.getId(), false, TargetType.MOMENT);
+        List<Long> unReadNotificationsIds = notificationRepository.findAllByUserIdAndIsRead(
+                momenter.getId(), false).stream().map(Notification::getId).toList();
 
         NotificationReadRequest notificationReadRequest = new NotificationReadRequest(unReadNotificationsIds);
 

@@ -1,6 +1,6 @@
 # Notification Domain (PREFIX: NTF)
 
-> Last Updated: 2026-02-04
+> Last Updated: 2026-02-06
 > Features: 6
 
 ## 기능 목록
@@ -77,9 +77,12 @@
 
 ## 핵심 아키텍처
 
-- `NotificationFacadeService`: SSE + Push + DB 조율 (메인 진입점)
+- `NotificationFacadeService`: DeepLinkGenerator로 딥링크 생성 → 알림 저장 → SSE 전송 → Push 전송 (메인 진입점)
 - `NotificationEventHandler`: 7개 이벤트 handler (6개 활성, 1개 미발행) - 모든 알림의 트리거
 - `@Async` + `@TransactionalEventListener(AFTER_COMMIT)` 패턴
+- `SourceData`: JSON 기반 알림 원본 데이터 값 객체 (NotificationPayload 대체)
+- `DeepLinkGenerator`: NotificationType + SourceData 기반 클라이언트 딥링크 생성 (순수 도메인 로직)
+- `SourceDataConverter`: JPA @Converter로 SourceData ↔ JSON 자동 변환
 
 ### 이벤트 구독 (NotificationEventHandler)
 
@@ -97,18 +100,20 @@
 
 ## 관련 엔티티
 
-- `Notification` (@Entity: "notifications") - NotificationType, TargetType enums
+- `Notification` (@Entity: "notifications") - NotificationType enum, SourceData(JSON), link(VARCHAR 512)
 - `PushNotification` (@Entity: "push_notifications")
 
-## 관련 테스트 클래스 (15개)
+## 관련 테스트 클래스 (20개)
 
-- Domain: `NotificationTest`, `NotificationTypeTest`
-- Infrastructure: `EmittersTest`, `FcmPushNotificationSenderTest`, `NotificationRepositoryTest`, `PushNotificationRepositoryTest`
+- Domain: `NotificationTest`, `NotificationTypeTest`, `DeepLinkGeneratorTest`, `SourceDataTest`, `PushNotificationMessageTest`
+- Infrastructure: `EmittersTest`, `ExpoPushNotificationSenderTest`, `NotificationRepositoryTest`, `PushNotificationRepositoryTest`, `SourceDataConverterTest`
 - Service: `NotificationApplicationServiceTest`, `NotificationEventHandlerTest`, `NotificationFacadeServiceTest`, `NotificationServiceTest`, `PushNotificationServiceTest`, `SseNotificationServiceTest`
-- DTO: `NotificationResponseTest`
+- DTO: `NotificationResponseTest`, `NotificationSseResponseTest`
 - E2E: `NotificationControllerTest`, `PushNotificationControllerTest`
 
 ## DB 마이그레이션
 
 - V22: `V22__create_pushNotification__mysql.sql`
 - V33: `V33__alter_notifications_for_groups.sql`
+- V36: `V36__alter_notifications_remove_legacy_add_source_and_link.sql` - target_type, target_id, group_id 컬럼 삭제 → source_data(JSON), link(VARCHAR 512) 추가
+- V37: `V37__add_notification_indexes.sql` - (user_id, is_read, notification_type) 복합 인덱스 추가

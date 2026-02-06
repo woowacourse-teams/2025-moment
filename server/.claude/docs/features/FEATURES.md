@@ -1,6 +1,6 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-04
+> Last Updated: 2026-02-06
 
 ## Quick Reference
 
@@ -50,6 +50,7 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-06 | notification | NTF-001~006 | 딥링크 리팩토링: NotificationPayload 제거, SourceData(JSON)+DeepLinkGenerator 도입, userId 필터 추가, 복합 인덱스 V37 추가 |
 | 2026-02-04 | user | USER-008 | 회원 탈퇴 API 구현 (DELETE /api/v2/me), UserWithdrawService 추가 |
 | 2026-02-04 | moment, comment, like | - | 탈퇴 사용자 콘텐츠 표시 처리 (LEFT JOIN FETCH, null-safe 닉네임 표시, 좋아요 이벤트 null 체크) |
 | 2026-02-04 | auth, user | AUTH-004, AUTH-012 | Apple 로그인 실제 이메일 사용, 레거시 이메일 마이그레이션, User.updateEmail() 추가 |
