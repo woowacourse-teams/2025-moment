@@ -9,11 +9,18 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 import moment.config.TestTags;
+import moment.fixture.GroupFixture;
 import moment.fixture.UserFixture;
 import moment.global.domain.BaseEntity;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
+import moment.group.domain.MemberRole;
+import moment.group.domain.MemberStatus;
+import moment.group.infrastructure.GroupMemberRepository;
+import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.MomentCreatedAtHelper;
@@ -50,6 +57,12 @@ class MomentServiceTest {
 
     @Autowired
     MomentCreatedAtHelper momentCreatedAtHelper;
+
+    @Autowired
+    GroupRepository groupRepository;
+
+    @Autowired
+    GroupMemberRepository groupMemberRepository;
 
     private User momenter;
 
@@ -234,6 +247,73 @@ class MomentServiceTest {
                 () -> assertThat(commentableMoments).hasSize(2),
                 () -> assertThat(commentableMoments).containsExactlyInAnyOrder(newMoment1, newMoment2)
         );
+    }
+
+    @Test
+    void 그룹_내_댓글_달_수_있는_모멘트ID_목록을_조회한다() {
+        // given
+        User groupOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
+
+        Group group = groupRepository.save(GroupFixture.createGroup(groupOwner));
+        GroupMember ownerMember = groupMemberRepository.save(
+                new GroupMember(group, groupOwner, "그룹장", MemberRole.OWNER, MemberStatus.APPROVED));
+        groupMemberRepository.save(
+                new GroupMember(group, commenter, "멤버", MemberRole.MEMBER, MemberStatus.APPROVED));
+
+        Moment moment1 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트1"));
+        Moment moment2 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트2"));
+
+        // when
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, List.of());
+
+        // then
+        assertThat(result).containsExactlyInAnyOrder(moment1.getId(), moment2.getId());
+    }
+
+    @Test
+    void 신고한_모멘트를_제외하고_그룹_내_댓글_달_수_있는_모멘트ID_목록을_조회한다() {
+        // given
+        User groupOwner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
+
+        Group group = groupRepository.save(GroupFixture.createGroup(groupOwner));
+        GroupMember ownerMember = groupMemberRepository.save(
+                new GroupMember(group, groupOwner, "그룹장", MemberRole.OWNER, MemberStatus.APPROVED));
+        groupMemberRepository.save(
+                new GroupMember(group, commenter, "멤버", MemberRole.MEMBER, MemberStatus.APPROVED));
+
+        Moment moment1 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트1"));
+        Moment moment2 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트2"));
+        Moment moment3 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트3"));
+
+        List<Long> reportedMomentIds = List.of(moment1.getId(), moment3.getId());
+
+        // when
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, reportedMomentIds);
+
+        // then
+        assertThat(result).containsExactly(moment2.getId());
+    }
+
+    @Test
+    void 그룹_내_댓글_달_수_있는_모멘트가_없으면_빈_목록을_반환한다() {
+        // given
+        User groupOwner = userRepository.save(UserFixture.createUser());
+
+        Group group = groupRepository.save(GroupFixture.createGroup(groupOwner));
+        groupMemberRepository.save(
+                new GroupMember(group, groupOwner, "그룹장", MemberRole.OWNER, MemberStatus.APPROVED));
+
+        // 그룹장 본인의 모멘트만 있으므로 본인은 댓글 달 수 없음
+        GroupMember ownerMember = groupMemberRepository.findAll().get(0);
+        momentRepository.save(new Moment(groupOwner, group, ownerMember, "내 모멘트"));
+
+        // when
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), groupOwner, List.of());
+
+        // then
+        assertThat(result).isEmpty();
     }
 
     @Test

@@ -22,6 +22,7 @@ public class ExpoPushNotificationSender implements PushNotificationSender {
     public void send(PushNotificationCommand command) {
         Long userId = command.user().getId();
         PushNotificationMessage message = command.message();
+        String link = command.link();
 
         List<String> deviceTokens = pushNotificationRepository.findByUserId(userId)
                 .stream()
@@ -33,8 +34,12 @@ public class ExpoPushNotificationSender implements PushNotificationSender {
             return;
         }
 
+        Map<String, Object> data = (link != null)
+                ? Map.of("link", link)
+                : Map.of();
+
         List<ExpoPushMessage> messages = deviceTokens.stream()
-                .map(token -> ExpoPushMessage.of(token, message, Map.of()))
+                .map(token -> ExpoPushMessage.of(token, message, data))
                 .toList();
 
         try {

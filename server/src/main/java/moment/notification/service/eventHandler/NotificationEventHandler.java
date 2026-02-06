@@ -1,10 +1,10 @@
 package moment.notification.service.eventHandler;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moment.comment.dto.CommentCreateEvent;
 import moment.comment.dto.event.GroupCommentCreateEvent;
-import moment.global.domain.TargetType;
 import moment.group.dto.event.GroupJoinApprovedEvent;
 import moment.group.dto.event.GroupJoinRequestEvent;
 import moment.group.dto.event.GroupKickedEvent;
@@ -13,6 +13,7 @@ import moment.like.dto.event.MomentLikeEvent;
 import moment.notification.domain.NotificationCommand;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.PushNotificationMessage;
+import moment.notification.domain.SourceData;
 import moment.notification.service.facade.NotificationFacadeService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,10 +33,15 @@ public class NotificationEventHandler {
         log.info("CommentCreateEvent received: momentId={}, momenterId={}",
             event.momentId(), event.momenterId());
 
+        SourceData sourceData = event.groupId() != null
+                ? SourceData.of(Map.of("momentId", event.momentId(), "groupId", event.groupId()))
+                : SourceData.of(Map.of("momentId", event.momentId()));
+
         notificationFacadeService.notify(new NotificationCommand(
-                event.momenterId(), event.momentId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                null, PushNotificationMessage.REPLY_TO_MOMENT));
+                event.momenterId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                sourceData,
+                PushNotificationMessage.REPLY_TO_MOMENT));
     }
 
     @Async
@@ -45,9 +51,10 @@ public class NotificationEventHandler {
             event.groupId(), event.nickname());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.ownerId(), event.groupId(),
-                NotificationType.GROUP_JOIN_REQUEST, TargetType.GROUP,
-                event.groupId(), PushNotificationMessage.GROUP_JOIN_REQUEST));
+                event.ownerId(),
+                NotificationType.GROUP_JOIN_REQUEST,
+                SourceData.of(Map.of("groupId", event.groupId())),
+                PushNotificationMessage.GROUP_JOIN_REQUEST));
     }
 
     @Async
@@ -57,9 +64,10 @@ public class NotificationEventHandler {
             event.groupId(), event.memberId());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.userId(), event.groupId(),
-                NotificationType.GROUP_JOIN_APPROVED, TargetType.GROUP,
-                event.groupId(), PushNotificationMessage.GROUP_JOIN_APPROVED));
+                event.userId(),
+                NotificationType.GROUP_JOIN_APPROVED,
+                SourceData.of(Map.of("groupId", event.groupId())),
+                PushNotificationMessage.GROUP_JOIN_APPROVED));
     }
 
     @Async
@@ -69,9 +77,10 @@ public class NotificationEventHandler {
             event.groupId(), event.kickedUserId());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.kickedUserId(), event.groupId(),
-                NotificationType.GROUP_KICKED, TargetType.GROUP,
-                event.groupId(), PushNotificationMessage.GROUP_KICKED));
+                event.kickedUserId(),
+                NotificationType.GROUP_KICKED,
+                SourceData.of(Map.of("groupId", event.groupId())),
+                PushNotificationMessage.GROUP_KICKED));
     }
 
     @Async
@@ -81,9 +90,10 @@ public class NotificationEventHandler {
             event.momentId(), event.likerNickname());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.momentOwnerId(), event.momentId(),
-                NotificationType.MOMENT_LIKED, TargetType.MOMENT,
-                null, PushNotificationMessage.MOMENT_LIKED));
+                event.momentOwnerId(),
+                NotificationType.MOMENT_LIKED,
+                SourceData.of(Map.of("momentId", event.momentId(), "groupId", event.groupId())),
+                PushNotificationMessage.MOMENT_LIKED));
     }
 
     @Async
@@ -93,9 +103,10 @@ public class NotificationEventHandler {
             event.commentId(), event.likerNickname());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.commentOwnerId(), event.commentId(),
-                NotificationType.COMMENT_LIKED, TargetType.COMMENT,
-                null, PushNotificationMessage.COMMENT_LIKED));
+                event.commentOwnerId(),
+                NotificationType.COMMENT_LIKED,
+                SourceData.of(Map.of("commentId", event.commentId(), "groupId", event.groupId())),
+                PushNotificationMessage.COMMENT_LIKED));
     }
 
     @Async
@@ -105,8 +116,11 @@ public class NotificationEventHandler {
             event.momentId(), event.commenterNickname());
 
         notificationFacadeService.notify(new NotificationCommand(
-                event.momentOwnerId(), event.momentId(),
-                NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT,
-                event.groupId(), PushNotificationMessage.REPLY_TO_MOMENT));
+                event.momentOwnerId(),
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of(
+                        "momentId", event.momentId(),
+                        "groupId", event.groupId())),
+                PushNotificationMessage.REPLY_TO_MOMENT));
     }
 }

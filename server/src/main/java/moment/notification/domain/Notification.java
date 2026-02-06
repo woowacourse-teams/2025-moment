@@ -1,6 +1,7 @@
 package moment.notification.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import moment.global.domain.BaseEntity;
-import moment.global.domain.TargetType;
+import moment.notification.infrastructure.SourceDataConverter;
 import moment.user.domain.User;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -43,39 +44,25 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
-    @Enumerated(EnumType.STRING)
-    private TargetType targetType;
+    @Column(name = "source_data", columnDefinition = "JSON")
+    @Convert(converter = SourceDataConverter.class)
+    private SourceData sourceData;
 
-    private Long targetId;
+    @Column(name = "link", length = 512)
+    private String link;
 
     private boolean isRead;
-
-    @Column(name = "group_id")
-    private Long groupId;
 
     private LocalDateTime deletedAt;
 
     public Notification(User user,
                         NotificationType notificationType,
-                        TargetType targetType,
-                        Long targetId) {
+                        SourceData sourceData,
+                        String link) {
         this.user = user;
         this.notificationType = notificationType;
-        this.targetType = targetType;
-        this.targetId = targetId;
-        this.isRead = false;
-    }
-
-    public Notification(User user,
-                        NotificationType notificationType,
-                        TargetType targetType,
-                        Long targetId,
-                        Long groupId) {
-        this.user = user;
-        this.notificationType = notificationType;
-        this.targetType = targetType;
-        this.targetId = targetId;
-        this.groupId = groupId;
+        this.sourceData = sourceData;
+        this.link = link;
         this.isRead = false;
     }
 

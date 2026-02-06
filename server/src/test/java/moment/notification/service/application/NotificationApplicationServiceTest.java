@@ -8,9 +8,9 @@ import java.util.Map;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
-import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
+import moment.notification.domain.SourceData;
 import moment.notification.dto.request.NotificationReadRequest;
 import moment.notification.dto.response.NotificationResponse;
 import moment.notification.infrastructure.NotificationRepository;
@@ -68,26 +68,26 @@ class NotificationApplicationServiceTest {
     @Test
     void 사용자의_알림_목록을_조회한다() {
         // given
-        boolean unReadFlag = false;
-        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        TargetType contentType = TargetType.MOMENT;
-        long contentId1 = 1L;
-        long contentId2 = 2L;
-        long readContentId = 3L;
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 1L)), "/moments/1"));
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 2L)), "/moments/2"));
 
-        notificationRepository.save(new Notification(user, reason, contentType, contentId1));
-        notificationRepository.save(new Notification(user, reason, contentType, contentId2));
-
-        Notification readNotification = new Notification(user, reason, contentType, readContentId);
+        Notification readNotification = new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 3L)), "/moments/3");
         readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
-        Notification anotherUserNotification = new Notification(anotherUser, reason, contentType, contentId1);
-        notificationRepository.save(anotherUserNotification);
+        notificationRepository.save(new Notification(anotherUser,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 1L)), "/moments/1"));
 
         // when
-        List<NotificationResponse> responses = notificationApplicationService.getNotificationBy(user.getId(),
-                unReadFlag);
+        List<NotificationResponse> responses = notificationApplicationService.getNotificationBy(
+                user.getId(), false);
 
         // then
         assertThat(responses).hasSize(2);
@@ -97,7 +97,8 @@ class NotificationApplicationServiceTest {
     void 알림을_읽음_처리한다() {
         // given
         Notification notification = notificationRepository.save(
-                new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.MOMENT, 1L));
+                new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT,
+                        SourceData.of(Map.of("momentId", 1L)), "/moments/1"));
 
         // when
         notificationApplicationService.markAsRead(notification.getId());
@@ -110,15 +111,12 @@ class NotificationApplicationServiceTest {
     @Test
     void 여러_알림을_한번에_읽음_처리한다() {
         // given
-        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        TargetType contentType = TargetType.MOMENT;
-        long contentId1 = 1L;
-        long contentId2 = 2L;
-
         Notification notification1 = notificationRepository.save(
-                new Notification(user, reason, contentType, contentId1));
+                new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT,
+                        SourceData.of(Map.of("momentId", 1L)), "/moments/1"));
         Notification notification2 = notificationRepository.save(
-                new Notification(user, reason, contentType, contentId2));
+                new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT,
+                        SourceData.of(Map.of("momentId", 2L)), "/moments/2"));
 
         List<Long> notificationIds = List.of(notification1.getId(), notification2.getId());
         NotificationReadRequest request = new NotificationReadRequest(notificationIds);
@@ -133,71 +131,82 @@ class NotificationApplicationServiceTest {
 
     @Test
     void 알림을_생성한다() {
-        boolean unreadFlag = false;
+        // given
         Long userId = user.getId();
-        Long contentId = 10L;
-        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        TargetType contentType = TargetType.MOMENT;
+        NotificationType notificationType = NotificationType.NEW_COMMENT_ON_MOMENT;
+        SourceData sourceData = SourceData.of(Map.of("momentId", 10L));
+        String link = "/moments/10";
 
         // when
-        notificationApplicationService.createNotification(userId, contentId, reason, contentType, null);
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
+        notificationApplicationService.createNotification(userId, notificationType, sourceData, link);
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, false);
 
         // then
         assertThat(notifications).hasSize(1);
     }
 
     @Test
-    void 읽지_않은_알림의_타겟_ID_목록을_조회한다() {
+    void 읽지_않은_모멘트_ID_목록을_조회한다() {
         // given
-        TargetType targetType = TargetType.MOMENT;
-        notificationRepository.save(new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, targetType, 10L));
-        notificationRepository.save(
-                new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, TargetType.COMMENT, 20L));
-        Notification readNotification = new Notification(user, NotificationType.NEW_COMMENT_ON_MOMENT, targetType, 30L);
-        readNotification.markAsRead();
-        notificationRepository.save(readNotification);
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 10L)), "/moments/10"));
+        notificationRepository.save(new Notification(user,
+                NotificationType.MOMENT_LIKED,
+                SourceData.of(Map.of("momentId", 20L)), "/moments/20"));
+        notificationRepository.save(new Notification(user,
+                NotificationType.COMMENT_LIKED,
+                SourceData.of(Map.of("commentId", 30L)), "/comments/30"));
 
         // when
-        List<Long> result = notificationApplicationService.getUnreadNotifications(user.getId(), targetType);
+        List<Long> result = notificationApplicationService.getUnreadMomentIds(user.getId());
 
         // then
-        assertAll(
-                () -> assertThat(result).hasSize(1),
-                () -> assertThat(result.get(0)).isEqualTo(10L)
-        );
+        assertThat(result).containsExactlyInAnyOrder(10L, 20L);
     }
 
     @Test
-    void 타겟_ID와_Type으로_읽지_않은_알림을_조회하고_맵으로_반환한다() {
+    void 읽지_않은_코멘트_ID_목록을_조회한다() {
         // given
-        List<Long> contentIds = List.of(100L, 200L, 300L);
-        TargetType contentType = TargetType.MOMENT;
-        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
+        notificationRepository.save(new Notification(user,
+                NotificationType.COMMENT_LIKED,
+                SourceData.of(Map.of("commentId", 15L)), "/comments/15"));
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 10L)), "/moments/10"));
 
-        TargetType anotherType = TargetType.COMMENT;
-        NotificationType anotherReason = NotificationType.COMMENT_LIKED;
+        // when
+        List<Long> result = notificationApplicationService.getUnreadCommentIds(user.getId());
 
-        long contentId = 100L;
-        long readContentId = 200L;
-        long anotherContentId = 400L;
+        // then
+        assertThat(result).containsExactly(15L);
+    }
 
-        Notification expectedNotification = new Notification(user, reason, contentType, contentId);
-        notificationRepository.save(expectedNotification);
+    @Test
+    void 모멘트_ID로_읽지_않은_알림을_조회하고_맵으로_반환한다() {
+        // given
+        List<Long> momentIds = List.of(100L, 200L, 300L);
 
-        Notification anotherTypeNotification = new Notification(user, anotherReason, anotherType, contentId);
-        notificationRepository.save(anotherTypeNotification);
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 100L)), "/moments/100"));
 
-        Notification anotherTargetIdNotification = new Notification(user, reason, contentType, anotherContentId);
-        notificationRepository.save(anotherTargetIdNotification);
+        notificationRepository.save(new Notification(user,
+                NotificationType.COMMENT_LIKED,
+                SourceData.of(Map.of("commentId", 100L)), "/comments/100"));
 
-        Notification readNotification = new Notification(user, reason, contentType, readContentId);
+        notificationRepository.save(new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 400L)), "/moments/400"));
+
+        Notification readNotification = new Notification(user,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 200L)), "/moments/200");
         readNotification.markAsRead();
         notificationRepository.save(readNotification);
 
         // when
-        Map<Long, List<Long>> result = notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
-                contentIds, contentType);
+        Map<Long, List<Long>> result = notificationApplicationService.getNotificationsByMomentIds(user.getId(), momentIds);
 
         // then
         assertAll(

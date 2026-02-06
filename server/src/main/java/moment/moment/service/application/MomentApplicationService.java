@@ -137,11 +137,10 @@ public class MomentApplicationService {
         return MomentCreationStatusResponse.createAllowedStatus();
     }
 
-    public List<Long> getCommentableMomentInGroup(Long groupId, Long userId) {
+    public List<Long> getCommentableMomentIdsInGroup(Long groupId, Long userId) {
         User user = userService.getUserBy(userId);
         List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
-        List<Moment> commentableMoments = momentService.getCommentableMomentsInGroup(groupId, user, reportedMomentIds);
-        return commentableMoments.stream().map(Moment::getId).toList();
+        return momentService.getCommentableMomentIdsInGroup(groupId, user, reportedMomentIds);
     }
 
     public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds) {

@@ -26,9 +26,9 @@ public class PushNotificationApplicationService {
         pushNotificationService.save(user, request.deviceEndpoint());
     }
 
-    public void sendToDeviceEndpoint(long userId, PushNotificationMessage message) {
+    public void sendToDeviceEndpoint(long userId, PushNotificationMessage message, String link) {
         User user = userService.getUserBy(userId);
-        pushNotificationSender.send(new PushNotificationCommand(user, message));
+        pushNotificationSender.send(new PushNotificationCommand(user, message, link));
     }
 
     @Transactional

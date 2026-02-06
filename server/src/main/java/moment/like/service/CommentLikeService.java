@@ -49,7 +49,8 @@ public class CommentLikeService {
                 comment.getId(),
                 comment.getCommenter().getId(),
                 member.getId(),
-                member.getNickname()
+                member.getNickname(),
+                member.getGroup().getId()
             ));
         }
 

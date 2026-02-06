@@ -2,11 +2,11 @@
 
 ## 읽기 규칙
 
-| 상황 | 읽기 순서 |
-|------|-----------|
-| 새 기능 시작 전 | `.claude/docs/features/FEATURES.md` → 관련 `{domain}.md` |
-| 크로스 도메인 기능 | `FEATURES.md` Cross-Domain Dependencies 확인 |
-| 버그 수정 | 관련 `{domain}.md`에서 기존 동작 파악 |
+| 상황         | 읽기 순서                                          |
+|------------|------------------------------------------------|
+| 새 기능 시작 전  | `docs/features/FEATURES.md` → 관련 `{domain}.md` |
+| 크로스 도메인 기능 | `FEATURES.md` Cross-Domain Dependencies 확인     |
+| 버그 수정      | 관련 `{domain}.md`에서 기존 동작 파악                    |
 
 ## 업데이트 규칙
 
@@ -33,31 +33,31 @@
 
 ## Status 값
 
-| Status | 의미 |
-|--------|------|
-| `DONE` | 테스트 포함 완전 구현 |
-| `IN_PROGRESS` | 현재 구현 중 |
-| `PLANNED` | 설계만 완료 |
-| `DEPRECATED` | 제거 예정 |
+| Status        | 의미           |
+|---------------|--------------|
+| `DONE`        | 테스트 포함 완전 구현 |
+| `IN_PROGRESS` | 현재 구현 중      |
+| `PLANNED`     | 설계만 완료       |
+| `DEPRECATED`  | 제거 예정        |
 
 ## Feature ID 규칙
 
 - 형식: `{PREFIX}-{NNN}` (3자리 숫자, 0-padded)
 - 접두사 목록:
 
-| PREFIX | 도메인 |
-|--------|--------|
-| AUTH | auth |
-| USER | user |
-| MOM | moment |
-| CMT | comment |
-| GRP | group |
-| LIK | like |
-| NTF | notification |
-| RPT | report |
-| STG | storage |
-| ADM | admin |
-| GLB | global |
+| PREFIX | 도메인          |
+|--------|--------------|
+| AUTH   | auth         |
+| USER   | user         |
+| MOM    | moment       |
+| CMT    | comment      |
+| GRP    | group        |
+| LIK    | like         |
+| NTF    | notification |
+| RPT    | report       |
+| STG    | storage      |
+| ADM    | admin        |
+| GLB    | global       |
 
 ## Last Updated 타임스탬프
 
