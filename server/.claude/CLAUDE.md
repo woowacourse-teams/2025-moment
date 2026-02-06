@@ -337,12 +337,37 @@ class MomentControllerTest extends AcceptanceTest {
 - [ ] DTO 변환 적용 (엔티티 직접 노출 X)
 - [ ] DB 변경 시 Flyway 마이그레이션 추가
 
-## 참고
+## Feature Registry 활용 (필수)
 
-### Feature Registry
-- **기능 인덱스**: `.claude/docs/features/FEATURES.md` — 전체 기능 목록 및 상태
-- **도메인별 상세**: `.claude/docs/features/{domain}.md` — 도메인별 기능, API, 클래스, 테스트 매핑
-- **추적 규칙**: `.claude/rules/feature-tracking.md` — 기능 문서 유지 규칙
+**경로**: `.claude/docs/features/`
+
+### 작업 전: 반드시 맥락 확인
+
+| 작업 유형 | 읽을 파일 | 확인 내용 |
+|----------|----------|----------|
+| 새 기능 추가 | `FEATURES.md` → 관련 `{domain}.md` | 기존 패턴, API 구조, 테스트 위치 |
+| 버그 수정 | 관련 `{domain}.md` | 기존 동작, 비즈니스 룰, 에러 코드 |
+| 리팩토링 | `FEATURES.md` Cross-Domain Dependencies | 이벤트 의존성, 영향 범위 |
+| 도메인 간 기능 | `FEATURES.md` + 관련 `{domain}.md`들 | 이벤트 흐름, 구독 관계 |
+
+### 작업 후: 문서 동기화
+
+- 새 기능 완료 → `{domain}.md`에 항목 추가 + `FEATURES.md` Recent Changes 기록
+- 기존 기능 수정 → 해당 항목 업데이트 + Recent Changes 기록
+- 새 이벤트 추가 → Cross-Domain Dependencies에 행 추가
+
+### 각 {domain}.md에서 얻는 정보
+
+- **Key Classes**: Controller → Facade → Application → Domain 계층별 클래스 위치
+- **Business Rules**: 도메인 정책, 제약 조건
+- **Dependencies**: 의존하는 다른 도메인 서비스
+- **Tests**: 단위/통합/E2E 테스트 클래스명
+- **Error Codes**: 해당 도메인의 에러 코드와 HTTP 상태
+- **DB 마이그레이션**: 관련 Flyway 스크립트 버전
+
+### 상세 규칙
+
+`.claude/rules/feature-tracking.md` 참조
 
 ### 기존 구현 참조
 - **User 도메인**: `user/domain/User.java`, `user/service/user/UserService.java`
