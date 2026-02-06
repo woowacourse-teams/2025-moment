@@ -11,7 +11,7 @@ import moment.comment.dto.response.MyGroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
 import moment.comment.service.comment.CommentService;
-import moment.global.domain.TargetType;
+
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
 import moment.like.service.CommentLikeService;
@@ -53,8 +53,7 @@ public class MyGroupCommentPageFacadeService {
     public MyGroupCommentListResponse getUnreadMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
-        List<Long> unreadCommentIds = notificationApplicationService.getUnreadNotifications(
-                userId, TargetType.COMMENT);
+        List<Long> unreadCommentIds = notificationApplicationService.getUnreadCommentIds(userId);
 
         if (unreadCommentIds == null || unreadCommentIds.isEmpty()) {
             return MyGroupCommentListResponse.empty();
@@ -86,8 +85,7 @@ public class MyGroupCommentPageFacadeService {
                 .collect(Collectors.toMap(CommentComposition::id, c -> c));
 
         Map<Long, List<Long>> notificationsMap =
-                notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
-                        commentIds, TargetType.COMMENT);
+                notificationApplicationService.getNotificationsByCommentIds(commentIds);
 
         List<MyGroupCommentResponse> responses = comments.stream()
                 .map(comment -> createMyGroupCommentResponse(

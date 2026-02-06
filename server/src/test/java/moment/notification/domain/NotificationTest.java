@@ -2,9 +2,9 @@ package moment.notification.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
-import moment.global.domain.TargetType;
 import moment.user.domain.User;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -19,12 +19,11 @@ public class NotificationTest {
     void 알림_객체를_읽으면_참이_된다() {
         // given
         User user = UserFixture.createUser();
-        NotificationType notificationType = NotificationType.NEW_COMMENT_ON_MOMENT;
-        TargetType targetType = TargetType.MOMENT;
+        SourceData sourceData = SourceData.of(Map.of("momentId", 42L));
+        Notification notification = new Notification(
+                user, NotificationType.NEW_COMMENT_ON_MOMENT, sourceData, "/moments/42");
 
-        Notification notification = new Notification(user, notificationType, targetType, 1L);
         // when
-
         notification.markAsRead();
 
         // then
@@ -32,22 +31,34 @@ public class NotificationTest {
     }
 
     @Test
-    void groupId를_포함하여_알림_객체를_생성한다() {
+    void sourceData와_link를_포함하여_알림_객체를_생성한다() {
         // given
         User user = UserFixture.createUser();
-        NotificationType notificationType = NotificationType.GROUP_JOIN_REQUEST;
-        TargetType targetType = TargetType.GROUP;
-        Long targetId = 1L;
-        Long groupId = 100L;
+        SourceData sourceData = SourceData.of(Map.of("groupId", 3L));
+        String link = "/groups/3";
 
         // when
-        Notification notification = new Notification(user, notificationType, targetType, targetId, groupId);
+        Notification notification = new Notification(
+                user, NotificationType.GROUP_JOIN_REQUEST, sourceData, link);
 
         // then
-        assertThat(notification.getGroupId()).isEqualTo(groupId);
-        assertThat(notification.getTargetId()).isEqualTo(targetId);
-        assertThat(notification.getNotificationType()).isEqualTo(notificationType);
-        assertThat(notification.getTargetType()).isEqualTo(targetType);
+        assertThat(notification.getSourceData()).isEqualTo(sourceData);
+        assertThat(notification.getLink()).isEqualTo(link);
+        assertThat(notification.getNotificationType()).isEqualTo(NotificationType.GROUP_JOIN_REQUEST);
         assertThat(notification.isRead()).isFalse();
+    }
+
+    @Test
+    void GROUP_KICKED_알림은_link가_null이다() {
+        // given
+        User user = UserFixture.createUser();
+        SourceData sourceData = SourceData.of(Map.of("groupId", 3L));
+
+        // when
+        Notification notification = new Notification(
+                user, NotificationType.GROUP_KICKED, sourceData, null);
+
+        // then
+        assertThat(notification.getLink()).isNull();
     }
 }

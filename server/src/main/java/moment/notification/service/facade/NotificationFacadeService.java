@@ -1,9 +1,9 @@
 package moment.notification.service.facade;
 
 import lombok.RequiredArgsConstructor;
+import moment.notification.domain.DeepLinkGenerator;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationCommand;
-import moment.notification.domain.NotificationPayload;
 import moment.notification.dto.response.NotificationSseResponse;
 import moment.notification.service.application.NotificationApplicationService;
 import moment.notification.service.application.PushNotificationApplicationService;
@@ -19,18 +19,19 @@ public class NotificationFacadeService {
     private final PushNotificationApplicationService pushNotificationApplicationService;
 
     public void notify(NotificationCommand command) {
+        String link = DeepLinkGenerator.generate(
+                command.notificationType(), command.sourceData());
+
         Notification savedNotification = notificationApplicationService.createNotification(
-                command.userId(), command.targetId(), command.notificationType(),
-                command.targetType(), command.groupId());
+                command.userId(), command.notificationType(),
+                command.sourceData(), link);
 
-        NotificationPayload payload = NotificationPayload.from(savedNotification);
-
-        sseNotificationService.sendToClient(command.userId(), "notification",
-                NotificationSseResponse.of(payload));
+        NotificationSseResponse sseResponse = NotificationSseResponse.from(savedNotification);
+        sseNotificationService.sendToClient(command.userId(), "notification", sseResponse);
 
         if (command.pushMessage() != null) {
             pushNotificationApplicationService.sendToDeviceEndpoint(
-                    command.userId(), command.pushMessage());
+                    command.userId(), command.pushMessage(), link);
         }
     }
 }

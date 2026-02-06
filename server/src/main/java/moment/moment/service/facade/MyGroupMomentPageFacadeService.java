@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
-import moment.global.domain.TargetType;
+
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
 import moment.like.service.CommentLikeService;
@@ -57,8 +57,7 @@ public class MyGroupMomentPageFacadeService {
     public MyGroupMomentListResponse getUnreadMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
 
-        List<Long> unreadMomentIds = notificationApplicationService.getUnreadNotifications(
-                userId, TargetType.MOMENT);
+        List<Long> unreadMomentIds = notificationApplicationService.getUnreadMomentIds(userId);
 
         if (unreadMomentIds == null || unreadMomentIds.isEmpty()) {
             return MyGroupMomentListResponse.empty();
@@ -84,8 +83,7 @@ public class MyGroupMomentPageFacadeService {
                 .collect(Collectors.groupingBy(CommentComposition::momentId));
 
         Map<Long, List<Long>> notificationsMap =
-                notificationApplicationService.getNotificationsByTargetIdsAndTargetType(
-                        momentIds, TargetType.MOMENT);
+                notificationApplicationService.getNotificationsByMomentIds(momentIds);
 
         List<Long> allCommentIds = allComments.stream()
                 .map(CommentComposition::id)

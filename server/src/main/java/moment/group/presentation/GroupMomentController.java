@@ -66,7 +66,7 @@ public class GroupMomentController {
             @PathVariable Long groupId,
             @Valid @RequestBody GroupMomentCreateRequest request) {
         GroupMomentResponse response = momentApplicationService.createMomentInGroup(
-            groupId, authentication.id(), request.content(), request.imageUrl(), request.imageName());
+                groupId, authentication.id(), request.content(), request.imageUrl(), request.imageName());
         HttpStatus status = HttpStatus.CREATED;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }
@@ -92,7 +92,8 @@ public class GroupMomentController {
             @AuthenticationPrincipal Authentication authentication,
             @PathVariable Long groupId,
             @RequestParam(required = false) Long cursor) {
-        GroupMomentListResponse response = momentApplicationService.getGroupMoments(groupId, authentication.id(), cursor);
+        GroupMomentListResponse response = momentApplicationService.getGroupMoments(groupId, authentication.id(),
+                cursor);
         HttpStatus status = HttpStatus.OK;
         return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
     }

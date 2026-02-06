@@ -2,11 +2,11 @@ package moment.notification.service.notification;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import moment.global.domain.TargetType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationType;
+import moment.notification.domain.SourceData;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -19,22 +19,20 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    public List<Long> getUnreadTargetIdsBy(Long userId, TargetType targetType) {
-        boolean isRead = false;
-        return notificationRepository.findAllByUserIdAndIsReadAndTargetType(userId, isRead, targetType);
-    }
-
     @Transactional
-    public Notification save(User user, Long targetId, NotificationType notificationType,
-                             TargetType targetType, Long groupId) {
-        Notification notification = (groupId != null)
-                ? new Notification(user, notificationType, targetType, targetId, groupId)
-                : new Notification(user, notificationType, targetType, targetId);
-        return notificationRepository.save(notification);
+    public Notification save(User user, NotificationType notificationType,
+                             SourceData sourceData, String link) {
+        return notificationRepository.save(
+                new Notification(user, notificationType, sourceData, link));
     }
 
-    public List<Notification> getNotificationsBy(List<Long> targetIds, boolean isRead, TargetType targetType) {
-        return notificationRepository.findNotificationsBy(targetIds, isRead, targetType);
+    public List<Notification> getAllBy(Long userId, boolean isRead, List<NotificationType> types) {
+        return notificationRepository.findAllByUserIdAndIsReadAndNotificationTypeIn(
+                userId, isRead, types);
+    }
+
+    public List<Notification> getAllBy(boolean isRead, List<NotificationType> types) {
+        return notificationRepository.findAllByIsReadAndNotificationTypeIn(isRead, types);
     }
 
     public List<Notification> getAllBy(Long userId, boolean read) {

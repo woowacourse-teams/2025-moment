@@ -13,7 +13,8 @@ import moment.fixture.CommentFixture;
 import moment.fixture.GroupFixture;
 import moment.fixture.MomentFixture;
 import moment.fixture.UserFixture;
-import moment.global.domain.TargetType;
+import java.util.Map;
+import moment.notification.domain.SourceData;
 import moment.group.domain.Group;
 import moment.group.domain.GroupMember;
 import moment.group.infrastructure.GroupMemberRepository;
@@ -120,7 +121,9 @@ class MyGroupCommentPageFacadeServiceTest {
         Moment moment = momentRepository.save(MomentFixture.createMomentInGroup(user, group, member));
         Comment comment = commentRepository.save(CommentFixture.createCommentInGroup(moment, user, member));
         Notification notification = new Notification(
-                user, NotificationType.COMMENT_LIKED, TargetType.COMMENT, comment.getId(), group.getId());
+                user, NotificationType.COMMENT_LIKED,
+                SourceData.of(Map.of("commentId", comment.getId())),
+                "/comments/" + comment.getId());
         notificationRepository.save(notification);
 
         // when

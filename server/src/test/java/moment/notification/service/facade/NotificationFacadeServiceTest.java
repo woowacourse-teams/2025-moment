@@ -7,13 +7,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.Map;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
-import moment.global.domain.TargetType;
 import moment.notification.domain.Notification;
 import moment.notification.domain.NotificationCommand;
 import moment.notification.domain.NotificationType;
 import moment.notification.domain.PushNotificationMessage;
+import moment.notification.domain.SourceData;
 import moment.notification.infrastructure.NotificationRepository;
 import moment.notification.service.notification.SseNotificationService;
 import moment.user.domain.User;
@@ -49,20 +50,18 @@ class NotificationFacadeServiceTest {
     @Test
     void 알림을_생성하고_SSE_이벤트를_전송한다() {
         // given
-        boolean unreadFlag = false;
         User user = userRepository.save(UserFixture.createUser());
         Long userId = user.getId();
-        Long contentId = 10L;
-        NotificationType reason = NotificationType.NEW_COMMENT_ON_MOMENT;
-        TargetType contentType = TargetType.MOMENT;
 
         // when
         notificationFacadeService.notify(new NotificationCommand(
-                userId, contentId, reason, contentType,
-                null, PushNotificationMessage.REPLY_TO_MOMENT));
+                userId,
+                NotificationType.NEW_COMMENT_ON_MOMENT,
+                SourceData.of(Map.of("momentId", 10L)),
+                PushNotificationMessage.REPLY_TO_MOMENT));
 
         // then
-        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, unreadFlag);
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsRead(userId, false);
         assertAll(
                 () -> assertThat(notifications).hasSize(1),
                 () -> verify(sseNotificationService).sendToClient(eq(userId), eq("notification"), any())

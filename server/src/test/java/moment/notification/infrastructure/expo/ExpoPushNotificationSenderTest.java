@@ -1,7 +1,7 @@
 package moment.notification.infrastructure.expo;
 
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,7 +51,7 @@ class ExpoPushNotificationSenderTest {
     void 디바이스_토큰이_있으면_Expo_API로_발송한다() {
         // given
         PushNotificationCommand command = new PushNotificationCommand(user,
-                PushNotificationMessage.REPLY_TO_MOMENT);
+                PushNotificationMessage.REPLY_TO_MOMENT, "/moments/42");
         PushNotification pushNotification = new PushNotification(user, "ExponentPushToken[xxx]");
 
         when(pushNotificationRepository.findByUserId(user.getId()))
@@ -70,7 +70,7 @@ class ExpoPushNotificationSenderTest {
     void 디바이스_토큰이_없으면_발송하지_않는다() {
         // given
         PushNotificationCommand command = new PushNotificationCommand(user,
-                PushNotificationMessage.REPLY_TO_MOMENT);
+                PushNotificationMessage.REPLY_TO_MOMENT, "/moments/42");
 
         when(pushNotificationRepository.findByUserId(user.getId()))
                 .thenReturn(List.of());
@@ -86,7 +86,7 @@ class ExpoPushNotificationSenderTest {
     void 여러_디바이스에_배치_발송한다() {
         // given
         PushNotificationCommand command = new PushNotificationCommand(user,
-                PushNotificationMessage.REPLY_TO_MOMENT);
+                PushNotificationMessage.REPLY_TO_MOMENT, "/moments/42");
         PushNotification pn1 = new PushNotification(user, "ExponentPushToken[aaa]");
         PushNotification pn2 = new PushNotification(user, "ExponentPushToken[bbb]");
 
@@ -108,7 +108,7 @@ class ExpoPushNotificationSenderTest {
     void 발송_실패_시에도_예외를_전파하지_않는다() {
         // given
         PushNotificationCommand command = new PushNotificationCommand(user,
-                PushNotificationMessage.REPLY_TO_MOMENT);
+                PushNotificationMessage.REPLY_TO_MOMENT, "/moments/42");
         PushNotification pushNotification = new PushNotification(user, "ExponentPushToken[xxx]");
 
         when(pushNotificationRepository.findByUserId(user.getId()))
@@ -121,5 +121,49 @@ class ExpoPushNotificationSenderTest {
 
         // then
         verify(expoPushApiClient).send(anyList());
+    }
+
+    @Test
+    void link가_null이면_data에_link를_포함하지_않는다() {
+        // given
+        PushNotificationCommand command = new PushNotificationCommand(user,
+                PushNotificationMessage.GROUP_KICKED, null);
+        PushNotification pushNotification = new PushNotification(user, "ExponentPushToken[xxx]");
+
+        when(pushNotificationRepository.findByUserId(user.getId()))
+                .thenReturn(List.of(pushNotification));
+        when(expoPushApiClient.send(anyList()))
+                .thenReturn(List.of(new ExpoPushTicketResponse("ticket-1", "ok", null, null)));
+
+        // when
+        expoPushNotificationSender.send(command);
+
+        // then
+        verify(expoPushApiClient).send(argThat(messages -> {
+            ExpoPushMessage message = messages.get(0);
+            return message.data().isEmpty();
+        }));
+    }
+
+    @Test
+    void link가_있으면_data에_link를_포함한다() {
+        // given
+        PushNotificationCommand command = new PushNotificationCommand(user,
+                PushNotificationMessage.REPLY_TO_MOMENT, "/moments/42");
+        PushNotification pushNotification = new PushNotification(user, "ExponentPushToken[xxx]");
+
+        when(pushNotificationRepository.findByUserId(user.getId()))
+                .thenReturn(List.of(pushNotification));
+        when(expoPushApiClient.send(anyList()))
+                .thenReturn(List.of(new ExpoPushTicketResponse("ticket-1", "ok", null, null)));
+
+        // when
+        expoPushNotificationSender.send(command);
+
+        // then
+        verify(expoPushApiClient).send(argThat(messages -> {
+            ExpoPushMessage message = messages.get(0);
+            return "/moments/42".equals(message.data().get("link"));
+        }));
     }
 }
