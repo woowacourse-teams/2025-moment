@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import moment.auth.application.TokenManager;
+import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
@@ -378,6 +379,47 @@ class GroupMomentControllerTest {
     }
 
     @Test
+    void 이미_코멘트한_모멘트가_있어도_다른_코멘트_가능한_모멘트를_반환한다() {
+        // given
+        User user1 = UserFixture.createUser();
+        User savedUser1 = userRepository.save(user1);
+        String token1 = tokenManager.createAccessToken(savedUser1.getId(), savedUser1.getEmail());
+
+        User user2 = UserFixture.createUser();
+        User savedUser2 = userRepository.save(user2);
+        String token2 = tokenManager.createAccessToken(savedUser2.getId(), savedUser2.getEmail());
+
+        // 그룹 생성 (user1이 그룹장)
+        GroupCreateResponse group = 그룹_생성(token1, "테스트 그룹", "설명", "그룹장닉네임");
+
+        // user2를 그룹에 가입
+        그룹_가입(token2, group.inviteCode(), "멤버닉네임");
+
+        // user1이 모멘트 2개 작성
+        GroupMomentResponse moment1 = 모멘트_작성(token1, group.groupId(), "첫 번째 모멘트");
+        모멘트_작성(token1, group.groupId(), "두 번째 모멘트");
+
+        // user2가 첫 번째 모멘트에 코멘트 작성
+        코멘트_작성(token2, group.groupId(), moment1.momentId(), "코멘트입니다");
+
+        // when - user2가 코멘트 가능한 모멘트 조회
+        CommentableMomentResponse response = RestAssured.given().log().all()
+            .cookie("accessToken", token2)
+            .when().get("/api/v2/groups/{groupId}/moments/commentable", group.groupId())
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .jsonPath()
+            .getObject("data", CommentableMomentResponse.class);
+
+        // then - 코멘트 안 단 두 번째 모멘트가 반환되어야 함 (null이 아님)
+        assertAll(
+            () -> assertThat(response).isNotNull(),
+            () -> assertThat(response.content()).isEqualTo("두 번째 모멘트")
+        );
+    }
+
+    @Test
     void 다른_그룹의_모멘트는_조회되지_않는다() {
         // given
         User user1 = UserFixture.createUser();
@@ -409,5 +451,16 @@ class GroupMomentControllerTest {
 
         // then - 그룹 A에는 모멘트가 없으므로 null
         assertThat(response).isNull();
+    }
+
+    private void 코멘트_작성(String token, Long groupId, Long momentId, String content) {
+        GroupCommentCreateRequest request = new GroupCommentCreateRequest(content, null, null);
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .cookie("accessToken", token)
+            .body(request)
+            .when().post("/api/v2/groups/{groupId}/moments/{momentId}/comments", groupId, momentId)
+            .then()
+            .statusCode(HttpStatus.CREATED.value());
     }
 }

@@ -1,5 +1,6 @@
 package moment.comment.service.comment;
 
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
@@ -27,6 +28,9 @@ public class CommentService {
     }
 
     public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
+        if (momentIds == null || momentIds.isEmpty()) {
+            return Collections.emptyList();
+        }
         return commentRepository.findMomentIdsNotCommentedOnByMe(momentIds, commenterId);
     }
 

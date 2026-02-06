@@ -344,6 +344,30 @@ class CommentServiceTest {
     }
 
     @Test
+    void null_모멘트ID_목록으로_내가_코멘트하지_않은_모멘트를_조회하면_빈_목록을_반환한다() {
+        // given
+        User commenter = userRepository.save(UserFixture.createUser());
+
+        // when
+        List<Long> result = commentService.getMomentIdsNotCommentedByMe(null, commenter.getId());
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void 빈_모멘트ID_목록으로_내가_코멘트하지_않은_모멘트를_조회하면_빈_목록을_반환한다() {
+        // given
+        User commenter = userRepository.save(UserFixture.createUser());
+
+        // when
+        List<Long> result = commentService.getMomentIdsNotCommentedByMe(List.of(), commenter.getId());
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     void 존재하지_않는_코멘트_ID로_코멘트를_조회하면_예외가_발생한다() {
         // given
         Long nonExistentCommentId = 999L;
