@@ -25,8 +25,10 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
 
   const handleToastClick = () => {
     if (toast.variant === 'message' && toast.routeType) {
-      const route =
-        toast.routeType === 'moment' ? '/collection/my-moment' : '/collection/my-comment';
+      // Use groupId to construct the proper route
+      const route = toast.groupId
+        ? `/groups/${toast.groupId}/collection/${toast.routeType === 'moment' ? 'my-moment' : 'my-comment'}`
+        : `/collection/${toast.routeType === 'moment' ? 'my-moment' : 'my-comment'}`;
       navigate(route);
       handleClose();
     }

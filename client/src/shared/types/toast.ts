@@ -9,6 +9,8 @@ export interface ToastData {
   variant: ToastVariant;
   duration?: number;
   routeType?: ToastRouteType;
+  groupId?: number;
+  link?: string;
 }
 
 export interface UseToastReturn {
