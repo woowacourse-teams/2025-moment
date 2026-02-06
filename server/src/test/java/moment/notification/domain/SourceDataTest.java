@@ -63,4 +63,11 @@ class SourceDataTest {
 
         assertThat(sourceData.getLong("momentId")).isEqualTo(42L);
     }
+
+    @Test
+    void getLong_숫자가_아닌_문자열이면_null을_반환한다() {
+        SourceData sourceData = SourceData.of(Map.of("key", "abc"));
+
+        assertThat(sourceData.getLong("key")).isNull();
+    }
 }

@@ -21,6 +21,10 @@ public record SourceData(Map<String, Object> data) {
         if (value == null) return null;
         if (value instanceof Long l) return l;
         if (value instanceof Number n) return n.longValue();
-        return Long.valueOf(value.toString());
+        try {
+            return Long.valueOf(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
