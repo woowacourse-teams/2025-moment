@@ -35,8 +35,8 @@ export const useSSENotifications = () => {
 
         const newNotification: NotificationItem = {
           notificationType: sseData.notificationType,
-          targetType: sseData.targetType,
-          targetId: sseData.targetId,
+          targetType: sseData.targetType || 'MOMENT',
+          targetId: sseData.targetId || 0,
           message: sseData.message,
           isRead: false,
         };
