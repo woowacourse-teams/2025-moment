@@ -16,6 +16,7 @@ This command invokes the **planner** agent to create a comprehensive implementat
 ## When to Use
 
 Use `/plan` when:
+
 - Starting a new feature
 - Making significant architectural changes
 - Working on complex refactoring
@@ -93,12 +94,12 @@ Agent (planner):
 
 ## Plan File Storage
 
-**CRITICAL**: All plans MUST be saved under `.claude/docs/plans/` in a **feature-specific directory**.
+**CRITICAL**: All plans MUST be saved under `docs/plans/` in a **feature-specific directory**.
 
 ### Directory Structure
 
 ```
-.claude/docs/plans/
+docs/plans/
 ├── {feature-name}/          # Feature directory (kebab-case)
 │   ├── README.md            # Plan overview (optional)
 │   ├── phase-1-xxx.md       # Phase-specific plan files
@@ -115,16 +116,17 @@ Agent (planner):
 2. **Single-phase plan**: Save as a single `{feature-name}.md` file
 3. **Multi-phase plan**: Split into `phase-{n}-{description}.md` files
 4. **Check existing directories**: If a directory for the same feature already exists, add to it
-5. **Plan header**: Include creation date and status (`DRAFT` / `APPROVED` / `IN_PROGRESS` / `DONE`) at the top of each plan file
+5. **Plan header**: Include creation date and status (`DRAFT` / `APPROVED` / `IN_PROGRESS` / `DONE`) at the top of each
+   plan file
 
 ### Example
 
 ```
 # Single plan
-.claude/docs/plans/notification-refactor/notification-refactor.md
+docs/plans/notification-refactor/notification-refactor.md
 
 # Multi-phase plan
-.claude/docs/plans/apple-login/
+docs/plans/apple-login/
 ├── README.md
 ├── phase-1-domain-dto.md
 ├── phase-2-infrastructure.md
@@ -134,9 +136,11 @@ Agent (planner):
 
 ## Important Notes
 
-**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan with "yes" or "proceed" or similar affirmative response.
+**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan with "yes" or "
+proceed" or similar affirmative response.
 
 If you want changes, respond with:
+
 - "modify: [your changes]"
 - "different approach: [alternative]"
 - "skip phase 2 and do phase 3 first"
@@ -144,6 +148,7 @@ If you want changes, respond with:
 ## Integration with Other Commands
 
 After planning:
+
 - Use `/tdd` to implement with test-driven development
 - Use `/build-and-fix` if build errors occur
 - Use `/code-review` to review completed implementation

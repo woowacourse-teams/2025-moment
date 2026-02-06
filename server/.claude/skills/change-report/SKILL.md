@@ -10,7 +10,7 @@ description: >
 
 # Change Report
 
-Git diff와 커밋 메시지를 분석하고, 코드베이스를 탐색하여 변경 사항 보고서를 `.claude/docs/reports/` 하위에 생성한다.
+Git diff와 커밋 메시지를 분석하고, 코드베이스를 탐색하여 변경 사항 보고서를 `docs/reports/` 하위에 생성한다.
 
 ## Workflow
 
@@ -41,13 +41,13 @@ git diff --stat
 
 커밋 메시지 prefix와 diff 내용으로 변경 유형을 분류한다:
 
-| 유형 | 커밋 prefix | 다이어그램 |
-|------|------------|-----------|
-| 새 기능 | `feat:` | sequenceDiagram (레이어 간 호출 흐름) |
-| 리팩토링 | `refactor:` | flowchart (변경 전후 구조 비교) |
-| 버그 수정 | `fix:` | flowchart (원인→수정→결과 흐름) |
-| 성능 개선 | `perf:` | flowchart (최적화 포인트 표시) |
-| 기타 | `docs:`, `test:`, `chore:` 등 | 생략 가능 |
+| 유형    | 커밋 prefix                    | 다이어그램                         |
+|-------|------------------------------|-------------------------------|
+| 새 기능  | `feat:`                      | sequenceDiagram (레이어 간 호출 흐름) |
+| 리팩토링  | `refactor:`                  | flowchart (변경 전후 구조 비교)       |
+| 버그 수정 | `fix:`                       | flowchart (원인→수정→결과 흐름)       |
+| 성능 개선 | `perf:`                      | flowchart (최적화 포인트 표시)        |
+| 기타    | `docs:`, `test:`, `chore:` 등 | 생략 가능                         |
 
 혼합된 경우 가장 비중이 큰 유형의 다이어그램을 사용한다.
 mixed일 때 다이어그램이 복수 필요하면 여러 개 포함한다.
@@ -55,6 +55,7 @@ mixed일 때 다이어그램이 복수 필요하면 여러 개 포함한다.
 ## Step 3: 코드베이스 탐색
 
 변경된 파일 목록에서:
+
 1. 각 파일을 Read하여 변경 컨텍스트 파악
 2. 호출 관계 추적 (Controller → Service → Repository 등)
 3. 영향받는 다른 모듈/파일 탐색 (Grep으로 참조 검색)
@@ -68,7 +69,7 @@ mixed일 때 다이어그램이 복수 필요하면 여러 개 포함한다.
 ### 저장 위치
 
 ```
-.claude/docs/reports/{기능-디렉토리}/{브랜치명}.md
+docs/reports/{기능-디렉토리}/{브랜치명}.md
 ```
 
 - 기능 디렉토리: 변경의 주요 도메인명 (예: `notification`, `auth`, `moment`)
@@ -102,6 +103,7 @@ mixed일 때 다이어그램이 복수 필요하면 여러 개 포함한다.
 ### Mermaid 다이어그램 규칙
 
 **새 기능 (sequenceDiagram):**
+
 ```mermaid
 sequenceDiagram
     participant C as Controller
@@ -109,14 +111,15 @@ sequenceDiagram
     participant A as ApplicationService
     participant S as DomainService
     participant R as Repository
-    C->>F: createComment(request)
-    F->>A: validateCreateComment()
-    F->>S: createComment()
-    S->>R: save(comment)
-    F-->>C: CommentCreateResponse
+    C ->> F: createComment(request)
+    F ->> A: validateCreateComment()
+    F ->> S: createComment()
+    S ->> R: save(comment)
+    F -->> C: CommentCreateResponse
 ```
 
 **리팩토링 (flowchart):**
+
 ```mermaid
 flowchart LR
     subgraph Before
@@ -129,6 +132,7 @@ flowchart LR
 ```
 
 **버그 수정 (flowchart):**
+
 ```mermaid
 flowchart TD
     A[문제 상황] --> B[원인]
@@ -159,11 +163,12 @@ public void sendNotification(Long userId, String message) {
 
 ```java
 public void notify(NotificationCommand command) {
-    notificationApplicationService.createNotification(command.userId(), command.targetId(), ...);
+    notificationApplicationService.createNotification(command.userId(), command.targetId(), ...)
     sseNotificationService.sendToClient(command.userId(), "notification", ...);
     pushNotificationApplicationService.sendToDeviceEndpoint(command.userId(), command.pushMessage());
-}
+
 ```
+
 ```
 
 ### 커밋별 Phase 그룹핑
