@@ -21,7 +21,10 @@ public class CommentableMomentFacadeService {
     public CommentableMomentResponse getCommentableMomentInGroup(Long groupId, Long commenterId) {
         groupMemberService.getByGroupAndUser(groupId, commenterId);
 
-        List<Long> momentIds = momentApplicationService.getCommentableMomentInGroup(groupId, commenterId);
+        List<Long> momentIds = momentApplicationService.getCommentableMomentIdsInGroup(groupId, commenterId);
+        if (momentIds.isEmpty()) {
+            return CommentableMomentResponse.empty();
+        }
         List<Long> momentIdsNotCommentedByMe = commentApplicationService.getMomentIdsNotCommentedByMe(momentIds,
                 commenterId);
         return momentApplicationService.pickRandomMomentComposition(momentIdsNotCommentedByMe);
