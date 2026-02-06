@@ -1,11 +1,12 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { api } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { CommentsResponse, GetComments } from '../types/comments';
 
 export const useUnreadCommentsSuspenseQuery = (groupId: number | string) => {
   const numericGroupId = Number(groupId);
   return useSuspenseInfiniteQuery({
-    queryKey: ['group', numericGroupId, 'comments', 'unread'],
+    queryKey: queryKeys.group.commentsUnread(numericGroupId),
     queryFn: ({ pageParam }: { pageParam: string | number | null }) =>
       getUnreadComments({ groupId: numericGroupId, pageParam }),
     getNextPageParam: lastPage =>

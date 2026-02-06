@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
@@ -13,7 +14,7 @@ export const useDeleteGroupMutation = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groups'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.groups.all });
       showSuccess('그룹이 삭제되었습니다.');
     },
     onError: () => {

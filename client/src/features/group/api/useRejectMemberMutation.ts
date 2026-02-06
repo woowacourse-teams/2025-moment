@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
@@ -13,7 +14,7 @@ export const useRejectMemberMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'pending'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.pending(Number(groupId)) });
       showSuccess('가입 요청이 거절되었습니다.');
     },
     onError: () => {

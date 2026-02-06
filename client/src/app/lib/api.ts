@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { queryClient } from './queryClient';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { toasts } from '@/shared/store/toast';
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v2';
@@ -100,7 +101,7 @@ const setupInterceptors = (instance: AxiosInstance) => {
       });
 
       if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
-        queryClient.setQueryData(['checkIfLoggedIn'], false);
+        queryClient.setQueryData(queryKeys.auth.checkLogin, false);
         toasts.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
         redirectToLogin();
         return Promise.reject(error);
@@ -112,11 +113,11 @@ const setupInterceptors = (instance: AxiosInstance) => {
         if (isRefreshing && refreshPromise) {
           try {
             await refreshPromise;
-            queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
+            queryClient.invalidateQueries({ queryKey: queryKeys.auth.checkLogin });
+            queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
             return instance(originalRequest);
           } catch {
-            queryClient.setQueryData(['checkIfLoggedIn'], false);
+            queryClient.setQueryData(queryKeys.auth.checkLogin, false);
             toasts.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
             redirectToLogin();
             return Promise.reject(error);
@@ -128,11 +129,11 @@ const setupInterceptors = (instance: AxiosInstance) => {
 
         try {
           await refreshPromise;
-          queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
-          queryClient.invalidateQueries({ queryKey: ['profile'] });
+          queryClient.invalidateQueries({ queryKey: queryKeys.auth.checkLogin });
+          queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
           return instance(originalRequest);
         } catch (refreshError) {
-          queryClient.setQueryData(['checkIfLoggedIn'], false);
+          queryClient.setQueryData(queryKeys.auth.checkLogin, false);
           toasts.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
           redirectToLogin();
           return Promise.reject(refreshError);

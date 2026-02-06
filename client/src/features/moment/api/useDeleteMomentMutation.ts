@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteMomentMutation = (groupId: number | string) => {
@@ -10,8 +11,8 @@ export const useDeleteMomentMutation = (groupId: number | string) => {
     mutationFn: (momentId: number) => deleteMoment(groupId, momentId),
     onSuccess: () => {
       const numericGroupId = Number(groupId);
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'moments'] });
-      queryClient.invalidateQueries({ queryKey: ['group', numericGroupId, 'my-moments'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.moments(numericGroupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.myMoments(numericGroupId) });
       showSuccess('모멘트가 삭제되었습니다.');
     },
     onError: () => {

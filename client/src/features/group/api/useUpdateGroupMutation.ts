@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { UpdateGroupRequest, GroupActionResponse } from '../types/group';
 
@@ -13,8 +14,8 @@ export const useUpdateGroupMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groups'] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.groups.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.detail(Number(groupId)) });
       showSuccess('그룹 정보가 수정되었습니다!');
     },
     onError: () => {

@@ -1,11 +1,12 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { api } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { MomentsResponse } from '../types/moments';
 
 export const useUnreadMomentsSuspenseQuery = (groupId: number | string) => {
   const numericGroupId = Number(groupId);
   return useSuspenseInfiniteQuery({
-    queryKey: ['group', numericGroupId, 'moments', 'unread'],
+    queryKey: queryKeys.group.momentsUnread(numericGroupId),
     queryFn: ({ pageParam }: { pageParam: string | number | null }) =>
       getUnreadMoments({ groupId: numericGroupId, pageParam }),
     getNextPageParam: lastPage =>

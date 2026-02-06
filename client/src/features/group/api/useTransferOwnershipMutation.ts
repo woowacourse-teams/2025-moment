@@ -1,6 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { useToast } from '@/shared/hooks/useToast';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
@@ -13,9 +14,9 @@ export const useTransferOwnershipMutation = (groupId: number | string) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groups'] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-      queryClient.invalidateQueries({ queryKey: ['group', groupId, 'members'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.groups.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.detail(Number(groupId)) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.members(Number(groupId)) });
       showSuccess('그룹 소유권이 이전되었습니다.');
     },
     onError: () => {

@@ -1,4 +1,5 @@
 import { queryClient } from '@/app/lib/queryClient';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { router } from '@/app/routes';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -31,7 +32,7 @@ const AppContentWithPushNotification = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.onTabFocus = () => {
-        queryClient.invalidateQueries({ queryKey: ['checkIfLoggedIn'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.auth.checkLogin });
         console.log('Tab Focused: Refetching login state');
       };
     }
