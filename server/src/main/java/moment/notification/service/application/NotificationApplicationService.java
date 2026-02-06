@@ -78,13 +78,13 @@ public class NotificationApplicationService {
                 .toList();
     }
 
-    public Map<Long, List<Long>> getNotificationsByMomentIds(List<Long> momentIds) {
-        List<Notification> notifications = notificationService.getAllBy(false, MOMENT_TYPES);
+    public Map<Long, List<Long>> getNotificationsByMomentIds(Long userId, List<Long> momentIds) {
+        List<Notification> notifications = notificationService.getAllBy(userId, false, MOMENT_TYPES);
         return groupNotificationIdsBySourceId(notifications, "momentId", momentIds);
     }
 
-    public Map<Long, List<Long>> getNotificationsByCommentIds(List<Long> commentIds) {
-        List<Notification> notifications = notificationService.getAllBy(false, COMMENT_TYPES);
+    public Map<Long, List<Long>> getNotificationsByCommentIds(Long userId, List<Long> commentIds) {
+        List<Notification> notifications = notificationService.getAllBy(userId, false, COMMENT_TYPES);
         return groupNotificationIdsBySourceId(notifications, "commentId", commentIds);
     }
 

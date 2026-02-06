@@ -141,30 +141,4 @@ class NotificationRepositoryTest {
         assertThat(result).hasSize(2);
     }
 
-    @Test
-    void notification_type_목록으로_모든_읽지_않은_알림을_조회한다() {
-        // given
-        Notification userNotification = new Notification(user,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                SourceData.of(Map.of("momentId", 42L)), "/moments/42");
-        Notification anotherUserNotification = new Notification(anotherUser,
-                NotificationType.MOMENT_LIKED,
-                SourceData.of(Map.of("momentId", 43L)), "/moments/43");
-        Notification commentNotification = new Notification(user,
-                NotificationType.COMMENT_LIKED,
-                SourceData.of(Map.of("commentId", 10L)), "/comments/10");
-
-        notificationRepository.saveAll(List.of(
-                userNotification, anotherUserNotification, commentNotification));
-
-        List<NotificationType> momentTypes = List.of(
-                NotificationType.NEW_COMMENT_ON_MOMENT, NotificationType.MOMENT_LIKED);
-
-        // when
-        List<Notification> result = notificationRepository
-                .findAllByIsReadAndNotificationTypeIn(false, momentTypes);
-
-        // then
-        assertThat(result).hasSize(2);
-    }
 }

@@ -106,29 +106,6 @@ class NotificationServiceTest {
     }
 
     @Test
-    void notification_type_목록으로_전체_알림을_조회한다() {
-        // given
-        notificationRepository.save(new Notification(user,
-                NotificationType.NEW_COMMENT_ON_MOMENT,
-                SourceData.of(Map.of("momentId", 1L)), "/moments/1"));
-        notificationRepository.save(new Notification(anotherUser,
-                NotificationType.MOMENT_LIKED,
-                SourceData.of(Map.of("momentId", 2L)), "/moments/2"));
-        notificationRepository.save(new Notification(user,
-                NotificationType.COMMENT_LIKED,
-                SourceData.of(Map.of("commentId", 3L)), "/comments/3"));
-
-        List<NotificationType> momentTypes = List.of(
-                NotificationType.NEW_COMMENT_ON_MOMENT, NotificationType.MOMENT_LIKED);
-
-        // when
-        List<Notification> result = notificationService.getAllBy(false, momentTypes);
-
-        // then
-        assertThat(result).hasSize(2);
-    }
-
-    @Test
     void 사용자_ID와_읽음_여부로_모든_알림을_조회한다() {
         // given
         notificationRepository.save(new Notification(user,

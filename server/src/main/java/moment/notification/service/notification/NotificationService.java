@@ -31,10 +31,6 @@ public class NotificationService {
                 userId, isRead, types);
     }
 
-    public List<Notification> getAllBy(boolean isRead, List<NotificationType> types) {
-        return notificationRepository.findAllByIsReadAndNotificationTypeIn(isRead, types);
-    }
-
     public List<Notification> getAllBy(Long userId, boolean read) {
         return notificationRepository.findAllByUserIdAndIsRead(userId, read);
     }

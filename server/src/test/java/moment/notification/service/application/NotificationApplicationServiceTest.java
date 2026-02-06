@@ -206,7 +206,7 @@ class NotificationApplicationServiceTest {
         notificationRepository.save(readNotification);
 
         // when
-        Map<Long, List<Long>> result = notificationApplicationService.getNotificationsByMomentIds(momentIds);
+        Map<Long, List<Long>> result = notificationApplicationService.getNotificationsByMomentIds(user.getId(), momentIds);
 
         // then
         assertAll(

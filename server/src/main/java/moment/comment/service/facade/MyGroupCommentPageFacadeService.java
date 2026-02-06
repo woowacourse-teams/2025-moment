@@ -47,7 +47,7 @@ public class MyGroupCommentPageFacadeService {
             return MyGroupCommentListResponse.empty();
         }
 
-        return buildCommentListResponse(comments, member.getId());
+        return buildCommentListResponse(comments, member.getId(), userId);
     }
 
     public MyGroupCommentListResponse getUnreadMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
@@ -66,10 +66,10 @@ public class MyGroupCommentPageFacadeService {
             return MyGroupCommentListResponse.empty();
         }
 
-        return buildCommentListResponse(comments, member.getId());
+        return buildCommentListResponse(comments, member.getId(), userId);
     }
 
-    private MyGroupCommentListResponse buildCommentListResponse(List<Comment> comments, Long memberId) {
+    private MyGroupCommentListResponse buildCommentListResponse(List<Comment> comments, Long memberId, Long userId) {
         List<Long> commentIds = comments.stream().map(Comment::getId).toList();
         List<Long> momentIds = comments.stream().map(Comment::getMomentId).toList();
 
@@ -85,7 +85,7 @@ public class MyGroupCommentPageFacadeService {
                 .collect(Collectors.toMap(CommentComposition::id, c -> c));
 
         Map<Long, List<Long>> notificationsMap =
-                notificationApplicationService.getNotificationsByCommentIds(commentIds);
+                notificationApplicationService.getNotificationsByCommentIds(userId, commentIds);
 
         List<MyGroupCommentResponse> responses = comments.stream()
                 .map(comment -> createMyGroupCommentResponse(

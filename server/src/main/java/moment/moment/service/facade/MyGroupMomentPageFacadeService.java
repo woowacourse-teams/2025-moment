@@ -51,7 +51,7 @@ public class MyGroupMomentPageFacadeService {
             return MyGroupMomentListResponse.empty();
         }
 
-        return buildMomentListResponse(moments, member.getId());
+        return buildMomentListResponse(moments, member.getId(), userId);
     }
 
     public MyGroupMomentListResponse getUnreadMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
@@ -70,10 +70,10 @@ public class MyGroupMomentPageFacadeService {
             return MyGroupMomentListResponse.empty();
         }
 
-        return buildMomentListResponse(moments, member.getId());
+        return buildMomentListResponse(moments, member.getId(), userId);
     }
 
-    private MyGroupMomentListResponse buildMomentListResponse(List<Moment> moments, Long memberId) {
+    private MyGroupMomentListResponse buildMomentListResponse(List<Moment> moments, Long memberId, Long userId) {
         List<Long> momentIds = moments.stream().map(Moment::getId).toList();
 
         Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
@@ -83,7 +83,7 @@ public class MyGroupMomentPageFacadeService {
                 .collect(Collectors.groupingBy(CommentComposition::momentId));
 
         Map<Long, List<Long>> notificationsMap =
-                notificationApplicationService.getNotificationsByMomentIds(momentIds);
+                notificationApplicationService.getNotificationsByMomentIds(userId, momentIds);
 
         List<Long> allCommentIds = allComments.stream()
                 .map(CommentComposition::id)
