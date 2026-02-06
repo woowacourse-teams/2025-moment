@@ -42,7 +42,9 @@ export const useSSENotifications = () => {
           isRead: false,
         };
 
-        const currentData = queryClient.getQueryData<NotificationResponse>(queryKeys.notifications.all);
+        const currentData = queryClient.getQueryData<NotificationResponse>(
+          queryKeys.notifications.all,
+        );
         const currentNotifications = currentData?.data || [];
 
         const updatedNotifications = [newNotification, ...currentNotifications];
