@@ -74,6 +74,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  flex-wrap: wrap;
 
   @media (max-width: 768px) {
     flex-direction: column;
