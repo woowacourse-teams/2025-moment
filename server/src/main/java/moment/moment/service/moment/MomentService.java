@@ -26,6 +26,7 @@ public class MomentService {
 
     private static final int COMMENTABLE_PERIOD_IN_DAYS = 7;
     private static final Random RANDOM = new Random();
+    // JPQL NOT IN 절에 빈 리스트를 전달하면 SQL 에러가 발생하므로, 존재할 수 없는 ID로 우회
     private static final List<Long> EMPTY_BLOCK_LIST = List.of(-1L);
 
     private final MomentRepository momentRepository;

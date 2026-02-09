@@ -204,7 +204,7 @@ public class CommentApplicationService {
         List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
         Set<Long> blockedUserIdSet = new HashSet<>(blockedUserIds);
         comments = comments.stream()
-                .filter(c -> !blockedUserIdSet.contains(c.getCommenter().getId()))
+                .filter(c -> c.getCommenter() == null || !blockedUserIdSet.contains(c.getCommenter().getId()))
                 .toList();
 
         Map<Comment, CommentImage> commentImageMap = commentImageService.getCommentImageByComment(comments);
