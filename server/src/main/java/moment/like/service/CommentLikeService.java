@@ -45,13 +45,7 @@ public class CommentLikeService {
 
         User commenter = comment.getCommenter();
         if (isNowLiked && commenter != null && !commenter.getId().equals(member.getUser().getId())) {
-            eventPublisher.publishEvent(new CommentLikeEvent(
-                comment.getId(),
-                comment.getCommenter().getId(),
-                member.getId(),
-                member.getNickname(),
-                member.getGroup().getId()
-            ));
+            eventPublisher.publishEvent(CommentLikeEvent.of(comment, member));
         }
 
         return isNowLiked;

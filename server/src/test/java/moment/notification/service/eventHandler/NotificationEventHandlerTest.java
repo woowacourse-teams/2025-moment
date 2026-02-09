@@ -116,7 +116,7 @@ class NotificationEventHandlerTest {
     @Test
     void 모멘트_좋아요_이벤트_시_알림을_발송한다() {
         // given
-        MomentLikeEvent event = new MomentLikeEvent(1L, 2L, 3L, "좋아요닉네임", 10L);
+        MomentLikeEvent event = new MomentLikeEvent(1L, 2L, 3L, "좋아요닉네임", 10L, 100L);
 
         // when
         eventHandler.handleMomentLikeEvent(event);
@@ -132,7 +132,7 @@ class NotificationEventHandlerTest {
     @Test
     void 코멘트_좋아요_이벤트_시_알림을_발송한다() {
         // given
-        CommentLikeEvent event = new CommentLikeEvent(1L, 2L, 3L, "좋아요닉네임", 10L);
+        CommentLikeEvent event = new CommentLikeEvent(1L, 2L, 3L, "좋아요닉네임", 10L, 100L);
 
         // when
         eventHandler.handleCommentLikeEvent(event);
