@@ -1,6 +1,6 @@
 # Moment Domain
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
 
 ## Key Classes
 
@@ -73,7 +73,7 @@
 - **Service Flow:** `CommentableMomentFacadeService` -> `MomentApplicationService.getCommentableMomentIdsInGroup()` -> `MomentApplicationService.pickRandomMomentComposition()`
 - **Business Rules:** 7일 이내 모멘트 중 내가 작성하지 않은 것, 신고하지 않은 것, 차단한 유저가 아닌 것에서 랜덤 선택 + 아직 코멘트를 작성하지 않은 모멘트만 필터
 - **Response DTO:** `CommentableMomentResponse` (id, memberId, nickname, content, imageUrl, createdAt)
-- **Recent Change (2026-02-09):** `memberId` 필드 추가. `MomentRepository.findAllWithMomenterByIds` 쿼리에 `LEFT JOIN FETCH m.member` 추가하여 Lazy Loading 방지.
+- **Recent Change (2026-02-10):** `memberId` 필드 추가. `MomentRepository.findAllWithMomenterAndMemberByIds` 쿼리에 `LEFT JOIN FETCH m.member` 추가하여 Lazy Loading 방지. `MomentService.getMomentsBy(List<Long>)`에서 사용.
 
 ### MOM-009: My Group Moment Page (with Comments)
 

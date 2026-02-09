@@ -1,6 +1,6 @@
 # Comment Domain
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
 
 ## Key Classes
 
@@ -71,14 +71,14 @@
 - **Status:** `DONE`
 - **Service Flow:** `CommentApplicationService.getMyCommentCompositionsBy(momentIds)` -> `CommentService.getAllByMomentIds()`
 - **Response DTO:** `List<CommentComposition>` (id, content, nickname, imageUrl, commentCreatedAt, momentId, commenterUserId, memberId)
-- **Recent Change (2026-02-09):** `memberId` 필드 추가. `CommentRepository.findAllWithMemberByMomentIdIn` 쿼리 신규 추가하여 member를 LEFT JOIN FETCH로 로드. `CommentService.getAllByMomentIds()`에서 새 쿼리 사용. N+1 Lazy Loading 방지.
+- **Recent Change (2026-02-10):** `memberId` 필드 추가. `CommentRepository.findAllWithMemberAndCommenterByMomentIdIn` 쿼리로 member와 commenter를 LEFT JOIN FETCH로 로드. 기존 `findAllByMomentIdIn` 제거. `CommentService.getAllByMomentIds()`에서 사용. N+1 Lazy Loading 방지.
 
 ### CMT-008: My Group Moment Comment Response
 
 - **Status:** `DONE`
 - **Response DTO:** `MyGroupMomentCommentResponse` (id, memberId, content, memberNickname, imageUrl, createdAt, likeCount, hasLiked)
 - **Used by:** `MyGroupMomentPageFacadeService` (moment domain)
-- **Recent Change (2026-02-09):** `memberId` 필드 추가. `CommentComposition.memberId()`에서 매핑.
+- **Recent Change (2026-02-10):** `memberId` 필드 추가. `CommentComposition.memberId()`에서 매핑.
 
 ### CMT-009: My Group Comment Page
 
@@ -87,7 +87,7 @@
 - **Response DTO:** `MyGroupCommentListResponse` -> `MyGroupCommentResponse`
 - **Pagination:** Cursor-based (ID), default page size 10
 - **Dependencies:** `GroupMemberService`, `NotificationApplicationService`, `CommentLikeService`, `MomentLikeService`, `UserBlockApplicationService`
-- **Recent Change (2026-02-09):** 직접 `CommentComposition` 생성자 호출에 8번째 인자 `memberId` 추가. fallback 경로에서 `comment.getMember().getId()`로 매핑.
+- **Recent Change (2026-02-10):** 직접 `CommentComposition` 생성자 호출에 8번째 인자 `memberId` 추가. fallback 경로에서 `comment.getMember().getId()`로 매핑.
 
 ## Domain Events Published
 
