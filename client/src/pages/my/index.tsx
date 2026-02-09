@@ -6,6 +6,7 @@ import { Button } from '@/shared/design-system/button/Button';
 import { Card } from '@/shared/design-system/card/Card';
 import { Modal } from '@/shared/design-system/modal/Modal';
 import { MyGroupList } from '@/features/group/ui/MyGroupList';
+import { BlockedUserList } from '@/features/block/ui/BlockedUserList';
 import { useState } from 'react';
 import * as S from './index.styles';
 import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
@@ -87,6 +88,15 @@ export default function MyPage() {
         </S.SectionTitleContainer>
         <Card width="large">
           <MyGroupList />
+        </Card>
+      </S.GroupSection>
+
+      <S.GroupSection>
+        <S.SectionTitleContainer>
+          <S.SectionTitle>차단 관리</S.SectionTitle>
+        </S.SectionTitleContainer>
+        <Card width="large">
+          <BlockedUserList />
         </Card>
       </S.GroupSection>
 
