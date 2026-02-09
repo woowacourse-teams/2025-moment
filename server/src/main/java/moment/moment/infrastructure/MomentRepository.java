@@ -84,7 +84,7 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
           LEFT JOIN FETCH m.member
           WHERE m.id IN :momentIds
            """)
-    List<Moment> findAllWithMomenterByIds(@Param("momentIds")List<Long> momentIds);
+    List<Moment> findAllWithMomenterAndMemberByIds(@Param("momentIds")List<Long> momentIds);
 
     @Query("""
           SELECT m

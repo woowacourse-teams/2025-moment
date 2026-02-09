@@ -202,7 +202,7 @@ class CommentRepositoryTest {
         List<Long> momentIdsToSearch = List.of(moment1.getId(), moment2.getId());
 
         // when
-        List<Comment> result = commentRepository.findAllByMomentIdIn(momentIdsToSearch);
+        List<Comment> result = commentRepository.findAllWithMemberAndCommenterByMomentIdIn(momentIdsToSearch);
 
         // then
         assertThat(result).hasSize(2)
