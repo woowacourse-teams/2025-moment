@@ -160,6 +160,7 @@ export function TodayCommentForm({
           onClose={handleComplaintClose}
           targetId={momentData.id}
           targetType="MOMENT"
+          memberId={momentData.memberId}
           onSubmit={handleComplaintSubmit}
         />
       )}

@@ -3,6 +3,7 @@ export const ROUTES = {
   SIGNUP: '/signup',
   LOGIN: '/login',
   GROUPS: '/groups',
+  TERMS: '/terms',
 
   TODAY_MOMENT: '/groups/:groupId/today-moment',
   TODAY_COMMENT: '/groups/:groupId/today-comment',

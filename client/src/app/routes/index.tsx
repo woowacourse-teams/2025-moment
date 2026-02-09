@@ -13,20 +13,23 @@ import NotFoundPage from '@/pages/notFound';
 import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayMomentPage from '@/pages/todayMoment';
+import TermsPage from '@/pages/terms';
 import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path={ROUTES.ROOT} element={<Layout />}>
-      <Route index element={<HomePage />} />
-      <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
-      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-      <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
-      <Route path={ROUTES.FIND_PASSWORD} element={<FindPasswordPage />} />
-      <Route path={ROUTES.NEW_PASSWORD} element={<NewPasswordPage />} />
+    <>
+      <Route path={ROUTES.TERMS} element={<TermsPage />} />
+      <Route path={ROUTES.ROOT} element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.GOOGLE_CALLBACK} element={<GoogleCallbackPage />} />
+        <Route path={ROUTES.FIND_PASSWORD} element={<FindPasswordPage />} />
+        <Route path={ROUTES.NEW_PASSWORD} element={<NewPasswordPage />} />
 
-      <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
         <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
         <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
@@ -36,7 +39,8 @@ export const router = createBrowserRouter(
 
         <Route path={ROUTES.MY} element={<MyPage />} />
       </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Route>,
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </>,
   ),
 );

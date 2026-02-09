@@ -73,7 +73,8 @@ export const SectionTitle = styled.p`
 export const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -130,6 +131,7 @@ export const UserInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
 
   @media (max-width: 768px) {
     width: 100%;

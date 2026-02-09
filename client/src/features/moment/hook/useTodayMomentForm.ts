@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
+import { checkProfanityWord } from '@/shared/utils/checkProfanityWord';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useToast } from '@/shared/hooks/useToast';
 import { useNavigate, useParams } from 'react-router';

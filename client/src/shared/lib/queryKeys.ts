@@ -32,4 +32,7 @@ export const queryKeys = {
   },
   momentWritingStatus: ['momentWritingStatus'] as const,
   rewardHistory: ['rewardHistory'] as const,
+  blocks: {
+    all: ['blocks'] as const,
+  },
 } as const;

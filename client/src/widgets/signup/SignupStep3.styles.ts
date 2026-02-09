@@ -64,6 +64,52 @@ export const Description = styled.p`
   gap: 8px;
 `;
 
+export const TermsContainer = styled.div`
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const TermsCheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors['gray-200']};
+`;
+
+export const TermsCheckbox = styled.input`
+  width: 18px;
+  height: 18px;
+  accent-color: ${({ theme }) => theme.colors['yellow-500']};
+  cursor: pointer;
+`;
+
+export const TermsLink = styled.button`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors['yellow-500']};
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 26px;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors['yellow-600']};
+  }
+`;
+
+export const TermsModalContent = styled.div`
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 0 4px;
+`;
+
 export const ButtonContainer = styled.div`
   width: 100%;
   max-width: 320px;
