@@ -9,6 +9,9 @@ public record MyGroupMomentCommentResponse(
         @Schema(description = "댓글 ID", example = "1")
         Long id,
 
+        @Schema(description = "작성자 멤버 ID", example = "1")
+        Long memberId,
+
         @Schema(description = "댓글 내용", example = "좋은 모멘트네요!")
         String content,
 
@@ -34,6 +37,7 @@ public record MyGroupMomentCommentResponse(
     ) {
         return new MyGroupMomentCommentResponse(
                 composition.id(),
+                composition.memberId(),
                 composition.content(),
                 composition.nickname(),
                 composition.imageUrl(),

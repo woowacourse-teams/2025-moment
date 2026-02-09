@@ -194,7 +194,7 @@ class MomentRepositoryTest {
         List<Long> idsToFetch = List.of(moment1.getId(), moment3.getId());
 
         // when
-        List<Moment> results = momentRepository.findAllWithMomenterByIds(idsToFetch);
+        List<Moment> results = momentRepository.findAllWithMomenterAndMemberByIds(idsToFetch);
 
         // then
         assertThat(results).hasSize(2);

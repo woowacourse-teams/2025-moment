@@ -11,7 +11,8 @@ public record CommentComposition(
         String imageUrl,
         LocalDateTime commentCreatedAt,
         Long momentId,
-        Long commenterUserId
+        Long commenterUserId,
+        Long memberId
 ) {
     public static CommentComposition of(Comment comment,
                                         User commenter,
@@ -23,7 +24,8 @@ public record CommentComposition(
                 imageUrl,
                 comment.getCreatedAt(),
                 comment.getMomentId(),
-                commenter != null ? commenter.getId() : null
+                commenter != null ? commenter.getId() : null,
+                comment.getMember() != null ? comment.getMember().getId() : null
         );
     }
 }

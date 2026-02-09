@@ -87,7 +87,7 @@ public class MomentService {
     }
 
     public List<Moment> getMomentsBy(List<Long> momentIds) {
-        return momentRepository.findAllWithMomenterByIds(momentIds);
+        return momentRepository.findAllWithMomenterAndMemberByIds(momentIds);
     }
 
     @Transactional

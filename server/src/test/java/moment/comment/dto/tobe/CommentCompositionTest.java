@@ -38,6 +38,19 @@ class CommentCompositionTest {
         assertThat(composition.nickname()).isEqualTo(commenter.getNickname());
     }
 
+    @Test
+    void member가_null인_경우_memberId가_null이다() {
+        // given
+        Comment comment = createCommentStub();
+        User commenter = UserFixture.createUserWithId(1L);
+
+        // when
+        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl");
+
+        // then
+        assertThat(composition.memberId()).isNull();
+    }
+
     private Comment createCommentStub() {
         User dummyUser = UserFixture.createUserWithId(99L);
         return new Comment("테스트 댓글", dummyUser, 1L);

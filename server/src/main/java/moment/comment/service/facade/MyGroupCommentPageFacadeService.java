@@ -144,7 +144,8 @@ public class MyGroupCommentPageFacadeService {
                     null,
                     comment.getCreatedAt(),
                     comment.getMomentId(),
-                    comment.getCommenter() != null ? comment.getCommenter().getId() : null
+                    comment.getCommenter() != null ? comment.getCommenter().getId() : null,
+                    comment.getMember() != null ? comment.getMember().getId() : null
             );
         }
 
