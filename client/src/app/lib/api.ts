@@ -107,6 +107,9 @@ const setupInterceptors = (instance: AxiosInstance) => {
         return Promise.reject(error);
       }
 
+      // 로그인 체크 요청은 ProtectedRoute에서 처리하므로 인터셉터에서 토스트/리다이렉트 생략
+      const isLoginCheck = url.includes('/auth/login/check');
+
       if (status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
@@ -117,9 +120,11 @@ const setupInterceptors = (instance: AxiosInstance) => {
             queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
             return instance(originalRequest);
           } catch {
-            queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-            toasts.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
-            redirectToLogin();
+            if (!isLoginCheck) {
+              queryClient.setQueryData(queryKeys.auth.checkLogin, false);
+              toasts.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
+              redirectToLogin();
+            }
             return Promise.reject(error);
           }
         }
@@ -133,9 +138,11 @@ const setupInterceptors = (instance: AxiosInstance) => {
           queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
           return instance(originalRequest);
         } catch (refreshError) {
-          queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-          toasts.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
-          redirectToLogin();
+          if (!isLoginCheck) {
+            queryClient.setQueryData(queryKeys.auth.checkLogin, false);
+            toasts.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
+            redirectToLogin();
+          }
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
