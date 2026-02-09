@@ -11,6 +11,9 @@ public record CommentableMomentResponse(
         @Schema(description = "모멘트 id", example = "1")
         Long id,
 
+        @Schema(description = "작성자 멤버 ID", example = "1")
+        Long memberId,
+
         @Schema(description = "모멘트 작성자 이름", example = "미미")
         String nickname,
 
@@ -35,6 +38,7 @@ public record CommentableMomentResponse(
 
         return new CommentableMomentResponse(
                 moment.getId(),
+                moment.getMember() != null ? moment.getMember().getId() : null,
                 nickname,
                 moment.getContent(),
                 momentImageUrl,
