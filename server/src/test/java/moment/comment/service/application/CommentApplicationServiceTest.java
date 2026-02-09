@@ -13,14 +13,24 @@ import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
+import moment.block.domain.UserBlock;
+import moment.block.infrastructure.UserBlockRepository;
+import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
+import moment.fixture.CommentFixture;
+import moment.fixture.GroupFixture;
+import moment.fixture.MomentFixture;
 import moment.fixture.UserFixture;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
+import moment.group.infrastructure.GroupMemberRepository;
+import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
 import moment.support.CommentCreatedAtHelper;
@@ -60,6 +70,15 @@ class CommentApplicationServiceTest {
 
     @Autowired
     private CommentCreatedAtHelper createdAtHelper;
+
+    @Autowired
+    private GroupRepository groupRepository;
+
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
+
+    @Autowired
+    private UserBlockRepository userBlockRepository;
 
     private User user;
     private Moment moment;
@@ -251,5 +270,48 @@ class CommentApplicationServiceTest {
         assertThat(result.commentCompositions()).hasSize(2);
         assertThat(result.commentCompositions().get(0).content()).isEqualTo("comment 1");
         assertThat(result.commentCompositions().get(1).content()).isEqualTo("comment 0");
+    }
+
+    @Test
+    void 그룹_댓글_조회_시_차단된_사용자의_댓글이_필터링된다() {
+        // given
+        User blockedUser = userRepository.save(UserFixture.createUser());
+        Group group = groupRepository.save(GroupFixture.createGroup(user));
+        GroupMember member = groupMemberRepository.save(GroupMember.createOwner(group, user, "닉네임"));
+        GroupMember blockedMember = groupMemberRepository.save(GroupMember.createOwner(group, blockedUser, "차단유저"));
+
+        Moment groupMoment = momentRepository.save(MomentFixture.createMomentInGroup(user, group, member));
+        commentRepository.save(CommentFixture.createCommentInGroup(groupMoment, user, member));
+        commentRepository.save(CommentFixture.createCommentInGroup(groupMoment, blockedUser, blockedMember));
+
+        userBlockRepository.save(new UserBlock(user, blockedUser));
+
+        // when
+        List<GroupCommentResponse> result = commentApplicationService.getCommentsInGroup(
+                group.getId(), groupMoment.getId(), user.getId());
+
+        // then
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void 차단된_사용자의_댓글에_좋아요_토글_시_예외가_발생한다() {
+        // given
+        User blockedUser = userRepository.save(UserFixture.createUser());
+        Group group = groupRepository.save(GroupFixture.createGroup(user));
+        GroupMember member = groupMemberRepository.save(GroupMember.createOwner(group, user, "닉네임"));
+        GroupMember blockedMember = groupMemberRepository.save(GroupMember.createOwner(group, blockedUser, "차단유저"));
+
+        Moment groupMoment = momentRepository.save(MomentFixture.createMomentInGroup(user, group, member));
+        Comment blockedComment = commentRepository.save(
+                CommentFixture.createCommentInGroup(groupMoment, blockedUser, blockedMember));
+
+        userBlockRepository.save(new UserBlock(user, blockedUser));
+
+        // when & then
+        assertThatThrownBy(() -> commentApplicationService.toggleCommentLike(
+                group.getId(), blockedComment.getId(), user.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.BLOCKED_USER_INTERACTION);
     }
 }

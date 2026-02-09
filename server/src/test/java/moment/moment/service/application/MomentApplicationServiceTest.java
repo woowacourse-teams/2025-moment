@@ -1,16 +1,32 @@
 package moment.moment.service.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import moment.block.domain.UserBlock;
+import moment.block.infrastructure.UserBlockRepository;
+import moment.comment.domain.Comment;
+import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
+import moment.fixture.CommentFixture;
+import moment.fixture.GroupFixture;
+import moment.fixture.MomentFixture;
 import moment.fixture.UserFixture;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.global.page.Cursor;
 import moment.global.page.PageSize;
+import moment.group.domain.Group;
+import moment.group.domain.GroupMember;
+import moment.group.infrastructure.GroupMemberRepository;
+import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.GroupMomentListResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.infrastructure.MomentImageRepository;
@@ -48,6 +64,18 @@ class MomentApplicationServiceTest {
 
     @Autowired
     private MomentImageRepository momentImageRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
+
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
+
+    @Autowired
+    private UserBlockRepository userBlockRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     void 기본_모멘트를_작성한다() {
@@ -126,5 +154,48 @@ class MomentApplicationServiceTest {
                 () -> assertThat(response.momentCompositionInfo().getFirst().imageUrl()).isEqualTo(expectedResolvedUrl),
                 () -> assertThat(response.momentCompositionInfo().getLast().id()).isEqualTo(extraMoment1.getId())
         );
+    }
+
+    @Test
+    void 그룹_모멘트_조회_시_차단된_사용자의_모멘트가_필터링된다() {
+        // given
+        User owner = userRepository.save(UserFixture.createUser());
+        User blockedUser = userRepository.save(UserFixture.createUser());
+        Group group = groupRepository.save(GroupFixture.createGroup(owner));
+        GroupMember ownerMember = groupMemberRepository.save(GroupMember.createOwner(group, owner, "오너"));
+        GroupMember blockedMember = groupMemberRepository.save(GroupMember.createOwner(group, blockedUser, "차단유저"));
+
+        momentRepository.save(MomentFixture.createMomentInGroup(owner, group, ownerMember));
+        momentRepository.save(MomentFixture.createMomentInGroup(blockedUser, group, blockedMember));
+
+        userBlockRepository.save(new UserBlock(owner, blockedUser));
+
+        // when
+        GroupMomentListResponse result = momentApplicationService.getGroupMoments(
+                group.getId(), owner.getId(), null);
+
+        // then
+        assertThat(result.moments()).hasSize(1);
+    }
+
+    @Test
+    void 차단된_사용자의_모멘트에_좋아요_토글_시_예외가_발생한다() {
+        // given
+        User owner = userRepository.save(UserFixture.createUser());
+        User blockedUser = userRepository.save(UserFixture.createUser());
+        Group group = groupRepository.save(GroupFixture.createGroup(owner));
+        GroupMember ownerMember = groupMemberRepository.save(GroupMember.createOwner(group, owner, "오너"));
+        GroupMember blockedMember = groupMemberRepository.save(GroupMember.createOwner(group, blockedUser, "차단유저"));
+
+        Moment blockedMoment = momentRepository.save(
+                MomentFixture.createMomentInGroup(blockedUser, group, blockedMember));
+
+        userBlockRepository.save(new UserBlock(owner, blockedUser));
+
+        // when & then
+        assertThatThrownBy(() -> momentApplicationService.toggleMomentLike(
+                group.getId(), blockedMoment.getId(), owner.getId()))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.BLOCKED_USER_INTERACTION);
     }
 }

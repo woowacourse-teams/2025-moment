@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
+import moment.block.domain.UserBlock;
+import moment.block.infrastructure.UserBlockRepository;
 import moment.config.TestTags;
 import moment.fixture.CommentFixture;
 import moment.fixture.GroupFixture;
@@ -65,6 +67,9 @@ class MyGroupMomentPageFacadeServiceTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private UserBlockRepository userBlockRepository;
 
     private User user;
     private Group group;
@@ -174,6 +179,29 @@ class MyGroupMomentPageFacadeServiceTest {
         assertAll(
                 () -> assertThat(secondPage.moments()).hasSize(5),
                 () -> assertThat(secondPage.hasNextPage()).isFalse()
+        );
+    }
+
+    @Test
+    void 차단된_사용자의_댓글이_필터링된다() {
+        // given
+        User blockedUser = userRepository.save(UserFixture.createUser());
+        GroupMember blockedMember = groupMemberRepository.save(GroupMember.createOwner(group, blockedUser, "차단유저"));
+
+        Moment moment = momentRepository.save(MomentFixture.createMomentInGroup(user, group, member));
+        commentRepository.save(CommentFixture.createCommentInGroup(moment, user, member));
+        commentRepository.save(CommentFixture.createCommentInGroup(moment, blockedUser, blockedMember));
+
+        userBlockRepository.save(new UserBlock(user, blockedUser));
+
+        // when
+        MyGroupMomentListResponse response = facadeService.getMyMomentsInGroup(
+                group.getId(), user.getId(), null);
+
+        // then
+        assertAll(
+                () -> assertThat(response.moments()).hasSize(1),
+                () -> assertThat(response.moments().get(0).comments()).hasSize(1)
         );
     }
 }
