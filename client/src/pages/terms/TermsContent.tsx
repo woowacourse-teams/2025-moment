@@ -6,22 +6,24 @@ export const TermsContent = () => {
       <S.Section>
         <S.SectionTitle>제1조 (목적)</S.SectionTitle>
         <S.Paragraph>
-          본 약관은 Moment(이하 "서비스")의 이용 조건 및 절차, 이용자와 서비스 제공자의 권리, 의무 및
-          책임사항을 규정하는 것을 목적으로 합니다.
+          본 약관은 Moment(이하 "서비스")의 이용 조건 및 절차, 이용자와 서비스 제공자의 권리, 의무
+          및 책임사항을 규정하는 것을 목적으로 합니다.
         </S.Paragraph>
       </S.Section>
 
       <S.Section>
         <S.SectionTitle>제2조 (용어의 정의)</S.SectionTitle>
         <S.Paragraph>
-          "이용자"란 본 약관에 동의하고 서비스를 이용하는 자를 의미합니다. "콘텐츠"란 이용자가 서비스
-          내에서 작성, 업로드하는 텍스트, 이미지 등 모든 형태의 정보를 의미합니다.
+          "이용자"란 본 약관에 동의하고 서비스를 이용하는 자를 의미합니다. "콘텐츠"란 이용자가
+          서비스 내에서 작성, 업로드하는 텍스트, 이미지 등 모든 형태의 정보를 의미합니다.
         </S.Paragraph>
       </S.Section>
 
       <S.Section>
         <S.SectionTitle>제3조 (콘텐츠 이용 규칙)</S.SectionTitle>
-        <S.Paragraph>이용자는 서비스를 이용함에 있어 다음 각 호의 행위를 하여서는 안 됩니다.</S.Paragraph>
+        <S.Paragraph>
+          이용자는 서비스를 이용함에 있어 다음 각 호의 행위를 하여서는 안 됩니다.
+        </S.Paragraph>
         <S.List>
           <S.ListItem>음란물 또는 성적으로 부적절한 콘텐츠를 게시하는 행위</S.ListItem>
           <S.ListItem>혐오 발언, 차별, 비하 등의 콘텐츠를 게시하는 행위</S.ListItem>

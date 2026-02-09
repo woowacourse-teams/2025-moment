@@ -30,15 +30,15 @@ export const router = createBrowserRouter(
         <Route path={ROUTES.NEW_PASSWORD} element={<NewPasswordPage />} />
 
         <Route element={<ProtectedRoute />}>
-        <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
-        <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
-        <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
+          <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />
+          <Route path={ROUTES.TODAY_COMMENT} element={<TodayCommentPage />} />
+          <Route path={ROUTES.TODAY_MOMENT_SUCCESS} element={<TodayMomentSuccessPage />} />
 
-        <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
-        <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
+          <Route path={ROUTES.COLLECTION_MYMOMENT} element={<MyMomentCollectionPage />} />
+          <Route path={ROUTES.COLLECTION_MYCOMMENT} element={<MyCommentCollectionPage />} />
 
-        <Route path={ROUTES.MY} element={<MyPage />} />
-      </Route>
+          <Route path={ROUTES.MY} element={<MyPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </>,
