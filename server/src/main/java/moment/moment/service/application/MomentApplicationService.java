@@ -254,6 +254,11 @@ public class MomentApplicationService {
     @Transactional
     public boolean toggleMomentLike(Long groupId, Long momentId, Long userId) {
         Moment moment = momentService.getMomentBy(momentId);
+
+        if (userBlockApplicationService.isBlocked(userId, moment.getMomenter().getId())) {
+            throw new MomentException(ErrorCode.BLOCKED_USER_INTERACTION);
+        }
+
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         return momentLikeService.toggle(moment, member);
     }

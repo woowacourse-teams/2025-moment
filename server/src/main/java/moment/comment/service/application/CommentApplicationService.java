@@ -14,6 +14,7 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.global.exception.ErrorCode;
@@ -45,6 +46,7 @@ public class CommentApplicationService {
     private final GroupMemberService groupMemberService;
     private final MomentService momentService;
     private final CommentLikeService commentLikeService;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
         List<Comment> comments = commentService.getAllByMomentIds(momentIds);
@@ -226,6 +228,11 @@ public class CommentApplicationService {
     @Transactional
     public boolean toggleCommentLike(Long groupId, Long commentId, Long userId) {
         Comment comment = commentService.getCommentBy(commentId);
+
+        if (userBlockApplicationService.isBlocked(userId, comment.getCommenter().getId())) {
+            throw new MomentException(ErrorCode.BLOCKED_USER_INTERACTION);
+        }
+
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         return commentLikeService.toggle(comment, member);
     }
