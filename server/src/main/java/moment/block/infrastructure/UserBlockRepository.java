@@ -18,6 +18,9 @@ public interface UserBlockRepository extends JpaRepository<UserBlock, Long> {
 
     List<UserBlock> findAllByBlocker(User blocker);
 
+    @Query("SELECT ub FROM UserBlock ub JOIN FETCH ub.blockedUser WHERE ub.blocker = :blocker")
+    List<UserBlock> findAllByBlockerWithBlockedUser(@Param("blocker") User blocker);
+
     @Query(value = """
         SELECT blocked_user_id FROM user_blocks WHERE blocker_id = :userId AND deleted_at IS NULL
         UNION ALL

@@ -153,7 +153,7 @@ class UserBlockServiceTest {
                 UserBlockFixture.createUserBlockWithId(2L, blocker, blockedUser2)
         );
 
-        given(userBlockRepository.findAllByBlocker(blocker)).willReturn(blocks);
+        given(userBlockRepository.findAllByBlockerWithBlockedUser(blocker)).willReturn(blocks);
 
         List<UserBlock> result = userBlockService.getBlockedUsers(blocker);
 

@@ -56,7 +56,7 @@ public class UserBlockService {
     }
 
     public List<UserBlock> getBlockedUsers(User blocker) {
-        return userBlockRepository.findAllByBlocker(blocker);
+        return userBlockRepository.findAllByBlockerWithBlockedUser(blocker);
     }
 
     private void validateNotSelf(User blocker, User blockedUser) {
