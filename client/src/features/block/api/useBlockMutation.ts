@@ -16,6 +16,8 @@ export const useBlockMutation = () => {
       showSuccess('사용자가 차단되었습니다.');
       queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.commentableMoments.all });
+      queryClient.invalidateQueries({ queryKey: ['moments'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
     onError: () => {
       showError('차단에 실패했습니다. 다시 시도해주세요.');
