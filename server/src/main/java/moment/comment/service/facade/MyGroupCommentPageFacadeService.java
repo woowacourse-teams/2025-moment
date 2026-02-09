@@ -133,7 +133,8 @@ public class MyGroupCommentPageFacadeService {
                     comment.getMember() != null ? comment.getMember().getNickname() : null,
                     null,
                     comment.getCreatedAt(),
-                    comment.getMomentId()
+                    comment.getMomentId(),
+                    comment.getCommenter() != null ? comment.getCommenter().getId() : null
             );
         }
 

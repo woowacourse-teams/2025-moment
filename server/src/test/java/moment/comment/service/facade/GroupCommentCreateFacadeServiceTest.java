@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.event.GroupCommentCreateEvent;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.service.application.CommentApplicationService;
@@ -37,6 +38,9 @@ class GroupCommentCreateFacadeServiceTest {
 
     @Mock
     private MomentApplicationService momentApplicationService;
+
+    @Mock
+    private UserBlockApplicationService userBlockApplicationService;
 
     @Mock
     private ApplicationEventPublisher publisher;
