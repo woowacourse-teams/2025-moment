@@ -1,17 +1,21 @@
 package moment.comment.service.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.event.GroupCommentCreateEvent;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.service.application.CommentApplicationService;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
 import moment.user.domain.User;
@@ -37,6 +41,9 @@ class GroupCommentCreateFacadeServiceTest {
 
     @Mock
     private MomentApplicationService momentApplicationService;
+
+    @Mock
+    private UserBlockApplicationService userBlockApplicationService;
 
     @Mock
     private ApplicationEventPublisher publisher;
@@ -125,6 +132,28 @@ class GroupCommentCreateFacadeServiceTest {
 
         // then
         assertThat(result).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void 차단된_사용자의_그룹_모멘트에_댓글_작성_시_예외가_발생한다() {
+        // given
+        Long groupId = 1L;
+        Long momentId = 2L;
+        Long userId = 5L;
+        Long momentOwnerId = 3L;
+
+        Moment moment = createMomentWithOwner(momentId, momentOwnerId);
+
+        when(momentApplicationService.getMomentBy(momentId)).thenReturn(moment);
+        when(userBlockApplicationService.isBlocked(userId, momentOwnerId)).thenReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> groupCommentCreateFacadeService.createGroupComment(
+                groupId, momentId, userId, "댓글 내용", null, null))
+                .isInstanceOf(MomentException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.BLOCKED_USER_INTERACTION);
+
+        verify(commentApplicationService, never()).createCommentInGroup(any(), any(), any(), any(), any(), any());
     }
 
     private Moment createMomentWithOwner(Long momentId, Long ownerId) {

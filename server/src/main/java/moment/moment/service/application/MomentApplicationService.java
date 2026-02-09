@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.service.comment.CommentService;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
@@ -51,6 +52,7 @@ public class MomentApplicationService {
     private final GroupMemberService memberService;
     private final MomentLikeService momentLikeService;
     private final CommentService commentService;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     @Transactional
     public MomentCreateResponse createBasicMoment(MomentCreateRequest request, Long momenterId) {
@@ -140,7 +142,8 @@ public class MomentApplicationService {
     public List<Long> getCommentableMomentIdsInGroup(Long groupId, Long userId) {
         User user = userService.getUserBy(userId);
         List<Long> reportedMomentIds = reportService.getReportedMomentIdsBy(user.getId());
-        return momentService.getCommentableMomentIdsInGroup(groupId, user, reportedMomentIds);
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        return momentService.getCommentableMomentIdsInGroup(groupId, user, reportedMomentIds, blockedUserIds);
     }
 
     public CommentableMomentResponse pickRandomMomentComposition(List<Long> momentIds) {
@@ -178,7 +181,8 @@ public class MomentApplicationService {
 
     public GroupMomentListResponse getGroupMoments(Long groupId, Long userId, Long cursor) {
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
-        List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE);
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        List<Moment> moments = momentService.getByGroup(groupId, cursor, DEFAULT_PAGE_SIZE, blockedUserIds);
 
         Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
 
@@ -186,7 +190,7 @@ public class MomentApplicationService {
                 .map(moment -> {
                     long likeCount = momentLikeService.getCount(moment.getId());
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
-                    long commentCount = commentService.countByMomentId(moment.getId());
+                    long commentCount = commentService.countByMomentIdExcludingBlocked(moment.getId(), blockedUserIds);
                     MomentImage image = momentImageMap.get(moment);
                     String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
                     return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, imageUrl);
@@ -250,6 +254,11 @@ public class MomentApplicationService {
     @Transactional
     public boolean toggleMomentLike(Long groupId, Long momentId, Long userId) {
         Moment moment = momentService.getMomentBy(momentId);
+
+        if (userBlockApplicationService.isBlocked(userId, moment.getMomenter().getId())) {
+            throw new MomentException(ErrorCode.BLOCKED_USER_INTERACTION);
+        }
+
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         return momentLikeService.toggle(moment, member);
     }

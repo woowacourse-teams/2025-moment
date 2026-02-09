@@ -1,9 +1,12 @@
 package moment.comment.service.facade;
 
 import lombok.RequiredArgsConstructor;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.event.GroupCommentCreateEvent;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.service.application.CommentApplicationService;
+import moment.global.exception.ErrorCode;
+import moment.global.exception.MomentException;
 import moment.moment.domain.Moment;
 import moment.moment.service.application.MomentApplicationService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,6 +20,7 @@ public class GroupCommentCreateFacadeService {
 
     private final CommentApplicationService commentApplicationService;
     private final MomentApplicationService momentApplicationService;
+    private final UserBlockApplicationService userBlockApplicationService;
     private final ApplicationEventPublisher publisher;
 
     @Transactional
@@ -24,6 +28,11 @@ public class GroupCommentCreateFacadeService {
             Long groupId, Long momentId, Long userId,
             String content, String imageUrl, String imageName) {
         Moment moment = momentApplicationService.getMomentBy(momentId);
+
+        if (userBlockApplicationService.isBlocked(userId, moment.getMomenter().getId())) {
+            throw new MomentException(ErrorCode.BLOCKED_USER_INTERACTION);
+        }
+
         GroupCommentResponse response = commentApplicationService.createCommentInGroup(
                 groupId, momentId, userId, content, imageUrl, imageName);
 

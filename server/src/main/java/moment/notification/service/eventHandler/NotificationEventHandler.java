@@ -3,6 +3,7 @@ package moment.notification.service.eventHandler;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.CommentCreateEvent;
 import moment.comment.dto.event.GroupCommentCreateEvent;
 import moment.group.dto.event.GroupJoinApprovedEvent;
@@ -26,12 +27,22 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class NotificationEventHandler {
 
     private final NotificationFacadeService notificationFacadeService;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCommentCreateEvent(CommentCreateEvent event) {
         log.info("CommentCreateEvent received: momentId={}, momenterId={}",
             event.momentId(), event.momenterId());
+
+        if (event.commenterId().equals(event.momenterId())) {
+            return;
+        }
+        if (userBlockApplicationService.isBlocked(event.commenterId(), event.momenterId())) {
+            log.info("Skipping notification due to block: commenter={}, momentOwner={}",
+                event.commenterId(), event.momenterId());
+            return;
+        }
 
         SourceData sourceData = event.groupId() != null
                 ? SourceData.of(Map.of("momentId", event.momentId(), "groupId", event.groupId()))
@@ -89,6 +100,15 @@ public class NotificationEventHandler {
         log.info("MomentLikeEvent received: momentId={}, liker={}",
             event.momentId(), event.likerNickname());
 
+        if (event.likerUserId().equals(event.momentOwnerId())) {
+            return;
+        }
+        if (userBlockApplicationService.isBlocked(event.likerUserId(), event.momentOwnerId())) {
+            log.info("Skipping notification due to block: liker={}, momentOwner={}",
+                event.likerUserId(), event.momentOwnerId());
+            return;
+        }
+
         notificationFacadeService.notify(new NotificationCommand(
                 event.momentOwnerId(),
                 NotificationType.MOMENT_LIKED,
@@ -102,6 +122,15 @@ public class NotificationEventHandler {
         log.info("CommentLikeEvent received: commentId={}, liker={}",
             event.commentId(), event.likerNickname());
 
+        if (event.likerUserId().equals(event.commentOwnerId())) {
+            return;
+        }
+        if (userBlockApplicationService.isBlocked(event.likerUserId(), event.commentOwnerId())) {
+            log.info("Skipping notification due to block: liker={}, commentOwner={}",
+                event.likerUserId(), event.commentOwnerId());
+            return;
+        }
+
         notificationFacadeService.notify(new NotificationCommand(
                 event.commentOwnerId(),
                 NotificationType.COMMENT_LIKED,
@@ -114,6 +143,15 @@ public class NotificationEventHandler {
     public void handleGroupCommentCreateEvent(GroupCommentCreateEvent event) {
         log.info("GroupCommentCreateEvent received: momentId={}, commenter={}",
             event.momentId(), event.commenterNickname());
+
+        if (event.commenterId().equals(event.momentOwnerId())) {
+            return;
+        }
+        if (userBlockApplicationService.isBlocked(event.commenterId(), event.momentOwnerId())) {
+            log.info("Skipping notification due to block: commenter={}, momentOwner={}",
+                event.commenterId(), event.momentOwnerId());
+            return;
+        }
 
         notificationFacadeService.notify(new NotificationCommand(
                 event.momentOwnerId(),

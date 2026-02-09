@@ -2,9 +2,11 @@ package moment.comment.service.application;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
@@ -14,6 +16,7 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.global.exception.ErrorCode;
@@ -45,6 +48,7 @@ public class CommentApplicationService {
     private final GroupMemberService groupMemberService;
     private final MomentService momentService;
     private final CommentLikeService commentLikeService;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     public List<CommentComposition> getMyCommentCompositionsBy(List<Long> momentIds) {
         List<Comment> comments = commentService.getAllByMomentIds(momentIds);
@@ -197,6 +201,12 @@ public class CommentApplicationService {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         List<Comment> comments = commentService.getAllByMomentIds(List.of(momentId));
 
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        Set<Long> blockedUserIdSet = new HashSet<>(blockedUserIds);
+        comments = comments.stream()
+                .filter(c -> c.getCommenter() == null || !blockedUserIdSet.contains(c.getCommenter().getId()))
+                .toList();
+
         Map<Comment, CommentImage> commentImageMap = commentImageService.getCommentImageByComment(comments);
 
         return comments.stream()
@@ -226,6 +236,11 @@ public class CommentApplicationService {
     @Transactional
     public boolean toggleCommentLike(Long groupId, Long commentId, Long userId) {
         Comment comment = commentService.getCommentBy(commentId);
+
+        if (userBlockApplicationService.isBlocked(userId, comment.getCommenter().getId())) {
+            throw new MomentException(ErrorCode.BLOCKED_USER_INTERACTION);
+        }
+
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         return commentLikeService.toggle(comment, member);
     }

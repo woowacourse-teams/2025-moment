@@ -1,24 +1,25 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-06
+> Last Updated: 2026-02-09
 
 ## Quick Reference
 
 | 도메인 | PREFIX | 기능 수 | 상태 | 상세 문서 |
 |--------|--------|---------|------|-----------|
+| admin | ADM | 34 | DONE | [admin.md](admin.md) |
 | auth | AUTH | 12 | DONE | [auth.md](auth.md) |
-| user | USER | 8 | DONE | [user.md](user.md) |
-| moment | MOM | 4 | DONE | [moment.md](moment.md) |
+| block | BLK | 6 | DONE | [block.md](block.md) |
 | comment | CMT | 1 | DONE | [comment.md](comment.md) |
+| global | GLB | 7 | DONE | [global.md](global.md) |
 | group | GRP | 29 | DONE | [group.md](group.md) |
 | like | LIK | 2 | DONE | [like.md](like.md) |
+| moment | MOM | 4 | DONE | [moment.md](moment.md) |
 | notification | NTF | 6 | DONE | [notification.md](notification.md) |
 | report | RPT | 2 | DONE | [report.md](report.md) |
 | storage | STG | 1 | DONE | [storage.md](storage.md) |
-| admin | ADM | 34 | DONE | [admin.md](admin.md) |
-| global | GLB | 7 | DONE | [global.md](global.md) |
+| user | USER | 8 | DONE | [user.md](user.md) |
 
-**총 106개 기능**
+**총 112개 기능**
 
 ## Cross-Domain Dependencies (이벤트 기반)
 
@@ -46,10 +47,24 @@
 
 **구독자**: 단일 클래스 `NotificationEventHandler`가 모든 이벤트 처리
 
+## Cross-Domain Dependencies (서비스 직접 의존 - block)
+
+| 소비 도메인 | 소비 클래스 | 제공 도메인 | 제공 클래스 | 용도 |
+|-----------|-----------|-----------|-----------|------|
+| comment | `CommentCreateFacadeService` | block | `UserBlockApplicationService` | 댓글 생성 시 차단 확인 |
+| comment | `GroupCommentCreateFacadeService` | block | `UserBlockApplicationService` | 그룹 댓글 생성 시 차단 확인 |
+| comment | `CommentApplicationService` | block | `UserBlockApplicationService` | 댓글 좋아요/목록 차단 필터링 |
+| comment | `MyGroupCommentPageFacadeService` | block | `UserBlockApplicationService` | 그룹 댓글 페이지 차단 필터링 |
+| moment | `MomentApplicationService` | block | `UserBlockApplicationService` | 모멘트 좋아요 차단, 피드 필터링 |
+| moment | `MyGroupMomentPageFacadeService` | block | `UserBlockApplicationService` | 그룹 모멘트 피드 차단 필터링 |
+| notification | `NotificationEventHandler` | block | `UserBlockApplicationService` | 차단된 사용자 알림 스킵 |
+
 ## Recent Changes (최근 20건)
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-09 | block | BLK-001~006 | 사용자 차단 기능 신규 추가 (차단/해제/목록 API, 피드 필터링, 상호작용 차단, 알림 필터링) |
+| 2026-02-09 | moment, comment, like, notification | - | block 도메인 연동: 모멘트 피드 필터링, 댓글 필터링, 좋아요/댓글 생성 차단, 알림 필터링, Like 이벤트 likerUserId 추가 |
 | 2026-02-06 | notification | NTF-001~006 | 딥링크 리팩토링: NotificationPayload 제거, SourceData(JSON)+DeepLinkGenerator 도입, userId 필터 추가, 복합 인덱스 V37 추가 |
 | 2026-02-04 | user | USER-008 | 회원 탈퇴 API 구현 (DELETE /api/v2/me), UserWithdrawService 추가 |
 | 2026-02-04 | moment, comment, like | - | 탈퇴 사용자 콘텐츠 표시 처리 (LEFT JOIN FETCH, null-safe 닉네임 표시, 좋아요 이벤트 null 체크) |

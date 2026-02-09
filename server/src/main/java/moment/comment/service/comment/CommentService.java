@@ -94,6 +94,13 @@ public class CommentService {
         return commentRepository.countByMomentId(momentId);
     }
 
+    public long countByMomentIdExcludingBlocked(Long momentId, List<Long> blockedUserIds) {
+        if (blockedUserIds == null || blockedUserIds.isEmpty()) {
+            return commentRepository.countByMomentId(momentId);
+        }
+        return commentRepository.countByMomentIdExcludingBlocked(momentId, blockedUserIds);
+    }
+
     public List<Comment> getMyCommentsInGroup(Long memberId, Long cursor, int limit) {
         PageRequest pageable = PageRequest.of(0, limit);
         if (cursor == null) {

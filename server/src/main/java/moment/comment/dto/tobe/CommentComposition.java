@@ -10,7 +10,8 @@ public record CommentComposition(
         String nickname,
         String imageUrl,
         LocalDateTime commentCreatedAt,
-        Long momentId
+        Long momentId,
+        Long commenterUserId
 ) {
     public static CommentComposition of(Comment comment,
                                         User commenter,
@@ -21,7 +22,8 @@ public record CommentComposition(
                 commenter != null ? commenter.getNickname() : "탈퇴한 사용자",
                 imageUrl,
                 comment.getCreatedAt(),
-                comment.getMomentId()
+                comment.getMomentId(),
+                commenter != null ? commenter.getId() : null
         );
     }
 }

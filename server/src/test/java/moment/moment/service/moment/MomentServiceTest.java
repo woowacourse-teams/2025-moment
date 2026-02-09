@@ -265,7 +265,7 @@ class MomentServiceTest {
         Moment moment2 = momentRepository.save(new Moment(groupOwner, group, ownerMember, "모멘트2"));
 
         // when
-        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, List.of());
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, List.of(), List.of());
 
         // then
         assertThat(result).containsExactlyInAnyOrder(moment1.getId(), moment2.getId());
@@ -290,7 +290,7 @@ class MomentServiceTest {
         List<Long> reportedMomentIds = List.of(moment1.getId(), moment3.getId());
 
         // when
-        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, reportedMomentIds);
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), commenter, reportedMomentIds, List.of());
 
         // then
         assertThat(result).containsExactly(moment2.getId());
@@ -310,7 +310,7 @@ class MomentServiceTest {
         momentRepository.save(new Moment(groupOwner, group, ownerMember, "내 모멘트"));
 
         // when
-        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), groupOwner, List.of());
+        List<Long> result = momentService.getCommentableMomentIdsInGroup(group.getId(), groupOwner, List.of(), List.of());
 
         // then
         assertThat(result).isEmpty();

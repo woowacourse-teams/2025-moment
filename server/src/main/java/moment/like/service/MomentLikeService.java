@@ -39,13 +39,7 @@ public class MomentLikeService {
 
         User momenter = moment.getMomenter();
         if (isNowLiked && momenter != null && !momenter.getId().equals(member.getUser().getId())) {
-            eventPublisher.publishEvent(new MomentLikeEvent(
-                moment.getId(),
-                moment.getMomenter().getId(),
-                member.getId(),
-                member.getNickname(),
-                moment.getGroup().getId()
-            ));
+            eventPublisher.publishEvent(MomentLikeEvent.of(moment, member));
         }
 
         return isNowLiked;
