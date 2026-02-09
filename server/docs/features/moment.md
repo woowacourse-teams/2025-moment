@@ -1,6 +1,6 @@
 # Moment Domain (PREFIX: MOM)
 
-> Last Updated: 2026-02-04
+> Last Updated: 2026-02-09
 > Features: 4
 
 ## 기능 목록
@@ -72,6 +72,15 @@
 - `MomentRepository`: `JOIN FETCH m.momenter` → `LEFT JOIN FETCH m.momenter`로 변경 (탈퇴 사용자 모멘트 조회 지원)
 - `MomentComposition.of()`: momenter null 시 "탈퇴한 사용자" 표시, momenterId null 반환
 - `CommentableMomentResponse.of()`: momenter null 시 "탈퇴한 사용자" 표시
+
+## 차단 사용자 필터링
+
+- `MomentRepository`: 그룹 피드 쿼리에 `AND m.momenter.id NOT IN :blockedUserIds` 조건 추가
+- `MomentService.getByGroup()`: `blockedUserIds` 파라미터 추가, JPQL NOT IN 빈 리스트 방어용 센티널 값(`-1L`) 사용
+- `MomentService.getCommentableMomentIdsInGroup()`: `blockedUserIds` 파라미터 추가
+- `MomentApplicationService.getGroupMoments()`: 차단된 사용자 모멘트 제외, 댓글 수 카운트에서 차단 사용자 제외 (`countByMomentIdExcludingBlocked`)
+- `MomentApplicationService.toggleMomentLike()`: 차단된 사용자 모멘트 좋아요 시 `BLOCKED_USER_INTERACTION` 에러
+- `MyGroupMomentPageFacadeService`: 그룹 모멘트 페이지에서 차단된 사용자 댓글 필터링
 
 ## 관련 테스트 클래스 (10개)
 

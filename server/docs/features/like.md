@@ -1,6 +1,6 @@
 # Like Domain (PREFIX: LIK)
 
-> Last Updated: 2026-02-04
+> Last Updated: 2026-02-09
 > Features: 2
 
 ## 탈퇴 사용자 콘텐츠 처리
@@ -33,6 +33,13 @@
 - **Business Rules**: 좋아요 토글 (존재하면 삭제, 없으면 생성), UniqueConstraint(comment_id, member_id)
 - **Dependencies**: group (GroupMember 검증)
 - **Tests**: `CommentLikeTest`, `CommentLikeServiceTest`
+
+## 차단 사용자 관련 변경
+
+- `MomentLikeEvent`: `likerUserId` 필드 추가, `of(Moment, GroupMember)` 팩토리 메서드 추가 (알림 필터링용)
+- `CommentLikeEvent`: `likerUserId` 필드 추가, `of(Comment, GroupMember)` 팩토리 메서드 추가 (알림 필터링용)
+- `MomentLikeService`: 이벤트 발행을 `MomentLikeEvent.of()` 팩토리 사용으로 리팩토링
+- `CommentLikeService`: 이벤트 발행을 `CommentLikeEvent.of()` 팩토리 사용으로 리팩토링
 
 ## Domain Events Published
 

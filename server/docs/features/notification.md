@@ -1,6 +1,6 @@
 # Notification Domain (PREFIX: NTF)
 
-> Last Updated: 2026-02-06
+> Last Updated: 2026-02-09
 > Features: 6
 
 ## 기능 목록
@@ -83,6 +83,16 @@
 - `SourceData`: JSON 기반 알림 원본 데이터 값 객체 (NotificationPayload 대체)
 - `DeepLinkGenerator`: NotificationType + SourceData 기반 클라이언트 딥링크 생성 (순수 도메인 로직)
 - `SourceDataConverter`: JPA @Converter로 SourceData ↔ JSON 자동 변환
+
+### 차단 사용자 알림 필터링
+
+`NotificationEventHandler`의 4개 이벤트 핸들러에 차단 확인 로직 추가:
+- `handleCommentCreateEvent`: 댓글 작성자 ↔ 모멘트 소유자 차단 시 알림 스킵
+- `handleMomentLikeEvent`: 좋아요 누른 사용자 ↔ 모멘트 소유자 차단 시 알림 스킵
+- `handleCommentLikeEvent`: 좋아요 누른 사용자 ↔ 댓글 소유자 차단 시 알림 스킵
+- `handleGroupCommentCreateEvent`: 댓글 작성자 ↔ 모멘트 소유자 차단 시 알림 스킵
+
+자기 자신에게 알림 방지(self-notification skip) 로직도 함께 추가.
 
 ### 이벤트 구독 (NotificationEventHandler)
 
