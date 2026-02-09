@@ -62,6 +62,14 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByMomentIdIn(List<Long> momentIds);
 
     @Query("""
+          SELECT c
+          FROM comments c
+          LEFT JOIN FETCH c.member
+          WHERE c.momentId IN :momentIds
+           """)
+    List<Comment> findAllWithMemberByMomentIdIn(@Param("momentIds") List<Long> momentIds);
+
+    @Query("""
                SELECT m.id
                FROM moments m
                WHERE m.id IN :momentIds

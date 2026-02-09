@@ -24,7 +24,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public List<Comment> getAllByMomentIds(List<Long> momentIds) {
-        return commentRepository.findAllByMomentIdIn(momentIds);
+        return commentRepository.findAllWithMemberByMomentIdIn(momentIds);
     }
 
     public List<Long> getMomentIdsNotCommentedByMe(List<Long> momentIds, Long commenterId) {
