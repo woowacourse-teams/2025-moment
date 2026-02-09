@@ -44,8 +44,18 @@ public class UserBlock extends BaseEntity {
     private LocalDateTime deletedAt;
 
     public UserBlock(User blocker, User blockedUser) {
+        validate(blocker, blockedUser);
         this.blocker = blocker;
         this.blockedUser = blockedUser;
+    }
+
+    private void validate(User blocker, User blockedUser) {
+        if (blocker == null) {
+            throw new IllegalArgumentException("blocker가 null이어서는 안 됩니다.");
+        }
+        if (blockedUser == null) {
+            throw new IllegalArgumentException("blockedUser가 null이어서는 안 됩니다.");
+        }
     }
 
     public void restore() {
