@@ -1,7 +1,7 @@
 import { ImageUploadData } from '@/shared/types/upload';
 import { useState } from 'react';
 import { useSendCommentsMutation } from '../api/useSendCommentsMutation';
-import { checkProfanityWord } from '@/shared/types/checkProfanityWord';
+import { checkProfanityWord } from '@/shared/utils/checkProfanityWord';
 import { useToast } from '@/shared/hooks/useToast';
 import { useEffect } from 'react';
 import { track } from '@/shared/lib/ga/track';
