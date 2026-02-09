@@ -82,6 +82,15 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     long countByMomentId(Long momentId);
 
+    @Query("""
+        SELECT COUNT(c) FROM comments c
+        WHERE c.momentId = :momentId
+          AND c.commenter.id NOT IN :blockedUserIds
+        """)
+    long countByMomentIdExcludingBlocked(
+            @Param("momentId") Long momentId,
+            @Param("blockedUserIds") List<Long> blockedUserIds);
+
     // 그룹 내 나의 Comment 첫 페이지 조회 (member_id 기준)
     @Query("""
             SELECT c

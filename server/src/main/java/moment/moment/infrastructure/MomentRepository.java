@@ -91,9 +91,13 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
           LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId
+            AND m.momenter.id NOT IN :blockedUserIds
           ORDER BY m.id DESC
            """)
-    List<Moment> findByGroupIdOrderByIdDesc(@Param("groupId") Long groupId, Pageable pageable);
+    List<Moment> findByGroupIdOrderByIdDesc(
+        @Param("groupId") Long groupId,
+        @Param("blockedUserIds") List<Long> blockedUserIds,
+        Pageable pageable);
 
     @Query("""
           SELECT m
@@ -101,11 +105,13 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
           LEFT JOIN FETCH m.momenter
           LEFT JOIN FETCH m.member
           WHERE m.group.id = :groupId AND m.id < :cursor
+            AND m.momenter.id NOT IN :blockedUserIds
           ORDER BY m.id DESC
            """)
     List<Moment> findByGroupIdAndIdLessThanOrderByIdDesc(
         @Param("groupId") Long groupId,
         @Param("cursor") Long cursor,
+        @Param("blockedUserIds") List<Long> blockedUserIds,
         Pageable pageable);
 
     @Query("""
@@ -141,11 +147,13 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             m.group.id = :groupId
             AND m.momenter.id <> :userId
             AND m.createdAt >= :someDaysAgo
+            AND m.momenter.id NOT IN :blockedUserIds
     """)
     List<Long> findMomentIdsInGroup(
             @Param("groupId") Long groupId,
             @Param("userId") Long userId,
-            @Param("someDaysAgo") LocalDateTime someDaysAgo);
+            @Param("someDaysAgo") LocalDateTime someDaysAgo,
+            @Param("blockedUserIds") List<Long> blockedUserIds);
 
     @Query("""
         SELECT m.id FROM moments m
@@ -154,12 +162,14 @@ public interface MomentRepository extends JpaRepository<Moment, Long> {
             AND m.momenter.id <> :userId
             AND m.createdAt >= :someDaysAgo
             AND m.id NOT IN :reportedMoments
+            AND m.momenter.id NOT IN :blockedUserIds
     """)
     List<Long> findMomentIdsInGroupExcludingReported(
             @Param("groupId") Long groupId,
             @Param("userId") Long userId,
             @Param("someDaysAgo") LocalDateTime someDaysAgo,
-            @Param("reportedMoments") List<Long> reportedMoments);
+            @Param("reportedMoments") List<Long> reportedMoments,
+            @Param("blockedUserIds") List<Long> blockedUserIds);
 
     @Query("""
           SELECT m

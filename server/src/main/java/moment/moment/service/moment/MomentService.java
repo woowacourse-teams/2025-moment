@@ -26,6 +26,7 @@ public class MomentService {
 
     private static final int COMMENTABLE_PERIOD_IN_DAYS = 7;
     private static final Random RANDOM = new Random();
+    private static final List<Long> EMPTY_BLOCK_LIST = List.of(-1L);
 
     private final MomentRepository momentRepository;
 
@@ -116,12 +117,13 @@ public class MomentService {
         return momentRepository.save(moment);
     }
 
-    public List<Moment> getByGroup(Long groupId, Long cursor, int limit) {
+    public List<Moment> getByGroup(Long groupId, Long cursor, int limit, List<Long> blockedUserIds) {
         PageRequest pageable = PageRequest.of(0, limit);
+        List<Long> safeBlockedUserIds = blockedUserIds.isEmpty() ? EMPTY_BLOCK_LIST : blockedUserIds;
         if (cursor == null) {
-            return momentRepository.findByGroupIdOrderByIdDesc(groupId, pageable);
+            return momentRepository.findByGroupIdOrderByIdDesc(groupId, safeBlockedUserIds, pageable);
         }
-        return momentRepository.findByGroupIdAndIdLessThanOrderByIdDesc(groupId, cursor, pageable);
+        return momentRepository.findByGroupIdAndIdLessThanOrderByIdDesc(groupId, cursor, safeBlockedUserIds, pageable);
     }
 
     public List<Moment> getMyMomentsInGroup(Long groupId, Long memberId, Long cursor, int limit) {
@@ -134,14 +136,15 @@ public class MomentService {
         );
     }
 
-    public List<Long> getCommentableMomentIdsInGroup(Long groupId, User user, List<Long> reportedMomentIds) {
+    public List<Long> getCommentableMomentIdsInGroup(Long groupId, User user, List<Long> reportedMomentIds, List<Long> blockedUserIds) {
         LocalDateTime cutoffDateTime = LocalDateTime.now().minusDays(COMMENTABLE_PERIOD_IN_DAYS);
+        List<Long> safeBlockedUserIds = blockedUserIds.isEmpty() ? EMPTY_BLOCK_LIST : blockedUserIds;
 
         if (reportedMomentIds == null || reportedMomentIds.isEmpty()) {
-            return momentRepository.findMomentIdsInGroup(groupId, user.getId(), cutoffDateTime);
+            return momentRepository.findMomentIdsInGroup(groupId, user.getId(), cutoffDateTime, safeBlockedUserIds);
         }
         return momentRepository.findMomentIdsInGroupExcludingReported(
-                groupId, user.getId(), cutoffDateTime, reportedMomentIds);
+                groupId, user.getId(), cutoffDateTime, reportedMomentIds, safeBlockedUserIds);
     }
 
     public List<Moment> getUnreadMyMomentsInGroup(
