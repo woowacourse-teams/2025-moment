@@ -29,6 +29,7 @@ export interface MyMomentsItem {
 
 export interface Comment {
   id: number;
+  memberId: number;
   content: string;
   nickname: string;
   memberNickname: string; // V2

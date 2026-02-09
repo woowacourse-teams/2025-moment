@@ -33,6 +33,7 @@ export interface CommentItem {
 
 export interface GetCommentableMoments {
   id: number;
+  memberId: number;
   nickname: string;
   content: string;
   imageUrl?: string | null;

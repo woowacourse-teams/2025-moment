@@ -227,6 +227,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
           onClose={handleComplaintClose}
           targetId={currentComment.id}
           targetType="COMMENT"
+          memberId={currentComment.memberId}
           onSubmit={handleComplaintSubmit}
         />
       )}
