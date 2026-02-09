@@ -2,9 +2,11 @@ package moment.comment.service.application;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import moment.comment.domain.Comment;
@@ -198,6 +200,12 @@ public class CommentApplicationService {
     public List<GroupCommentResponse> getCommentsInGroup(Long groupId, Long momentId, Long userId) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         List<Comment> comments = commentService.getAllByMomentIds(List.of(momentId));
+
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        Set<Long> blockedUserIdSet = new HashSet<>(blockedUserIds);
+        comments = comments.stream()
+                .filter(c -> !blockedUserIdSet.contains(c.getCommenter().getId()))
+                .toList();
 
         Map<Comment, CommentImage> commentImageMap = commentImageService.getCommentImageByComment(comments);
 

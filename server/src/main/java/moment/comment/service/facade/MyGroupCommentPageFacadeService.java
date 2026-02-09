@@ -1,10 +1,13 @@
 package moment.comment.service.facade;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.domain.Comment;
 import moment.comment.dto.response.MyGroupCommentListResponse;
 import moment.comment.dto.response.MyGroupCommentResponse;
@@ -36,6 +39,7 @@ public class MyGroupCommentPageFacadeService {
     private final NotificationApplicationService notificationApplicationService;
     private final CommentLikeService commentLikeService;
     private final MomentLikeService momentLikeService;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     public MyGroupCommentListResponse getMyCommentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
@@ -73,6 +77,9 @@ public class MyGroupCommentPageFacadeService {
         List<Long> commentIds = comments.stream().map(Comment::getId).toList();
         List<Long> momentIds = comments.stream().map(Comment::getMomentId).toList();
 
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        Set<Long> blockedUserIdSet = new HashSet<>(blockedUserIds);
+
         List<MomentComposition> momentCompositions =
                 momentApplicationService.getMyMomentCompositionsBy(momentIds);
         Map<Long, MomentComposition> momentCompositionMap = momentCompositions.stream()
@@ -80,6 +87,9 @@ public class MyGroupCommentPageFacadeService {
 
         List<CommentComposition> allCommentCompositions =
                 commentApplicationService.getMyCommentCompositionsBy(momentIds);
+        allCommentCompositions = allCommentCompositions.stream()
+                .filter(c -> c.commenterUserId() == null || !blockedUserIdSet.contains(c.commenterUserId()))
+                .toList();
         Map<Long, CommentComposition> commentCompositionMap = allCommentCompositions.stream()
                 .filter(c -> commentIds.contains(c.id()))
                 .collect(Collectors.toMap(CommentComposition::id, c -> c));

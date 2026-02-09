@@ -1,10 +1,12 @@
 package moment.moment.service.facade;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
 
@@ -40,6 +42,7 @@ public class MyGroupMomentPageFacadeService {
     private final MomentLikeService momentLikeService;
     private final CommentLikeService commentLikeService;
     private final PhotoUrlResolver photoUrlResolver;
+    private final UserBlockApplicationService userBlockApplicationService;
 
     public MyGroupMomentListResponse getMyMomentsInGroup(Long groupId, Long userId, Long cursor) {
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
@@ -78,7 +81,13 @@ public class MyGroupMomentPageFacadeService {
 
         Map<Moment, MomentImage> momentImageMap = momentImageService.getMomentImageByMoment(moments);
 
+        List<Long> blockedUserIds = userBlockApplicationService.getBlockedUserIds(userId);
+        Set<Long> blockedUserIdSet = new HashSet<>(blockedUserIds);
+
         List<CommentComposition> allComments = commentApplicationService.getMyCommentCompositionsBy(momentIds);
+        allComments = allComments.stream()
+                .filter(c -> c.commenterUserId() == null || !blockedUserIdSet.contains(c.commenterUserId()))
+                .toList();
         Map<Long, List<CommentComposition>> commentsMap = allComments.stream()
                 .collect(Collectors.groupingBy(CommentComposition::momentId));
 
