@@ -37,12 +37,12 @@ public interface UserBlockRepository extends JpaRepository<UserBlock, Long> {
             @Param("blockerId") Long blockerId,
             @Param("blockedUserId") Long blockedUserId);
 
-    @Query(value = """
-        SELECT COUNT(*) > 0 FROM user_blocks
-        WHERE ((blocker_id = :userId1 AND blocked_user_id = :userId2)
-            OR (blocker_id = :userId2 AND blocked_user_id = :userId1))
-          AND deleted_at IS NULL
-        """, nativeQuery = true)
+    @Query("""
+        SELECT CASE WHEN COUNT(ub) > 0 THEN true ELSE false END
+        FROM UserBlock ub
+        WHERE (ub.blocker.id = :userId1 AND ub.blockedUser.id = :userId2)
+           OR (ub.blocker.id = :userId2 AND ub.blockedUser.id = :userId1)
+        """)
     boolean existsBidirectionalBlock(
             @Param("userId1") Long userId1,
             @Param("userId2") Long userId2);
