@@ -245,13 +245,42 @@ public class MomentService {
 
 ### 테스트 전략
 
+⚠️ **Mock 정책**: Mock은 외부 API(Firebase, S3 등)에만 사용.
+Repository와 내부 Service는 실제 객체를 사용하여 테스트.
+→ Repository를 Mock하면 JPQL 문법 오류와 잘못된 쿼리 결과를 테스트 시점에 잡을 수 없음.
+
 ```java
-// 단위 테스트
-@Test
-void getUserBy_존재하는_사용자_반환() {
-    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-    User result = userService.getUserBy(1L);
-    assertThat(result.getEmail()).isEqualTo("test@example.com");
+// Repository 통합 테스트 (@DataJpaTest)
+@DataJpaTest
+@ActiveProfiles("test")
+class MomentRepositoryTest {
+    @Autowired MomentRepository momentRepository;
+    @Autowired UserRepository userRepository;
+
+    @Test
+    void 커서_기반_페이지네이션으로_모멘트를_조회한다() {
+        User momenter = userRepository.save(UserFixture.createUser());
+        momentRepository.save(new Moment("content", momenter));
+        List<Moment> result = momentRepository.findMyMomentFirstPage(momenter, PageRequest.of(0, 10));
+        assertThat(result).hasSize(1);
+    }
+}
+
+// Service 통합 테스트 (@SpringBootTest + 실제 객체, 외부 API만 Mock)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Transactional
+@ActiveProfiles("test")
+class MomentServiceTest {
+    @Autowired MomentService momentService;
+    @Autowired UserRepository userRepository;
+    @MockitoBean FirebaseMessaging firebaseMessaging;  // 외부 API만 Mock
+
+    @Test
+    void 모멘트를_생성한다() {
+        User momenter = userRepository.save(UserFixture.createUser());
+        Moment moment = momentService.create("hello!", momenter);
+        assertThat(moment.getContent()).isEqualTo("hello!");
+    }
 }
 
 // E2E 테스트
@@ -307,7 +336,7 @@ class MomentControllerTest extends AcceptanceTest {
 5. **Application/Facade 서비스**: 여러 도메인 조율 (필요 시)
 6. **DTO 생성**: record + 정적 `from()` 메서드
 7. **컨트롤러 구현**: 얇게 유지, `@Valid` 검증
-8. **테스트 작성**: 단위 테스트 + `@Tag("e2e")` 통합 테스트
+8. **테스트 작성**: 도메인 단위 + Repository 통합(`@DataJpaTest`) + Service 통합(`@SpringBootTest`) + E2E 테스트
 9. **Flyway 마이그레이션**: DB 변경 시 SQL 스크립트 추가
 
 ## 금지 사항
@@ -316,6 +345,8 @@ class MomentControllerTest extends AcceptanceTest {
 - ❌ 테스트 통과에 필요한 것 이상의 코드 구현 (과잉 구현)
 - ❌ 구조적 변경과 행동적 변경을 같은 커밋에 섞기
 - ❌ 테스트 실패 상태에서 리팩토링
+- ❌ Repository를 Mock하여 Service 테스트 작성 → 실제 DB 사용
+- ❌ 내부 Service를 Mock하여 상위 Service 테스트 → 실제 객체 사용
 
 ### 아키텍처 관련
 - ❌ 컨트롤러에 비즈니스 로직 배치
@@ -330,6 +361,8 @@ class MomentControllerTest extends AcceptanceTest {
 - [ ] 모든 테스트 통과 (Green 상태)
 - [ ] 구조적/행동적 변경이 분리되어 있는가?
 - [ ] 커밋 메시지에 구조/행동 변경 유형 명시
+- [ ] 커스텀 쿼리에 대한 Repository 테스트(`@DataJpaTest`) 존재
+- [ ] Service 테스트에서 Repository/내부 Service를 Mock하지 않음
 
 ### 아키텍처 관련
 - [ ] Soft Delete 패턴 적용 확인

@@ -1,6 +1,6 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-09
+> Last Updated: 2026-02-10
 
 ## Quick Reference
 
@@ -63,6 +63,7 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-10 | block | BLK-005 | existsBidirectionalBlock native query→JPQL 변경 (ClassCastException 해결), UserBlockRepositoryTest 추가 |
 | 2026-02-09 | block | BLK-001~006 | 사용자 차단 기능 신규 추가 (차단/해제/목록 API, 피드 필터링, 상호작용 차단, 알림 필터링) |
 | 2026-02-09 | moment, comment, like, notification | - | block 도메인 연동: 모멘트 피드 필터링, 댓글 필터링, 좋아요/댓글 생성 차단, 알림 필터링, Like 이벤트 likerUserId 추가 |
 | 2026-02-06 | notification | NTF-001~006 | 딥링크 리팩토링: NotificationPayload 제거, SourceData(JSON)+DeepLinkGenerator 도입, userId 필터 추가, 복합 인덱스 V37 추가 |

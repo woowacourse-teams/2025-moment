@@ -308,3 +308,6 @@ Before marking work complete:
 - [ ] `@Transactional` boundaries are at service layer
 - [ ] Soft delete pattern applied to new entities
 - [ ] Test methods use Korean descriptive names
+- [ ] Repository tests exist for custom queries (`@DataJpaTest`)
+- [ ] Service tests use real objects (no Repository mocking)
+- [ ] `@MockitoBean` only for external APIs (Firebase, S3)
