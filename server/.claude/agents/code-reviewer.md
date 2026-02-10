@@ -281,6 +281,17 @@ void 존재하지_않는_사용자를_조회하면_예외가_발생한다() {
 - Use AssertJ (`assertThat()`) over JUnit assertions
 - Group related assertions with `assertAll()` or SoftAssertions when appropriate
 
+**Repository Test Coverage**
+- Custom query methods (`@Query`, complex method naming) require repository tests
+- Verify `@DataJpaTest` + `@ActiveProfiles("test")` pattern is used
+- Missing repository test for a custom query is a HIGH issue
+
+**Mock Usage Compliance**
+- Mocking Repository in service tests is a CRITICAL violation
+  (hides JPQL errors and incorrect query results until runtime)
+- Mocking internal services is a HIGH violation
+- Only external APIs (Firebase, S3, external HTTP) should use `@MockitoBean`
+
 ---
 
 ### Category 6: Code Quality [MEDIUM]
@@ -407,6 +418,9 @@ Use this for fast scanning:
 - [ ] Korean names with underscores
 - [ ] Given-When-Then structure
 - [ ] AssertJ assertions
+- [ ] Custom queries have repository tests (`@DataJpaTest`)
+- [ ] No Repository mocking in service tests
+- [ ] `@MockitoBean` only for external APIs
 
 ### Code Quality
 - [ ] Methods under ~30 lines

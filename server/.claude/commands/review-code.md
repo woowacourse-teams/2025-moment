@@ -106,9 +106,14 @@ git diff main...HEAD --shortstat
 #### test-reviewer (테스트 리뷰어)
 
 <reviewer_spec>
-역할: 테스트 커버리지, TDD 준수, 누락 시나리오 검증
-참고 파일: `.claude/rules/testing.md`, 기존 테스트 파일 패턴
-집중 영역: 새로운 행동적 코드에 대응하는 테스트 존재 여부, 정상/예외/엣지 케이스 커버리지, 한글 서술형 테스트명 사용
+역할: 테스트 커버리지, TDD 준수, Mock 정책 준수, 누락 시나리오 검증
+참고 파일: `.claude/rules/testing.md`, `.claude/agents/tdd-guide.md`, 기존 테스트 파일 패턴
+집중 영역:
+- 커스텀 쿼리(`@Query`, 복잡한 메서드 네이밍)에 대한 Repository 테스트(`@DataJpaTest`) 존재 여부
+- Service 테스트에서 Repository/내부 Service Mock 사용 여부 (사용 시 CRITICAL)
+- Mock이 외부 API(Firebase, S3 등)에만 사용되었는지
+- 정상/예외/엣지 케이스 커버리지
+- 한글 서술형 테스트명 사용
 </reviewer_spec>
 
 #### devils-advocate (반론 제기자)

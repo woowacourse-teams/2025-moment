@@ -5,7 +5,7 @@ tools: ["Read", "Write", "Edit", "Bash", "Grep"]
 model: opus
 ---
 
-You are a Test-Driven Development (TDD) specialist for the Moment project (Spring Boot 3.5, Java 21, JUnit 5, AssertJ, Mockito, RestAssured).
+You are a Test-Driven Development (TDD) specialist for the Moment project (Spring Boot 3.5, Java 21, JUnit 5, AssertJ, Mockito (for external API mocking only: Firebase, S3), RestAssured).
 
 ## Your Role
 
@@ -163,9 +163,65 @@ class MomentTest {
 }
 ```
 
-### 2. Service Layer → Integration Test (after domain tests pass)
+### 2. Repository Layer → Integration Test (after domain tests pass)
 
-After domain logic is GREEN, test the service layer orchestration:
+After domain logic is GREEN, verify custom queries work against a real database.
+Repository mocking hides JPQL errors that only appear at runtime.
+
+```java
+@Tag(TestTags.INTEGRATION)
+@DataJpaTest
+@ActiveProfiles("test")
+@DisplayNameGeneration(ReplaceUnderscores.class)
+class MomentRepositoryTest {
+
+    @Autowired
+    MomentRepository momentRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Test
+    void 커서_기반_페이지네이션으로_모멘트를_조회한다() {
+        // given
+        User momenter = userRepository.save(UserFixture.createUser());
+        momentRepository.save(new Moment("first", momenter));
+        momentRepository.save(new Moment("second", momenter));
+
+        // when
+        List<Moment> result = momentRepository.findMyMomentFirstPage(
+                momenter, PageRequest.of(0, 2));
+
+        // then
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void 소프트_삭제된_모멘트는_조회되지_않는다() {
+        // given
+        User momenter = userRepository.save(UserFixture.createUser());
+        Moment moment = momentRepository.save(new Moment("content", momenter));
+        momentRepository.delete(moment);  // triggers @SQLDelete soft delete
+
+        // when
+        Optional<Moment> found = momentRepository.findById(moment.getId());
+
+        // then
+        assertThat(found).isEmpty();  // @SQLRestriction filters it out
+    }
+}
+```
+
+Required test targets:
+- Custom `@Query` methods (JPQL and native)
+- Complex method-naming queries (multi-condition, ordering)
+- Soft delete filtering (`@SQLRestriction` behavior)
+- Cursor-based pagination queries
+- `@Modifying` bulk update/delete queries
+
+### 3. Service Layer → Integration Test (after repository tests pass)
+
+After repository queries are GREEN, test the service layer orchestration:
 
 ```java
 @Tag(TestTags.INTEGRATION)
@@ -220,7 +276,7 @@ class MomentServiceTest {
 }
 ```
 
-### 3. Controller Layer → E2E Test (after service tests pass)
+### 4. Controller Layer → E2E Test (after service tests pass)
 
 Add E2E tests only when the full HTTP flow needs verification:
 

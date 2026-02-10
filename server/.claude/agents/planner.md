@@ -75,9 +75,10 @@ Create detailed steps with:
 ...
 
 ## Testing Strategy
-- Unit tests: [files to test]
-- Integration tests: [flows to test]
-- E2E tests: [user journeys to test]
+- Domain unit tests: [entity/value object/policy tests]
+- Repository integration tests: [custom query tests — @DataJpaTest required]
+- Service integration tests: [real objects, mock only external APIs]
+- E2E tests: [HTTP full flow tests]
 
 ## Risks & Mitigations
 - **Risk**: [Description]
