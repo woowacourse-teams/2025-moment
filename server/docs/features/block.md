@@ -1,6 +1,6 @@
 # Block Domain (PREFIX: BLK)
 
-> Last Updated: 2026-02-09
+> Last Updated: 2026-02-10
 > Features: 6
 
 ## 기능 목록
@@ -68,10 +68,10 @@
 - **Key Classes**:
     - Facade: `CommentCreateFacadeService`, `GroupCommentCreateFacadeService`
     - Application: `CommentApplicationService`, `MomentApplicationService`
-    - Repository: `UserBlockRepository` (`existsBidirectionalBlock`)
-- **Business Rules**: 차단된 사용자의 모멘트에 댓글 작성 불가, 차단된 사용자의 모멘트/댓글에 좋아요 불가, 양방향 차단 확인
+    - Repository: `UserBlockRepository` (`existsBidirectionalBlock` - JPQL)
+- **Business Rules**: 차단된 사용자의 모멘트에 댓글 작성 불가, 차단된 사용자의 모멘트/댓글에 좋아요 불가, 양방향 차단 확인 (JPQL로 ClassCastException 해결)
 - **Dependencies**: comment (`CommentCreateFacadeService`, `GroupCommentCreateFacadeService`), moment (`MomentApplicationService`)
-- **Tests**: `CommentCreateFacadeServiceTest`, `GroupCommentCreateFacadeServiceTest`, `MomentApplicationServiceTest`, `CommentApplicationServiceTest`
+- **Tests**: `UserBlockRepositoryTest`, `CommentCreateFacadeServiceTest`, `GroupCommentCreateFacadeServiceTest`, `MomentApplicationServiceTest`, `CommentApplicationServiceTest`
 - **Error Codes**: BL-004 (차단된 사용자 상호작용 불가)
 
 ### BLK-006: 차단된 사용자 알림/댓글 필터링
@@ -115,9 +115,9 @@ block 도메인의 `UserBlockApplicationService`를 다음 도메인에서 의�
 - **like**: `MomentLikeEvent`, `CommentLikeEvent` - `likerUserId` 필드 및 `of()` 팩토리 추가
 - **notification**: `NotificationEventHandler` - 차단된 사용자 알림 스킵
 
-## 관련 테스트 클래스 (4개)
+## 관련 테스트 클래스 (5개)
 
-- `UserBlockTest`, `UserBlockServiceTest`, `UserBlockApplicationServiceTest`
+- `UserBlockTest`, `UserBlockRepositoryTest`, `UserBlockServiceTest`, `UserBlockApplicationServiceTest`
 - `UserBlockControllerTest` (E2E)
 
 ## DB 마이그레이션
