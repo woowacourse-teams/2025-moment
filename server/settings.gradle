@@ -1,1 +1,2 @@
 rootProject.name = 'moment'
+include 'common', 'api', 'admin'
