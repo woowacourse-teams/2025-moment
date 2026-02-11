@@ -1,6 +1,6 @@
 # Comment Domain (PREFIX: CMT)
 
-> Last Updated: 2026-02-09
+> Last Updated: 2026-02-11
 > Features: 1
 
 ## 탈퇴 사용자 콘텐츠 처리
@@ -31,7 +31,6 @@
 | Event | 구독자 | 설명 | 상태 |
 |-------|--------|------|------|
 | `CommentCreateEvent` | `NotificationEventHandler` | 댓글 생성 시 모멘트 작성자에게 알림 | ✅ 활성 |
-| `EchoCreateEvent` | - | record만 존재, 발행/구독 없음 | ⚠️ dead code |
 | `GroupCommentCreateEvent` | `NotificationEventHandler` | 그룹 댓글 생성 시 알림 (handler만 존재, 미발행) | ⚠️ 미발행 |
 
 ## 차단 사용자 필터링

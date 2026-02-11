@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <mdc/>
+                <logLevel>
+                    <fieldName>level</fieldName>
+                </logLevel>
+                <message>
+                    <fieldName>msg</fieldName>
+                </message>
+                <arguments/>
+                <stackTrace/>
+                <timestamp>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</pattern>
+                    <timeZone>Asia/Seoul</timeZone>
+                </timestamp>
+            </providers>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/moment-custom.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>1</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="TEXT_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev, prod">
+        <root level="INFO">
+            <appender-ref ref="JSON_FILE"/>
+        </root>
+        <springProfile name="dev">
+            <logger name="moment" level="DEBUG" additivity="false">
+                <appender-ref ref="JSON_FILE"/>
+            </logger>
+        </springProfile>
+        <springProfile name="prod">
+            <logger name="moment" level="INFO" additivity="false">
+                <appender-ref ref="JSON_FILE"/>
+            </logger>
+        </springProfile>
+        <logger name="p6spy" level="INFO" additivity="false">
+            <appender-ref ref="JSON_FILE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="TEXT_CONSOLE"/>
+            <appender-ref ref="JSON_FILE"/>
+        </root>
+        <logger name="moment" level="DEBUG" additivity="false">
+            <appender-ref ref="TEXT_CONSOLE"/>
+            <appender-ref ref="JSON_FILE"/>
+        </logger>
+        <logger name="p6spy" level="TRACE" additivity="false">
+            <appender-ref ref="TEXT_CONSOLE"/>
+            <appender-ref ref="JSON_FILE"/>
+        </logger>
+    </springProfile>
+</configuration>

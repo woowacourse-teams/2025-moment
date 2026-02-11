@@ -1,6 +1,6 @@
 # Block Domain (PREFIX: BLK)
 
-> Last Updated: 2026-02-10
+> Last Updated: 2026-02-11
 > Features: 6
 
 ## 기능 목록
@@ -117,8 +117,10 @@ block 도메인의 `UserBlockApplicationService`를 다음 도메인에서 의�
 
 ## 관련 테스트 클래스 (5개)
 
-- `UserBlockTest`, `UserBlockRepositoryTest`, `UserBlockServiceTest`, `UserBlockApplicationServiceTest`
-- `UserBlockControllerTest` (E2E)
+- Domain: `UserBlockTest`
+- Repository: `UserBlockRepositoryTest` (`@DataJpaTest` - existsBidirectionalBlock, findBlockedUserIds, findByBlockerAndBlockedUserIncludeDeleted, findByBlockerAndBlockedUser, findAllByBlockerWithBlockedUser, existsByBlockerAndBlockedUser, soft delete 검증 포함)
+- Service: `UserBlockServiceTest` (`@SpringBootTest` 통합 테스트), `UserBlockApplicationServiceTest` (`@SpringBootTest` 통합 테스트)
+- E2E: `UserBlockControllerTest`
 
 ## DB 마이그레이션
 

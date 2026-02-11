@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: moment-admin
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    url: jdbc:h2:mem:admin-test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration/h2
+
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+    timeout: 3600s
+
+  h2:
+    console:
+      enabled: true
+
+admin:
+  initial:
+    email: test-admin@moment.com
+    password: test-password-123!
+    name: test-admin
+  session:
+    timeout: 3600
+    cookie-name: SESSION

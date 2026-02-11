@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     restart: always
     env_file:
-      - .env
+      - .env.local
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -21,22 +21,46 @@ services:
       retries: 10
       start_period: 30s
 
-  app:
-    container_name: moment-app-server
-    build: .
-    image: moment:local
+  api:
+    container_name: moment-api-server
+    build:
+      context: .
+      dockerfile: Dockerfile.api
     depends_on:
       mysql:
         condition: service_healthy
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - .env.local
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      MANAGEMENT_CLOUDWATCH_METRICS_EXPORT_ENABLED: "false"
+    volumes:
+      - ./logs/api:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  admin:
+    container_name: moment-admin-server
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env.local
     environment:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
-      - ./logs:/app/logs
-      - ./firebase-credentials.json:/app/firebase-credentials.json
+      - ./logs/admin:/app/logs
 
 volumes:
   mysql_data:

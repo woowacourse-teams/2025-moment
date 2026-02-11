@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+    id 'java-test-fixtures'
+}
+
+jar { enabled = true }
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.boot:spring-boot-starter-aop'
+    api 'org.springframework.security:spring-security-crypto'
+    api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+    api 'net.logstash.logback:logstash-logback-encoder:7.4'
+    api 'org.flywaydb:flyway-mysql'
+
+    // NOTE: ErrorCode가 HttpStatus에 의존하여 starter-web이 필요.
+    // 장기적으로 ErrorCode에서 HttpStatus를 int status code로 대체하여 제거 예정.
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testFixturesCompileOnly 'org.projectlombok:lombok'
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
+}

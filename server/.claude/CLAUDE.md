@@ -39,6 +39,7 @@ Domain-Driven Design과 Clean Architecture 원칙을 적용합니다.
 - 모든 테스트 통과 후에만 커밋
 - 컴파일러/린터 경고 해결 후 커밋
 - 작은 단위로 자주 커밋
+- **커밋 시 반드시 `git-commit-helper` 스킬을 사용** (`/git-commit-helper` 호출)하여 diff 분석 기반 커밋 메시지 생성
 
 ### plan 파일 기반 작업
 - 작업 시작 시 현재 plan 파일에서 다음 미완료 테스트 확인 → 테스트 구현 → 최소 코드로 통과
