@@ -1,1 +1,0 @@
-ALTER TABLE comments MODIFY content VARCHAR(200) NOT NULL;

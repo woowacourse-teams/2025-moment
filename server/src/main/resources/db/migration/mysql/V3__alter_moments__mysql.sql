@@ -1,1 +1,0 @@
-ALTER TABLE moments MODIFY content VARCHAR(200) NOT NULL;

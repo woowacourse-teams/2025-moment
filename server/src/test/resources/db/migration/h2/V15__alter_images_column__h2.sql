@@ -1,3 +1,0 @@
-ALTER TABLE moment_images ADD COLUMN deleted_at TIMESTAMP DEFAULT NULL;
-
-ALTER TABLE comment_images ADD COLUMN deleted_at TIMESTAMP DEFAULT NULL;
