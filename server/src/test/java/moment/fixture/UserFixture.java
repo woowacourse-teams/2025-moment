@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
-import moment.user.dto.request.UserCreateRequest;
 
 public class UserFixture {
 
@@ -51,22 +50,6 @@ public class UserFixture {
             users.add(user);
         }
         return users;
-    }
-
-    public static UserCreateRequest createUserCreateRequest() {
-        return new UserCreateRequest(getEmail(), "password123!@#", "password123!@#", getNickname());
-    }
-
-    public static UserCreateRequest createUserCreateRequestByEmail(String email) {
-        return new UserCreateRequest(email, "password123!@#", "password123!@#", getNickname());
-    }
-
-    public static UserCreateRequest createUserCreateRequestByNickname(String nickname) {
-        return new UserCreateRequest(getEmail(), "password", "password", nickname);
-    }
-
-    public static UserCreateRequest createUserCreateRequestByPassword(String password, String checkedPassword) {
-        return new UserCreateRequest(getEmail(), password, checkedPassword, getNickname());
     }
 
     private static String getEmail() {

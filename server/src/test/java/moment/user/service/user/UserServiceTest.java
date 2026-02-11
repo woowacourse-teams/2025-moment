@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
+import moment.fixture.UserRequestFixture;
 import moment.global.exception.MomentException;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -48,7 +49,7 @@ public class UserServiceTest {
     @Test
     void 일반_회원가입_유저를_추가한다() {
         // given
-        UserCreateRequest request = UserFixture.createUserCreateRequest();
+        UserCreateRequest request = UserRequestFixture.createUserCreateRequest();
 
         // when & then
         User savedUser = userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -60,7 +61,7 @@ public class UserServiceTest {
     @Test
     void 비밀번호와_확인용_비밀번호가_일치하지_않는_경우_유저를_추가할_수_없다() {
         // given
-        UserCreateRequest request = UserFixture.createUserCreateRequestByPassword("1234qwer!@",
+        UserCreateRequest request = UserRequestFixture.createUserCreateRequestByPassword("1234qwer!@",
                 "4567qwer!@");
 
         // when & then
@@ -76,7 +77,7 @@ public class UserServiceTest {
         User user = UserFixture.createUser();
         userRepository.save(user);
 
-        UserCreateRequest request = UserFixture.createUserCreateRequestByNickname(user.getNickname());
+        UserCreateRequest request = UserRequestFixture.createUserCreateRequestByNickname(user.getNickname());
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request.email(), request.password(), request.rePassword(),
@@ -91,7 +92,7 @@ public class UserServiceTest {
         User user = UserFixture.createUser();
         userRepository.save(user);
 
-        UserCreateRequest request = UserFixture.createUserCreateRequestByEmail(user.getEmail());
+        UserCreateRequest request = UserRequestFixture.createUserCreateRequestByEmail(user.getEmail());
 
         // when & then
         assertThatThrownBy(() -> userService.addUser(request.email(), request.password(), request.rePassword(),

@@ -10,6 +10,7 @@ import moment.auth.application.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.UserFixture;
+import moment.fixture.UserRequestFixture;
 import moment.global.dto.response.SuccessResponse;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -64,7 +65,7 @@ class UserControllerTest {
     @Test
     void 일반_회원가입시_유저_생성에_성공한다() {
         // given
-        UserCreateRequest request = UserFixture.createUserCreateRequest();
+        UserCreateRequest request = UserRequestFixture.createUserCreateRequest();
 
         // when
         SuccessResponse response = RestAssured.given().log().all()

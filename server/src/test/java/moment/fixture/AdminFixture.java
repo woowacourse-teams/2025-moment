@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import moment.admin.domain.Admin;
 import moment.admin.domain.AdminRole;
-import moment.admin.dto.request.AdminCreateRequest;
-import moment.admin.dto.request.AdminLoginRequest;
 
 public class AdminFixture {
 
@@ -42,18 +40,6 @@ public class AdminFixture {
             admins.add(admin);
         }
         return admins;
-    }
-
-    public static AdminCreateRequest createAdminCreateRequest() {
-        return new AdminCreateRequest(getEmail(), getName(), "password123!@#");
-    }
-
-    public static AdminCreateRequest createAdminCreateRequestByEmail(String email) {
-        return new AdminCreateRequest(email, getName(), "password123!@#");
-    }
-
-    public static AdminLoginRequest createAdminLoginRequest(String email, String password) {
-        return new AdminLoginRequest(email, password);
     }
 
     private static String getEmail() {
