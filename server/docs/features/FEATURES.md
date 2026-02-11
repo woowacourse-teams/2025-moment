@@ -1,6 +1,6 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-10
+> Last Updated: 2026-02-11
 
 ## Quick Reference
 
@@ -26,7 +26,6 @@
 | Event | 발행 도메인 | 발행 클래스 | 구독 도메인 | 구독 클래스 | 비고 |
 |-------|------------|------------|------------|------------|------|
 | `CommentCreateEvent` | comment | `CommentCreateFacadeService` | notification | `NotificationEventHandler` | ✅ 활성 |
-| `EchoCreateEvent` | comment | - | - | - | ⚠️ 미사용 dead code (발행/구독 없음) |
 | `GroupCommentCreateEvent` | comment | - | notification | `NotificationEventHandler` | ⚠️ handler만 존재, 미발행 |
 | `GroupJoinRequestEvent` | group | `GroupMemberApplicationService` | notification | `NotificationEventHandler` | ✅ 활성 |
 | `GroupJoinApprovedEvent` | group | `GroupMemberApplicationService` | notification | `NotificationEventHandler` | ✅ 활성 |
@@ -34,16 +33,15 @@
 | `MomentLikeEvent` | like | `MomentLikeService` | notification | `NotificationEventHandler` | ✅ 활성 |
 | `CommentLikeEvent` | like | `CommentLikeService` | notification | `NotificationEventHandler` | ✅ 활성 |
 
-**이벤트 파일 위치**:
+**이벤트 파일 위치** (api 모듈):
 
-- `moment/comment/dto/CommentCreateEvent.java`
-- `moment/comment/dto/EchoCreateEvent.java`
-- `moment/comment/dto/event/GroupCommentCreateEvent.java`
-- `moment/group/dto/event/GroupJoinRequestEvent.java`
-- `moment/group/dto/event/GroupJoinApprovedEvent.java`
-- `moment/group/dto/event/GroupKickedEvent.java`
-- `moment/like/dto/event/MomentLikeEvent.java`
-- `moment/like/dto/event/CommentLikeEvent.java`
+- `api/.../moment/comment/dto/CommentCreateEvent.java`
+- `api/.../moment/comment/dto/event/GroupCommentCreateEvent.java`
+- `api/.../moment/group/dto/event/GroupJoinRequestEvent.java`
+- `api/.../moment/group/dto/event/GroupJoinApprovedEvent.java`
+- `api/.../moment/group/dto/event/GroupKickedEvent.java`
+- `api/.../moment/like/dto/event/MomentLikeEvent.java`
+- `api/.../moment/like/dto/event/CommentLikeEvent.java`
 
 **구독자**: 단일 클래스 `NotificationEventHandler`가 모든 이벤트 처리
 
@@ -63,6 +61,8 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-11 | all | - | Gradle 멀티모듈 전환 (common/admin/api), EchoCreateEvent dead code 삭제 |
+| 2026-02-11 | block | BLK-001~006 | UserBlockServiceTest, UserBlockApplicationServiceTest 통합 테스트 전환, findBlockedUserIds soft delete 테스트 추가 |
 | 2026-02-10 | block | BLK-005 | existsBidirectionalBlock native query→JPQL 변경 (ClassCastException 해결), UserBlockRepositoryTest 추가 |
 | 2026-02-09 | block | BLK-001~006 | 사용자 차단 기능 신규 추가 (차단/해제/목록 API, 피드 필터링, 상호작용 차단, 알림 필터링) |
 | 2026-02-09 | moment, comment, like, notification | - | block 도메인 연동: 모멘트 피드 필터링, 댓글 필터링, 좋아요/댓글 생성 차단, 알림 필터링, Like 이벤트 likerUserId 추가 |

@@ -1,6 +1,6 @@
 # Notification Domain (PREFIX: NTF)
 
-> Last Updated: 2026-02-09
+> Last Updated: 2026-02-11
 > Features: 6
 
 ## 기능 목록
@@ -106,7 +106,7 @@
 | `MomentLikeEvent` | like | ✅ 활성 |
 | `CommentLikeEvent` | like | ✅ 활성 |
 
-> **Note**: `EchoCreateEvent` record는 존재하나 발행/구독 모두 없는 dead code로, 테이블에서 제외.
+> **Note**: `EchoCreateEvent` record는 멀티모듈 전환 시 삭제됨 (dead code 제거).
 
 ## 관련 엔티티
 
