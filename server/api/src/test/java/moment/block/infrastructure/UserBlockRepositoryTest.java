@@ -138,6 +138,21 @@ class UserBlockRepositoryTest {
             // then
             assertThat(blockedUserIds).isEmpty();
         }
+
+        @Test
+        void soft_delete된_차단은_차단_목록에서_제외된다() {
+            // given
+            UserBlock block = userBlockRepository.save(new UserBlock(userA, userB));
+            userBlockRepository.delete(block);
+            entityManager.flush();
+            entityManager.clear();
+
+            // when
+            List<Long> blockedUserIds = userBlockRepository.findBlockedUserIds(userA.getId());
+
+            // then
+            assertThat(blockedUserIds).isEmpty();
+        }
     }
 
     @Nested
