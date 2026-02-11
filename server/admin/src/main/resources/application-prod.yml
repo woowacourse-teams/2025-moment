@@ -35,10 +35,9 @@ spring:
     timeout: ${ADMIN_SESSION_TIMEOUT:3600s}
 
 springdoc:
-  api-docs:
-    enabled: false
   swagger-ui:
-    enabled: false
+    disable-swagger-default-url: true
+    url: /v3/api-docs
 
 server:
   port: 8081
