@@ -7,6 +7,7 @@ import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.config.TestTags;
+import moment.global.config.JpaAuditingConfig;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
@@ -16,11 +17,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 public class CommentImageRepositoryTest {
 
     @Autowired

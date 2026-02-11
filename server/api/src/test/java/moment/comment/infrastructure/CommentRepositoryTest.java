@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import moment.comment.domain.Comment;
 import moment.config.TestTags;
+import moment.global.config.JpaAuditingConfig;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.moment.infrastructure.MomentRepository;
@@ -28,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Tag(TestTags.INTEGRATION)
 @ActiveProfiles("test")
 @DataJpaTest
-@Import(CommentCreatedAtHelper.class)
+@Import({CommentCreatedAtHelper.class, JpaAuditingConfig.class})
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class CommentRepositoryTest {
 

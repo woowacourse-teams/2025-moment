@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import moment.config.TestTags;
+import moment.global.config.JpaAuditingConfig;
 import moment.fixture.UserFixture;
 import moment.moment.domain.Moment;
 import moment.support.MomentCreatedAtHelper;
@@ -23,7 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 @Tag(TestTags.INTEGRATION)
-@Import(MomentCreatedAtHelper.class)
+@Import({MomentCreatedAtHelper.class, JpaAuditingConfig.class})
 @ActiveProfiles("test")
 @DataJpaTest
 @DisplayNameGeneration(ReplaceUnderscores.class)
