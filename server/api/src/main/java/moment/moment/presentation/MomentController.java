@@ -1,0 +1,131 @@
+package moment.moment.presentation;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import moment.auth.presentation.AuthenticationPrincipal;
+import moment.global.dto.response.ErrorResponse;
+import moment.global.dto.response.SuccessResponse;
+import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.MomentCreateResponse;
+import moment.moment.dto.response.MomentCreationStatusResponse;
+import moment.moment.service.application.MomentApplicationService;
+import moment.moment.service.facade.MomentCreateFacadeService;
+import moment.user.dto.request.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = "Moment API", description = "모멘트 관련 API 명세")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v2/moments")
+public class MomentController {
+
+    private final MomentCreateFacadeService momentCreateFacadeService;
+    private final MomentApplicationService momentApplicationService;
+
+    @Operation(summary = "기본 모멘트 등록", description = "사용자가 기본 모멘트를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "기본 모멘트 등록 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping
+    public ResponseEntity<SuccessResponse<MomentCreateResponse>> createBasicMoment(
+            @Valid @RequestBody MomentCreateRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreateResponse response = momentCreateFacadeService.createBasicMoment(request, authentication.id());
+        HttpStatus status = HttpStatus.CREATED;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "추가 모멘트 등록", description = "사용자가 추가 모멘트를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "추가 모멘트 등록 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [M-006] 포인트가 부족해 추가 모멘트를 작성할 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/extra")
+    public ResponseEntity<SuccessResponse<MomentCreateResponse>> createExtraMoment(
+            @Valid @RequestBody MomentCreateRequest request,
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreateResponse response = momentCreateFacadeService.createExtraMoment(request, authentication.id());
+        HttpStatus status = HttpStatus.CREATED;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "기본 모멘트 작성 여부 확인", description = "유저가 오늘 기본 모멘트를 더 보낼 수 있는지 확인입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "기본 모멘트 작성 여부 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/writable/basic")
+    public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getBasicMomentCreationStatus(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreationStatusResponse response = momentApplicationService.canCreateMoment(authentication.id());
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+
+    @Operation(summary = "추가 모멘트 작성 가능 여부 확인", description = "사용자가 추가 모멘트를 작성할 수 있는 상태인지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "추가 모멘트 작성 가능 여부 조회 성공"),
+            @ApiResponse(responseCode = "401", description = """
+                    - [T-005] 토큰을 찾을 수 없습니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    - [U-002] 존재하지 않는 사용자입니다.
+                    """,
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/writable/extra")
+    public ResponseEntity<SuccessResponse<MomentCreationStatusResponse>> getExtraMomentCreationStatus(
+            @AuthenticationPrincipal Authentication authentication
+    ) {
+        MomentCreationStatusResponse response = momentApplicationService.canCreateExtraMoment(authentication.id());
+        HttpStatus status = HttpStatus.OK;
+
+        return ResponseEntity.status(status).body(SuccessResponse.of(status, response));
+    }
+}
