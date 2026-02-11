@@ -1,88 +1,105 @@
 package moment.block.service.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import moment.block.domain.UserBlock;
 import moment.block.dto.response.UserBlockListResponse;
 import moment.block.dto.response.UserBlockResponse;
-import moment.block.service.block.UserBlockService;
-import moment.fixture.UserBlockFixture;
+import moment.block.infrastructure.UserBlockRepository;
+import moment.config.TestTags;
 import moment.fixture.UserFixture;
 import moment.user.domain.User;
-import moment.user.service.user.UserService;
+import moment.user.infrastructure.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(MockitoExtension.class)
+@Tag(TestTags.INTEGRATION)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Transactional
+@ActiveProfiles("test")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class UserBlockApplicationServiceTest {
 
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private UserBlockService userBlockService;
-
-    @InjectMocks
+    @Autowired
     private UserBlockApplicationService userBlockApplicationService;
+
+    @Autowired
+    private UserBlockRepository userBlockRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    private User blocker;
+    private User blockedUser;
+
+    @BeforeEach
+    void setUp() {
+        blocker = userRepository.save(UserFixture.createUser());
+        blockedUser = userRepository.save(UserFixture.createUser());
+    }
 
     @Test
     void 사용자를_차단하고_응답을_반환한다() {
-        User blocker = UserFixture.createUserWithId(1L);
-        User blockedUser = UserFixture.createUserWithId(2L);
-        UserBlock userBlock = UserBlockFixture.createUserBlockWithId(1L, blocker, blockedUser);
+        // when
+        UserBlockResponse result = userBlockApplicationService.blockUser(blocker.getId(), blockedUser.getId());
 
-        given(userService.getUserBy(1L)).willReturn(blocker);
-        given(userService.getUserBy(2L)).willReturn(blockedUser);
-        given(userBlockService.block(blocker, blockedUser)).willReturn(userBlock);
-
-        UserBlockResponse result = userBlockApplicationService.blockUser(1L, 2L);
-
-        assertThat(result.blockedUserId()).isEqualTo(2L);
+        // then
+        assertThat(result.blockedUserId()).isEqualTo(blockedUser.getId());
     }
 
     @Test
     void 차단을_해제한다() {
-        User blocker = UserFixture.createUserWithId(1L);
-        User blockedUser = UserFixture.createUserWithId(2L);
+        // given
+        userBlockRepository.save(new UserBlock(blocker, blockedUser));
+        entityManager.flush();
+        entityManager.clear();
 
-        given(userService.getUserBy(1L)).willReturn(blocker);
-        given(userService.getUserBy(2L)).willReturn(blockedUser);
+        // when
+        userBlockApplicationService.unblockUser(blocker.getId(), blockedUser.getId());
+        entityManager.flush();
+        entityManager.clear();
 
-        userBlockApplicationService.unblockUser(1L, 2L);
-
-        verify(userBlockService).unblock(blocker, blockedUser);
+        // then
+        assertThat(userBlockRepository.findByBlockerAndBlockedUser(blocker, blockedUser)).isEmpty();
     }
 
     @Test
     void 차단된_사용자_ID_목록을_반환한다() {
-        given(userBlockService.getBlockedUserIds(1L)).willReturn(List.of(2L, 3L));
+        // given
+        User anotherUser = userRepository.save(UserFixture.createUser());
+        userBlockRepository.save(new UserBlock(blocker, blockedUser));
+        userBlockRepository.save(new UserBlock(anotherUser, blocker));
 
-        List<Long> result = userBlockApplicationService.getBlockedUserIds(1L);
+        // when
+        List<Long> result = userBlockApplicationService.getBlockedUserIds(blocker.getId());
 
-        assertThat(result).containsExactly(2L, 3L);
+        // then
+        assertThat(result).containsExactlyInAnyOrder(blockedUser.getId(), anotherUser.getId());
     }
 
     @Test
     void 차단_목록을_반환한다() {
-        User blocker = UserFixture.createUserWithId(1L);
-        User blockedUser = UserFixture.createUserWithId(2L);
-        UserBlock userBlock = UserBlockFixture.createUserBlockWithId(1L, blocker, blockedUser);
+        // given
+        userBlockRepository.save(new UserBlock(blocker, blockedUser));
 
-        given(userService.getUserBy(1L)).willReturn(blocker);
-        given(userBlockService.getBlockedUsers(blocker)).willReturn(List.of(userBlock));
+        // when
+        List<UserBlockListResponse> result = userBlockApplicationService.getBlockedUsers(blocker.getId());
 
-        List<UserBlockListResponse> result = userBlockApplicationService.getBlockedUsers(1L);
-
+        // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).blockedUserId()).isEqualTo(2L);
+        assertThat(result.get(0).blockedUserId()).isEqualTo(blockedUser.getId());
     }
 }
