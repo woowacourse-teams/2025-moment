@@ -25,11 +25,14 @@ import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.AppleLoginRequest;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.LogoutRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.JwtTokenManager;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.common.DatabaseCleaner;
+import moment.notification.domain.PushNotification;
+import moment.notification.infrastructure.PushNotificationRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.config.TestTags;
@@ -80,6 +83,8 @@ class AuthControllerTest {
     private AppleAuthService appleAuthService;
     @Autowired
     private TokenManager tokenManager;
+    @Autowired
+    private PushNotificationRepository pushNotificationRepository;
 
     @BeforeEach
     void setUp() {
@@ -176,6 +181,34 @@ class AuthControllerTest {
         assertAll(
                 () -> assertThat(response.getCookie("accessToken")).isEmpty(),
                 () -> assertThat(response.getCookie("refreshToken")).isEmpty());
+    }
+
+    @Test
+    void 로그아웃_시_디바이스_엔드포인트를_전달하면_해당_토큰이_삭제된다() {
+        // given
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
+        User user = UserFixture.createUserByPassword(encodedPassword);
+        User savedUser = userRepository.save(user);
+
+        String accessToken = jwtTokenManager.createAccessToken(savedUser.getId(), user.getEmail());
+        String deviceEndpoint = "test-device-token";
+
+        pushNotificationRepository.save(new PushNotification(savedUser, deviceEndpoint));
+
+        LogoutRequest logoutRequest = new LogoutRequest(deviceEndpoint);
+
+        // when
+        Response response = given().log().all()
+                .cookie("accessToken", accessToken)
+                .contentType(ContentType.JSON)
+                .body(logoutRequest)
+                .when().post("/api/v2/auth/logout");
+
+        // then
+        response.then().log().all().statusCode(HttpStatus.OK.value());
+
+        List<PushNotification> notifications = pushNotificationRepository.findByUserId(savedUser.getId());
+        assertThat(notifications).isEmpty();
     }
 
     @Test

@@ -33,7 +33,12 @@ public class PushNotificationApplicationService {
 
     @Transactional
     public void deleteDeviceEndpoint(long userId, DeviceEndpointRequest request) {
+        deleteDeviceEndpoint(userId, request.deviceEndpoint());
+    }
+
+    @Transactional
+    public void deleteDeviceEndpoint(long userId, String deviceEndpoint) {
         User user = userService.getUserBy(userId);
-        pushNotificationService.deleteBy(user, request.deviceEndpoint());
+        pushNotificationService.deleteBy(user, deviceEndpoint);
     }
 }

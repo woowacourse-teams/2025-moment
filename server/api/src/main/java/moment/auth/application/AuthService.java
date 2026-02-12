@@ -13,6 +13,7 @@ import moment.auth.dto.response.LoginCheckResponse;
 import moment.auth.infrastructure.RefreshTokenRepository;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
+import moment.notification.service.application.PushNotificationApplicationService;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.dto.request.Authentication;
@@ -34,6 +35,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokensIssuer tokensIssuer;
+    private final PushNotificationApplicationService pushNotificationApplicationService;
 
     @Transactional
     public Tokens login(LoginRequest request) {
@@ -60,11 +62,20 @@ public class AuthService {
 
     @Transactional
     public void logout(Long userId) {
+        logout(userId, null);
+    }
+
+    @Transactional
+    public void logout(Long userId, String deviceEndpoint) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new MomentException(ErrorCode.USER_NOT_FOUND));
 
         if (refreshTokenRepository.existsByUser(user)) {
             refreshTokenRepository.deleteByUser(user);
+        }
+
+        if (deviceEndpoint != null && !deviceEndpoint.isBlank()) {
+            pushNotificationApplicationService.deleteDeviceEndpoint(userId, deviceEndpoint);
         }
     }
 
