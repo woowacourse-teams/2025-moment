@@ -1,6 +1,6 @@
 # Auth Domain (PREFIX: AUTH)
 
-> Last Updated: 2026-02-04
+> Last Updated: 2026-02-12
 > Features: 12
 
 ## 기능 목록
@@ -24,9 +24,10 @@
 - **Key Classes**:
     - Controller: `AuthController`
     - Domain: `AuthService`
-- **Business Rules**: accessToken 쿠키 제거, refreshToken 삭제
-- **Dependencies**: 없음
-- **Tests**: `AuthControllerTest` (E2E)
+    - DTO: `LogoutRequest`
+- **Business Rules**: accessToken 쿠키 제거, refreshToken 삭제, deviceEndpoint 전달 시 해당 푸시 토큰 삭제 (RequestBody 선택적)
+- **Dependencies**: notification (PushNotificationApplicationService)
+- **Tests**: `AuthServiceTest` (통합, 4개: deviceEndpoint 유무/null/빈문자열), `AuthControllerTest` (E2E, 로그아웃 성공/deviceEndpoint 삭제/body 없이 요청)
 
 ### AUTH-003: Google OAuth
 
@@ -155,8 +156,9 @@
 - `RefreshToken` (@Entity: "refresh_tokens")
 - `EmailVerification` (Value Object)
 
-## 관련 테스트 클래스 (11개)
+## 관련 테스트 클래스 (12개)
 
+- `AuthServiceTest` (통합, 4개: 로그아웃 시 deviceEndpoint 유무/null/빈문자열/미전달)
 - `AppleAuthServiceTest` (7개: 이메일 있는/없는 기존 사용자, 레거시 fallback 마이그레이션, 신규 사용자 이메일/해시, 재로그인, 예외 전파)
 - `AppleUserInfoTest` (6개: resolveDisplayEmail, toLegacyEmail)
 - `AppleAuthClientTest` (10개: 토큰 검증, email 클레임 추출, 공개키 조회)

@@ -20,6 +20,7 @@ import moment.auth.dto.request.AppleLoginRequest;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.LoginRequest;
+import moment.auth.dto.request.LogoutRequest;
 import moment.auth.dto.request.PasswordResetRequest;
 import moment.auth.dto.request.PasswordUpdateRequest;
 import moment.auth.dto.response.LoginCheckResponse;
@@ -117,8 +118,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공")
     })
     @PostMapping("/logout")
-    public ResponseEntity<SuccessResponse<Void>> logout(@AuthenticationPrincipal Authentication authentication) {
-        authService.logout(authentication.id());
+    public ResponseEntity<SuccessResponse<Void>> logout(
+            @AuthenticationPrincipal Authentication authentication,
+            @Valid @RequestBody(required = false) LogoutRequest request
+    ) {
+        String deviceEndpoint = (request != null) ? request.deviceEndpoint() : null;
+        authService.logout(authentication.id(), deviceEndpoint);
 
         ResponseCookie accessCookie = ResponseCookie.from(ACCESS_TOKEN_HEADER, null)
                 .sameSite("none")

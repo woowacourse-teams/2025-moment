@@ -76,6 +76,29 @@ class PushNotificationServiceTest {
     }
 
     @Test
+    void 다른_사용자가_동일한_디바이스_토큰을_등록하면_기존_등록이_삭제된다() {
+        // given
+        User anotherUser = UserFixture.createUser();
+        userRepository.save(anotherUser);
+
+        String sharedToken = "shared-device-token";
+        pushNotificationService.save(user, sharedToken);
+
+        // when
+        pushNotificationService.save(anotherUser, sharedToken);
+
+        // then
+        List<PushNotification> userNotifications = pushNotificationRepository.findByUserId(user.getId());
+        List<PushNotification> anotherUserNotifications = pushNotificationRepository.findByUserId(anotherUser.getId());
+
+        assertAll(
+                () -> assertThat(userNotifications).isEmpty(),
+                () -> assertThat(anotherUserNotifications).hasSize(1),
+                () -> assertThat(anotherUserNotifications.get(0).getDeviceEndpoint()).isEqualTo(sharedToken)
+        );
+    }
+
+    @Test
     void 사용자로_푸시_알림_정보를_성공적으로_삭제한다() {
         // given
         String deviceEndpoint = "test-device-endpoint";

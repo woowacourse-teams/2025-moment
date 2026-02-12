@@ -1,6 +1,6 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-11
+> Last Updated: 2026-02-12
 
 ## Quick Reference
 
@@ -61,6 +61,8 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-12 | auth | AUTH-002 | 로그아웃 시 디바이스 푸시 토큰 삭제 기능 추가, LogoutRequest DTO 추가, AuthServiceTest 통합 테스트 추가 |
+| 2026-02-12 | notification | NTF-005 | 동일 디바이스 토큰 중복 등록 시 기존 사용자 등록 삭제, V39 push_notifications 인덱스 추가, Repository/Service 테스트 보강 |
 | 2026-02-11 | all | - | Gradle 멀티모듈 전환 (common/admin/api), EchoCreateEvent dead code 삭제 |
 | 2026-02-11 | block | BLK-001~006 | UserBlockServiceTest, UserBlockApplicationServiceTest 통합 테스트 전환, findBlockedUserIds soft delete 테스트 추가 |
 | 2026-02-10 | block | BLK-005 | existsBidirectionalBlock native query→JPQL 변경 (ClassCastException 해결), UserBlockRepositoryTest 추가 |
