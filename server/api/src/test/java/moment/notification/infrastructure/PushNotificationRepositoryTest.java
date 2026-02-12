@@ -111,6 +111,30 @@ class PushNotificationRepositoryTest {
     }
 
     @Test
+    void 디바이스_엔드포인트로_푸시_알림을_삭제한다() {
+        // given
+        User anotherUser = UserFixture.createUser();
+        userRepository.save(anotherUser);
+
+        String sharedToken = "shared-device-token";
+        pushNotificationRepository.save(new PushNotification(user, sharedToken));
+        pushNotificationRepository.save(new PushNotification(anotherUser, sharedToken));
+
+        // when
+        pushNotificationRepository.deleteByDeviceEndpoint(sharedToken);
+        pushNotificationRepository.flush();
+
+        // then
+        List<PushNotification> userNotifications = pushNotificationRepository.findByUserId(user.getId());
+        List<PushNotification> anotherUserNotifications = pushNotificationRepository.findByUserId(anotherUser.getId());
+
+        assertAll(
+                () -> assertThat(userNotifications).isEmpty(),
+                () -> assertThat(anotherUserNotifications).isEmpty()
+        );
+    }
+
+    @Test
     void 사용자와_디바이스_엔드포인트로_푸시_알림_정보를_성공적으로_삭제한다() {
         // given
         String deviceToken = "test-device-token";
