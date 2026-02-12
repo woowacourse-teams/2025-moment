@@ -100,6 +100,26 @@ class AuthServiceTest {
     }
 
     @Test
+    void 로그아웃_시_디바이스_엔드포인트가_빈_문자열이면_토큰은_유지된다() {
+        // given
+        String deviceEndpoint = "test-device-token";
+        RefreshToken refreshToken = new RefreshToken("refresh-token-value", user,
+                new Date(), new Date(System.currentTimeMillis() + 100000));
+        refreshTokenRepository.save(refreshToken);
+        pushNotificationRepository.save(new PushNotification(user, deviceEndpoint));
+
+        // when
+        authService.logout(user.getId(), "");
+
+        // then
+        List<PushNotification> notifications = pushNotificationRepository.findByUserId(user.getId());
+        assertAll(
+                () -> assertThat(notifications).hasSize(1),
+                () -> assertThat(refreshTokenRepository.existsByUser(user)).isFalse()
+        );
+    }
+
+    @Test
     void 로그아웃_시_디바이스_엔드포인트_없이_호출하면_토큰은_유지된다() {
         // given
         String deviceEndpoint = "test-device-token";

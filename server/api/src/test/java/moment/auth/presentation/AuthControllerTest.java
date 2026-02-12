@@ -212,6 +212,30 @@ class AuthControllerTest {
     }
 
     @Test
+    void 로그아웃_시_body_없이_요청하면_푸시_토큰은_유지된다() {
+        // given
+        String encodedPassword = passwordEncoder.encode("1q2w3e4r!");
+        User user = UserFixture.createUserByPassword(encodedPassword);
+        User savedUser = userRepository.save(user);
+
+        String accessToken = jwtTokenManager.createAccessToken(savedUser.getId(), user.getEmail());
+        String deviceEndpoint = "test-device-token";
+        pushNotificationRepository.save(new PushNotification(savedUser, deviceEndpoint));
+
+        // when
+        Response response = given().log().all()
+                .cookie("accessToken", accessToken)
+                .contentType(ContentType.JSON)
+                .when().post("/api/v2/auth/logout");
+
+        // then
+        response.then().log().all().statusCode(HttpStatus.OK.value());
+
+        List<PushNotification> notifications = pushNotificationRepository.findByUserId(savedUser.getId());
+        assertThat(notifications).hasSize(1);
+    }
+
+    @Test
     void 구글_로그인_시도_시_구글_OAuth_페이지로_리디렉션한다() {
         given()
                 .when()
