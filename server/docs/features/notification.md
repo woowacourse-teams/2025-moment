@@ -1,6 +1,6 @@
 # Notification Domain (PREFIX: NTF)
 
-> Last Updated: 2026-02-11
+> Last Updated: 2026-02-12
 > Features: 6
 
 ## 기능 목록
@@ -59,10 +59,12 @@
 - **Key Classes**:
     - Controller: `PushNotificationController`
     - Application: `PushNotificationApplicationService`
+    - Domain: `PushNotificationService`
     - Entity: `PushNotification`
-- **Business Rules**: Firebase 디바이스 토큰 등록
+    - Repository: `PushNotificationRepository` (`existsByUserAndDeviceEndpoint`, `deleteByDeviceEndpoint`)
+- **Business Rules**: Firebase 디바이스 토큰 등록, 동일 사용자+동일 토큰 중복 등록 방지, 다른 사용자가 동일 디바이스 토큰 등록 시 기존 등록 삭제 (디바이스 1대 = 1사용자)
 - **Dependencies**: 없음 (외부: Firebase)
-- **Tests**: `PushNotificationServiceTest`, `PushNotificationRepositoryTest`, `PushNotificationControllerTest` (E2E)
+- **Tests**: `PushNotificationServiceTest` (4개: 저장/중복방지/타사용자 동일토큰/삭제), `PushNotificationRepositoryTest` (7개: 저장/조회/없음/존재여부/디바이스토큰삭제/사용자+토큰삭제), `PushNotificationControllerTest` (E2E)
 
 ### NTF-006: 디바이스 해제
 
@@ -127,3 +129,4 @@
 - V33: `V33__alter_notifications_for_groups.sql`
 - V36: `V36__alter_notifications_remove_legacy_add_source_and_link.sql` - target_type, target_id, group_id 컬럼 삭제 → source_data(JSON), link(VARCHAR 512) 추가
 - V37: `V37__add_notification_indexes.sql` - (user_id, is_read, notification_type) 복합 인덱스 추가
+- V39: `V39__add_push_notification_indexes.sql` - push_notifications 테이블 인덱스 추가: (device_endpoint, deleted_at), (user_id, device_endpoint, deleted_at)
