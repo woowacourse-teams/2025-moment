@@ -2,6 +2,7 @@ export { useDelayedVisible } from './useDelayedVisible';
 export { useEnterKeyHandler } from './useEnterKeyHandler';
 export { useFileUpload } from './useFileUpload';
 export { useFunnel } from './useFunnel';
+export { useImageFallback } from './useImageFallback';
 export { useIntersectionObserver } from './useIntersectionObserver';
 export { useOutsideClick } from './useOutsideClick';
 export { usePresignedUrlMutation } from '../api/usePresignedUrlMutation';
