@@ -27,7 +27,9 @@ export default function HomePage() {
 
   const { data: groupsResponse, refetch: refetchGroups } = useGroupsQuery({ enabled: isLoggedIn });
 
-  const [modalType, setModalType] = useState<'none' | 'create' | 'join' | 'invite' | 'join-success'>('none');
+  const [modalType, setModalType] = useState<
+    'none' | 'create' | 'join' | 'invite' | 'join-success'
+  >('none');
   const [createdGroupInfo, setCreatedGroupInfo] = useState<{
     groupId: number;
     code: string;
