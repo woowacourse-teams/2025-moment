@@ -13,6 +13,27 @@ import { NotFound } from '@/shared/ui/notFound/NotFound';
 import { useTodayCommentForm } from '../hooks/useTodayCommentForm';
 import { useMomentLikeMutation } from '@/features/moment/api/useMomentLikeMutation';
 import { Heart } from 'lucide-react';
+import { useImageFallback } from '@/shared/hooks';
+
+const MomentImageWithFallback = ({
+  imageUrl,
+  onImageClick,
+}: {
+  imageUrl: string;
+  onImageClick: (url: string, e: React.MouseEvent) => void;
+}) => {
+  const { src, onError } = useImageFallback(imageUrl);
+  return (
+    <S.MomentImageContainer>
+      <S.MomentImage
+        src={src}
+        onError={onError}
+        alt="모멘트 이미지"
+        onClick={e => onImageClick(imageUrl, e)}
+      />
+    </S.MomentImageContainer>
+  );
+};
 
 export function TodayCommentForm({
   momentData,
@@ -135,13 +156,10 @@ export function TodayCommentForm({
                 {momentData.content}
               </S.MomentContent>
               {momentData.imageUrl && (
-                <S.MomentImageContainer>
-                  <S.MomentImage
-                    src={momentData.imageUrl}
-                    alt="모멘트 이미지"
-                    onClick={e => handleImageClick(momentData.imageUrl!, e)}
-                  />
-                </S.MomentImageContainer>
+                <MomentImageWithFallback
+                  imageUrl={momentData.imageUrl}
+                  onImageClick={handleImageClick}
+                />
               )}
             </S.MyCommentsContentWrapper>
           }

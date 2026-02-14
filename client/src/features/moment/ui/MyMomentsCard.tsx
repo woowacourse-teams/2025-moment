@@ -6,7 +6,6 @@ import * as S from './MyMomentsCard.styles';
 import { theme } from '@/shared/styles/theme';
 import { ComplaintModal } from '@/features/complaint/ui/ComplaintModal';
 import { MyMomentsItem } from '../types/moments';
-import { convertToWebp } from '@/shared/utils/convertToWebp';
 import { useMyMomentsCard } from '../hook/useMyMomentsCard';
 import { useDeleteMomentMutation } from '../api/useDeleteMomentMutation';
 import { useCommentLikeMutation } from '@/features/comment/api/useCommentLikeMutation';
@@ -14,6 +13,47 @@ import { useDeleteCommentMutation } from '@/features/comment/api/useDeleteCommen
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 import { Trash2, Heart } from 'lucide-react';
 import { useMomentLikeMutation } from '../api/useMomentLikeMutation';
+import { useImageFallback } from '@/shared/hooks';
+
+const MomentImageWithFallback = ({
+  imageUrl,
+  onImageClick,
+}: {
+  imageUrl: string;
+  onImageClick: (url: string, e: React.MouseEvent) => void;
+}) => {
+  const { src, onError } = useImageFallback(imageUrl);
+  return (
+    <S.MomentImageContainer>
+      <S.MomentImage
+        src={src}
+        onError={onError}
+        alt="모멘트 이미지"
+        onClick={e => onImageClick(imageUrl, e)}
+      />
+    </S.MomentImageContainer>
+  );
+};
+
+const CommentImageWithFallback = ({
+  imageUrl,
+  onImageClick,
+}: {
+  imageUrl: string;
+  onImageClick: (url: string, e: React.MouseEvent) => void;
+}) => {
+  const { src, onError } = useImageFallback(imageUrl);
+  return (
+    <S.CommentImageContainer>
+      <S.CommentImage
+        src={src}
+        onError={onError}
+        alt="코멘트 이미지"
+        onClick={e => onImageClick(imageUrl, e)}
+      />
+    </S.CommentImageContainer>
+  );
+};
 
 export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
   const { currentGroupId } = useCurrentGroup();
@@ -112,13 +152,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsBottomWrapper>
           {myMoment.imageUrl ? (
-            <S.MomentImageContainer>
-              <S.MomentImage
-                src={convertToWebp(myMoment.imageUrl)}
-                alt="모멘트 이미지"
-                onClick={e => handleImageClick(myMoment.imageUrl!, e)}
-              />
-            </S.MomentImageContainer>
+            <MomentImageWithFallback imageUrl={myMoment.imageUrl} onImageClick={handleImageClick} />
           ) : (
             <div />
           )}
@@ -191,13 +225,10 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                       <S.CommentContent>
                         <div area-label={`${currentComment.content}`}>{currentComment.content}</div>
                         {currentComment.imageUrl && (
-                          <S.CommentImageContainer>
-                            <S.CommentImage
-                              src={convertToWebp(currentComment.imageUrl)}
-                              alt="코멘트 이미지"
-                              onClick={e => handleImageClick(currentComment.imageUrl!, e)}
-                            />
-                          </S.CommentImageContainer>
+                          <CommentImageWithFallback
+                            imageUrl={currentComment.imageUrl}
+                            onImageClick={handleImageClick}
+                          />
                         )}
                       </S.CommentContent>
 

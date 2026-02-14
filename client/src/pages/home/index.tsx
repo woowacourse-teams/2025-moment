@@ -27,7 +27,9 @@ export default function HomePage() {
 
   const { data: groupsResponse, refetch: refetchGroups } = useGroupsQuery({ enabled: isLoggedIn });
 
-  const [modalType, setModalType] = useState<'none' | 'create' | 'join' | 'invite'>('none');
+  const [modalType, setModalType] = useState<
+    'none' | 'create' | 'join' | 'invite' | 'join-success'
+  >('none');
   const [createdGroupInfo, setCreatedGroupInfo] = useState<{
     groupId: number;
     code: string;
@@ -47,7 +49,7 @@ export default function HomePage() {
 
   const handleJoinSuccess = async () => {
     await refetchGroups();
-    handleCloseModal();
+    setModalType('join-success');
   };
 
   const handleCreateSuccess = async (groupId: number, code: string) => {
@@ -182,6 +184,20 @@ export default function HomePage() {
               onClose={handleCloseModal}
             />
           )}
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={modalType === 'join-success'} onClose={handleCloseModal}>
+        <Modal.Header title="그룹 참여 신청 완료" showCloseButton />
+        <Modal.Content>
+          <S.OnboardingContainer>
+            <S.OnboardingDescription>
+              그룹 참여 신청이 완료되었습니다!
+              <br />
+              방장이 승인을 허용해야 그룹에 들어갈 수 있습니다.
+            </S.OnboardingDescription>
+            <Button title="확인" variant="primary" onClick={handleCloseModal} />
+          </S.OnboardingContainer>
         </Modal.Content>
       </Modal>
     </>
