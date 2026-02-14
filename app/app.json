@@ -14,8 +14,9 @@
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "사진 촬영을 위해 카메라 접근 권한이 필요합니다.",
-        "NSPhotoLibraryUsageDescription": "이미지 업로드를 위해 사진 라이브러리 접근 권한이 필요합니다.",
+        "NSCameraUsageDescription": "사진을 촬영하여 모멘트와 코멘트를 공유하기 위해 카메라 접근 권한이 필요합니다.",
+        "NSPhotoLibraryUsageDescription": "사진을 선택하여 모멘트와 코멘트를 공유하기 위해 사진 라이브러리 접근 권한이 필요합니다.",
+        "NSPhotoLibraryAddUsageDescription": "사진을 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.",
         "NSMicrophoneUsageDescription": "영상 촬영 시 마이크 접근 권한이 필요합니다."
       }
     },
