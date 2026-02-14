@@ -1,6 +1,7 @@
 # Moment - 당신의 이야기가 공감받는 순간
 
 삶의 순간을 기록하고, 칭찬과 위로를 주고받는 감성 소셜 플랫폼
+<img width="2064" height="2752" alt="Simulator Screenshot - iPad Pro 13-inch (M5) - 2026-02-01 at 05 17 17" src="https://github.com/user-attachments/assets/ec3e3553-04fa-449f-9660-0bfaae9423a3" />
 
 <br>
 
