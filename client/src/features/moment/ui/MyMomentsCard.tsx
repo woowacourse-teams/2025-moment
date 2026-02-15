@@ -138,7 +138,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
               <span aria-hidden="true">{myMoment.likeCount}</span>
             </S.CommentCountWrapper>
 
-            <S.CommentCountWrapper aria-label={`코멘트 수: ${sortedComments?.length}개`}>
+            <S.CommentCountWrapper>
               <Mail size={16} aria-hidden="true" />
               <span aria-hidden="true">{sortedComments?.length}</span>
             </S.CommentCountWrapper>
