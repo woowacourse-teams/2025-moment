@@ -11,7 +11,7 @@ import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.domain.TargetType;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.report.application.facade.ReportCreateFacadeService;
+import moment.report.service.facade.ReportCreateFacadeService;
 import moment.report.dto.ReportCreateRequest;
 import moment.report.dto.ReportCreateResponse;
 import moment.user.dto.request.Authentication;

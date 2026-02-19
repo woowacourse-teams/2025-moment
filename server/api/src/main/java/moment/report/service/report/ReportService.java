@@ -1,4 +1,4 @@
-package moment.report.application.report;
+package moment.report.service.report;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class ReportService {
                 targetId,
                 ReportReason.valueOf(reason)
         );
-        
+
         return reportRepository.save(report);
     }
 

@@ -1,4 +1,4 @@
-package moment.report.application;
+package moment.report.service.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,7 +11,6 @@ import moment.fixture.UserFixture;
 import moment.global.domain.TargetType;
 import moment.moment.domain.Moment;
 import moment.moment.dto.request.MomentReportCreateRequest;
-import moment.report.application.report.ReportService;
 import moment.report.domain.Report;
 import moment.report.domain.ReportReason;
 import moment.report.infrastructure.ReportRepository;

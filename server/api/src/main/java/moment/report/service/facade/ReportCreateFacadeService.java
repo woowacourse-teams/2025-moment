@@ -1,10 +1,10 @@
-package moment.report.application.facade;
+package moment.report.service.facade;
 
 import lombok.RequiredArgsConstructor;
 import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
 import moment.moment.service.application.MomentApplicationService;
-import moment.report.application.application.ReportApplicationService;
+import moment.report.service.application.ReportApplicationService;
 import moment.report.dto.ReportCreateRequest;
 import moment.report.dto.ReportCreateResponse;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ReportCreateFacadeService {
     ) {
         Long reportId = reportApplicationService.createReport(contentId, userId, request, targetType);
         Long reportCount = reportApplicationService.countReport(targetType, contentId);
-        
+
         if (targetType == TargetType.MOMENT) {
             momentApplicationService.deleteByReport(contentId, reportCount);
         }
