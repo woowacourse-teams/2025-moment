@@ -91,9 +91,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
           <S.ContentContainer>
             {myComment.moment ? (
               <S.MomentContentWrapper>
-                <S.MyMomentContent aria-label={`모멘트 내용: ${myComment.moment.content}`}>
-                  {myComment.moment.content}
-                </S.MyMomentContent>
+                <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
                 <S.ActionWrapper>
                   <S.LikeButton onClick={handleLikeMoment} aria-label="모멘트 좋아요">
                     <Heart
@@ -135,9 +133,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <S.CommentContent area-label={`내가 쓴 코멘트 내용: ${myComment.content}`}>
-                    {myComment.content}
-                  </S.CommentContent>
+                  <S.CommentContent>{myComment.content}</S.CommentContent>
                   {myComment.imageUrl && (
                     <CommentImageWithFallback
                       imageUrl={myComment.imageUrl}
