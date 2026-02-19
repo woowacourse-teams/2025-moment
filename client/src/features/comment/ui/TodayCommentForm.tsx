@@ -159,6 +159,7 @@ export function TodayCommentForm({
                 <MomentImageWithFallback
                   imageUrl={momentData.imageUrl}
                   onImageClick={handleImageClick}
+                  key={momentData.imageUrl}
                 />
               )}
             </S.MyCommentsContentWrapper>
