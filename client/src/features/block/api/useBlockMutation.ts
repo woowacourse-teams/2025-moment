@@ -5,7 +5,6 @@ import { queryClient } from '@/app/lib/queryClient';
 import { queryKeys } from '@/shared/lib/queryKeys';
 
 export const useBlockMutation = () => {
-
   return useMutation({
     mutationFn: async (userId: number) => {
       const response = await api.post(`/users/${userId}/blocks`);

@@ -5,7 +5,6 @@ import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteCommentMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: (commentId: number) => deleteComment(groupId, commentId),
     onSuccess: () => {

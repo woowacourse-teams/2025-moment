@@ -22,7 +22,6 @@ export interface SendCommentsResponse {
 }
 
 export const useSendCommentsMutation = (groupId: number | string, momentId: number) => {
-
   return useMutation({
     mutationFn: (data: Omit<SendCommentsData, 'momentId'>) => sendComments(groupId, momentId, data),
     onSuccess: (_data, variables) => {

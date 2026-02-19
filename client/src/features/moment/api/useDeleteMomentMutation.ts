@@ -5,7 +5,6 @@ import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteMomentMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: (momentId: number) => deleteMoment(groupId, momentId),
     onSuccess: () => {

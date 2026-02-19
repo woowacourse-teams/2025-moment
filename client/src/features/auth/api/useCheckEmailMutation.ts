@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const useCheckEmailMutation = () => {
-
   return useMutation({
     mutationFn: (email: string) => checkEmail(email),
     onSuccess: () => {

@@ -3,7 +3,6 @@ import { toast } from '@/shared/store/toast';
 import { useMutation } from '@tanstack/react-query';
 
 export const useCheckEmailCodeMutation = () => {
-
   return useMutation({
     mutationFn: ({ email, code }: { email: string; code: string }) => checkEmailCode(email, code),
     onSuccess: () => {

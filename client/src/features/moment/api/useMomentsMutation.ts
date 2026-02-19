@@ -12,7 +12,6 @@ interface SendMomentsData {
 }
 
 export const useMomentsMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
     onSuccess: (_data, variables) => {

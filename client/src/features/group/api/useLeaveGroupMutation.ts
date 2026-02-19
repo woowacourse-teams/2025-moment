@@ -7,7 +7,6 @@ import { track } from '@/shared/lib/ga/track';
 import { GroupActionResponse } from '../types/group';
 
 export const useLeaveGroupMutation = () => {
-
   return useMutation({
     mutationFn: async (groupId: number | string): Promise<GroupActionResponse> => {
       const response = await api.delete(`/groups/${groupId}/leave`);

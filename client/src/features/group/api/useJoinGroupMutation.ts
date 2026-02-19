@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { JoinGroupRequest, GroupActionResponse } from '../types/group';
 
 export const useJoinGroupMutation = () => {
-
   return useMutation({
     mutationFn: async (data: JoinGroupRequest): Promise<GroupActionResponse> => {
       const response = await api.post('/groups/join', data);

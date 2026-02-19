@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { ChangeNicknameRequest } from '../types/changeNickname';
 
 export const useChangeNicknameMutation = () => {
-
   return useMutation({
     mutationFn: ({ newNickname }: ChangeNicknameRequest) => changeNickname({ newNickname }),
     onSuccess: () => {

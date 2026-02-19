@@ -3,7 +3,6 @@ import { toast } from '@/shared/store/toast';
 import { useMutation } from '@tanstack/react-query';
 
 export const useFindPasswordMutation = () => {
-
   return useMutation({
     mutationFn: (email: string) => verifyNewPassword(email),
     onSuccess: () => {

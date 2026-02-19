@@ -11,7 +11,6 @@ interface PushNotificationData {
 }
 
 export const useInitializePushNotification = () => {
-
   useEffect(() => {
     // Native 앱에서 Expo 푸시 토큰 수신 시 서버에 등록
     const handleExpoPushToken = async (token: string) => {

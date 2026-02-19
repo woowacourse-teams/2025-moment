@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
 export const useDeleteGroupMutation = () => {
-
   return useMutation({
     mutationFn: async (groupId: number | string): Promise<GroupActionResponse> => {
       const response = await api.delete(`/groups/${groupId}`);

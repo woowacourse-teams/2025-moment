@@ -4,7 +4,6 @@ import { ComplaintFormData } from '../types/complaintType';
 import { api } from '@/app/lib/api';
 
 export const useComplaintMutation = () => {
-
   return useMutation({
     mutationFn: async (data: ComplaintFormData) => {
       if (data.targetType === 'MOMENT') {

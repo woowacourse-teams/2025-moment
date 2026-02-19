@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { UpdateGroupRequest, GroupActionResponse } from '../types/group';
 
 export const useUpdateGroupMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: async (data: UpdateGroupRequest): Promise<GroupActionResponse> => {
       const response = await api.patch(`/groups/${groupId}`, data);

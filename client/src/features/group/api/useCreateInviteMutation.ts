@@ -5,7 +5,6 @@ import { track } from '@/shared/lib/ga/track';
 import { InviteResponse } from '../types/group';
 
 export const useCreateInviteMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: async (): Promise<InviteResponse> => {
       const response = await api.post(`/groups/${groupId}/invite`);

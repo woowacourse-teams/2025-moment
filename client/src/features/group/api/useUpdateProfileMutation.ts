@@ -6,7 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import { UpdateProfileRequest, GroupActionResponse } from '../types/group';
 
 export const useUpdateProfileMutation = (groupId: number | string) => {
-
   return useMutation({
     mutationFn: async (data: UpdateProfileRequest): Promise<GroupActionResponse> => {
       const response = await api.patch(`/groups/${groupId}/profile`, data);
