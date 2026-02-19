@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import moment.storage.dto.response.UploadUrlResponse;
+import moment.storage.service.storage.FileUploadClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -13,7 +14,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 
 @Component
 @RequiredArgsConstructor
-public class AwsS3Client {
+public class AwsS3Client implements FileUploadClient {
 
     private static final Duration PRESIGNED_URL_EXPIRATION = Duration.ofMinutes(5);
 

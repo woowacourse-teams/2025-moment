@@ -9,7 +9,6 @@ import java.util.UUID;
 import moment.config.TestTags;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
-import moment.storage.infrastructure.AwsS3Client;
 import moment.user.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -34,7 +33,7 @@ class FileStorageServiceTest {
     FileStorageService fileStorageService;
 
     @Mock
-    AwsS3Client awsS3Client;
+    FileUploadClient fileUploadClient;
 
     @Mock
     UserService userService;
@@ -54,7 +53,7 @@ class FileStorageServiceTest {
                 "http://ap2-northest-s3/test-bucket/images/test-image.jpg",
                 "https://test-cloudfront.example.com/test/images/test-image.jpg"
         );
-        given(awsS3Client.getUploadUrl(any(String.class))).willReturn(expected);
+        given(fileUploadClient.getUploadUrl(any(String.class))).willReturn(expected);
         ArgumentCaptor<String> filePathCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
@@ -66,7 +65,7 @@ class FileStorageServiceTest {
 
         // then
         assertThat(uploadUrl).isEqualTo(expected);
-        verify(awsS3Client).getUploadUrl(filePathCaptor.capture());
+        verify(fileUploadClient).getUploadUrl(filePathCaptor.capture());
         String actualFilePath = filePathCaptor.getValue();
         assertThat(actualFilePath).isEqualTo("test/images/" + fixedUuidString + ".jpg");
     }
@@ -80,7 +79,7 @@ class FileStorageServiceTest {
                 "Screenshot 2026-01-28 at 2.35.41 PM.png", "png"
         );
         UploadUrlResponse expected = new UploadUrlResponse("presigned-url", "cloudfront-url");
-        given(awsS3Client.getUploadUrl(any(String.class))).willReturn(expected);
+        given(fileUploadClient.getUploadUrl(any(String.class))).willReturn(expected);
         ArgumentCaptor<String> filePathCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
@@ -90,7 +89,7 @@ class FileStorageServiceTest {
         }
 
         // then
-        verify(awsS3Client).getUploadUrl(filePathCaptor.capture());
+        verify(fileUploadClient).getUploadUrl(filePathCaptor.capture());
         String actualFilePath = filePathCaptor.getValue();
         assertThat(actualFilePath).isEqualTo("test/images/" + fixedUuidString + ".png");
         assertThat(actualFilePath).doesNotContain(" ");
