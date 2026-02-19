@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
-import moment.auth.infrastructure.GoogleAuthClient;
 import moment.auth.service.auth.TokensIssuer;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -22,7 +21,7 @@ public class GoogleAuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final GoogleAuthClient googleAuthClient;
+    private final GoogleOAuthClient googleAuthClient;
     private final NicknameGenerateApplicationService nicknameGenerateApplicationService;
     private final TokensIssuer tokensIssuer;
 
