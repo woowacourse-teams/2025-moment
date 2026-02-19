@@ -1,4 +1,4 @@
-package moment.storage.application;
+package moment.storage.service.storage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

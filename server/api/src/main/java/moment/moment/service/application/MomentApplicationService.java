@@ -28,7 +28,7 @@ import moment.moment.dto.response.tobe.MomentCompositions;
 import moment.moment.service.moment.MomentImageService;
 import moment.moment.service.moment.MomentService;
 import moment.report.service.report.ReportService;
-import moment.storage.application.PhotoUrlResolver;
+import moment.storage.service.storage.PhotoUrlResolver;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;

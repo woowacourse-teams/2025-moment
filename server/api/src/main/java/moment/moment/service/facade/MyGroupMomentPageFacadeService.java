@@ -23,7 +23,7 @@ import moment.moment.dto.response.MyGroupMomentResponse;
 import moment.moment.service.moment.MomentImageService;
 import moment.moment.service.moment.MomentService;
 import moment.notification.service.application.NotificationApplicationService;
-import moment.storage.application.PhotoUrlResolver;
+import moment.storage.service.storage.PhotoUrlResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

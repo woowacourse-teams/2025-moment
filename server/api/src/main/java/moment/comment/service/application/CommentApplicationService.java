@@ -28,7 +28,7 @@ import moment.group.service.group.GroupMemberService;
 import moment.like.service.CommentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.service.moment.MomentService;
-import moment.storage.application.PhotoUrlResolver;
+import moment.storage.service.storage.PhotoUrlResolver;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;

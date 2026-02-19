@@ -1,4 +1,4 @@
-package moment.storage.application;
+package moment.storage.service.storage;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

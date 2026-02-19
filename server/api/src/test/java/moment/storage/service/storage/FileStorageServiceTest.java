@@ -1,4 +1,4 @@
-package moment.storage.application;
+package moment.storage.service.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
