@@ -4,7 +4,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.Tokens;
 import moment.auth.dto.apple.AppleUserInfo;
-import moment.auth.infrastructure.AppleAuthClient;
 import moment.auth.service.auth.TokensIssuer;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
@@ -21,7 +20,7 @@ public class AppleAuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AppleAuthClient appleAuthClient;
+    private final AppleOAuthClient appleAuthClient;
     private final NicknameGenerateApplicationService nicknameGenerateApplicationService;
     private final TokensIssuer tokensIssuer;
 
