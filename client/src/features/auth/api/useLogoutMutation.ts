@@ -1,5 +1,5 @@
 import { api } from '@/app/lib/api';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router';
@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router';
 export const useLogoutMutation = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: logoutUser,
@@ -15,11 +14,11 @@ export const useLogoutMutation = () => {
       flushSync(() => {
         queryClient.clear();
       });
-      showSuccess('로그아웃 되었습니다.');
+      toast.success('로그아웃 되었습니다.');
       navigate('/login');
     },
     onError: () => {
-      showError('로그아웃에 실패했습니다.');
+      toast.error('로그아웃에 실패했습니다.');
     },
   });
 };

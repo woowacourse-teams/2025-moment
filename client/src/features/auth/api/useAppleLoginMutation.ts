@@ -1,7 +1,7 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
 import { getProfile } from '@/features/auth/api/useProfileQuery';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
@@ -10,7 +10,6 @@ import { AppleLoginRequest, AppleLoginResponse } from '../types/appleLogin';
 
 export const useAppleLoginMutation = () => {
   const navigate = useNavigate();
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: appleLogin,
@@ -18,14 +17,14 @@ export const useAppleLoginMutation = () => {
       queryClient.setQueryData(queryKeys.auth.checkLogin, true);
       await queryClient.prefetchQuery({ queryKey: queryKeys.auth.profile, queryFn: getProfile });
 
-      showSuccess('Apple 로그인에 성공했습니다!');
+      toast.success('Apple 로그인에 성공했습니다!');
       navigate('/');
     },
     onError: error => {
       if (isAxiosError(error) && error.response?.data.message) {
-        showError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        showError('Apple 로그인에 실패했습니다. 다시 시도해주세요.');
+        toast.error('Apple 로그인에 실패했습니다. 다시 시도해주세요.');
       }
     },
   });

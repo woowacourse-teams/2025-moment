@@ -12,14 +12,6 @@ export interface ToastData {
   link?: string;
 }
 
-export interface UseToastReturn {
-  showSuccess: (message: string, duration?: number) => void;
-  showError: (message: string, duration?: number) => void;
-  showWarning: (message: string, duration?: number) => void;
-  showMessage: (message: string, routeType?: ToastRouteType, duration?: number) => void;
-  removeToast: () => void;
-}
-
 export interface ToastsState {
   toasts: ToastData[];
 }

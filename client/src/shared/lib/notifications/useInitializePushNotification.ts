@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useToast } from '../../hooks/useToast';
+import { toast } from '@/shared/store/toast';
 
 import { registerPushToken } from './registerPushToken';
 
@@ -11,7 +11,6 @@ interface PushNotificationData {
 }
 
 export const useInitializePushNotification = () => {
-  const { showMessage } = useToast();
 
   useEffect(() => {
     // Native 앱에서 Expo 푸시 토큰 수신 시 서버에 등록
@@ -28,7 +27,7 @@ export const useInitializePushNotification = () => {
     const handlePushNotification = (data: PushNotificationData) => {
       console.log('Push notification received (foreground):', data);
       if (data.body) {
-        showMessage(data.body, 'moment', 5000);
+        toast.message(data.body, 'moment', 5000);
       }
     };
 
@@ -36,5 +35,5 @@ export const useInitializePushNotification = () => {
       (window as any).onExpoPushToken = handleExpoPushToken;
       (window as any).onPushNotification = handlePushNotification;
     }
-  }, [showMessage]);
+  }, []);
 };

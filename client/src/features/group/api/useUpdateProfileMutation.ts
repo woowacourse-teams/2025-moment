@@ -1,12 +1,11 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { UpdateProfileRequest, GroupActionResponse } from '../types/group';
 
 export const useUpdateProfileMutation = (groupId: number | string) => {
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: async (data: UpdateProfileRequest): Promise<GroupActionResponse> => {
@@ -15,10 +14,10 @@ export const useUpdateProfileMutation = (groupId: number | string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.group.members(Number(groupId)) });
-      showSuccess('프로필이 수정되었습니다!');
+      toast.success('프로필이 수정되었습니다!');
     },
     onError: () => {
-      showError('프로필 수정에 실패했습니다. 다시 시도해주세요.');
+      toast.error('프로필 수정에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

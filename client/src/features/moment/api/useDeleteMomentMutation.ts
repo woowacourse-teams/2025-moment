@@ -1,11 +1,10 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteMomentMutation = (groupId: number | string) => {
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: (momentId: number) => deleteMoment(groupId, momentId),
@@ -13,10 +12,10 @@ export const useDeleteMomentMutation = (groupId: number | string) => {
       const numericGroupId = Number(groupId);
       queryClient.invalidateQueries({ queryKey: queryKeys.group.moments(numericGroupId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.group.myMoments(numericGroupId) });
-      showSuccess('모멘트가 삭제되었습니다.');
+      toast.success('모멘트가 삭제되었습니다.');
     },
     onError: () => {
-      showError('모멘트 삭제에 실패했습니다.');
+      toast.error('모멘트 삭제에 실패했습니다.');
     },
   });
 };

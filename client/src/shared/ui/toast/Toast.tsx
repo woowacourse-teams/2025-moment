@@ -1,4 +1,4 @@
-import { toasts, useToasts } from '@/shared/store/toast';
+import { toast, useToasts } from '@/shared/store/toast';
 import { ToastData } from '@/shared/types/toast';
 import { KeyRound, CheckCircle, Mail, X, XCircle } from 'lucide-react';
 import React, { useState } from 'react';
@@ -70,8 +70,8 @@ export const Toast: React.FC = () => {
 
   return createPortal(
     <S.ToastContainer>
-      {activeToasts.map(toast => (
-        <ToastItem key={toast.id} toast={toast} onClose={toasts.hide} />
+      {activeToasts.map(item => (
+        <ToastItem key={item.id} toast={item} onClose={toast.dismiss} />
       ))}
     </S.ToastContainer>,
     document.body,

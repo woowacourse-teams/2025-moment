@@ -1,6 +1,6 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
@@ -12,7 +12,6 @@ interface SendMomentsData {
 }
 
 export const useMomentsMutation = (groupId: number | string) => {
-  const { showError, showSuccess } = useToast();
 
   return useMutation({
     mutationFn: (data: SendMomentsData) => sendMoments(groupId, data),
@@ -30,11 +29,11 @@ export const useMomentsMutation = (groupId: number | string) => {
       const has_media = Boolean(variables.imageUrl && variables.imageName);
 
       track('publish_moment', { has_media, content_length_bucket });
-      showSuccess('모멘트 작성이 완료되었습니다!');
+      toast.success('모멘트 작성이 완료되었습니다!');
     },
     onError: () => {
       const errorMessage = '모멘트 등록에 실패했습니다. 다시 시도해주세요.';
-      showError(errorMessage);
+      toast.error(errorMessage);
     },
   });
 };

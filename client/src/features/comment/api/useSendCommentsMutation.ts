@@ -1,6 +1,6 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
@@ -22,7 +22,6 @@ export interface SendCommentsResponse {
 }
 
 export const useSendCommentsMutation = (groupId: number | string, momentId: number) => {
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: (data: Omit<SendCommentsData, 'momentId'>) => sendComments(groupId, momentId, data),
@@ -37,7 +36,7 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile });
       queryClient.invalidateQueries({ queryKey: queryKeys.my.profile });
       queryClient.invalidateQueries({ queryKey: queryKeys.rewardHistory });
-      showSuccess('코멘트 작성이 완료되었습니다!');
+      toast.success('코멘트 작성이 완료되었습니다!');
 
       const length = variables.content?.length ?? 0;
       const length_bucket = length <= 60 ? 's' : length <= 140 ? 'm' : 'l';
@@ -45,7 +44,7 @@ export const useSendCommentsMutation = (groupId: number | string, momentId: numb
     },
     onError: () => {
       const errorMessage = '코멘트 등록에 실패했습니다. 다시 시도해주세요.';
-      showError(errorMessage);
+      toast.error(errorMessage);
     },
   });
 };

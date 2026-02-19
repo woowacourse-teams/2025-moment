@@ -1,12 +1,11 @@
 import { api } from '@/app/lib/api';
 import { queryClient } from '@/app/lib/queryClient';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { useMutation } from '@tanstack/react-query';
 import { GroupActionResponse } from '../types/group';
 
 export const useTransferOwnershipMutation = (groupId: number | string) => {
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: async (memberId: number): Promise<GroupActionResponse> => {
@@ -17,10 +16,10 @@ export const useTransferOwnershipMutation = (groupId: number | string) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.groups.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.group.detail(Number(groupId)) });
       queryClient.invalidateQueries({ queryKey: queryKeys.group.members(Number(groupId)) });
-      showSuccess('그룹 소유권이 이전되었습니다.');
+      toast.success('그룹 소유권이 이전되었습니다.');
     },
     onError: () => {
-      showError('소유권 이전에 실패했습니다. 다시 시도해주세요.');
+      toast.error('소유권 이전에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

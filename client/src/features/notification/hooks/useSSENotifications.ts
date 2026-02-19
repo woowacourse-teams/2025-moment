@@ -1,6 +1,6 @@
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { queryKeys } from '@/shared/lib/queryKeys';
-import { toasts } from '@/shared/store/toast';
+import { toast } from '@/shared/store/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { subscribeNotifications } from '../api/subscribeNotifications';
@@ -57,7 +57,7 @@ export const useSSENotifications = () => {
         queryClient.setQueryData(queryKeys.notifications.all, updatedData);
 
         if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
-          toasts.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment', 5000, sseData.link);
+          toast.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment', 5000, sseData.link);
         }
 
         if (sseData.targetType === 'MOMENT') {
@@ -67,7 +67,7 @@ export const useSSENotifications = () => {
         }
         queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
       } catch {
-        toasts.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
+        toast.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
       }
     });
 

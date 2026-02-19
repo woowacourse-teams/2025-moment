@@ -6,5 +6,4 @@ export { useImageFallback } from './useImageFallback';
 export { useIntersectionObserver } from './useIntersectionObserver';
 export { useOutsideClick } from './useOutsideClick';
 export { usePresignedUrlMutation } from '../api/usePresignedUrlMutation';
-export { useToast } from './useToast';
 export { useToggle } from './useToggle';

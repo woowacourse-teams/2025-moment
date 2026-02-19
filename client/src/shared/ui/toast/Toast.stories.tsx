@@ -1,5 +1,5 @@
 import { Toast } from './Toast';
-import { toasts } from '@/shared/store/toast';
+import { toast } from '@/shared/store/toast';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 
@@ -19,7 +19,7 @@ const ToastExample: React.FC = () => {
 
       <div style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
         <button
-          onClick={() => toasts.success('성공적으로 처리되었습니다!')}
+          onClick={() => toast.success('성공적으로 처리되었습니다!')}
           style={{
             padding: '12px 24px',
             backgroundColor: '#10B981',
@@ -33,7 +33,7 @@ const ToastExample: React.FC = () => {
         </button>
 
         <button
-          onClick={() => toasts.error('오류가 발생했습니다. 다시 시도해주세요.')}
+          onClick={() => toast.error('오류가 발생했습니다. 다시 시도해주세요.')}
           style={{
             padding: '12px 24px',
             backgroundColor: '#EF4444',
@@ -48,9 +48,9 @@ const ToastExample: React.FC = () => {
 
         <button
           onClick={() => {
-            toasts.success('첫 번째 메시지');
-            setTimeout(() => toasts.error('두 번째 메시지'), 500);
-            setTimeout(() => toasts.success('세 번째 메시지'), 1000);
+            toast.success('첫 번째 메시지');
+            setTimeout(() => toast.error('두 번째 메시지'), 500);
+            setTimeout(() => toast.success('세 번째 메시지'), 1000);
           }}
           style={{
             padding: '12px 24px',
@@ -65,7 +65,7 @@ const ToastExample: React.FC = () => {
         </button>
 
         <button
-          onClick={() => toasts.success('이 메시지는 10초 후에 사라집니다', 10000)}
+          onClick={() => toast.success('이 메시지는 10초 후에 사라집니다', 10000)}
           style={{
             padding: '12px 24px',
             backgroundColor: '#F59E0B',
@@ -79,7 +79,7 @@ const ToastExample: React.FC = () => {
         </button>
 
         <button
-          onClick={() => toasts.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment')}
+          onClick={() => toast.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment')}
           style={{
             padding: '12px 24px',
             backgroundColor: '#8B5CF6',
@@ -94,7 +94,7 @@ const ToastExample: React.FC = () => {
 
         <button
           onClick={() =>
-            toasts.message('나의 코멘트에 에코가 달렸습니다! 별조각 3개를 획득했습니다!', 'comment')
+            toast.message('나의 코멘트에 에코가 달렸습니다! 별조각 3개를 획득했습니다!', 'comment')
           }
           style={{
             padding: '12px 24px',
@@ -109,7 +109,7 @@ const ToastExample: React.FC = () => {
         </button>
 
         <button
-          onClick={() => toasts.message('일반 알림 메시지입니다')}
+          onClick={() => toast.message('일반 알림 메시지입니다')}
           style={{
             padding: '12px 24px',
             backgroundColor: '#64748B',
@@ -124,10 +124,10 @@ const ToastExample: React.FC = () => {
 
         <button
           onClick={() => {
-            toasts.warning('업로드 중...');
+            toast.warning('업로드 중...');
 
             setTimeout(() => {
-              toasts.success('업로드 완료!');
+              toast.success('업로드 완료!');
             }, 2000);
           }}
           style={{

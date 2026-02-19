@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/shared/design-system/button/Button';
 import { useCreateInviteMutation } from '../api/useCreateInviteMutation';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import * as S from './GroupInviteSection.styles';
 
 interface GroupInviteSectionProps {
@@ -17,7 +17,6 @@ export function GroupInviteSection({
 }: GroupInviteSectionProps) {
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const createInviteMutation = useCreateInviteMutation(groupId);
-  const { showSuccess } = useToast();
 
   const handleGenerateCode = async () => {
     try {
@@ -32,7 +31,7 @@ export function GroupInviteSection({
     if (inviteCode) {
       const inviteUrl = `${window.location.origin}/invite/${inviteCode}`;
       navigator.clipboard.writeText(inviteUrl);
-      showSuccess('초대 링크가 복사되었습니다!');
+      toast.success('초대 링크가 복사되었습니다!');
     }
   };
 

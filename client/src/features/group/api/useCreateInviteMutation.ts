@@ -1,11 +1,10 @@
 import { api } from '@/app/lib/api';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { useMutation } from '@tanstack/react-query';
 import { track } from '@/shared/lib/ga/track';
 import { InviteResponse } from '../types/group';
 
 export const useCreateInviteMutation = (groupId: number | string) => {
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: async (): Promise<InviteResponse> => {
@@ -14,10 +13,10 @@ export const useCreateInviteMutation = (groupId: number | string) => {
     },
     onSuccess: () => {
       track('invite_member', {});
-      showSuccess('초대 링크가 생성되었습니다!');
+      toast.success('초대 링크가 생성되었습니다!');
     },
     onError: () => {
-      showError('초대 링크 생성에 실패했습니다. 다시 시도해주세요.');
+      toast.error('초대 링크 생성에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };
