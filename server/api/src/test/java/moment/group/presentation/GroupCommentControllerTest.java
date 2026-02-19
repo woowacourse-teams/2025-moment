@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
-import moment.auth.application.TokenManager;
+import moment.auth.service.auth.TokenManager;
 import moment.comment.dto.request.GroupCommentCreateRequest;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.response.MyGroupCommentListResponse;

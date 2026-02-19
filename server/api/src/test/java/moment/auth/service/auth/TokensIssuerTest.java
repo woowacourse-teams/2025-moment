@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;

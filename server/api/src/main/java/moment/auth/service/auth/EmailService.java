@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
@@ -14,4 +14,3 @@ public interface EmailService {
 
     void verifyPasswordResetToken(PasswordResetRequest request);
 }
-

@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import java.util.Date;
 import moment.user.dto.request.Authentication;
@@ -12,6 +12,6 @@ public interface TokenManager {
     Date getExpirationTimeFromToken(String token);
 
     Date getIssuedAtFromToken(String token);
-    
+
     Authentication extractAuthentication(String token);
 }

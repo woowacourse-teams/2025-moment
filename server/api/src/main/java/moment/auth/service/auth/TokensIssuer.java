@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.RefreshToken;

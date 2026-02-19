@@ -11,7 +11,7 @@ import static org.mockito.BDDMockito.then;
 
 import io.restassured.RestAssured;
 import java.util.List;
-import moment.auth.application.TokenManager;
+import moment.auth.service.auth.TokenManager;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;

@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

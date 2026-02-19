@@ -7,7 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import moment.auth.application.TokenManager;
+import moment.auth.service.auth.TokenManager;
 import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.fixture.GroupFixture;

@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.auth;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

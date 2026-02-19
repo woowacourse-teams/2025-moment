@@ -1,4 +1,4 @@
-package moment.auth.application;
+package moment.auth.service.application;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
 import moment.auth.infrastructure.GoogleAuthClient;
+import moment.auth.service.auth.TokensIssuer;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
 import moment.user.infrastructure.UserRepository;

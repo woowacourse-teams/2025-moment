@@ -2,7 +2,7 @@ package moment.global.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import moment.auth.application.AuthService;
+import moment.auth.service.auth.AuthService;
 import moment.auth.presentation.LoginUserArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
