@@ -296,7 +296,7 @@ public class AuthController {
     })
     @PostMapping("/email/password")
     public ResponseEntity<SuccessResponse<Void>> requestPasswordUpdatePage(
-            @RequestBody PasswordUpdateRequest request
+            @Valid @RequestBody PasswordUpdateRequest request
     ) {
         emailService.sendPasswordUpdateEmail(request);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, null));

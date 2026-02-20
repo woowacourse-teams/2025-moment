@@ -7,9 +7,11 @@ import moment.storage.dto.response.UploadUrlResponse;
 import moment.user.service.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FileStorageService {
 
     private final FileUploadClient fileUploadClient;

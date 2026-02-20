@@ -9,9 +9,11 @@ import moment.notification.service.application.NotificationApplicationService;
 import moment.notification.service.application.PushNotificationApplicationService;
 import moment.notification.service.notification.SseNotificationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationFacadeService {
 
     private final NotificationApplicationService notificationApplicationService;
