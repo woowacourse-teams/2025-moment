@@ -12,7 +12,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import java.util.function.Function;
 import javax.crypto.spec.SecretKeySpec;
-import moment.auth.application.TokenManager;
+import moment.auth.service.auth.TokenManager;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.dto.request.Authentication;

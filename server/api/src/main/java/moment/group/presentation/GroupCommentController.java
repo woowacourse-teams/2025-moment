@@ -19,7 +19,7 @@ import moment.comment.service.facade.MyGroupCommentPageFacadeService;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.like.dto.response.LikeToggleResponse;
-import moment.like.service.CommentLikeService;
+import moment.like.service.like.CommentLikeService;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

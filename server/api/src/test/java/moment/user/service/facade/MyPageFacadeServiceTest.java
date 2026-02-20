@@ -6,7 +6,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import moment.auth.application.AuthService;
+import moment.auth.service.auth.AuthService;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.service.user.UserWithdrawService;

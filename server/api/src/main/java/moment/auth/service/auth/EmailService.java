@@ -1,0 +1,16 @@
+package moment.auth.service.auth;
+
+import moment.auth.dto.request.EmailRequest;
+import moment.auth.dto.request.EmailVerifyRequest;
+import moment.auth.dto.request.PasswordResetRequest;
+import moment.auth.dto.request.PasswordUpdateRequest;
+
+public interface EmailService {
+    void sendVerificationEmail(EmailRequest request);
+
+    void verifyCode(EmailVerifyRequest request);
+
+    void sendPasswordUpdateEmail(PasswordUpdateRequest request);
+
+    void verifyPasswordResetToken(PasswordResetRequest request);
+}

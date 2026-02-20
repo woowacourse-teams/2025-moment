@@ -4,7 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
-import moment.auth.application.AuthService;
+import moment.auth.service.auth.AuthService;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.user.dto.request.Authentication;

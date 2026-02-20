@@ -17,8 +17,8 @@ import moment.comment.service.comment.CommentService;
 
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
-import moment.like.service.CommentLikeService;
-import moment.like.service.MomentLikeService;
+import moment.like.service.like.CommentLikeService;
+import moment.like.service.like.MomentLikeService;
 import moment.moment.dto.response.tobe.MomentComposition;
 import moment.moment.service.application.MomentApplicationService;
 import moment.notification.service.application.NotificationApplicationService;

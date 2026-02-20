@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.dto.apple.ApplePublicKey;
 import moment.auth.dto.apple.ApplePublicKeys;
 import moment.auth.dto.apple.AppleUserInfo;
+import moment.auth.service.auth.AppleOAuthClient;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class AppleAuthClient {
+public class AppleAuthClient implements AppleOAuthClient {
 
     private static final String APPLE_JWKS_URL = "https://appleid.apple.com/auth/keys";
     private static final String APPLE_ISSUER = "https://appleid.apple.com";

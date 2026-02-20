@@ -16,7 +16,7 @@ import moment.group.dto.response.InviteInfoResponse;
 import moment.group.dto.response.MemberResponse;
 import moment.group.service.group.GroupMemberService;
 import moment.group.service.group.GroupService;
-import moment.group.service.invite.InviteLinkService;
+import moment.group.service.group.InviteLinkService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.context.ApplicationEventPublisher;
