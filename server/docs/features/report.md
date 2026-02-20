@@ -1,6 +1,6 @@
 # Report Domain (PREFIX: RPT)
 
-> Last Updated: 2026-02-03
+> Last Updated: 2026-02-20
 > Features: 2
 
 ## 기능 목록
@@ -13,7 +13,9 @@
     - Controller: `ReportController`
     - Facade: `ReportCreateFacadeService`
     - Application: `ReportApplicationService`
+    - Domain: `ReportService`
     - Entity: `Report`
+    - DTO: `ReportCreateRequest`, `ReportCreateResponse`
 - **Business Rules**: 모멘트에 대한 신고 생성, 신고 사유 선택 필수
 - **Dependencies**: moment (MomentService)
 - **Tests**: `ReportServiceTest`, `ReportRepositoryTest`
@@ -26,7 +28,9 @@
     - Controller: `ReportController`
     - Facade: `ReportCreateFacadeService`
     - Application: `ReportApplicationService`
+    - Domain: `ReportService`
     - Entity: `Report`
+    - DTO: `ReportCreateRequest`, `ReportCreateResponse`
 - **Business Rules**: 댓글에 대한 신고 생성, 신고 사유 선택 필수
 - **Dependencies**: comment (CommentService)
 - **Tests**: `ReportServiceTest`, `ReportRepositoryTest`

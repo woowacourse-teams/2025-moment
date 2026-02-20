@@ -1,6 +1,6 @@
 # Storage Domain (PREFIX: STG)
 
-> Last Updated: 2026-02-03
+> Last Updated: 2026-02-20
 > Features: 1
 
 ## 기능 목록
@@ -12,7 +12,7 @@
 - **Key Classes**:
     - Controller: `FileStorageController`
     - Domain: `FileStorageService`
-    - Infrastructure: `AwsS3Client`
+    - Interface: `FileUploadClient` (DIP, 구현체: `AwsS3Client`)
 - **Business Rules**: AWS S3 Presigned URL 발급, 클라이언트에서 직접 업로드
 - **Dependencies**: 없음 (외부: AWS S3)
 - **Tests**: `FileStorageServiceTest`, `PhotoUrlResolverTest`, `AwsS3ClientTest`

@@ -1,6 +1,6 @@
 # Moment Feature Registry
 
-> Last Updated: 2026-02-12
+> Last Updated: 2026-02-20
 
 ## Quick Reference
 
@@ -10,7 +10,7 @@
 | auth | AUTH | 12 | DONE | [auth.md](auth.md) |
 | block | BLK | 6 | DONE | [block.md](block.md) |
 | comment | CMT | 1 | DONE | [comment.md](comment.md) |
-| global | GLB | 7 | DONE | [global.md](global.md) |
+| global | GLB | 8 | DONE | [global.md](global.md) |
 | group | GRP | 29 | DONE | [group.md](group.md) |
 | like | LIK | 2 | DONE | [like.md](like.md) |
 | moment | MOM | 4 | DONE | [moment.md](moment.md) |
@@ -19,7 +19,7 @@
 | storage | STG | 1 | DONE | [storage.md](storage.md) |
 | user | USER | 8 | DONE | [user.md](user.md) |
 
-**총 112개 기능**
+**총 113개 기능**
 
 ## Cross-Domain Dependencies (이벤트 기반)
 
@@ -61,6 +61,10 @@
 
 | 날짜 | 도메인 | Feature ID | 변경 내용 |
 |------|--------|-----------|-----------|
+| 2026-02-20 | global | GLB-008 | ArchUnit 아키텍처 테스트 스위트 도입 (API 37룰 + Admin 7룰) |
+| 2026-02-20 | auth, storage | AUTH-003, AUTH-004, STG-001 | DIP 적용: AppleOAuthClient, GoogleOAuthClient, FileUploadClient 인터페이스 추출 |
+| 2026-02-20 | auth, storage, report, like, group | - | 패키지 구조 표준화: service/{domain}/ 컨벤션 적용 |
+| 2026-02-20 | auth, storage, notification, report | - | @Transactional 누락 및 컨트롤러 @Valid 누락 수정 |
 | 2026-02-12 | auth | AUTH-002 | 로그아웃 시 디바이스 푸시 토큰 삭제 기능 추가, LogoutRequest DTO 추가, AuthServiceTest 통합 테스트 추가 |
 | 2026-02-12 | notification | NTF-005 | 동일 디바이스 토큰 중복 등록 시 기존 사용자 등록 삭제, V39 push_notifications 인덱스 추가, Repository/Service 테스트 보강 |
 | 2026-02-11 | all | - | Gradle 멀티모듈 전환 (common/admin/api), EchoCreateEvent dead code 삭제 |
@@ -77,5 +81,3 @@
 | 2026-02-04 | group | GRP-010~013 | Admin E2E 테스트 참조 제거, User API E2E 테스트 미존재 명시 |
 | 2026-02-04 | group | - | 테스트 수 18→15 정정 |
 | 2026-02-04 | auth | AUTH-007~010 | AuthEmailService 레이어 분류 Domain→Application 수정 |
-| 2026-02-04 | all | - | Cross-Domain Dependencies에 이벤트 활성 상태 표기, 발행 클래스 정정 |
-| 2026-02-03 | all | - | 초기 Feature Registry 생성 |

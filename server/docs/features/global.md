@@ -1,7 +1,7 @@
 # Global Domain (PREFIX: GLB)
 
-> Last Updated: 2026-02-03
-> Features: 7
+> Last Updated: 2026-02-20
+> Features: 8
 
 ## 기능 목록
 
@@ -68,9 +68,23 @@
 - **Business Rules**: 서버 상태 확인용 엔드포인트
 - **Tests**: 없음
 
-## 관련 테스트 클래스 (1개)
+### GLB-008: ArchUnit 아키텍처 테스트
+
+- **Status**: DONE
+- **API**: N/A (테스트 인프라)
+- **Key Classes**:
+    - API Base: `BaseArchTest`
+    - API Rules: `AnnotationConsistencyRuleTest`, `PackageStructureRuleTest`, `LayerDependencyRuleTest`, `DipRuleTest`, `DtoRuleTest`, `DomainPurityRuleTest`, `NamingConventionRuleTest`, `ModuleBoundaryRuleTest`, `CyclicDependencyRuleTest`
+    - Admin Base: `AdminBaseArchTest`
+    - Admin Rules: `AdminAnnotationRuleTest`, `AdminLayerDependencyRuleTest`, `AdminCyclicDependencyRuleTest`, `AdminNamingConventionRuleTest`
+- **Business Rules**: API 모듈 37룰 + Admin 모듈 7룰로 아키텍처 일관성 자동 검증 (레이어 의존성, DIP, DTO 패턴, 네이밍 컨벤션, 순환 의존성, 모듈 경계, 어노테이션 일관성, 도메인 순수성, 패키지 구조)
+- **Notes**: ArchUnit 라이브러리 기반, 빌드 시 자동 실행
+
+## 관련 테스트 클래스 (16개)
 
 - `TargetTypeTest`
+- API ArchUnit (10개): `BaseArchTest`, `AnnotationConsistencyRuleTest`, `PackageStructureRuleTest`, `LayerDependencyRuleTest`, `DipRuleTest`, `DtoRuleTest`, `DomainPurityRuleTest`, `NamingConventionRuleTest`, `ModuleBoundaryRuleTest`, `CyclicDependencyRuleTest`
+- Admin ArchUnit (5개): `AdminBaseArchTest`, `AdminAnnotationRuleTest`, `AdminLayerDependencyRuleTest`, `AdminCyclicDependencyRuleTest`, `AdminNamingConventionRuleTest`
 
 ## DB 마이그레이션
 

@@ -1,6 +1,6 @@
 # Auth Domain (PREFIX: AUTH)
 
-> Last Updated: 2026-02-12
+> Last Updated: 2026-02-20
 > Features: 12
 
 ## 기능 목록
@@ -35,7 +35,8 @@
 - **API**: `GET /api/v2/auth/login/google`, `GET /api/v2/auth/callback/google`
 - **Key Classes**:
     - Controller: `AuthController`
-    - Domain: `GoogleAuthService`
+    - Application: `GoogleAuthService`
+    - Interface: `GoogleOAuthClient` (DIP, 구현체: `GoogleAuthClient`)
 - **Business Rules**: Google OAuth2.0 흐름, 신규 사용자 자동 가입
 - **Dependencies**: user (UserService)
 - **Tests**: `AuthControllerTest` (E2E)
@@ -47,7 +48,7 @@
 - **Key Classes**:
     - Controller: `AuthController`
     - Application: `AppleAuthService`
-    - Infrastructure: `AppleAuthClient`
+    - Interface: `AppleOAuthClient` (DIP, 구현체: `AppleAuthClient`)
     - DTO: `AppleUserInfo`
 - **Business Rules**: Apple Identity Token 검증, 실제 Apple 이메일 사용 (email 클레임), 이메일 미공유 시 MD5 해시 기반 짧은 이메일 생성 (`apple_{hash}@apple.app`), 기존 `sub@apple.user` 형식 레거시 이메일 자동 마이그레이션, 신규 사용자 자동 가입
 - **Dependencies**: user (UserRepository, NicknameGenerateApplicationService)
