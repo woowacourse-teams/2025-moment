@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.dto.apple.ApplePublicKey;
 import moment.auth.dto.apple.ApplePublicKeys;
 import moment.auth.dto.apple.AppleUserInfo;
-import moment.auth.service.application.AppleOAuthClient;
+import moment.auth.service.auth.AppleOAuthClient;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import org.springframework.beans.factory.annotation.Value;

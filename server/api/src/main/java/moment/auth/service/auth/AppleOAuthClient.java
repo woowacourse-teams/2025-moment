@@ -1,4 +1,4 @@
-package moment.auth.service.application;
+package moment.auth.service.auth;
 
 import moment.auth.dto.apple.AppleUserInfo;
 

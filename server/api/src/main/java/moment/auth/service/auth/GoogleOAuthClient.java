@@ -1,4 +1,4 @@
-package moment.auth.service.application;
+package moment.auth.service.auth;
 
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;

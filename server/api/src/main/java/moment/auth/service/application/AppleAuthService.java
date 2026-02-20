@@ -4,6 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import moment.auth.domain.Tokens;
 import moment.auth.dto.apple.AppleUserInfo;
+import moment.auth.service.auth.AppleOAuthClient;
 import moment.auth.service.auth.TokensIssuer;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;

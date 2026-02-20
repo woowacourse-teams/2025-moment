@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.domain.Tokens;
 import moment.auth.dto.google.GoogleAccessToken;
 import moment.auth.dto.google.GoogleUserInfo;
+import moment.auth.service.auth.GoogleOAuthClient;
 import moment.auth.service.auth.TokensIssuer;
 import moment.user.domain.ProviderType;
 import moment.user.domain.User;
