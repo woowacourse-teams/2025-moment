@@ -1,4 +1,4 @@
-package moment.group.service.invite;
+package moment.group.service.group;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

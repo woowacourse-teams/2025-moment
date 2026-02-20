@@ -5,8 +5,8 @@ import moment.comment.service.application.CommentApplicationService;
 import moment.global.domain.TargetType;
 import moment.moment.service.application.MomentApplicationService;
 import moment.report.service.application.ReportApplicationService;
-import moment.report.dto.ReportCreateRequest;
-import moment.report.dto.ReportCreateResponse;
+import moment.report.dto.request.ReportCreateRequest;
+import moment.report.dto.response.ReportCreateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

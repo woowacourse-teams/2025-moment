@@ -12,7 +12,7 @@ import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
 import moment.like.dto.response.LikeToggleResponse;
-import moment.like.service.MomentLikeService;
+import moment.like.service.like.MomentLikeService;
 import moment.moment.dto.request.GroupMomentCreateRequest;
 import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupMomentListResponse;

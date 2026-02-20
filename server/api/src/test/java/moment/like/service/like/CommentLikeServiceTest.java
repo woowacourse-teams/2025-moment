@@ -1,4 +1,4 @@
-package moment.like.service;
+package moment.like.service.like;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

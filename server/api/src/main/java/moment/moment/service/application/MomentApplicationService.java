@@ -14,7 +14,7 @@ import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
-import moment.like.service.MomentLikeService;
+import moment.like.service.like.MomentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.dto.request.MomentCreateRequest;

@@ -25,7 +25,7 @@ import moment.global.page.Cursor;
 import moment.global.page.PageSize;
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
-import moment.like.service.CommentLikeService;
+import moment.like.service.like.CommentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.service.moment.MomentService;
 import moment.storage.service.storage.PhotoUrlResolver;

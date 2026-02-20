@@ -1,4 +1,4 @@
-package moment.group.service.invite;
+package moment.group.service.group;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

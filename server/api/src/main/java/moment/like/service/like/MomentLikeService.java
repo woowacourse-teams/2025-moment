@@ -1,4 +1,4 @@
-package moment.like.service;
+package moment.like.service.like;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

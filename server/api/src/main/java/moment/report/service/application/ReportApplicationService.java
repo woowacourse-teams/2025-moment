@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moment.global.domain.TargetType;
 import moment.report.service.report.ReportService;
 import moment.report.domain.Report;
-import moment.report.dto.ReportCreateRequest;
+import moment.report.dto.request.ReportCreateRequest;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.springframework.stereotype.Service;
