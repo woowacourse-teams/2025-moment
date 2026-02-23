@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "168098995955",
+    "project_id": "moment-b9f39",
+    "storage_bucket": "moment-b9f39.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168098995955:android:c99a25d87aa361b2242186",
+        "android_client_info": {
+          "package_name": "com.connectingmoment.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168098995955-nndnalo4pba4od1p12gbqbrcppm52f4l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.connectingmoment.app",
+            "certificate_hash": "4936ecb9def0af37b5f66deca5f66f26d8c74224"
+          }
+        },
+        {
+          "client_id": "168098995955-rhe4o1m3gnlnab3cpcd4qqv7i3ums1vh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp-YCQT3YiUUBKJW_VQ6QFOhbnxO3txVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168098995955-86hf5upsslep7lbemg6kne5e2tm9vapu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

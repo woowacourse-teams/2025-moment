@@ -22,6 +22,7 @@
     },
     "android": {
       "package": "com.connectingmoment.app",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0a0a0f",

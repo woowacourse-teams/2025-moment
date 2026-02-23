@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build:ios": "eas build --platform ios",
-    "submit:ios": "eas submit --platform ios"
+    "build:android": "eas build --platform android --profile production",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
