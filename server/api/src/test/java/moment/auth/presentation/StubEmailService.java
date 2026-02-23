@@ -2,7 +2,7 @@ package moment.auth.presentation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import moment.auth.application.EmailService;
+import moment.auth.service.auth.EmailService;
 import moment.auth.dto.request.EmailRequest;
 import moment.auth.dto.request.EmailVerifyRequest;
 import moment.auth.dto.request.PasswordResetRequest;

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
@@ -38,7 +39,7 @@ public class PushNotificationController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<Void>> registerDeviceEndpoint(
-            @RequestBody DeviceEndpointRequest deviceEndpointRequest,
+            @Valid @RequestBody DeviceEndpointRequest deviceEndpointRequest,
             @AuthenticationPrincipal Authentication authentication
     ) {
         pushNotificationApplicationService.registerDeviceEndpoint(authentication.id(), deviceEndpointRequest);
@@ -55,7 +56,7 @@ public class PushNotificationController {
     })
     @DeleteMapping
     public ResponseEntity<SuccessResponse<Void>> deleteDeviceEndpoint(
-            @RequestBody DeviceEndpointRequest deviceEndpointRequest,
+            @Valid @RequestBody DeviceEndpointRequest deviceEndpointRequest,
             @AuthenticationPrincipal Authentication authentication
     ) {
         pushNotificationApplicationService.deleteDeviceEndpoint(authentication.id(), deviceEndpointRequest);

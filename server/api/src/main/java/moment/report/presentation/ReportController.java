@@ -6,14 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.domain.TargetType;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.report.application.facade.ReportCreateFacadeService;
-import moment.report.dto.ReportCreateRequest;
-import moment.report.dto.ReportCreateResponse;
+import moment.report.service.facade.ReportCreateFacadeService;
+import moment.report.dto.request.ReportCreateRequest;
+import moment.report.dto.response.ReportCreateResponse;
 import moment.user.dto.request.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class ReportController {
     @PostMapping("/api/v2/moments/{id}/reports")
     public ResponseEntity<SuccessResponse<ReportCreateResponse>> createMomentReport(
             @AuthenticationPrincipal Authentication authentication,
-            @RequestBody ReportCreateRequest request,
+            @Valid @RequestBody ReportCreateRequest request,
             @PathVariable(name = "id") Long momentId
     ) {
         ReportCreateResponse response = reportCreateFacadeService.createReport(
@@ -75,7 +76,7 @@ public class ReportController {
     @PostMapping("/api/v2/comments/{id}/reports")
     public ResponseEntity<SuccessResponse<ReportCreateResponse>> createCommentReport(
             @AuthenticationPrincipal Authentication authentication,
-            @RequestBody ReportCreateRequest request,
+            @Valid @RequestBody ReportCreateRequest request,
             @PathVariable(name = "id") Long commentId
     ) {
         ReportCreateResponse response = reportCreateFacadeService.createReport(

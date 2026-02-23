@@ -24,7 +24,7 @@ import moment.group.dto.response.GroupDetailResponse;
 import moment.group.dto.response.MyGroupResponse;
 import moment.group.service.group.GroupMemberService;
 import moment.group.service.group.GroupService;
-import moment.group.service.invite.InviteLinkService;
+import moment.group.service.group.InviteLinkService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
 import org.junit.jupiter.api.DisplayNameGeneration;

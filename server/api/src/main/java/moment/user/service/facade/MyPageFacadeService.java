@@ -1,7 +1,7 @@
 package moment.user.service.facade;
 
 import lombok.RequiredArgsConstructor;
-import moment.auth.application.AuthService;
+import moment.auth.service.auth.AuthService;
 import moment.user.domain.User;
 import moment.user.dto.request.ChangePasswordRequest;
 import moment.user.dto.request.NicknameChangeRequest;

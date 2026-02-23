@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
 import moment.global.dto.response.ErrorResponse;
 import moment.global.dto.response.SuccessResponse;
-import moment.storage.application.FileStorageService;
+import moment.storage.service.storage.FileStorageService;
 import moment.storage.dto.request.UploadUrlRequest;
 import moment.storage.dto.response.UploadUrlResponse;
 import moment.user.dto.request.Authentication;

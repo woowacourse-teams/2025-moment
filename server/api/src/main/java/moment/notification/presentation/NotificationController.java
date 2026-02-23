@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.auth.presentation.AuthenticationPrincipal;
@@ -104,7 +105,7 @@ public class NotificationController {
     })
     @PatchMapping("/read-all")
     public ResponseEntity<SuccessResponse<Void>> readAll(
-            @RequestBody NotificationReadRequest notificationReadRequest) {
+            @Valid @RequestBody NotificationReadRequest notificationReadRequest) {
         notificationApplicationService.markAllAsRead(notificationReadRequest);
         HttpStatus status = HttpStatus.NO_CONTENT;
 
