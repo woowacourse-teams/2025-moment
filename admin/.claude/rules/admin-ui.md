@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.tsx"
+---
+
 # Admin UI Rules
 
 ## Styling (Emotion)

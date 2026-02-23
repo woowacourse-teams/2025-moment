@@ -1,27 +1,23 @@
-# Skill: Refactor Logic Separation
-
-Extract business logic from UI components into custom hooks.
-
+---
+name: refactor-logic
+description: Extract business logic from UI components into custom hooks in features/<entity>/hooks/.
+argument-hint: <component-file>
+disable-model-invocation: true
 ---
 
-## Input
+Extract business logic from: $ARGUMENTS
 
-- Target component file
-- Context: List / Detail / Edit
+Read the target component, identify all state, effects, and query calls, then move them into a custom hook.
 
----
+## Target Structure
 
-## Naming Convention
-
-| Context | File | Hook |
-|---------|------|------|
-| List Page | `use<Entity>List.ts` | `use<Entity>List` |
-| Detail Page | `use<Entity>Detail.ts` | `use<Entity>Detail` |
-| Edit Modal | `use<Entity>Edit.ts` | `use<Entity>Edit` |
+| Context     | Hook file                    | Hook name         |
+|-------------|------------------------------|-------------------|
+| List Page   | `use<Entity>List.ts`         | `use<Entity>List` |
+| Detail Page | `use<Entity>Detail.ts`       | `use<Entity>Detail` |
+| Edit Modal  | `use<Entity>Edit.ts`         | `use<Entity>Edit` |
 
 Location: `features/<entity>/hooks/`
-
----
 
 ## List Hook Template
 
@@ -31,9 +27,7 @@ export function useUserList() {
   const [keyword, setKeyword] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const { data, isLoading, isError } = useUsersQuery({
-    page, size: 20, keyword: searchKeyword,
-  });
+  const { data, isLoading, isError } = useUsersQuery({ page, size: 20, keyword: searchKeyword });
 
   return {
     users: data?.content ?? [],
@@ -46,8 +40,6 @@ export function useUserList() {
   };
 }
 ```
-
----
 
 ## Detail Hook Template
 
@@ -62,11 +54,9 @@ export function useGroupDetail(groupId: string) {
   return {
     group, isLoading, isError,
     isDeleting: deleteGroupMutation.isPending,
-    // Edit Modal
     isEditModalOpen,
     handleOpenEditModal: () => setIsEditModalOpen(true),
     handleCloseEditModal: () => setIsEditModalOpen(false),
-    // Delete Modal
     isDeleteModalOpen,
     handleOpenDeleteModal: () => setIsDeleteModalOpen(true),
     handleCloseDeleteModal: () => setIsDeleteModalOpen(false),
@@ -77,33 +67,8 @@ export function useGroupDetail(groupId: string) {
 }
 ```
 
----
-
-## Edit Hook Template
-
-```typescript
-export function useUserEdit({ userId, initialNickname, onSuccess }) {
-  const [nickname, setNickname] = useState(initialNickname);
-  const updateUserMutation = useUpdateUserMutation();
-
-  useEffect(() => { setNickname(initialNickname); }, [initialNickname]);
-
-  return {
-    nickname, setNickname,
-    isValid: nickname.trim() && nickname !== initialNickname,
-    isPending: updateUserMutation.isPending,
-    handleSubmit: async () => {
-      await updateUserMutation.mutateAsync({ userId, nickname });
-      onSuccess();
-    },
-  };
-}
-```
-
----
-
 ## Checklist
 
-- [ ] Hook in `features/<entity>/hooks/`
-- [ ] UI component has no `useState`, `useEffect`, `useQuery`
-- [ ] Hook returns only needed data and handlers
+- [ ] Hook lives in `features/<entity>/hooks/`
+- [ ] UI component has no `useState`, `useEffect`, or `useQuery` after extraction
+- [ ] Hook returns only needed data and handlers (no raw query objects)

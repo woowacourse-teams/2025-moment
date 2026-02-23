@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.{ts,tsx}"
+---
+
 # Error Handling Rules
 
 ## API Errors

@@ -1,27 +1,16 @@
-# Skill: Query Conventions
-
-Rules for TanStack Query hooks.
-
+---
+name: query-conventions
+description: TanStack Query patterns and code templates for this admin codebase. Apply when writing useQuery or useMutation hooks.
+user-invocable: false
 ---
 
-## File Naming
+## File Location
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| List Query | `use<Entity>sQuery.ts` | `useUsersQuery.ts` |
-| Detail Query | `use<Entity>DetailQuery.ts` | `useUserDetailQuery.ts` |
-| Nested Query | `use<Parent><Child>Query.ts` | `useGroupMembersQuery.ts` |
-| Mutation | `use<Action><Entity>Mutation.ts` | `useDeleteUserMutation.ts` |
-
-## Location
-
-All hooks in `features/<entity>/api/`
-
----
+All query/mutation hooks go in `features/<entity>/api/`.
 
 ## Query Keys
 
-Centralized in `shared/api/queryKeys.ts`:
+Centralized in `shared/api/queryKeys.ts`. Always add new keys there:
 
 ```typescript
 export const queryKeys = {
@@ -35,8 +24,6 @@ export const queryKeys = {
   },
 };
 ```
-
----
 
 ## Query Hook Template
 
@@ -58,8 +45,6 @@ export function useUsersQuery(params: UserListParams) {
 }
 ```
 
----
-
 ## Mutation Hook Template
 
 ```typescript
@@ -71,7 +56,7 @@ export function useDeleteUserMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ userId, reason }) =>
+    mutationFn: ({ userId, reason }: { userId: string; reason: string }) =>
       apiClient.delete(`/admin/users/${userId}`, { data: { reason } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
@@ -80,20 +65,17 @@ export function useDeleteUserMutation() {
 }
 ```
 
----
-
 ## Invalidation Strategy
 
-| Action | Invalidate |
-|--------|------------|
-| Delete item | `queryKeys.<entity>.all` |
-| Update item | `queryKeys.<entity>.all` |
-| Update detail | `queryKeys.<entity>.detail(id)` |
-
----
+| Action        | Invalidate                        |
+|---------------|-----------------------------------|
+| Delete item   | `queryKeys.<entity>.all`          |
+| Update item   | `queryKeys.<entity>.all`          |
+| Update detail | `queryKeys.<entity>.detail(id)`   |
 
 ## Checklist
 
 - [ ] Key defined in `shared/api/queryKeys.ts`
 - [ ] Hook in `features/<entity>/api/`
 - [ ] Mutation invalidates correct keys
+- [ ] Mutation includes `reason` param for destructive actions

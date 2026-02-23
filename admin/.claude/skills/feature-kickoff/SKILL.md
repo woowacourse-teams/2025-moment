@@ -1,17 +1,11 @@
-# Skill: Feature Kickoff
-
-Create implementation plan **before coding**.
-
+---
+name: feature-kickoff
+description: Create a structured implementation plan before coding a new admin feature. Use when starting a new feature from scratch.
+argument-hint: <feature-name>
+disable-model-invocation: true
 ---
 
-## Input
-
-- Feature name
-- Target roles (ADMIN / VIEWER)
-- Entity endpoints
-- Scope (MVP vs out-of-scope)
-
----
+Create an implementation plan for: $ARGUMENTS
 
 ## Output Format
 
@@ -61,13 +55,6 @@ shared/api/queryKeys.ts  # Add keys
 ### 7) Edge Cases
 - 401/403, concurrent updates, stale data
 
-### 8) Tests
-- Unit: auth logic, validation
-- E2E: ADMIN flow, VIEWER restriction
-
 ---
 
-## Rules
-
-- Base API on `docs/admin/api-contract.md`
-- Incremental PRs over large refactors
+**Wait for user approval before proceeding to implementation.**
