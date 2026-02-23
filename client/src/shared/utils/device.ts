@@ -24,5 +24,6 @@ declare global {
       postMessage: (message: string) => void;
     };
     onAppleLoginSuccess?: (token: string) => void;
+    onGoogleLoginSuccess?: (token: string) => void;
   }
 }
