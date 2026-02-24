@@ -23,12 +23,18 @@ export default function DeleteAccountPage() {
 
       <S.Divider />
 
-      <S.SectionTitle>삭제되는 데이터</S.SectionTitle>
+      <S.SectionTitle>즉시 삭제되는 데이터</S.SectionTitle>
       <S.List>
         <S.ListItem>계정 정보 (이메일, 프로필)</S.ListItem>
         <S.ListItem>작성한 모든 모멘트 및 댓글</S.ListItem>
         <S.ListItem>그룹 참여 기록</S.ListItem>
-        <S.ListItem>기타 서비스 이용 기록</S.ListItem>
+      </S.List>
+
+      <S.Divider />
+
+      <S.SectionTitle>보관 후 삭제되는 데이터</S.SectionTitle>
+      <S.List>
+        <S.ListItem>서비스 운영 로그 — 삭제 요청일로부터 최대 30일 후 파기</S.ListItem>
       </S.List>
 
       <S.Divider />
