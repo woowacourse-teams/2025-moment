@@ -103,6 +103,29 @@ export const PrivacyPolicyContent = () => {
       </S.Section>
 
       <S.Section>
+        <S.SectionTitle>제9조 (아동 안전 기준)</S.SectionTitle>
+        <S.Paragraph>
+          Moment는 아동 성적 학대 및 착취(CSAE) 방지를 위해 최선을 다하고 있습니다.
+        </S.Paragraph>
+        <S.Paragraph>서비스 내에서 다음 행위를 엄격히 금지합니다.</S.Paragraph>
+        <S.List>
+          <S.ListItem>미성년자를 대상으로 한 성적 콘텐츠 게시 또는 요청</S.ListItem>
+          <S.ListItem>미성년자를 대상으로 한 그루밍(grooming) 행위</S.ListItem>
+          <S.ListItem>미성년자에 대한 착취 또는 학대</S.ListItem>
+          <S.ListItem>미성년자를 포함한 부적절한 이미지의 공유 또는 요청</S.ListItem>
+        </S.List>
+        <S.Paragraph>
+          이용자는 부적절한 콘텐츠나 행동을 발견한 경우 아래 이메일로 신고할 수 있습니다. 모든
+          신고는 검토 후 콘텐츠 삭제 및 계정 정지 등 적절한 조치를 취합니다. 필요한 경우 관련
+          법집행 기관에 협조합니다.
+        </S.Paragraph>
+        <S.Paragraph>
+          아동이 즉각적인 위험에 처해 있다고 판단되는 경우, 즉시 관할 기관(경찰 등)에 신고해
+          주세요.
+        </S.Paragraph>
+      </S.Section>
+
+      <S.Section>
         <S.SectionTitle>문의</S.SectionTitle>
         <S.Paragraph>개인정보 처리에 관한 문의사항은 아래 이메일로 연락해 주세요.</S.Paragraph>
         <S.Paragraph>
