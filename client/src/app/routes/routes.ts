@@ -4,6 +4,8 @@ export const ROUTES = {
   LOGIN: '/login',
   GROUPS: '/groups',
   TERMS: '/terms',
+  PRIVACY_POLICY: '/privacy',
+  DELETE_ACCOUNT: '/delete-account',
 
   TODAY_MOMENT: '/groups/:groupId/today-moment',
   TODAY_COMMENT: '/groups/:groupId/today-comment',

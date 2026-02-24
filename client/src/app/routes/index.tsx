@@ -14,6 +14,7 @@ import SignupPage from '@/pages/signup';
 import TodayCommentPage from '@/pages/todayComment';
 import TodayMomentPage from '@/pages/todayMoment';
 import TermsPage from '@/pages/terms';
+import PrivacyPolicyPage from '@/pages/privacyPolicy';
 import TodayMomentSuccessPage from '@/pages/todayMoment/TodayMomentSuccessPage';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router';
 
@@ -21,6 +22,7 @@ export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path={ROUTES.TERMS} element={<TermsPage />} />
+      <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
       <Route path={ROUTES.ROOT} element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
