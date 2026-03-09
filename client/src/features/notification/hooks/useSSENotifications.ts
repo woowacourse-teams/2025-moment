@@ -56,7 +56,10 @@ export const useSSENotifications = () => {
 
         queryClient.setQueryData(queryKeys.notifications.all, updatedData);
 
-        if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT' && document.visibilityState === 'visible') {
+        if (
+          sseData.notificationType === 'NEW_COMMENT_ON_MOMENT' &&
+          document.visibilityState === 'visible'
+        ) {
           toast.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment', 5000, sseData.link);
         }
 
