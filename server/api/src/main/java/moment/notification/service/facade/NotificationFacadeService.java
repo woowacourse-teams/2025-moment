@@ -20,6 +20,7 @@ public class NotificationFacadeService {
     private final SseNotificationService sseNotificationService;
     private final PushNotificationApplicationService pushNotificationApplicationService;
 
+    @Transactional
     public void notify(NotificationCommand command) {
         String link = DeepLinkGenerator.generate(
                 command.notificationType(), command.sourceData());

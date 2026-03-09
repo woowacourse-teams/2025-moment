@@ -33,6 +33,12 @@ export const useInitializePushNotification = () => {
     if (typeof window !== 'undefined') {
       (window as any).onExpoPushToken = handleExpoPushToken;
       (window as any).onPushNotification = handlePushNotification;
+
+      // 로그인 후 페이지 리로드 시 저장된 토큰으로 재등록 (OAuth 리다이렉트 대응)
+      const savedToken = localStorage.getItem('deviceEndpoint');
+      if (savedToken) {
+        registerPushToken(savedToken).catch(console.error);
+      }
     }
   }, []);
 };
