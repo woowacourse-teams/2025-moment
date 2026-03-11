@@ -3,10 +3,10 @@ name: Admin CD
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - "admin/**"
-      - ".github/workflows/dev-admin-cd.yml"
+      - ".github/workflows/admin-cd.yml"
   workflow_dispatch:
 
 defaults:
