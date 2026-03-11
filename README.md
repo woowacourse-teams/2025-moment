@@ -1,5 +1,10 @@
 # Moment - 당신의 이야기가 공감받는 순간
 
+[브라우저 바로가기](https://www.connectingmoment.com/)
+[앱스토어 설치](https://apps.apple.com/kr/app/moment-43d470/id6758325298)
+
+---
+
 삶의 순간을 기록하고, 칭찬과 위로를 주고받는 감성 소셜 플랫폼
 <img width="2064" height="2752" alt="Simulator Screenshot - iPad Pro 13-inch (M5) - 2026-02-01 at 05 17 17" src="https://github.com/user-attachments/assets/ec3e3553-04fa-449f-9660-0bfaae9423a3" />
 
@@ -22,57 +27,57 @@
 
 ### Backend (`server/`)
 
-| 분류 | 기술 |
-|------|------|
-| Language | Java 21 |
-| Framework | Spring Boot 3.5 |
-| Database | MySQL 8.0 |
-| ORM | Spring Data JPA |
-| Migration | Flyway |
-| Auth | JWT + Google OAuth + Apple Sign-in |
-| Storage | AWS S3 |
-| Push | Firebase Cloud Messaging |
-| Docs | SpringDoc OpenAPI (Swagger) |
-| Monitoring | Prometheus + Micrometer, Logstash |
-| Cache | Caffeine |
-| Build | Gradle |
-| Container | Docker (Eclipse Temurin 21 JRE) |
+| 분류       | 기술                               |
+| ---------- | ---------------------------------- |
+| Language   | Java 21                            |
+| Framework  | Spring Boot 3.5                    |
+| Database   | MySQL 8.0                          |
+| ORM        | Spring Data JPA                    |
+| Migration  | Flyway                             |
+| Auth       | JWT + Google OAuth + Apple Sign-in |
+| Storage    | AWS S3                             |
+| Push       | Firebase Cloud Messaging           |
+| Docs       | SpringDoc OpenAPI (Swagger)        |
+| Monitoring | Prometheus + Micrometer, Logstash  |
+| Cache      | Caffeine                           |
+| Build      | Gradle                             |
+| Container  | Docker (Eclipse Temurin 21 JRE)    |
 
 ### Web Frontend (`client/`)
 
-| 분류 | 기술 |
-|------|------|
-| Core | React 19, TypeScript 5.8 |
-| Bundler | Webpack 5 |
-| Server State | TanStack React Query 5 |
-| Styling | Emotion (CSS-in-JS) |
-| HTTP | Axios |
-| Error Tracking | Sentry |
-| Testing | Jest, Testing Library, Cypress, MSW |
-| Component Docs | Storybook 9 |
-| Package Manager | pnpm 9 |
+| 분류            | 기술                                |
+| --------------- | ----------------------------------- |
+| Core            | React 19, TypeScript 5.8            |
+| Bundler         | Webpack 5                           |
+| Server State    | TanStack React Query 5              |
+| Styling         | Emotion (CSS-in-JS)                 |
+| HTTP            | Axios                               |
+| Error Tracking  | Sentry                              |
+| Testing         | Jest, Testing Library, Cypress, MSW |
+| Component Docs  | Storybook 9                         |
+| Package Manager | pnpm 9                              |
 
 ### Admin Panel (`admin/`)
 
-| 분류 | 기술 |
-|------|------|
-| Core | React 18, TypeScript 5.7 |
-| Bundler | Vite 6 |
-| Server State | TanStack React Query 5 |
-| Styling | Emotion |
-| HTTP | Axios |
-| Testing | Vitest, Cypress |
+| 분류         | 기술                     |
+| ------------ | ------------------------ |
+| Core         | React 18, TypeScript 5.7 |
+| Bundler      | Vite 6                   |
+| Server State | TanStack React Query 5   |
+| Styling      | Emotion                  |
+| HTTP         | Axios                    |
+| Testing      | Vitest, Cypress          |
 
 ### Mobile App (`app/`)
 
-| 분류 | 기술 |
-|------|------|
-| Core | React Native 0.81, Expo 54 |
-| Routing | Expo Router 6 |
-| Navigation | React Navigation 7 |
-| Auth | Google Sign-in, Apple Authentication |
-| Push | Expo Notifications |
-| Animation | React Native Reanimated |
+| 분류       | 기술                                 |
+| ---------- | ------------------------------------ |
+| Core       | React Native 0.81, Expo 54           |
+| Routing    | Expo Router 6                        |
+| Navigation | React Navigation 7                   |
+| Auth       | Google Sign-in, Apple Authentication |
+| Push       | Expo Notifications                   |
+| Animation  | React Native Reanimated              |
 
 <br>
 
@@ -186,11 +191,11 @@ pnpm storybook        # Storybook (port 6006)
 
 GitHub Actions 기반, 경로별 트리거로 독립 배포
 
-| 대상 | CI | CD |
-|------|----|----|
-| Client | lint + type check + Jest + Cypress | S3 배포 (dev/prod) |
-| Server | Fast Test + E2E + Docker Build | Docker Hub → 서버 배포 |
-| Admin | TypeScript + Vitest + Cypress | 빌드 후 배포 |
+| 대상   | CI                                 | CD                     |
+| ------ | ---------------------------------- | ---------------------- |
+| Client | lint + type check + Jest + Cypress | S3 배포 (dev/prod)     |
+| Server | Fast Test + E2E + Docker Build     | Docker Hub → 서버 배포 |
+| Admin  | TypeScript + Vitest + Cypress      | 빌드 후 배포           |
 
 <br>
 
