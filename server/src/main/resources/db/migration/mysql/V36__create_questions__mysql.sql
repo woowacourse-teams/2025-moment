@@ -5,7 +5,7 @@ CREATE TABLE questions (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     group_id BIGINT,
-.
+
     created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     deleted_at DATETIME(6) NULL
 );
