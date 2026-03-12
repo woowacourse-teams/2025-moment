@@ -46,12 +46,13 @@ public class Question extends BaseEntity {
 
     private Long groupId;
 
-    public Question(String content, QuestionType questionType, LocalDate startDate, LocalDate endDate) {
+    public Question(String content, QuestionType questionType, LocalDate startDate, LocalDate endDate, Long groupId) {
         validate(content);
         this.content = content;
         this.questionType = questionType;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.groupId = groupId;
     }
 
     private void validate(String content) {

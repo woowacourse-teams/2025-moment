@@ -12,4 +12,4 @@ CREATE TABLE questions (
    deleted_at TIMESTAMP(6) NULL
 );
 
-CREATE INDEX idx_questions_lookup ON questions (start_date, question_type, group_id);
+CREATE INDEX idx_questions_lookup ON questions (start_date, end_date, question_type, group_id);

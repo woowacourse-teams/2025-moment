@@ -22,7 +22,7 @@ class QuestionTest {
                 "오늘의 기분은 어떠세요",
                 QuestionType.COMMON,
                 LocalDate.now(),
-                LocalDate.now().plusDays(7))).doesNotThrowAnyException();
+                LocalDate.now().plusDays(7), null)).doesNotThrowAnyException();
     }
 
     @ParameterizedTest
@@ -32,7 +32,7 @@ class QuestionTest {
                 emptyContent,
                 QuestionType.COMMON,
                 LocalDate.now(),
-                LocalDate.now().plusDays(7))).isInstanceOf(IllegalArgumentException.class);
+                LocalDate.now().plusDays(7), null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -45,6 +45,6 @@ class QuestionTest {
                 longContent,
                 QuestionType.COMMON,
                 LocalDate.now(),
-                LocalDate.now().plusDays(7))).isInstanceOf(IllegalArgumentException.class);
+                LocalDate.now().plusDays(7), null)).isInstanceOf(IllegalArgumentException.class);
     }
 }
