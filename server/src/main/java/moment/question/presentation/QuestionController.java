@@ -49,7 +49,7 @@ public class QuestionController {
     })
     @GetMapping("/current")
     public ResponseEntity<SuccessResponse<QuestionResponse>> getCurrentQuestion(
-            @RequestParam(value = "groupId", defaultValue = "null") Long groupId,
+            @RequestParam(value = "groupId", required = false) Long groupId,
             @RequestParam(value = "cycle", defaultValue = "WEEKLY") QuestionCycle cycle,
             @AuthenticationPrincipal Authentication authentication
     ) {
