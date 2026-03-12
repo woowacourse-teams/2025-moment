@@ -41,7 +41,7 @@ class QuestionRepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(question).isNotNull(),
+                () -> assertThat(question).isPresent(),
                 () -> assertThat(question.get().getContent()).isEqualTo(content)
         );
     }
@@ -63,7 +63,7 @@ class QuestionRepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(question).isNotNull(),
+                () -> assertThat(question).isPresent(),
                 () -> assertThat(question.get().getContent()).isEqualTo(content)
         );
     }
