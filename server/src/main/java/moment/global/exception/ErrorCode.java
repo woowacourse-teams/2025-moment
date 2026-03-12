@@ -76,6 +76,10 @@ public enum ErrorCode {
     OWNER_CANNOT_LEAVE("GM-007", "그룹 소유자는 탈퇴할 수 없습니다.", HttpStatus.BAD_REQUEST),
     NICKNAME_ALREADY_USED("GM-008", "이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT),
 
+    //Question (Q)
+    QUESTION_NOT_FOUND("Q-001", "존재하지 않는 질문입니다.", HttpStatus.NOT_FOUND),
+    QUESTION_CYCLE_NOT_SUPPORT("Q-002", "지원하지 않는 질문 사이클입니다.", HttpStatus.BAD_REQUEST),
+
     // InviteLink (IL)
     INVITE_LINK_INVALID("IL-001", "유효하지 않은 초대 링크입니다.", HttpStatus.NOT_FOUND),
     INVITE_LINK_EXPIRED("IL-002", "만료된 초대 링크입니다.", HttpStatus.BAD_REQUEST),
