@@ -135,4 +135,27 @@ class QuestionServiceTest {
                 .isInstanceOf(MomentException.class)
                 .hasMessage(ErrorCode.QUESTION_NOT_FOUND.getMessage());
     }
+
+    @Test
+    void 질문을_저장한다() {
+        //given
+        LocalDate monday = LocalDate.of(2026, 3, 9);
+
+        // when & then
+        assertThatCode(
+                () -> questionService.save("내용", QuestionType.COMMON, monday, monday, null)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void 질문을_저장할_때_같은시기_같은타입의_공통_질문은_저장하지_못한다() {
+        //given
+        LocalDate monday = LocalDate.of(2026, 3, 9);
+        Question alreadyExistQuestion = new Question("이미 존재", QuestionType.COMMON, monday, monday, null);
+        questionRepository.save(alreadyExistQuestion);
+
+        // when & then
+        assertThatCode(() -> questionService.save("내용", QuestionType.COMMON, monday, monday, null))
+                .isInstanceOf(MomentException.class)
+                .hasMessage(ErrorCode.QUESTION_ALREADY_EXIST.getMessage());
+    }
 }

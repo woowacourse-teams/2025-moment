@@ -1,12 +1,15 @@
 package moment.question.service.question;
 
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import moment.global.domain.QuestionType;
 import moment.global.exception.ErrorCode;
 import moment.global.exception.MomentException;
 import moment.question.domain.Question;
 import moment.question.infrastructure.QuestionRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +38,26 @@ public class QuestionService {
         return questionRepository
                 .findByStartDateAndEndDateAndQuestionTypeAndGroupId(startDate, endDate, type, groupId)
                 .orElseThrow(() -> new MomentException(ErrorCode.QUESTION_NOT_FOUND));
+    }
+
+    public List<Question> findRecentQuestions(QuestionType type, int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return questionRepository.findByQuestionTypeOrderByStartDateDesc(type, pageable);
+    }
+
+    @Transactional
+    public void save(String content, QuestionType type, LocalDate startDate, LocalDate endDate, Long groupId) {
+
+        boolean isExist = questionRepository.existsByStartDateAndEndDateAndQuestionTypeAndGroupIdIsNull(
+                startDate,
+                endDate,
+                type);
+
+        if (isExist) {
+            throw new MomentException(ErrorCode.QUESTION_ALREADY_EXIST);
+        }
+
+        Question question = new Question(content, type, startDate, endDate, groupId);
+        questionRepository.save(question);
     }
 }

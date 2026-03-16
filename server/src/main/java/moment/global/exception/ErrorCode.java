@@ -9,6 +9,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("G-001", "오류가 발생했습니다. 관리자에게 문의하세요.", HttpStatus.INTERNAL_SERVER_ERROR),
     REQUEST_INVALID("G-002", "유효하지 않은 요청 값입니다.", HttpStatus.BAD_REQUEST),
     CURSOR_INVALID("G-003", "유효하지 않은 커서 형식입니다.", HttpStatus.BAD_REQUEST),
+    AI_API_ERROR("G-004", "AI 호출 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     USER_CONFLICT("U-001", "이미 가입된 사용자입니다.", HttpStatus.CONFLICT),
     USER_LOGIN_FAILED("U-002", "아이디 또는 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
@@ -79,6 +80,8 @@ public enum ErrorCode {
     //Question (Q)
     QUESTION_NOT_FOUND("Q-001", "존재하지 않는 질문입니다.", HttpStatus.NOT_FOUND),
     QUESTION_CYCLE_NOT_SUPPORT("Q-002", "지원하지 않는 질문 사이클입니다.", HttpStatus.BAD_REQUEST),
+    QUESTION_ALREADY_EXIST("Q-003", "질문이 해당 기간에 이미 존재합니다.", HttpStatus.CONFLICT),
+    QUESTION_FALLBACK_EXHAUSTED("Q-004", "남은 임시 질문이 없습니다. 관리자의 보충이 필요합니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // InviteLink (IL)
     INVITE_LINK_INVALID("IL-001", "유효하지 않은 초대 링크입니다.", HttpStatus.NOT_FOUND),
