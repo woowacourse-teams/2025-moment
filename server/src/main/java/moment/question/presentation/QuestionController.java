@@ -41,7 +41,7 @@ public class QuestionController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
             @ApiResponse(responseCode = "404", description = """
-                    - [U-002] 존재하지 않는 사용자입니다.
+                    - [U-009] 존재하지 않는 사용자입니다.
                     - [Q-001] 존재하지 않는 질문입니다.
                     """,
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
