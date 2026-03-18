@@ -153,8 +153,11 @@ public class MomentApplicationService {
         }
         Moment moment = commentableMoments.get(RANDOM.nextInt(commentableMoments.size()));
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
+        String resolvedImageUrl = momentImage
+                .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
+                .orElse(null);
 
-        return CommentableMomentResponse.of(moment, momentImage.orElse(null));
+        return CommentableMomentResponse.of(moment, resolvedImageUrl);
     }
 
     @Transactional

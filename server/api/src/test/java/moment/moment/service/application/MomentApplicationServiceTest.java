@@ -26,6 +26,7 @@ import moment.group.infrastructure.GroupRepository;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.dto.request.MomentCreateRequest;
+import moment.moment.dto.response.CommentableMomentResponse;
 import moment.moment.dto.response.GroupMomentListResponse;
 import moment.moment.dto.response.MomentCreateResponse;
 import moment.moment.dto.response.tobe.MomentCompositions;
@@ -154,6 +155,25 @@ class MomentApplicationServiceTest {
                 () -> assertThat(response.momentCompositionInfo().getFirst().imageUrl()).isEqualTo(expectedResolvedUrl),
                 () -> assertThat(response.momentCompositionInfo().getLast().id()).isEqualTo(extraMoment1.getId())
         );
+    }
+
+    @Test
+    void 코멘트_가능_모멘트_조회_시_최적화된_이미지_URL을_반환한다() {
+        // given
+        User owner = userRepository.save(UserFixture.createUser());
+        User commenter = userRepository.save(UserFixture.createUser());
+        Group group = groupRepository.save(GroupFixture.createGroup(owner));
+        GroupMember ownerMember = groupMemberRepository.save(GroupMember.createOwner(group, owner, "오너"));
+        groupMemberRepository.save(GroupMember.createOwner(group, commenter, "코멘터"));
+
+        Moment moment = momentRepository.save(MomentFixture.createMomentInGroup(owner, group, ownerMember));
+        momentImageRepository.save(new MomentImage(moment, "https://test-bucket-1/test/images/photo.png", "photo.png"));
+
+        // when
+        CommentableMomentResponse response = momentApplicationService.pickRandomMomentComposition(List.of(moment.getId()));
+
+        // then
+        assertThat(response.imageUrl()).isEqualTo("https://test-bucket-1/test/optimized-images/photo.png");
     }
 
     @Test

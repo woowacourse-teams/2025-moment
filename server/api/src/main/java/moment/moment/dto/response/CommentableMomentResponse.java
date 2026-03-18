@@ -3,7 +3,6 @@ package moment.moment.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import moment.moment.domain.Moment;
-import moment.moment.domain.MomentImage;
 import moment.user.domain.User;
 
 @Schema(description = "코멘트를 달 수 있는 모멘트 응답")
@@ -27,12 +26,7 @@ public record CommentableMomentResponse(
         LocalDateTime createdAt
 ) {
 
-    public static CommentableMomentResponse of(Moment moment, MomentImage momentImage) {
-        String momentImageUrl = null;
-        if (momentImage != null) {
-            momentImageUrl = momentImage.getImageUrl();
-        }
-
+    public static CommentableMomentResponse of(Moment moment, String imageUrl) {
         User momenter = moment.getMomenter();
         String nickname = momenter != null ? momenter.getNickname() : "탈퇴한 사용자";
 
@@ -41,7 +35,7 @@ public record CommentableMomentResponse(
                 moment.getMember() != null ? moment.getMember().getId() : null,
                 nickname,
                 moment.getContent(),
-                momentImageUrl,
+                imageUrl,
                 moment.getCreatedAt());
     }
 
