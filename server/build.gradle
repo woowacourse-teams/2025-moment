@@ -42,6 +42,9 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'com.github.ben-manes.caffeine:caffeine'
 
+    // Retry 관련
+    implementation 'org.springframework.retry:spring-retry'
+
     // Spring Session JDBC
     implementation 'org.springframework.session:spring-session-jdbc'
 
