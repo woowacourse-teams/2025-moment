@@ -37,6 +37,7 @@ public class Question extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String content;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
