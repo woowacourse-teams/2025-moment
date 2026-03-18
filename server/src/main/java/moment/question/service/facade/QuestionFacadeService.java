@@ -47,7 +47,7 @@ public class QuestionFacadeService {
 
         return QuestionResponse.from(currentQuestion);
     }
-    
+
     public void generateWeeklyCommonQuestion() {
         List<Question> recentQuestions = questionService.findRecentQuestions(QuestionType.COMMON, 12);
         List<String> recentContent = recentQuestions.stream()
@@ -71,7 +71,7 @@ public class QuestionFacadeService {
             postSaveAction = () -> fallbackQuestionService.markAsUsed(fallbackQuestion);
         }
 
-        questionService.save(questionContent, QuestionType.COMMON, dateRange.startDate, dateRange.endDate, null);
+        questionService.save(questionContent, QuestionType.COMMON, dateRange.startDate(), dateRange.endDate(), null);
         postSaveAction.run();
     }
 
