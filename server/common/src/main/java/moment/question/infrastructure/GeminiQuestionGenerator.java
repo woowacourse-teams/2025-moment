@@ -7,7 +7,8 @@ import moment.global.exception.MomentException;
 import moment.question.domain.QuestionGenerator;
 import moment.question.infrastructure.dto.request.GeminiRequest;
 import moment.question.infrastructure.dto.response.GeminiResponse;
-import org.springframework.beans.factory.annotation.Value;
+import moment.question.infrastructure.properties.GeminiProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -16,20 +17,20 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @Slf4j
+@ConditionalOnProperty(name = "ai.gemini.api-key")
 public class GeminiQuestionGenerator implements QuestionGenerator {
 
     private final RestClient restClient;
-    private final String url;
+    private final GeminiProperties properties;
 
     public GeminiQuestionGenerator(
             RestClient.Builder restClientBuilder,
-            @Value("${ai.gemini.api-key}") String apiKey,
-            @Value("${ai.gemini.url}") String url) {
+            GeminiProperties properties) {
 
-        this.url = url;
-
+        this.properties = properties;
         this.restClient = restClientBuilder
-                .defaultHeader("x-goog-api-key", apiKey)
+                .baseUrl(properties.url())
+                .defaultHeader("x-goog-api-key", properties.apiKey())
                 .defaultHeader("Content-Type", "application/json")
                 .build();
     }
@@ -73,7 +74,7 @@ public class GeminiQuestionGenerator implements QuestionGenerator {
         );
 
         GeminiResponse response = restClient.post()
-                .uri(url)
+                .uri(properties.url())
                 .body(request)
                 .retrieve()
                 .body(GeminiResponse.class);

@@ -25,6 +25,7 @@ class DipRuleTest extends BaseArchTest {
             classes()
                     .that().resideInAPackage("..infrastructure..")
                     .and().resideOutsideOfPackage("..dto..")
+                    .and().resideOutsideOfPackage("..properties..")
                     .and().areNotInterfaces()
                     .and().haveSimpleNameNotEndingWith("Repository")
                     .and().areNotAnnotatedWith(Configuration.class)
