@@ -100,3 +100,8 @@ admin:
 
 app:
   base-url: https://moment.test.com
+
+ai:
+  gemini:
+    api-key: test-gemini-key
+    url: https://gemini-test.com

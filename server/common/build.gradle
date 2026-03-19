@@ -17,6 +17,7 @@ dependencies {
     // NOTE: ErrorCode가 HttpStatus에 의존하여 starter-web이 필요.
     // 장기적으로 ErrorCode에서 HttpStatus를 int status code로 대체하여 제거 예정.
     api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.retry:spring-retry'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 

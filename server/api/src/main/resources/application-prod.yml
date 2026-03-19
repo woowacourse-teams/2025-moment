@@ -136,3 +136,11 @@ s3:
 expo:
   push:
     enabled: true
+
+ai:
+  gemini:
+    api-key: ${GEMINI_API_KEY}
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+  retry:
+    delay: 2000       # 기본 2초 대기
+    multiplier: 2.0   # 2배씩 시간 증가 (2초 -> 4초 -> 8초 ...)
