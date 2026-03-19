@@ -76,6 +76,7 @@ class AnnotationConsistencyRuleTest extends BaseArchTest {
     static final ArchRule A_007_Service_클래스는_클래스_레벨_Transactional_readOnly_true를_적용한다 =
             classes()
                     .that().areAnnotatedWith(Service.class)
+                    .and().haveSimpleNameNotEndingWith("FacadeService") // Facade는 예외로 둠
                     .should(haveTransactionalReadOnlyTrue())
                     .because("[A-007] @Service 클래스는 클래스 레벨에 @Transactional(readOnly = true)를 적용해야 합니다. " +
                             "수정 가이드: 클래스에 @Transactional(readOnly = true)를 추가하세요. " +
