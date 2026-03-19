@@ -2,7 +2,7 @@
   "expo": {
     "name": "Moment",
     "slug": "moment",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "moment",
@@ -13,11 +13,16 @@
       "bundleIdentifier": "com.connectingmoment.app",
       "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "사진을 촬영하여 모멘트와 코멘트를 공유하기 위해 카메라 접근 권한이 필요합니다.",
+        "NSPhotoLibraryUsageDescription": "사진을 선택하여 모멘트와 코멘트를 공유하기 위해 사진 라이브러리 접근 권한이 필요합니다.",
+        "NSPhotoLibraryAddUsageDescription": "사진을 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.",
+        "NSMicrophoneUsageDescription": "영상 촬영 시 마이크 접근 권한이 필요합니다."
       }
     },
     "android": {
       "package": "com.connectingmoment.app",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0a0a0f",
@@ -43,8 +48,15 @@
           "backgroundColor": "#0a0a0f"
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "sounds": []
+        }
+      ],
       "@react-native-google-signin/google-signin",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -11,3 +11,13 @@ export const convertToWebp = (imageUrl: string): string => {
 
   return `${imageUrl.substring(0, lastDotIndex)}.webp`;
 };
+
+/**
+ * webp 로딩 실패 시 fallback URL 생성
+ * upload-resize 경로를 upload로 변경하여 원본 이미지 반환
+ * @param imageUrl - 원본 이미지 URL
+ * @returns fallback 이미지 URL
+ */
+export const getFallbackImageUrl = (imageUrl: string): string => {
+  return imageUrl.replace('upload-resize', 'upload');
+};

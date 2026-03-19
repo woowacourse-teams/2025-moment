@@ -5,16 +5,12 @@ import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
-import { useModal } from '@/shared/design-system/modal';
 import { Modal } from '@/shared/design-system/modal/Modal';
-import { NotificationButton } from '@/shared/lib/notifications/NotificationButton';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
-import { isDevice, isPWA } from '@/shared/utils/device';
-import { IOSBrowserWarning } from '@/widgets/IOSBrowserWarning';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { GroupList } from '@/features/group/ui/GroupList';
 import { GroupCreateForm } from '@/features/group/ui/GroupCreateForm';
@@ -26,33 +22,24 @@ export default function HomePage() {
 
   const navigate = useNavigate();
   const { isVisible } = useDelayedVisible({ delay: 100 });
-  const { isOpen: isNotiOpen, handleClose: closeNoti, handleOpen: openNoti } = useModal();
   const { data: isLoggedInQuery } = useCheckIfLoggedInQuery();
   const isLoggedIn = !!isLoggedInQuery;
 
   const { data: groupsResponse, refetch: refetchGroups } = useGroupsQuery({ enabled: isLoggedIn });
 
-  const [modalType, setModalType] = useState<'none' | 'create' | 'join' | 'invite'>('none');
+  const [modalType, setModalType] = useState<
+    'none' | 'create' | 'join' | 'invite' | 'join-success'
+  >('none');
   const [createdGroupInfo, setCreatedGroupInfo] = useState<{
     groupId: number;
     code: string;
   } | null>(null);
 
-  const shouldShowNotificationModal =
-    isLoggedIn && isDevice() && isPWA() && Notification.permission === 'default';
-
   const groups = groupsResponse?.data || [];
   const hasGroups = isLoggedIn && groups.length > 0;
 
-  useEffect(() => {
-    if (shouldShowNotificationModal) {
-      openNoti();
-    }
-  }, [openNoti, shouldShowNotificationModal]);
-
   const handleClick = () => {
-    openNoti();
-    track('click_cta', { target: 'today_moment', cta_type: 'primary' });
+    track('click_cta', { cta_type: 'primary' });
     navigate(ROUTES.LOGIN);
   };
 
@@ -62,7 +49,7 @@ export default function HomePage() {
 
   const handleJoinSuccess = async () => {
     await refetchGroups();
-    handleCloseModal();
+    setModalType('join-success');
   };
 
   const handleCreateSuccess = async (groupId: number, code: string) => {
@@ -73,7 +60,6 @@ export default function HomePage() {
 
   return (
     <>
-      <IOSBrowserWarning />
       <S.HomePageWrapper>
         <S.MainContainer>
           <S.HeroSection>
@@ -174,22 +160,6 @@ export default function HomePage() {
         ))}
       </S.HomePageWrapper>
 
-      <Modal
-        size="small"
-        isOpen={isNotiOpen}
-        onClose={closeNoti}
-        titleId="notification-modal-title"
-      >
-        <Modal.Header
-          title="모멘트와 코멘트 알림을 받아보세요!"
-          showCloseButton={true}
-          id="notification-modal-title"
-        />
-        <Modal.Content>
-          <NotificationButton onClose={closeNoti} />
-        </Modal.Content>
-      </Modal>
-
       <Modal isOpen={modalType === 'create'} onClose={handleCloseModal}>
         <Modal.Header title="그룹 생성" showCloseButton />
         <Modal.Content>
@@ -214,6 +184,20 @@ export default function HomePage() {
               onClose={handleCloseModal}
             />
           )}
+        </Modal.Content>
+      </Modal>
+
+      <Modal isOpen={modalType === 'join-success'} onClose={handleCloseModal}>
+        <Modal.Header title="그룹 참여 신청 완료" showCloseButton />
+        <Modal.Content>
+          <S.OnboardingContainer>
+            <S.OnboardingDescription>
+              그룹 참여 신청이 완료되었습니다!
+              <br />
+              방장이 승인을 허용해야 그룹에 들어갈 수 있습니다.
+            </S.OnboardingDescription>
+            <Button title="확인" variant="primary" onClick={handleCloseModal} />
+          </S.OnboardingContainer>
         </Modal.Content>
       </Modal>
     </>

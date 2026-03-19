@@ -1,6 +1,9 @@
 import { SignupFormData } from '@/features/auth/types/signup';
 import { Button } from '@/shared/design-system/button/Button';
+import { Modal } from '@/shared/design-system/modal/Modal';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
+import { TermsContent } from '@/pages/terms/TermsContent';
+import { useState } from 'react';
 import * as S from './SignupStep3.styles';
 
 interface SignupStep3Props {
@@ -10,7 +13,10 @@ interface SignupStep3Props {
 }
 
 export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Props) => {
-  useEnterKeyHandler(onEnter);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
+  useEnterKeyHandler(agreedToTerms ? onEnter : undefined);
 
   return (
     <S.StepContainer>
@@ -30,9 +36,42 @@ export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Pro
         <p>확인 후 회원가입 버튼을 눌러주세요.</p>
       </S.Description>
 
+      <S.TermsContainer>
+        <S.TermsCheckboxLabel>
+          <S.TermsCheckbox
+            type="checkbox"
+            checked={agreedToTerms}
+            onChange={e => setAgreedToTerms(e.target.checked)}
+          />
+          [필수] 이용약관에 동의합니다
+        </S.TermsCheckboxLabel>
+        <S.TermsLink type="button" onClick={() => setIsTermsOpen(true)}>
+          이용약관 보기
+        </S.TermsLink>
+      </S.TermsContainer>
+
       <S.ButtonContainer>
-        <Button title="회원가입" variant="primary" onClick={handleClick} />
+        <Button
+          title="회원가입"
+          variant="primary"
+          onClick={handleClick}
+          disabled={!agreedToTerms}
+        />
       </S.ButtonContainer>
+
+      <Modal
+        isOpen={isTermsOpen}
+        position="center"
+        size="medium"
+        onClose={() => setIsTermsOpen(false)}
+      >
+        <Modal.Header title="이용약관" showCloseButton={true} />
+        <Modal.Content>
+          <S.TermsModalContent>
+            <TermsContent />
+          </S.TermsModalContent>
+        </Modal.Content>
+      </Modal>
     </S.StepContainer>
   );
 };

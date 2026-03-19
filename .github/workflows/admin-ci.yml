@@ -2,15 +2,15 @@ name: Admin CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - "admin/**"
-      - ".github/workflows/dev-admin-ci.yml"
+      - ".github/workflows/admin-ci.yml"
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - "admin/**"
-      - ".github/workflows/dev-admin-ci.yml"
+      - ".github/workflows/admin-ci.yml"
 
 defaults:
   run:
@@ -19,6 +19,8 @@ defaults:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout code

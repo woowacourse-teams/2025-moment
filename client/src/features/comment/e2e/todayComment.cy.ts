@@ -72,7 +72,7 @@ describe('오늘의 코멘트 페이지', () => {
   });
 
   describe('시나리오 1: 코멘트 보내기', () => {
-    it('다른 사용자 모멘트에 댓글을 작성하고 코멘트 보내기 버튼을 클릭하면 별조각 획득 토스트가 보인다', () => {
+    it('다른 사용자 모멘트에 댓글을 작성하고 코멘트 보내기 버튼을 클릭하면 작성 완료 토스트가 보인다', () => {
       cy.contains('오늘의 코멘트').should('be.visible');
 
       cy.contains(momentsData[0].nickname).should('be.visible');
@@ -87,7 +87,7 @@ describe('오늘의 코멘트 페이지', () => {
 
       cy.wait('@sendComment');
 
-      cy.contains('별조각', { timeout: 5000 }).should('be.visible');
+      cy.contains('코멘트 작성이 완료되었습니다!', { timeout: 5000 }).should('be.visible');
 
       cy.wait('@getMoments');
 

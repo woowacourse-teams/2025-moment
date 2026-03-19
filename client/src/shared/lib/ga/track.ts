@@ -3,74 +3,36 @@ import { isGAEnabled } from '.';
 
 type CommonParams = {
   screen?: string;
-  entry?: 'nav' | 'cta' | 'reminder' | string;
-  item_id?: string;
-  item_type?: 'moment' | 'comment' | string;
-  author_id_hash?: string;
-  is_anonymous?: boolean;
-  has_media?: boolean;
-  content_length_bucket?: 's' | 'm' | 'l';
-  mood_tag?: string;
-  time_bucket?: string;
-  // 향후 추가 시 주석 해제;
-  //   ab_variant?: string;
-  //   is_first_time?: boolean;
-  //   level?: number;
-  //   member_status?: 'guest' | 'logged_in';
 };
 
 type EventMap = {
-  view_moment: {
-    item_id: string;
-    mood_tag?: string;
-    has_media?: boolean;
-    content_length_bucket?: 's' | 'm' | 'l';
-  };
-  give_empathy: { item_id: string; source?: 'feed' | 'detail' };
-  open_composer: { entry?: 'nav' | 'cta' | 'reminder'; composer?: 'moment' | 'comment' | 'extra' };
-  publish_moment: {
-    item_id: string;
-    has_media?: boolean;
-    content_length_bucket?: 's' | 'm' | 'l';
-    mood_tag?: string;
-  };
-  submit_comment: { item_id: string; length_bucket?: 's' | 'm' | 'l' };
-  dwell_start: {
-    item_type?: 'moment' | 'comment';
-    surface?: 'composer' | 'feed' | 'detail' | string;
-    item_id?: string;
-  };
-  dwell_end: {
-    item_type?: 'moment' | 'comment';
-    surface?: 'composer' | 'feed' | 'detail' | string;
-    item_id?: string;
-    dwell_seconds: number;
-  };
-  scroll_depth: {
-    percent_bucket: '0' | '25' | '50' | '75' | '100';
-    screen_height?: number;
-    doc_height?: number;
-  };
+  // Group 관련 이벤트
+  select_group: { source?: 'home' | 'my_page' };
+  create_group: Record<string, never>;
+  join_group: Record<string, never>;
+  leave_group: Record<string, never>;
+  invite_member: Record<string, never>;
+
+  // Moment/Comment 이벤트
+  give_likes: { item_type: 'moment' | 'comment' };
+  open_composer: { entry?: 'nav' | 'cta' | 'reminder'; composer: 'moment' | 'comment' };
+  publish_moment: { has_media?: boolean; content_length_bucket?: 's' | 'm' | 'l' };
+  submit_comment: { length_bucket?: 's' | 'm' | 'l' };
   abandon_composer: {
-    stage?: 'typed' | 'attached_media' | 'before_submit';
-    composer?: 'moment' | 'comment' | 'extra';
+    composer: 'moment' | 'comment';
     has_media?: boolean;
     content_length_bucket?: 's' | 'm' | 'l';
-    mood_tag?: string;
-  };
-  click_navigation: {
-    destination: 'today_moment' | 'today_comment' | 'collection' | string;
-    source?: 'navbar' | 'nav_bar' | 'success_page' | string;
   };
 
-  click_auth: {
-    device: 'desktop' | 'mobile';
-  };
+  // Dwell 이벤트
+  dwell_start: { surface: 'composer' | 'feed' | 'collection' };
+  dwell_end: { surface: 'composer' | 'feed' | 'collection'; dwell_seconds: number };
 
-  click_cta: {
-    target: string;
-    cta_type?: 'primary' | 'secondary' | string;
-  };
+  // 스크롤/네비게이션 이벤트
+  scroll_depth: { percent_bucket: '0' | '25' | '50' | '75' | '100' };
+  click_navigation: { destination: 'today_moment' | 'today_comment' | 'collection' };
+  click_auth: { device: 'desktop' | 'mobile' };
+  click_cta: { cta_type: 'primary' | 'secondary' };
 };
 
 function getCommonParams(): CommonParams {

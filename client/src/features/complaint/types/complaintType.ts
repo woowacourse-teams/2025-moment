@@ -20,4 +20,5 @@ export interface ComplaintFormData {
   reason: ComplaintReason;
   targetId: number;
   targetType: 'MOMENT' | 'COMMENT';
+  blockMemberId?: number;
 }

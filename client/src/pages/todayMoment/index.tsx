@@ -20,7 +20,7 @@ export default function TodayMomentPage() {
     });
   }, []);
 
-  useDwell({ item_type: 'moment', surface: 'composer' });
+  useDwell('composer');
 
   return (
     <S.TodayPageWrapper>

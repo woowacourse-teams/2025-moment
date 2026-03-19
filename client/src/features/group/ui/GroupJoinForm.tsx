@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useJoinGroupMutation } from '@/features/group/api/useJoinGroupMutation';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
 import { Button } from '@/shared/design-system/button/Button';
 import { Input } from '@/shared/design-system/input/Input';
+import { track } from '@/shared/lib/ga/track';
 import * as S from './GroupJoinForm.styles';
-import { useEffect } from 'react';
 
 interface GroupJoinFormProps {
   initialCode?: string;
@@ -32,6 +32,7 @@ export function GroupJoinForm({ initialCode, onSuccess, onCancel }: GroupJoinFor
 
     try {
       await joinGroupMutation.mutateAsync({ inviteCode, nickname });
+      track('join_group', {});
       onSuccess?.();
     } catch (error) {
       console.error('Failed to join group:', error);

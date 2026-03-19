@@ -7,11 +7,12 @@ export const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5분간 fresh 유지
       gcTime: 10 * 60 * 1000, // 10분간 캐시 유지 (구 cacheTime)
       retry: (failureCount, error: unknown) => {
+        // 401/403은 인터셉터에서 refresh 처리하므로 React Query 레벨 재시도 불필요
         if (
           (error as AxiosError)?.response?.status === 401 ||
           (error as AxiosError)?.response?.status === 403
         ) {
-          return failureCount < 1;
+          return false;
         }
         return failureCount < 3;
       },

@@ -24,10 +24,13 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract deploy tag
+      - name: Extract deploy info
         run: |
-          echo "DEPLOY_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
-          echo "Deploying version: $(cat image-tag.txt)"
+          cat deploy-info.txt
+          source deploy-info.txt
+          echo "DEPLOY_API=$DEPLOY_API" >> $GITHUB_ENV
+          echo "DEPLOY_ADMIN=$DEPLOY_ADMIN" >> $GITHUB_ENV
+          echo "DEPLOY_TAG=$DEPLOY_TAG" >> $GITHUB_ENV
 
       - name: Deploy to EC2 instance via SSH
         uses: appleboy/ssh-action@master
@@ -36,24 +39,44 @@ jobs:
           username: ${{ secrets.PROD_EC2_USERNAME }}
           key: ${{ secrets.PROD_EC2_SSH_KEY }}
           script: |
-            # Login to Docker Hub
             echo ${{ secrets.DOCKERHUB_PROD_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_PROD_USERNAME }} --password-stdin
 
-            # Stop and remove existing container
-            if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
-              sudo docker stop moment-app-server
-              sudo docker rm -f moment-app-server
-            fi
-            
-            # Pull latest image
-            sudo docker pull ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:${{ env.DEPLOY_TAG }}
-            
-            # Deploy with Docker Compose
             cd /home/ubuntu/moment
-            export IMAGE_TAG=${{ env.DEPLOY_TAG }}
-            
-            echo "Deploying with image tag: $IMAGE_TAG"
-            sudo -E docker compose up --no-deps -d app
-            
-            # Prune old images
+
+            # Load current image tags (fallback to 'latest' if file doesn't exist)
+            touch .image-tags
+            source .image-tags
+            export API_IMAGE_TAG=${API_IMAGE_TAG:-latest}
+            export ADMIN_IMAGE_TAG=${ADMIN_IMAGE_TAG:-latest}
+
+            # Deploy API if changed
+            if [ "${{ env.DEPLOY_API }}" = "true" ]; then
+              echo ">>> Deploying API (tag: ${{ env.DEPLOY_TAG }})"
+              sudo docker pull ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:${{ env.DEPLOY_TAG }}
+              export API_IMAGE_TAG=${{ env.DEPLOY_TAG }}
+              if [ "$(sudo docker ps -a -q -f name=moment-api-server)" ]; then
+                sudo docker stop moment-api-server
+                sudo docker rm -f moment-api-server
+              fi
+              sudo -E docker compose up --no-deps -d api
+            fi
+
+            # Deploy Admin if changed
+            if [ "${{ env.DEPLOY_ADMIN }}" = "true" ]; then
+              echo ">>> Deploying Admin (tag: ${{ env.DEPLOY_TAG }})"
+              sudo docker pull ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:${{ env.DEPLOY_TAG }}
+              export ADMIN_IMAGE_TAG=${{ env.DEPLOY_TAG }}
+              if [ "$(sudo docker ps -a -q -f name=moment-admin-server)" ]; then
+                sudo docker stop moment-admin-server
+                sudo docker rm -f moment-admin-server
+              fi
+              sudo -E docker compose up --no-deps -d admin
+            fi
+
+            # Save current image tags
+            cat > .image-tags << EOF
+            API_IMAGE_TAG=$API_IMAGE_TAG
+            ADMIN_IMAGE_TAG=$ADMIN_IMAGE_TAG
+            EOF
+
             sudo docker image prune -f

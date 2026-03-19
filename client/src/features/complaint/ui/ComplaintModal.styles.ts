@@ -6,6 +6,25 @@ export const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
+export const BlockCheckboxContainer = styled.div`
+  padding: 12px 0 0;
+`;
+
+export const BlockCheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors['gray-600']};
+`;
+
+export const BlockCheckbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
 export const ModalContent = styled.div`
   max-height: 60vh;
   overflow-y: auto;

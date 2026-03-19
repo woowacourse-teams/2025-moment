@@ -13,7 +13,7 @@ export const TodayMomentSuccessContent = () => {
   const { groupId } = useParams<{ groupId: string }>();
 
   const handleNavigate = () => {
-    track('click_navigation', { destination: 'today_comment', source: 'success_page' });
+    track('click_navigation', { destination: 'today_comment' });
     if (groupId) {
       navigate(ROUTES.TODAY_COMMENT.replace(':groupId', groupId));
     }

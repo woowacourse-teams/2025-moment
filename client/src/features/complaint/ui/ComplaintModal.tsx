@@ -5,28 +5,32 @@ import * as S from './ComplaintModal.styles';
 import { ComplaintFormData, ComplaintReason } from '@/features/complaint/types/complaintType';
 import { Button } from '@/shared/design-system/button';
 
-interface ComplaintModal {
+interface ComplaintModalProps {
   isOpen: boolean;
   onClose: () => void;
   targetId: number;
   targetType: 'MOMENT' | 'COMMENT';
+  memberId?: number;
   onSubmit: (data: ComplaintFormData) => void;
 }
 
-export const ComplaintModal: React.FC<ComplaintModal> = ({
+export const ComplaintModal: React.FC<ComplaintModalProps> = ({
   isOpen,
   onClose,
   targetId,
   targetType,
+  memberId,
   onSubmit,
 }) => {
   const [selectedReason, setSelectedReason] = useState<ComplaintReason | null>(null);
+  const [blockUser, setBlockUser] = useState(true);
 
   const handleSubmit = () => {
     const formData: ComplaintFormData = {
       reason: selectedReason!,
       targetId,
       targetType,
+      blockMemberId: blockUser && memberId ? memberId : undefined,
     };
 
     onSubmit(formData);
@@ -34,6 +38,7 @@ export const ComplaintModal: React.FC<ComplaintModal> = ({
 
   const handleClose = () => {
     setSelectedReason(null);
+    setBlockUser(true);
     onClose();
   };
 
@@ -46,6 +51,18 @@ export const ComplaintModal: React.FC<ComplaintModal> = ({
             selectedReason={selectedReason}
             onReasonSelect={setSelectedReason}
           />
+          {memberId && (
+            <S.BlockCheckboxContainer>
+              <S.BlockCheckboxLabel>
+                <S.BlockCheckbox
+                  type="checkbox"
+                  checked={blockUser}
+                  onChange={e => setBlockUser(e.target.checked)}
+                />
+                이 사용자도 차단
+              </S.BlockCheckboxLabel>
+            </S.BlockCheckboxContainer>
+          )}
         </S.ModalContent>
       </Modal.Content>
       <Modal.Footer>

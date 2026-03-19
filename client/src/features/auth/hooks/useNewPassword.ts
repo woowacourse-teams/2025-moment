@@ -2,7 +2,7 @@ import { ROUTES } from '@/app/routes/routes';
 import { useNewPasswordMutation } from '@/features/auth/api/useNewPasswordMutation';
 import { NewPassword, NewPasswordErrors } from '@/features/auth/types/newPassword';
 import { validatePassword, validateRePassword } from '@/features/auth/utils/validateAuth';
-import { useToast } from '@/shared/hooks';
+import { toast } from '@/shared/store/toast';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -20,16 +20,15 @@ export const useNewPassword = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
-  const { showError } = useToast();
   const queryParams = new URLSearchParams(location.search);
   const email = queryParams.get('email');
   const token = queryParams.get('token');
 
-  if (isError) showError(error.message);
+  if (isError) toast.error(error.message);
 
   useEffect(() => {
     if (!email || !token) {
-      showError('인증되지 않은 사용자입니다. 다시 시도해주세요.');
+      toast.error('인증되지 않은 사용자입니다. 다시 시도해주세요.');
       navigate(ROUTES.FIND_PASSWORD, { replace: true });
       return;
     }

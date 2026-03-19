@@ -197,7 +197,9 @@ export const LikeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 8px;
   border: none;
   cursor: pointer;
   background-color: transparent;

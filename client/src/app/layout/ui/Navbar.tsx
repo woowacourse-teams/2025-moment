@@ -5,7 +5,7 @@ import { NavigatorsBar } from '@/widgets/navigatorsBar';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { isApp } from '@/shared/utils/device';
 import * as S from './Navbar.styles';
 import { track } from '@/shared/lib/ga/track';
@@ -16,7 +16,6 @@ export const Navbar = () => {
 
   const currentPath = location.pathname;
   const isHomePage = currentPath === '/';
-  const { showError } = useToast();
   const { data: isLoggedIn, isError, error } = useCheckIfLoggedInQuery();
   const {
     data: profile,
@@ -30,9 +29,9 @@ export const Navbar = () => {
 
   useEffect(() => {
     if (isProfileError && isLoggedIn) {
-      showError('사용자 정보를 불러오지 못했습니다. 다시 로그인해 주세요.');
+      toast.error('사용자 정보를 불러오지 못했습니다. 다시 로그인해 주세요.');
     }
-  }, [isProfileError, isLoggedIn, showError]);
+  }, [isProfileError, isLoggedIn]);
 
   const handleDesktopAuthButtonClick = () => {
     track('click_auth', { device: 'desktop' });

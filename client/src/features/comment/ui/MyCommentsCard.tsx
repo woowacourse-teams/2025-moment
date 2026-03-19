@@ -7,13 +7,35 @@ import type { CommentItem } from '../types/comments';
 import { Card } from '@/shared/design-system/card';
 import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { Button } from '@/shared/design-system/button';
-import { convertToWebp } from '@/shared/utils/convertToWebp';
 import { useMyCommentsCard } from '../hooks/useMyCommentsCard';
 import { useDeleteCommentMutation } from '../api/useDeleteCommentMutation';
 import { useCurrentGroup } from '@/features/group/hooks/useCurrentGroup';
 import { Trash2, Heart } from 'lucide-react';
 import { useMomentLikeMutation } from '@/features/moment/api/useMomentLikeMutation';
 import { useCommentLikeMutation } from '../api/useCommentLikeMutation';
+import { useImageFallback } from '@/shared/hooks';
+
+const CommentImageWithFallback = ({
+  imageUrl,
+  alt,
+  onImageClick,
+}: {
+  imageUrl: string;
+  alt: string;
+  onImageClick: (url: string, e: React.MouseEvent) => void;
+}) => {
+  const { src, onError } = useImageFallback(imageUrl);
+  return (
+    <S.CommentImageContainer>
+      <S.CommentImage
+        src={src}
+        onError={onError}
+        alt={alt}
+        onClick={e => onImageClick(imageUrl, e)}
+      />
+    </S.CommentImageContainer>
+  );
+};
 
 export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
   const { currentGroupId } = useCurrentGroup();
@@ -69,9 +91,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
           <S.ContentContainer>
             {myComment.moment ? (
               <S.MomentContentWrapper>
-                <S.MyMomentContent aria-label={`모멘트 내용: ${myComment.moment.content}`}>
-                  {myComment.moment.content}
-                </S.MyMomentContent>
+                <S.MyMomentContent>{myComment.moment.content}</S.MyMomentContent>
                 <S.ActionWrapper>
                   <S.LikeButton onClick={handleLikeMoment} aria-label="모멘트 좋아요">
                     <Heart
@@ -83,15 +103,11 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                   <S.LikeCount>{myComment.moment.likeCount || 0}</S.LikeCount>
                 </S.ActionWrapper>
                 {myComment.moment?.imageUrl && (
-                  <S.CommentImageContainer>
-                    <S.CommentImage
-                      src={convertToWebp(myComment.moment.imageUrl)}
-                      alt="모멘트 이미지"
-                      onClick={e => {
-                        handleImageClick(myComment.moment!.imageUrl!, e);
-                      }}
-                    />
-                  </S.CommentImageContainer>
+                  <CommentImageWithFallback
+                    imageUrl={myComment.moment.imageUrl}
+                    alt="모멘트 이미지"
+                    onImageClick={handleImageClick}
+                  />
                 )}
               </S.MomentContentWrapper>
             ) : (
@@ -117,17 +133,13 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               height="small"
               content={
                 <S.MyCommentsContentWrapper>
-                  <S.CommentContent area-label={`내가 쓴 코멘트 내용: ${myComment.content}`}>
-                    {myComment.content}
-                  </S.CommentContent>
+                  <S.CommentContent>{myComment.content}</S.CommentContent>
                   {myComment.imageUrl && (
-                    <S.CommentImageContainer>
-                      <S.CommentImage
-                        src={convertToWebp(myComment.imageUrl)}
-                        alt="코멘트 이미지"
-                        onClick={e => handleImageClick(myComment.imageUrl!, e)}
-                      />
-                    </S.CommentImageContainer>
+                    <CommentImageWithFallback
+                      imageUrl={myComment.imageUrl}
+                      alt="코멘트 이미지"
+                      onImageClick={handleImageClick}
+                    />
                   )}
                 </S.MyCommentsContentWrapper>
               }

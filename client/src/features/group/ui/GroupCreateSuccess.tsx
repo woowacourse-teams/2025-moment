@@ -1,7 +1,7 @@
 import { Input } from '@/shared/design-system/input/Input';
 import { Button } from '@/shared/design-system/button/Button';
 import { useNavigate } from 'react-router';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import * as S from './GroupCreateForm.styles';
 
 interface GroupCreateSuccessProps {
@@ -12,14 +12,13 @@ interface GroupCreateSuccessProps {
 
 export function GroupCreateSuccess({ inviteCode, groupId, onClose }: GroupCreateSuccessProps) {
   const navigate = useNavigate();
-  const { showSuccess } = useToast();
 
   const inviteLink = `${window.location.origin}/invite/${inviteCode}`;
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
-      showSuccess('초대 링크가 복사되었습니다!');
+      toast.success('초대 링크가 복사되었습니다!');
     } catch (err) {
       console.error('Failed to copy invite link', err);
     }

@@ -1,22 +1,21 @@
 import { api } from '@/app/lib/api';
 import { ROUTES } from '@/app/routes/routes';
 import type { NewPassword } from '@/features/auth/types/newPassword';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
 export const useNewPasswordMutation = () => {
   const navigate = useNavigate();
-  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: (data: NewPassword) => getNewPassword(data),
     onSuccess: () => {
-      showSuccess('비밀번호가 재발급되었습니다.');
+      toast.success('비밀번호가 재발급되었습니다.');
       navigate(ROUTES.LOGIN);
     },
     onError: () => {
-      showError('비밀번호 재발급을 실패했습니다. 다시 시도해주세요.');
+      toast.error('비밀번호 재발급을 실패했습니다. 다시 시도해주세요.');
     },
   });
 };

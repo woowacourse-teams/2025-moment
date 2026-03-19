@@ -4,43 +4,74 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '롤백할 이미지 태그를 입력해주세요. (e.g., Git SHA)'
+        description: '롤백할 이미지 태그 (Git SHA)'
         required: true
         type: string
+      module:
+        description: '롤백 대상 모듈'
+        required: true
+        type: choice
+        options:
+          - both
+          - api
+          - admin
 
 jobs:
   rollback:
     runs-on: [ self-hosted, backend, prod ]
     steps:
-      - name: Checkout repository for docker-compose file
-        uses: actions/checkout@v4
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_PROD_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Pull specific image for rollback
-        run: |
-          echo "Pulling image with tag: ${{ github.event.inputs.tag }}"
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moment-prod-images:${{ github.event.inputs.tag }}
-
-      - name: Stop and remove existing container
-        run: |
-          if [ "$(sudo docker ps -a -q -f name=moment-app-server)" ]; then
-            sudo docker stop moment-app-server
-            sudo docker rm -f moment-app-server
-          fi
-
-      - name: Deploy with specific tag using Docker Compose
-        env:
-          IMAGE_TAG: ${{ github.event.inputs.tag }}
+      - name: Rollback services
         run: |
           cd /home/ubuntu/moment
-          
-          echo "Deploying with image tag: $IMAGE_TAG"
-          sudo -E docker compose up --no-deps -d app
+          MODULE="${{ github.event.inputs.module }}"
+          TAG="${{ github.event.inputs.tag }}"
+
+          # Load current image tags
+          touch .image-tags
+          source .image-tags
+          export API_IMAGE_TAG=${API_IMAGE_TAG:-latest}
+          export ADMIN_IMAGE_TAG=${ADMIN_IMAGE_TAG:-latest}
+
+          # Rollback API
+          if [ "$MODULE" = "both" ] || [ "$MODULE" = "api" ]; then
+            echo "Rolling back API to: $TAG"
+            sudo docker pull ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:$TAG
+            export API_IMAGE_TAG=$TAG
+            if [ "$(sudo docker ps -a -q -f name=moment-api-server)" ]; then
+              sudo docker stop moment-api-server
+              sudo docker rm -f moment-api-server
+            fi
+          fi
+
+          # Rollback Admin
+          if [ "$MODULE" = "both" ] || [ "$MODULE" = "admin" ]; then
+            echo "Rolling back Admin to: $TAG"
+            sudo docker pull ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:$TAG
+            export ADMIN_IMAGE_TAG=$TAG
+            if [ "$(sudo docker ps -a -q -f name=moment-admin-server)" ]; then
+              sudo docker stop moment-admin-server
+              sudo docker rm -f moment-admin-server
+            fi
+          fi
+
+          # Save updated image tags
+          cat > .image-tags << EOF
+          API_IMAGE_TAG=$API_IMAGE_TAG
+          ADMIN_IMAGE_TAG=$ADMIN_IMAGE_TAG
+          EOF
+
+          # Restart selected services
+          if [ "$MODULE" = "both" ]; then
+            sudo -E docker compose up -d
+          else
+            sudo -E docker compose up --no-deps -d $MODULE
+          fi
 
       - name: Prune old images
         run: sudo docker image prune -f

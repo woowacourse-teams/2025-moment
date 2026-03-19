@@ -3,10 +3,10 @@ name: Admin CD
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - "admin/**"
-      - ".github/workflows/dev-admin-cd.yml"
+      - ".github/workflows/admin-cd.yml"
   workflow_dispatch:
 
 defaults:
@@ -18,6 +18,8 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     environment: production
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout code

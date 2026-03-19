@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+jar { enabled = false }
+
+dependencies {
+    implementation project(':common')
+    testImplementation testFixtures(project(':common'))
+
+    // Admin 전용 의존성
+    implementation 'org.springframework.session:spring-session-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+    testRuntimeOnly 'com.h2database:h2'
+
+    testImplementation 'io.rest-assured:rest-assured'
+}
+
+tasks.register('fastTest', Test) {
+    useJUnitPlatform { excludeTags 'e2e' }
+}
+tasks.register('e2eTest', Test) {
+    useJUnitPlatform { includeTags 'e2e' }
+}

@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+.vite
+
+# Claude Code configuration
+.claude
+CLAUDE.md
+
+# Environment files
+.env
+.env.*

@@ -1,14 +1,16 @@
+import { useEffect } from 'react';
 import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
 import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
 import * as S from '../todayMoment/index.styles';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
-
-import { useParams } from 'react-router';
+import { track } from '@/shared/lib/ga/track';
+import { useParams, useLocation } from 'react-router';
 
 export default function TodayCommentPage() {
   const { groupId } = useParams<{ groupId: string }>();
+  const location = useLocation();
   const { data: isLoggedIn, isLoading: isLoggedInLoading } = useCheckIfLoggedInQuery();
   const {
     data: momentData,
@@ -17,7 +19,14 @@ export default function TodayCommentPage() {
     refetch,
   } = useCommentableMomentsQuery(groupId, { enabled: isLoggedIn === true });
 
-  useDwell({ item_type: 'comment', surface: 'composer' });
+  useDwell('composer');
+
+  useEffect(() => {
+    track('open_composer', {
+      entry: location.state?.entry ?? 'nav',
+      composer: 'comment',
+    });
+  }, []);
 
   return (
     <S.TodayPageWrapper>

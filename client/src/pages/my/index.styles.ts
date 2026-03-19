@@ -27,33 +27,24 @@ export const UserInfoSection = styled.div`
   gap: 4px;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     max-width: 100%;
   }
 `;
 
-export const RewardHistorySection = styled.div`
+export const GroupSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     max-width: 100%;
   }
-`;
-
-export const SettingSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
 `;
 
 export const SectionTitleContainer = styled.div`
@@ -62,7 +53,7 @@ export const SectionTitleContainer = styled.div`
   gap: 12px;
   align-items: flex-start;
   width: 90%;
-  max-width: 800px;
+  max-width: 900px;
 `;
 
 export const SectionTitle = styled.p`
@@ -82,6 +73,8 @@ export const SectionTitle = styled.p`
 export const ButtonContainer = styled.div`
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -138,6 +131,7 @@ export const UserInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -155,6 +149,7 @@ export const UserInfo = styled.div`
       font-weight: 600;
       color: ${({ theme }) => theme.colors['yellow-300']};
       font-size: 20px;
+      white-space: nowrap;
 
       @media (max-width: 768px) {
         font-size: 16px;
@@ -190,4 +185,30 @@ export const SettingLink = styled.p`
   &:hover {
     color: ${({ theme }) => theme.colors['yellow-300']};
   }
+`;
+
+export const DeleteAccountContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.colors['gray-200']};
+    font-size: 16px;
+
+    &:first-of-type {
+      font-size: 18px;
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors['white']};
+    }
+  }
+`;
+
+export const DeleteAccountButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
 `;

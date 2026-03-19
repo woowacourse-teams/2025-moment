@@ -1,9 +1,10 @@
 import { api } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 
 export const useRandomNicknameQuery = () => {
   return useQuery<string>({
-    queryKey: ['randomNickname'],
+    queryKey: queryKeys.auth.randomNickname,
     queryFn: getRandomNickname,
   });
 };

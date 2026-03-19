@@ -1,9 +1,11 @@
 import { NotificationType, TargetType } from './notifications';
 
 export interface SSENotification {
+  notificationId?: number;
   notificationType: NotificationType;
-  targetType: TargetType;
-  targetId: number;
   message: string;
-  isRead: boolean;
+  link: string;
+  targetType?: TargetType;
+  targetId?: number;
+  isRead?: boolean;
 }

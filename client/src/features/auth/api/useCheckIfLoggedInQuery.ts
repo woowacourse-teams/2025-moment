@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, BASE_URL } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import axios from 'axios';
 
 interface CheckIfLogginedResponse {
@@ -10,7 +11,7 @@ interface CheckIfLogginedResponse {
 }
 export const useCheckIfLoggedInQuery = () => {
   return useQuery({
-    queryKey: ['checkIfLoggedIn'],
+    queryKey: queryKeys.auth.checkLogin,
     queryFn: checkIfLoggined,
     staleTime: 1000 * 60 * 10,
   });

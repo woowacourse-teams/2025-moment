@@ -47,47 +47,40 @@ jobs:
   build-and-push:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed modules
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            api:
+              - 'server/api/**'
+              - 'server/common/**'
+              - 'server/build.gradle'
+              - 'server/settings.gradle'
+              - 'server/gradle/**'
+              - 'server/gradlew'
+              - 'server/Dockerfile.api'
+            admin:
+              - 'server/admin/**'
+              - 'server/common/**'
+              - 'server/build.gradle'
+              - 'server/settings.gradle'
+              - 'server/gradle/**'
+              - 'server/gradlew'
+              - 'server/Dockerfile.admin'
 
       - name: Free disk space
         run: |
-          echo "=== Docker / System cleanup ==="
           docker system prune -af
           docker builder prune -af
-          docker image prune -af
-          docker container prune -f
-          docker volume prune -f
           sudo rm -rf /usr/local/lib/android
           df -h
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-home-cache-cleanup: true
-
-      - name: build with Gradle
-        run: ./gradlew clean build -x test
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -98,25 +91,43 @@ jobs:
           username: ${{ secrets.DOCKERHUB_PROD_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Build and push Docker image
-        id: build-and-push
+      - name: Build and push API image
+        if: steps.changes.outputs.api == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./server
-          file: ./server/Dockerfile
+          file: ./server/Dockerfile.api
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:latest
-            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-images:buildcache,mode=max
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:latest
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-api:buildcache,mode=max
 
-      - name: Save image tag to file
-        run: echo ${{ github.sha }} > ./image-tag.txt
+      - name: Build and push Admin image
+        if: steps.changes.outputs.admin == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile.admin
+          push: true
+          platforms: linux/arm64
+          tags: |
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:latest
+            ${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_PROD_USERNAME }}/moment-prod-admin:buildcache,mode=max
+
+      - name: Save deploy info
+        run: |
+          echo "DEPLOY_API=${{ steps.changes.outputs.api }}" > deploy-info.txt
+          echo "DEPLOY_ADMIN=${{ steps.changes.outputs.admin }}" >> deploy-info.txt
+          echo "DEPLOY_TAG=${{ github.sha }}" >> deploy-info.txt
+          cat deploy-info.txt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
-          path: server/image-tag.txt
+          path: deploy-info.txt

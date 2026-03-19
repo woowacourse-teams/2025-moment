@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { useToast } from '@/shared/hooks/useToast';
+import { toast } from '@/shared/store/toast';
 import { FileUpload } from '@/shared/ui';
 import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
 import { Send } from 'lucide-react';
@@ -19,7 +19,6 @@ export const TodayCommentWriteContent = ({
   groupId?: string | number;
 }) => {
   const MAX_LENGTH = 200;
-  const { showWarning } = useToast();
 
   const { comment, handleChange, handleImageChange, handleSubmit, isPending } = useSendComments({
     groupId: groupId || '',
@@ -35,7 +34,7 @@ export const TodayCommentWriteContent = ({
     if (!isLoggedIn) {
       e.preventDefault();
       e.target.blur();
-      showWarning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫');
+      toast.warning('Moment에 오신 걸 환영해요! 로그인하고 시작해보세요 💫');
       navigate(ROUTES.LOGIN);
       return;
     }

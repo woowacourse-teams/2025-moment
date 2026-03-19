@@ -26,15 +26,15 @@ export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   };
 
   const handleTodayMomentClick = () => {
-    track('click_navigation', { destination: 'today_moment', source: 'navbar' });
+    track('click_navigation', { destination: 'today_moment' });
   };
 
   const handleTodayCommentClick = () => {
-    track('click_navigation', { destination: 'today_comment', source: 'navbar' });
+    track('click_navigation', { destination: 'today_comment' });
   };
 
   const handleCollectionClick = () => {
-    track('click_navigation', { destination: 'collection', source: 'navbar' });
+    track('click_navigation', { destination: 'collection' });
   };
 
   const isTodayMomentActive = location.pathname.includes('/today-moment');

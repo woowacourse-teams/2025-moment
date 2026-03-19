@@ -1,4 +1,5 @@
 import { api } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import type { MomentsResponse } from '../types/moments';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -10,7 +11,7 @@ interface GetMyMoments {
 export const useMyMomentsSuspenseQuery = (groupId: number | string) => {
   const numericGroupId = Number(groupId);
   return useSuspenseInfiniteQuery({
-    queryKey: ['group', numericGroupId, 'my-moments'],
+    queryKey: queryKeys.group.myMoments(numericGroupId),
     queryFn: ({ pageParam }: { pageParam: string | number | null }) =>
       getMyMoments({ groupId: numericGroupId, pageParam }),
     getNextPageParam: lastPage =>

@@ -39,6 +39,7 @@ Domain-Driven Design과 Clean Architecture 원칙을 적용합니다.
 - 모든 테스트 통과 후에만 커밋
 - 컴파일러/린터 경고 해결 후 커밋
 - 작은 단위로 자주 커밋
+- **커밋 시 반드시 `git-commit-helper` 스킬을 사용** (`/git-commit-helper` 호출)하여 diff 분석 기반 커밋 메시지 생성
 
 ### plan 파일 기반 작업
 - 작업 시작 시 현재 plan 파일에서 다음 미완료 테스트 확인 → 테스트 구현 → 최소 코드로 통과
@@ -64,14 +65,16 @@ cd server
 
 ```
 src/main/java/moment/
-├── auth/          # 인증/인가 (JWT)
+├── admin/         # 관리자 (세션 기반 인증, 사용자/그룹/콘텐츠 관리)
+├── auth/          # 인증/인가 (JWT, Google OAuth, Apple Sign-in)
 ├── comment/       # 댓글 (도메인명: "Echo")
+├── group/         # 그룹 (CRUD, 멤버 관리, 초대, 그룹 모멘트/코멘트)
+├── like/          # 좋아요 (모멘트/코멘트 좋아요 토글)
 ├── moment/        # 핵심 모멘트 게시물
 ├── notification/  # 알림 (SSE + Firebase Push)
 ├── report/        # 콘텐츠 신고
-├── reward/        # 보상/포인트
 ├── storage/       # 파일 저장소 (AWS S3)
-├── user/          # 사용자 & 레벨
+├── user/          # 사용자 관리
 └── global/        # 공유 인프라
 ```
 
@@ -182,10 +185,6 @@ public class UserService {
 - **추가 모멘트**: 포인트 소모 (`PointDeductionPolicy`)
 - 작성 유형: `BASIC` 또는 `EXTRA`
 
-### 사용자 레벨 시스템
-- `expStar` 기반 15개 레벨: `ASTEROID_WHITE`(0) → `GAS_GIANT_SKY`(32000+)
-- `User.addStarAndUpdateLevel()`로 자동 업데이트
-
 ### 알림 시스템
 1. 도메인 이벤트 발행 (댓글 생성 등)
 2. `@TransactionalEventListener`로 이벤트 수신
@@ -208,8 +207,8 @@ public class UserService {
 Optional<User> findByEmailAndProviderType(String email, ProviderType type);
 
 // 복잡한 조건은 @Query
-@Query("SELECT u FROM users u WHERE u.expStar >= :minStar")
-List<User> findUsersAboveLevel(@Param("minStar") int minStar);
+@Query("SELECT m FROM moments m WHERE m.momenter = :momenter ORDER BY m.createdAt DESC")
+List<Moment> findByMomenter(@Param("momenter") User momenter);
 ```
 
 ### 서비스 레이어 구성
@@ -247,13 +246,42 @@ public class MomentService {
 
 ### 테스트 전략
 
+⚠️ **Mock 정책**: Mock은 외부 API(Firebase, S3 등)에만 사용.
+Repository와 내부 Service는 실제 객체를 사용하여 테스트.
+→ Repository를 Mock하면 JPQL 문법 오류와 잘못된 쿼리 결과를 테스트 시점에 잡을 수 없음.
+
 ```java
-// 단위 테스트
-@Test
-void getUserBy_존재하는_사용자_반환() {
-    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-    User result = userService.getUserBy(1L);
-    assertThat(result.getEmail()).isEqualTo("test@example.com");
+// Repository 통합 테스트 (@DataJpaTest)
+@DataJpaTest
+@ActiveProfiles("test")
+class MomentRepositoryTest {
+    @Autowired MomentRepository momentRepository;
+    @Autowired UserRepository userRepository;
+
+    @Test
+    void 커서_기반_페이지네이션으로_모멘트를_조회한다() {
+        User momenter = userRepository.save(UserFixture.createUser());
+        momentRepository.save(new Moment("content", momenter));
+        List<Moment> result = momentRepository.findMyMomentFirstPage(momenter, PageRequest.of(0, 10));
+        assertThat(result).hasSize(1);
+    }
+}
+
+// Service 통합 테스트 (@SpringBootTest + 실제 객체, 외부 API만 Mock)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Transactional
+@ActiveProfiles("test")
+class MomentServiceTest {
+    @Autowired MomentService momentService;
+    @Autowired UserRepository userRepository;
+    @MockitoBean FirebaseMessaging firebaseMessaging;  // 외부 API만 Mock
+
+    @Test
+    void 모멘트를_생성한다() {
+        User momenter = userRepository.save(UserFixture.createUser());
+        Moment moment = momentService.create("hello!", momenter);
+        assertThat(moment.getContent()).isEqualTo("hello!");
+    }
 }
 
 // E2E 테스트
@@ -309,7 +337,7 @@ class MomentControllerTest extends AcceptanceTest {
 5. **Application/Facade 서비스**: 여러 도메인 조율 (필요 시)
 6. **DTO 생성**: record + 정적 `from()` 메서드
 7. **컨트롤러 구현**: 얇게 유지, `@Valid` 검증
-8. **테스트 작성**: 단위 테스트 + `@Tag("e2e")` 통합 테스트
+8. **테스트 작성**: 도메인 단위 + Repository 통합(`@DataJpaTest`) + Service 통합(`@SpringBootTest`) + E2E 테스트
 9. **Flyway 마이그레이션**: DB 변경 시 SQL 스크립트 추가
 
 ## 금지 사항
@@ -318,6 +346,8 @@ class MomentControllerTest extends AcceptanceTest {
 - ❌ 테스트 통과에 필요한 것 이상의 코드 구현 (과잉 구현)
 - ❌ 구조적 변경과 행동적 변경을 같은 커밋에 섞기
 - ❌ 테스트 실패 상태에서 리팩토링
+- ❌ Repository를 Mock하여 Service 테스트 작성 → 실제 DB 사용
+- ❌ 내부 Service를 Mock하여 상위 Service 테스트 → 실제 객체 사용
 
 ### 아키텍처 관련
 - ❌ 컨트롤러에 비즈니스 로직 배치
@@ -332,6 +362,8 @@ class MomentControllerTest extends AcceptanceTest {
 - [ ] 모든 테스트 통과 (Green 상태)
 - [ ] 구조적/행동적 변경이 분리되어 있는가?
 - [ ] 커밋 메시지에 구조/행동 변경 유형 명시
+- [ ] 커스텀 쿼리에 대한 Repository 테스트(`@DataJpaTest`) 존재
+- [ ] Service 테스트에서 Repository/내부 Service를 Mock하지 않음
 
 ### 아키텍처 관련
 - [ ] Soft Delete 패턴 적용 확인
@@ -339,7 +371,37 @@ class MomentControllerTest extends AcceptanceTest {
 - [ ] DTO 변환 적용 (엔티티 직접 노출 X)
 - [ ] DB 변경 시 Flyway 마이그레이션 추가
 
-## 참고
+## Feature Registry 활용 (필수)
+
+**경로**: `.claude/docs/features/`
+
+### 작업 전: 반드시 맥락 확인
+
+| 작업 유형 | 읽을 파일 | 확인 내용 |
+|----------|----------|----------|
+| 새 기능 추가 | `FEATURES.md` → 관련 `{domain}.md` | 기존 패턴, API 구조, 테스트 위치 |
+| 버그 수정 | 관련 `{domain}.md` | 기존 동작, 비즈니스 룰, 에러 코드 |
+| 리팩토링 | `FEATURES.md` Cross-Domain Dependencies | 이벤트 의존성, 영향 범위 |
+| 도메인 간 기능 | `FEATURES.md` + 관련 `{domain}.md`들 | 이벤트 흐름, 구독 관계 |
+
+### 작업 후: 문서 동기화
+
+- 새 기능 완료 → `{domain}.md`에 항목 추가 + `FEATURES.md` Recent Changes 기록
+- 기존 기능 수정 → 해당 항목 업데이트 + Recent Changes 기록
+- 새 이벤트 추가 → Cross-Domain Dependencies에 행 추가
+
+### 각 {domain}.md에서 얻는 정보
+
+- **Key Classes**: Controller → Facade → Application → Domain 계층별 클래스 위치
+- **Business Rules**: 도메인 정책, 제약 조건
+- **Dependencies**: 의존하는 다른 도메인 서비스
+- **Tests**: 단위/통합/E2E 테스트 클래스명
+- **Error Codes**: 해당 도메인의 에러 코드와 HTTP 상태
+- **DB 마이그레이션**: 관련 Flyway 스크립트 버전
+
+### 상세 규칙
+
+`.claude/rules/feature-tracking.md` 참조
 
 ### 기존 구현 참조
 - **User 도메인**: `user/domain/User.java`, `user/service/user/UserService.java`

@@ -1,4 +1,4 @@
-import { toasts, useToasts } from '@/shared/store/toast';
+import { toast, useToasts } from '@/shared/store/toast';
 import { ToastData } from '@/shared/types/toast';
 import { KeyRound, CheckCircle, Mail, X, XCircle } from 'lucide-react';
 import React, { useState } from 'react';
@@ -25,9 +25,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
 
   const handleToastClick = () => {
     if (toast.variant === 'message' && toast.routeType) {
-      const route =
-        toast.routeType === 'moment' ? '/collection/my-moment' : '/collection/my-comment';
-      navigate(route);
+      navigate(toast.link!);
       handleClose();
     }
   };
@@ -72,8 +70,8 @@ export const Toast: React.FC = () => {
 
   return createPortal(
     <S.ToastContainer>
-      {activeToasts.map(toast => (
-        <ToastItem key={toast.id} toast={toast} onClose={toasts.hide} />
+      {activeToasts.map(item => (
+        <ToastItem key={item.id} toast={item} onClose={toast.dismiss} />
       ))}
     </S.ToastContainer>,
     document.body,

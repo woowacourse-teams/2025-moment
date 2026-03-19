@@ -46,7 +46,7 @@ function removeToast(id: string) {
   toastStore.setState(state => ({ toasts: state.toasts.filter(t => t.id !== id) }));
 }
 
-export const toasts = {
+export const toast = {
   success: (message: string, duration?: number) =>
     addToast({ message, variant: 'success', duration }),
 
@@ -55,10 +55,10 @@ export const toasts = {
   warning: (message: string, duration?: number) =>
     addToast({ message, variant: 'warning', duration }),
 
-  message: (message: string, routeType?: ToastRouteType, duration?: number) =>
-    addToast({ message, variant: 'message', routeType, duration }),
+  message: (message: string, routeType?: ToastRouteType, duration?: number, link?: string) =>
+    addToast({ message, variant: 'message', routeType, duration, link }),
 
-  hide: (id: string) => removeToast(id),
+  dismiss: (id: string) => removeToast(id),
   clear: () => {
     timers.forEach(t => clearTimeout(t));
     timers.clear();

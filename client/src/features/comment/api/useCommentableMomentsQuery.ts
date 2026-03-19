@@ -1,4 +1,5 @@
 import { api } from '@/app/lib/api';
+import { queryKeys } from '@/shared/lib/queryKeys';
 import { GetCommentableMoments } from '@/features/comment/types/comments';
 import { useQuery } from '@tanstack/react-query';
 
@@ -12,7 +13,7 @@ export const useCommentableMomentsQuery = (
   options?: { enabled?: boolean },
 ) => {
   return useQuery({
-    queryKey: ['commentableMoments', groupId],
+    queryKey: queryKeys.commentableMoments.byGroup(Number(groupId)),
     queryFn: () => getCommentableMoments(groupId),
     enabled: !!groupId && (options?.enabled ?? true),
   });
