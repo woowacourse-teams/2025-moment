@@ -48,9 +48,9 @@ class FallbackQuestionServiceTest {
     void 임시_질문을_사용_처리한다() {
         // given
         FallbackQuestion fallbackQuestion = fallbackQuestionRepository.save(new FallbackQuestion("임시 질문1"));
-        
+
         // when
-        fallbackQuestionService.markAsUsed(fallbackQuestion);
+        fallbackQuestionService.markAsUsed(fallbackQuestion.getId());
 
         // then
         assertThat(fallbackQuestion.isUsed()).isTrue();

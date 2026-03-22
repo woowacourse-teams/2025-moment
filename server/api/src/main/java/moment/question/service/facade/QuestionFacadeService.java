@@ -70,8 +70,9 @@ public class QuestionFacadeService {
             log.warn("AI 질문 생성 실패로 인해 임시 질문을 사용합니다.");
             FallbackQuestion fallbackQuestion = fallbackQuestionService.getUnusedFallbackContent();
             questionContent = fallbackQuestion.getContent();
+            Long fallbackId = fallbackQuestion.getId();
 
-            postSaveAction = () -> fallbackQuestionService.markAsUsed(fallbackQuestion);
+            postSaveAction = () -> fallbackQuestionService.markAsUsed(fallbackId);
         }
 
         questionService.save(questionContent, QuestionType.COMMON, dateRange.startDate(), dateRange.endDate(), null);
