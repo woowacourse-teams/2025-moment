@@ -83,6 +83,7 @@ public enum ErrorCode {
     QUESTION_CYCLE_NOT_SUPPORT("Q-002", "지원하지 않는 질문 사이클입니다.", HttpStatus.BAD_REQUEST),
     QUESTION_ALREADY_EXIST("Q-003", "질문이 해당 기간에 이미 존재합니다.", HttpStatus.CONFLICT),
     QUESTION_FALLBACK_EXHAUSTED("Q-004", "남은 임시 질문이 없습니다. 관리자의 보충이 필요합니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    QUESTION_FALLBACK_NOT_FOUND("Q-005", "존재하지 않는 임시 질문입니다.", HttpStatus.NOT_FOUND),
 
     // InviteLink (IL)
     INVITE_LINK_INVALID("IL-001", "유효하지 않은 초대 링크입니다.", HttpStatus.NOT_FOUND),
