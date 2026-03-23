@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import jakarta.persistence.EntityManager;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
+import moment.common.DatabaseCleaner;
 import moment.config.TestTags;
 import moment.global.domain.QuestionType;
 import moment.global.exception.ErrorCode;
@@ -27,6 +29,7 @@ import moment.question.service.question.QuestionService;
 import moment.support.FakeQuestionGenerator;
 import moment.support.FakeTimeProvider;
 import moment.support.TimeProviderTestConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -37,11 +40,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 @Tag(TestTags.INTEGRATION)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-@Transactional
+//@Transactional
 @ActiveProfiles("test")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @Import(TimeProviderTestConfig.class) // 해당 시간 설정을 사용합니다.
@@ -50,21 +52,20 @@ class QuestionFacadeServiceTest {
     private final String dailyContent = "일간질문";
     private final String weeklyContent = "주간질문";
     private final String monthlyContent = "월간질문";
-
+    @Autowired
+    EntityManager em;
+    @Autowired
+    DatabaseCleaner cleaner;
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
     private QuestionService questionService;
     @Autowired
     private GroupService groupService;
-
     private FakeTimeProvider timeProvider;
-
     private FakeQuestionGenerator questionGenerator;
-
     @Autowired
     private FallbackQuestionService fallbackQuestionService;
-
     private QuestionFacadeService questionFacadeService;
     @Autowired
     private FallbackQuestionRepository fallbackQuestionRepository;
@@ -89,6 +90,11 @@ class QuestionFacadeServiceTest {
                         new Question(monthlyContent, QuestionType.COMMON, firstDate, lastDate, null)
                 )
         );
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleaner.clean();
     }
 
     @Test
@@ -167,6 +173,7 @@ class QuestionFacadeServiceTest {
         questionGenerator.setShouldThrowException(true);
         String content = "DB에 있던 예비 질문";
         FallbackQuestion fallbackQuestion = fallbackQuestionRepository.save(new FallbackQuestion(content));
+        Long fallbackId = fallbackQuestion.getId();
 
         LocalDate today = LocalDate.of(2025, 1, 1);
         LocalDate monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -178,12 +185,13 @@ class QuestionFacadeServiceTest {
         questionFacadeService.generateWeeklyCommonQuestion();
         Optional<Question> question = questionRepository.findByStartDateAndEndDateAndQuestionType(monday, sunday,
                 QuestionType.COMMON);
+        FallbackQuestion updatedFallback = fallbackQuestionRepository.findById(fallbackId).orElseThrow();
 
         // then
         assertAll(
                 () -> assertThat(question).isPresent(),
                 () -> assertThat(question.get().getContent()).isEqualTo(content),
-                () -> assertThat(fallbackQuestion.isUsed()).isTrue()
+                () -> assertThat(updatedFallback.isUsed()).isTrue()
         );
     }
 

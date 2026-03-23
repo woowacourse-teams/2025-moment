@@ -20,7 +20,10 @@ public class FallbackQuestionService {
                 .orElseThrow(() -> new MomentException(ErrorCode.QUESTION_FALLBACK_EXHAUSTED));
     }
 
-    public void markAsUsed(FallbackQuestion fallbackQuestion) {
+    @Transactional
+    public void markAsUsed(Long fallbackQuestionId) {
+        FallbackQuestion fallbackQuestion = fallbackRepository.findById(fallbackQuestionId)
+                .orElseThrow(() -> new MomentException(ErrorCode.QUESTION_FALLBACK_NOT_FOUND));
         fallbackQuestion.markAsUsed();
     }
 }
