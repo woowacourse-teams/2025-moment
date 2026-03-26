@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { convertToWebp, getFallbackImageUrl } from '@/shared/utils/convertToWebp';
 
 interface UseImageFallbackReturn {
@@ -19,11 +19,6 @@ const DEFAULT_IMAGE_FALLBACK_SRC = '/images/no-image.webp';
 export const useImageFallback = (originalUrl: string): UseImageFallbackReturn => {
   const [src, setSrc] = useState<string>(() => convertToWebp(originalUrl));
   const [failureCount, setFailureCount] = useState<number>(0);
-
-  useEffect(() => {
-    setSrc(convertToWebp(originalUrl));
-    setFailureCount(0);
-  }, [originalUrl]);
 
   const handleError = () => {
     if (failureCount === 0) {
