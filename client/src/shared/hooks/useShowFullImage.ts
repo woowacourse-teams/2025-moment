@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { convertToWebp } from '@/shared/utils/convertToWebp';
 
 export const useShowFullImage = () => {
   const [fullImageSrc, setFullImageSrc] = useState<string | null>(null);
 
-  const handleImageClick = (imageUrl: string, event: React.MouseEvent) => {
+  const handleImageClick = (imageSrc: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    setFullImageSrc(convertToWebp(imageUrl));
+    setFullImageSrc(imageSrc);
   };
 
   const closeFullImage = () => {

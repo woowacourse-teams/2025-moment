@@ -29,7 +29,7 @@ const MomentImageWithFallback = ({
         src={src}
         onError={onError}
         alt="모멘트 이미지"
-        onClick={e => onImageClick(imageUrl, e)}
+        onClick={e => onImageClick(src, e)}
       />
     </S.MomentImageContainer>
   );
@@ -49,7 +49,7 @@ const CommentImageWithFallback = ({
         src={src}
         onError={onError}
         alt="코멘트 이미지"
-        onClick={e => onImageClick(imageUrl, e)}
+        onClick={e => onImageClick(src, e)}
       />
     </S.CommentImageContainer>
   );

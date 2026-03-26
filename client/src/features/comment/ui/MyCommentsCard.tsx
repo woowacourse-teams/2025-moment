@@ -31,7 +31,7 @@ const CommentImageWithFallback = ({
         src={src}
         onError={onError}
         alt={alt}
-        onClick={e => onImageClick(imageUrl, e)}
+        onClick={e => onImageClick(src, e)}
       />
     </S.CommentImageContainer>
   );
