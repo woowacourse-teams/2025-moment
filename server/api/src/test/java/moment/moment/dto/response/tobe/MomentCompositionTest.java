@@ -22,7 +22,7 @@ class MomentCompositionTest {
         setMomenterNull(moment);
 
         // when
-        MomentComposition composition = MomentComposition.of(moment, "imageUrl");
+        MomentComposition composition = MomentComposition.of(moment, "originalUrl", "optimizedUrl");
 
         // then
         assertAll(
@@ -38,7 +38,7 @@ class MomentCompositionTest {
         Moment moment = MomentFixture.createMomentWithId(1L, momenter);
 
         // when
-        MomentComposition composition = MomentComposition.of(moment, "imageUrl");
+        MomentComposition composition = MomentComposition.of(moment, "originalUrl", "optimizedUrl");
 
         // then
         assertAll(

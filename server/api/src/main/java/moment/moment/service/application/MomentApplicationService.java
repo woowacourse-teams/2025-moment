@@ -115,9 +115,10 @@ public class MomentApplicationService {
         return moments.stream()
                 .map(moment -> {
                     MomentImage image = momentImageByMoment.get(moment);
+                    String originalUrl = (image != null) ? image.getImageUrl() : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
-                    return MomentComposition.of(moment, resolvedImageUrl);
+                    return MomentComposition.of(moment, originalUrl, resolvedImageUrl);
                 })
                 .toList();
     }
@@ -154,7 +155,11 @@ public class MomentApplicationService {
         Moment moment = commentableMoments.get(RANDOM.nextInt(commentableMoments.size()));
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
 
-        return CommentableMomentResponse.of(moment, momentImage.orElse(null));
+        String originalUrl = momentImage.map(MomentImage::getImageUrl).orElse(null);
+        String resolvedImageUrl = momentImage.map(image -> photoUrlResolver.resolve(image.getImageUrl()))
+                .orElse(null);
+
+        return CommentableMomentResponse.of(moment, originalUrl, resolvedImageUrl);
     }
 
     @Transactional
@@ -223,7 +228,8 @@ public class MomentApplicationService {
     }
 
     @Transactional
-    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content, String imageUrl, String imageName) {
+    public GroupMomentResponse createMomentInGroup(Long groupId, Long userId, String content, String imageUrl,
+                                                   String imageName) {
         User momenter = userService.getUserBy(userId);
         GroupMember member = memberService.getByGroupAndUser(groupId, userId);
         moment.group.domain.Group group = member.getGroup();

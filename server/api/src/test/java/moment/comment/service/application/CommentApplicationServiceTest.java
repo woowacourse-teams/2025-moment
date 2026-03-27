@@ -92,7 +92,8 @@ class CommentApplicationServiceTest {
     @Test
     void 이미지와_함께_코멘트를_생성한다() {
         // given
-        CommentCreateRequest request = new CommentCreateRequest("new comment", moment.getId(), "imageUrl", "imageName");
+        CommentCreateRequest request = new CommentCreateRequest("new comment", moment.getId(), "originalUrl",
+                "imageName");
 
         // when
         CommentCreateResponse response = commentApplicationService.createComment(request, user.getId());

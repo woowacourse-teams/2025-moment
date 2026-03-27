@@ -28,8 +28,11 @@ public record MyGroupMomentResponse(
         @Schema(description = "댓글 수", example = "3")
         long commentCount,
 
-        @Schema(description = "이미지 URL", example = "https://example.com/images/sample.jpg")
-        String imageUrl,
+        @Schema(description = "이미지 원본 URL", example = "https://example.com/images/sample.jpg")
+        String originalImageUrl,
+
+        @Schema(description = "이미지 최적화 URL", example = "https://example.com/images/sample.jpg")
+        String optimizedImageUrl,
 
         @Schema(description = "생성 일시")
         LocalDateTime createdAt,
@@ -45,7 +48,8 @@ public record MyGroupMomentResponse(
             long likeCount,
             boolean hasLiked,
             long commentCount,
-            String imageUrl,
+            String originalImageUrl,
+            String optimizedImageUrl,
             List<MyGroupMomentCommentResponse> comments,
             MomentNotificationResponse momentNotification
     ) {
@@ -57,7 +61,8 @@ public record MyGroupMomentResponse(
                 likeCount,
                 hasLiked,
                 commentCount,
-                imageUrl,
+                originalImageUrl,
+                optimizedImageUrl,
                 moment.getCreatedAt(),
                 comments,
                 momentNotification

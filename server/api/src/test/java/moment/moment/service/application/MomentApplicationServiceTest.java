@@ -5,13 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import moment.block.domain.UserBlock;
 import moment.block.infrastructure.UserBlockRepository;
-import moment.comment.domain.Comment;
 import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
-import moment.fixture.CommentFixture;
 import moment.fixture.GroupFixture;
 import moment.fixture.MomentFixture;
 import moment.fixture.UserFixture;
@@ -151,7 +148,8 @@ class MomentApplicationServiceTest {
                 () -> assertThat(response.nextCursor()).isNotNull(),
                 () -> assertThat(response.hasNextPage()).isTrue(),
                 () -> assertThat(response.momentCompositionInfo().getFirst().id()).isEqualTo(extraMoment2.getId()),
-                () -> assertThat(response.momentCompositionInfo().getFirst().imageUrl()).isEqualTo(expectedResolvedUrl),
+                () -> assertThat(response.momentCompositionInfo().getFirst().originalUrl()).isEqualTo(
+                        expectedResolvedUrl),
                 () -> assertThat(response.momentCompositionInfo().getLast().id()).isEqualTo(extraMoment1.getId())
         );
     }

@@ -36,7 +36,7 @@ public record MyGroupCommentMomentResponse(
                 momentComposition.id(),
                 momentComposition.content(),
                 momentComposition.nickname(),
-                momentComposition.imageUrl(),
+                momentComposition.originalUrl(),
                 momentComposition.momentCreatedAt(),
                 likeCount,
                 hasLiked

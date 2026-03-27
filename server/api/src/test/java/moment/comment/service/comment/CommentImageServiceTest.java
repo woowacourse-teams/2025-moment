@@ -63,7 +63,7 @@ class CommentImageServiceTest {
     @Test
     void 이미지_정보가_있으면_코멘트_이미지를_생성한다() {
         // given
-        String imageUrl = "imageUrl.jpg";
+        String imageUrl = "originalUrl.jpg";
 
         // when
         Optional<CommentImage> resultOpt = commentImageService.create(comment, imageUrl, "imageName");
