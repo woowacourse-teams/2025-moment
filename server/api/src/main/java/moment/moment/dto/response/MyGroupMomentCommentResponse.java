@@ -18,8 +18,11 @@ public record MyGroupMomentCommentResponse(
         @Schema(description = "작성자 닉네임", example = "닉네임")
         String memberNickname,
 
-        @Schema(description = "이미지 URL", example = "https://example.com/images/sample.jpg")
-        String imageUrl,
+        @Schema(description = "이미지 원본 URL", example = "https://example.com/images/sample.jpg")
+        String originalImageUrl,
+
+        @Schema(description = "이미지 최적화 URL", example = "https://example.com/images/sample.jpg")
+        String optimizedImageUrl,
 
         @Schema(description = "생성 일시")
         LocalDateTime createdAt,
@@ -40,7 +43,8 @@ public record MyGroupMomentCommentResponse(
                 composition.memberId(),
                 composition.content(),
                 composition.nickname(),
-                composition.imageUrl(),
+                composition.originalImageUrl(),
+                composition.optimizedImageUrl(),
                 composition.commentCreatedAt(),
                 likeCount,
                 hasLiked

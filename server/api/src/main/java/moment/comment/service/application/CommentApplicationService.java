@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
@@ -16,7 +17,6 @@ import moment.comment.dto.response.CommentCreateResponse;
 import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
-import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.service.comment.CommentImageService;
 import moment.comment.service.comment.CommentService;
 import moment.global.exception.ErrorCode;
@@ -64,11 +64,13 @@ public class CommentApplicationService {
         return comments.stream()
                 .map(comment -> {
                     CommentImage image = commentImageByComment.get(comment);
+                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
                     return CommentComposition.of(
                             comment,
                             commentersByComments.get(comment),
+                            originalImageUrl,
                             resolvedImageUrl
                     );
                 })
@@ -146,9 +148,10 @@ public class CommentApplicationService {
         return commentsWithoutCursor.stream()
                 .map(comment -> {
                     CommentImage image = commentImagesByComment.get(comment);
+                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
-                    return CommentComposition.of(comment, commenter, resolvedImageUrl);
+                    return CommentComposition.of(comment, commenter, originalImageUrl, resolvedImageUrl);
                 })
                 .toList();
     }
@@ -182,7 +185,8 @@ public class CommentApplicationService {
     }
 
     @Transactional
-    public GroupCommentResponse createCommentInGroup(Long groupId, Long momentId, Long userId, String content, String imageUrl, String imageName) {
+    public GroupCommentResponse createCommentInGroup(Long groupId, Long momentId, Long userId, String content,
+                                                     String imageUrl, String imageName) {
         User commenter = userService.getUserBy(userId);
         GroupMember member = groupMemberService.getByGroupAndUser(groupId, userId);
         Moment moment = momentService.getMomentBy(momentId);
@@ -190,11 +194,12 @@ public class CommentApplicationService {
         Comment comment = commentService.createWithMember(moment, commenter, member, content);
 
         Optional<CommentImage> savedImage = commentImageService.create(comment, imageUrl, imageName);
+        String originalImageUrl = savedImage.map(CommentImage::getImageUrl).orElse(null);
         String resolvedImageUrl = savedImage
                 .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
                 .orElse(null);
 
-        return GroupCommentResponse.from(comment, 0L, false, resolvedImageUrl);
+        return GroupCommentResponse.from(comment, 0L, false, originalImageUrl, resolvedImageUrl);
     }
 
     public List<GroupCommentResponse> getCommentsInGroup(Long groupId, Long momentId, Long userId) {
@@ -210,14 +215,15 @@ public class CommentApplicationService {
         Map<Comment, CommentImage> commentImageMap = commentImageService.getCommentImageByComment(comments);
 
         return comments.stream()
-            .map(comment -> {
-                long likeCount = commentLikeService.getCount(comment.getId());
-                boolean hasLiked = commentLikeService.hasLiked(comment.getId(), member.getId());
-                CommentImage image = commentImageMap.get(comment);
-                String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
-                return GroupCommentResponse.from(comment, likeCount, hasLiked, imageUrl);
-            })
-            .toList();
+                .map(comment -> {
+                    long likeCount = commentLikeService.getCount(comment.getId());
+                    boolean hasLiked = commentLikeService.hasLiked(comment.getId(), member.getId());
+                    CommentImage image = commentImageMap.get(comment);
+                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+                    return GroupCommentResponse.from(comment, likeCount, hasLiked, originalImageUrl, optimizedImageUrl);
+                })
+                .toList();
     }
 
     @Transactional

@@ -19,7 +19,7 @@ class CommentCompositionTest {
         Comment comment = createCommentStub();
 
         // when
-        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl");
+        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl", "imageUrlOp");
 
         // then
         assertThat(composition.nickname()).isEqualTo("탈퇴한 사용자");
@@ -32,7 +32,7 @@ class CommentCompositionTest {
         Comment comment = createCommentStub();
 
         // when
-        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl");
+        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl", "imageUrlOp");
 
         // then
         assertThat(composition.nickname()).isEqualTo(commenter.getNickname());
@@ -45,7 +45,7 @@ class CommentCompositionTest {
         User commenter = UserFixture.createUserWithId(1L);
 
         // when
-        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl");
+        CommentComposition composition = CommentComposition.of(comment, commenter, "imageUrl", "imageUrlOp");
 
         // then
         assertThat(composition.memberId()).isNull();

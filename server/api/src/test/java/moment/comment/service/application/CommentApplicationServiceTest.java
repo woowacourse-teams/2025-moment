@@ -7,15 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
+import moment.block.domain.UserBlock;
+import moment.block.infrastructure.UserBlockRepository;
 import moment.comment.domain.Comment;
 import moment.comment.domain.CommentImage;
 import moment.comment.dto.request.CommentCreateRequest;
 import moment.comment.dto.response.CommentCreateResponse;
+import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.dto.tobe.CommentCompositions;
-import moment.block.domain.UserBlock;
-import moment.block.infrastructure.UserBlockRepository;
-import moment.comment.dto.response.GroupCommentResponse;
 import moment.comment.infrastructure.CommentImageRepository;
 import moment.comment.infrastructure.CommentRepository;
 import moment.config.TestTags;
@@ -214,15 +214,17 @@ class CommentApplicationServiceTest {
                 .findFirst().orElseThrow();
 
         // then
-        String expectedResolvedUrl = "https://cdn.moment.com/test/optimized-images/comment_photo.jpg";
+        String expectedResolvedUrl = "https://cdn.moment.com/test/optimized-images/comment_photo.webp";
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(composition1.content()).isEqualTo(comment.getContent()),
                 () -> assertThat(composition1.nickname()).isEqualTo(user.getNickname()),
-                () -> assertThat(composition1.imageUrl()).isEqualTo(expectedResolvedUrl),
+                () -> assertThat(composition1.originalImageUrl()).isEqualTo(originalImageUrl),
+                () -> assertThat(composition1.optimizedImageUrl()).isEqualTo(expectedResolvedUrl),
                 () -> assertThat(composition2.content()).isEqualTo(comment2.getContent()),
                 () -> assertThat(composition2.nickname()).isEqualTo(user.getNickname()),
-                () -> assertThat(composition2.imageUrl()).isNull()
+                () -> assertThat(composition2.originalImageUrl()).isNull(),
+                () -> assertThat(composition2.optimizedImageUrl()).isNull()
         );
     }
 
