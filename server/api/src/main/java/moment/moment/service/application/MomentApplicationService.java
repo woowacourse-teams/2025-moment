@@ -197,8 +197,11 @@ public class MomentApplicationService {
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
                     long commentCount = commentService.countByMomentIdExcludingBlocked(moment.getId(), blockedUserIds);
                     MomentImage image = momentImageMap.get(moment);
-                    String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
-                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, imageUrl);
+
+                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, originalImageUrl,
+                            optimizedImageUrl);
                 })
                 .toList();
 
@@ -218,8 +221,11 @@ public class MomentApplicationService {
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
                     long commentCount = commentService.countByMomentId(moment.getId());
                     MomentImage image = momentImageMap.get(moment);
-                    String imageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
-                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, imageUrl);
+                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
+
+                    return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, originalImageUrl,
+                            optimizedImageUrl);
                 })
                 .toList();
 
@@ -237,11 +243,15 @@ public class MomentApplicationService {
         Moment moment = momentService.createInGroup(momenter, group, member, content);
 
         Optional<MomentImage> savedImage = momentImageService.create(moment, imageUrl, imageName);
-        String resolvedImageUrl = savedImage
+        String originalImageUrl = savedImage
+                .map(MomentImage::getImageUrl)
+                .orElse(null);
+
+        String optimizedImageUrl = savedImage
                 .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
                 .orElse(null);
 
-        return GroupMomentResponse.from(moment, 0L, false, 0L, resolvedImageUrl);
+        return GroupMomentResponse.from(moment, 0L, false, 0L, originalImageUrl, optimizedImageUrl);
     }
 
     @Transactional

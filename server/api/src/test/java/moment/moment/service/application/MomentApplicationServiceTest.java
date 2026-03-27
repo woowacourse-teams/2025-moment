@@ -141,7 +141,7 @@ class MomentApplicationServiceTest {
                 momenter.getId());
 
         // then
-        String expectedResolvedUrl = "https://test-bucket-1/test/optimized-images/photo2.png";
+        String expectedResolvedUrl = "https://test-bucket-1/test/optimized-images/photo2.webp";
 
         assertAll(
                 () -> assertThat(response.momentCompositionInfo()).hasSize(2),
@@ -149,6 +149,8 @@ class MomentApplicationServiceTest {
                 () -> assertThat(response.hasNextPage()).isTrue(),
                 () -> assertThat(response.momentCompositionInfo().getFirst().id()).isEqualTo(extraMoment2.getId()),
                 () -> assertThat(response.momentCompositionInfo().getFirst().originalUrl()).isEqualTo(
+                        originalImageUrl),
+                () -> assertThat(response.momentCompositionInfo().getFirst().optimizedUrl()).isEqualTo(
                         expectedResolvedUrl),
                 () -> assertThat(response.momentCompositionInfo().getLast().id()).isEqualTo(extraMoment1.getId())
         );
