@@ -18,7 +18,7 @@ public record MyGroupCommentMomentResponse(
         @Schema(description = "Moment 이미지 원본 url", example = "https://example.com/image.jpg")
         String originalImageUrl,
 
-        @Schema(description = "Moment 이미지 최적화 url", example = "https://example.com/image.jpg")
+        @Schema(description = "Moment 이미지 최적화 url", example = "https://example.com/image.webp")
         String optimizedImageUrl,
 
         @Schema(description = "Moment 등록 시간", example = "2025-07-21T10:57:08.926954")

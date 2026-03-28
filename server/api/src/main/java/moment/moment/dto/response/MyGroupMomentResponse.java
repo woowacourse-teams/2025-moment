@@ -31,7 +31,7 @@ public record MyGroupMomentResponse(
         @Schema(description = "이미지 원본 URL", example = "https://example.com/images/sample.jpg")
         String originalImageUrl,
 
-        @Schema(description = "이미지 최적화 URL", example = "https://example.com/images/sample.jpg")
+        @Schema(description = "이미지 최적화 URL", example = "https://example.com/images/sample.webp")
         String optimizedImageUrl,
 
         @Schema(description = "생성 일시")

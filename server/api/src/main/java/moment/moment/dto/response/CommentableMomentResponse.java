@@ -22,7 +22,7 @@ public record CommentableMomentResponse(
         @Schema(description = "모멘트 이미지 원본 경로", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
         String originalImageUrl,
 
-        @Schema(description = "모멘트 이미지 최적화 경로", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.jpg")
+        @Schema(description = "모멘트 이미지 최적화 경로", example = "https://techcourse-project-2025.s3.ap-northeast-2.amazonaws.com/moment-dev/images/2f501dfa-9c7d-4579-9c10-daed5a5da3ff%EA%B3%A0%EC%96%91%EC%9D%B4.webp")
         String optimizedImageUrl,
 
         @Schema(description = "모멘트 작성 시간", example = "2025-07-14T16:24:34Z")
