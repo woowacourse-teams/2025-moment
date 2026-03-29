@@ -28,7 +28,16 @@ export const Default: Story = {};
 
 export const AllTypes: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 24, background: '#1E293B', width: 320 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        padding: 24,
+        background: '#1E293B',
+        width: 320,
+      }}
+    >
       <Input placeholder="텍스트 입력" type="text" />
       <Input placeholder="이메일 입력" type="email" />
       <Input placeholder="비밀번호 입력" type="password" />

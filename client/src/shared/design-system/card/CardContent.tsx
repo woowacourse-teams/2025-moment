@@ -5,7 +5,11 @@ interface CardContentProps extends React.HTMLAttributes<HTMLElement> {}
 
 export const CardContent = React.forwardRef<HTMLElement, CardContentProps>(
   ({ children, ...props }, ref) => {
-    return <CardContentStyles ref={ref} {...props}>{children}</CardContentStyles>;
+    return (
+      <CardContentStyles ref={ref} {...props}>
+        {children}
+      </CardContentStyles>
+    );
   },
 );
 

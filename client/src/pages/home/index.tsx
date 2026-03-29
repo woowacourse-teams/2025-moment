@@ -72,8 +72,12 @@ export default function HomePage() {
                 <S.GroupListContainer>
                   <GroupList />
                   <S.ActionButtons>
-                    <Button variant="secondary" onClick={handleCreateGroupCtx}>그룹 생성</Button>
-                    <Button variant="secondary" onClick={handleJoinGroupCtx}>그룹 참여</Button>
+                    <Button variant="secondary" onClick={handleCreateGroupCtx}>
+                      그룹 생성
+                    </Button>
+                    <Button variant="secondary" onClick={handleJoinGroupCtx}>
+                      그룹 참여
+                    </Button>
                   </S.ActionButtons>
                 </S.GroupListContainer>
               ) : (
@@ -95,7 +99,9 @@ export default function HomePage() {
                 </S.OnboardingContainer>
               )
             ) : (
-              <Button variant="secondary" onClick={handleClick}>모멘트 작성하기</Button>
+              <Button variant="secondary" onClick={handleClick}>
+                모멘트 작성하기
+              </Button>
             )}
           </S.ContentSection>
 
@@ -196,7 +202,9 @@ export default function HomePage() {
               <br />
               방장이 승인을 허용해야 그룹에 들어갈 수 있습니다.
             </S.OnboardingDescription>
-            <Button variant="primary" onClick={handleCloseModal}>확인</Button>
+            <Button variant="primary" onClick={handleCloseModal}>
+              확인
+            </Button>
           </S.OnboardingContainer>
         </Modal.Content>
       </Modal>

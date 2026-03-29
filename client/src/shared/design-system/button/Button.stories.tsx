@@ -9,7 +9,14 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'danger'] satisfies ButtonVariant[],
+      options: [
+        'primary',
+        'secondary',
+        'tertiary',
+        'quaternary',
+        'quinary',
+        'danger',
+      ] satisfies ButtonVariant[],
     },
     disabled: {
       control: { type: 'boolean' },
@@ -31,13 +38,13 @@ export const Default: Story = {};
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: 24, background: '#1E293B' }}>
-      {(['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'danger'] as ButtonVariant[]).map(
-        (variant) => (
-          <Button key={variant} variant={variant}>
-            {variant}
-          </Button>
-        ),
-      )}
+      {(
+        ['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'danger'] as ButtonVariant[]
+      ).map(variant => (
+        <Button key={variant} variant={variant}>
+          {variant}
+        </Button>
+      ))}
     </div>
   ),
 };
@@ -60,7 +67,7 @@ export const WithRightIcon: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: 24, background: '#1E293B' }}>
-      {(['primary', 'secondary', 'tertiary', 'danger'] as ButtonVariant[]).map((variant) => (
+      {(['primary', 'secondary', 'tertiary', 'danger'] as ButtonVariant[]).map(variant => (
         <Button key={variant} variant={variant} disabled>
           {variant}
         </Button>

@@ -29,8 +29,17 @@ export const Default: Story = {};
 
 export const AllHeights: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 24, background: '#1E293B', width: 400 }}>
-      {(['small', 'medium', 'large'] as textAreaHeight[]).map((height) => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        padding: 24,
+        background: '#1E293B',
+        width: 400,
+      }}
+    >
+      {(['small', 'medium', 'large'] as textAreaHeight[]).map(height => (
         <TextArea key={height} height={height} placeholder={`height: ${height}`} />
       ))}
     </div>

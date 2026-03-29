@@ -29,8 +29,16 @@ export const Default: Story = {};
 
 export const AllHeights: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 24, background: '#1E293B' }}>
-      {(['small', 'medium', 'large'] as SimpleCardHeight[]).map((height) => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        padding: 24,
+        background: '#1E293B',
+      }}
+    >
+      {(['small', 'medium', 'large'] as SimpleCardHeight[]).map(height => (
         <SimpleCard key={height} height={height}>
           height: {height}
         </SimpleCard>

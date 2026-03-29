@@ -67,12 +67,10 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({
       </Modal.Content>
       <Modal.Footer>
         <S.ButtonContainer>
-          <Button variant="primary" onClick={handleClose}>취소</Button>
-          <Button
-            variant="secondary"
-            onClick={handleSubmit}
-            disabled={!selectedReason}
-          >
+          <Button variant="primary" onClick={handleClose}>
+            취소
+          </Button>
+          <Button variant="secondary" onClick={handleSubmit} disabled={!selectedReason}>
             신고하기
           </Button>
         </S.ButtonContainer>

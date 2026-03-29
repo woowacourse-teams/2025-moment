@@ -90,7 +90,9 @@ export const EditGroupModal = ({ group, isOpen, onClose }: EditGroupModalProps) 
           </S.InputGroup>
 
           <S.ButtonGroup>
-            <Button type="button" variant="secondary" onClick={onClose}>취소</Button>
+            <Button type="button" variant="secondary" onClick={onClose}>
+              취소
+            </Button>
             <Button
               type="submit"
               variant="primary"

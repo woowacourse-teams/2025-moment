@@ -56,7 +56,9 @@ export function GroupCreateSuccess({ inviteCode, groupId, onClose }: GroupCreate
       </S.InputGroup>
 
       <S.ButtonGroup>
-        <Button variant="primary" onClick={handleGoToGroup}>그룹으로 이동</Button>
+        <Button variant="primary" onClick={handleGoToGroup}>
+          그룹으로 이동
+        </Button>
       </S.ButtonGroup>
     </S.FormContainer>
   );

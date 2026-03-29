@@ -54,8 +54,12 @@ export const Default: Story = {
           <Modal.Header showCloseButton={true} />
           <Modal.Content>
             <p>기본 모달 컴포넌트입니다.</p>
-            <SimpleCard height="small"><div>정말 멋진 모달이네요.</div></SimpleCard>
-            <Button variant="primary" onClick={handleClose}>공감하기</Button>
+            <SimpleCard height="small">
+              <div>정말 멋진 모달이네요.</div>
+            </SimpleCard>
+            <Button variant="primary" onClick={handleClose}>
+              공감하기
+            </Button>
           </Modal.Content>
         </Modal>
       </>

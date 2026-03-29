@@ -54,7 +54,9 @@ export const EditGroupProfileModal = ({
             <HelperText>그룹마다 서로 다른 닉네임을 사용할 수 있습니다.</HelperText>
           </FormGroup>
           <ButtonGroup>
-            <Button variant="secondary" onClick={onClose} type="button">취소</Button>
+            <Button variant="secondary" onClick={onClose} type="button">
+              취소
+            </Button>
             <Button
               variant="primary"
               disabled={!nickname.trim() || updateProfileMutation.isPending}

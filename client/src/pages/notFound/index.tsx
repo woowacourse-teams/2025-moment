@@ -21,7 +21,9 @@ const NotFoundPage = () => {
           주소를 다시 확인해주세요.
         </S.ErrorDescription>
         <S.ButtonContainer>
-          <Button onClick={handleGoHome} variant="primary">홈으로 돌아가기</Button>
+          <Button onClick={handleGoHome} variant="primary">
+            홈으로 돌아가기
+          </Button>
         </S.ButtonContainer>
       </S.NotFoundContent>
     </S.NotFoundContainer>

@@ -55,7 +55,11 @@ export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
   };
 
   if (!profile) {
-    return <Button onClick={handleLoginClick} variant="primary">로그인</Button>;
+    return (
+      <Button onClick={handleLoginClick} variant="primary">
+        로그인
+      </Button>
+    );
   }
 
   return (

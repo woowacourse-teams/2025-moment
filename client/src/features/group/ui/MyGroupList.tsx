@@ -120,7 +120,9 @@ export const MyGroupList = () => {
     <S.Container>
       <S.Header>
         <S.Title>내 그룹 ({groups.length})</S.Title>
-        <Button variant="primary" onClick={handleCreateGroup}>그룹 생성</Button>
+        <Button variant="primary" onClick={handleCreateGroup}>
+          그룹 생성
+        </Button>
       </S.Header>
       {groups.length === 0 ? (
         <S.EmptyState>

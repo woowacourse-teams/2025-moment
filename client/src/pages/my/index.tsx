@@ -57,7 +57,9 @@ export default function MyPage() {
               <S.UserInfo>
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
-                  <Button variant="primary" onClick={handleOpenNicknameModal}>닉네임 변경</Button>
+                  <Button variant="primary" onClick={handleOpenNicknameModal}>
+                    닉네임 변경
+                  </Button>
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -142,7 +144,9 @@ export default function MyPage() {
             <p>정말로 탈퇴하시겠습니까?</p>
             <p>탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.</p>
             <S.DeleteAccountButtonContainer>
-              <Button variant="secondary" onClick={handleCloseDeleteAccountModal}>취소</Button>
+              <Button variant="secondary" onClick={handleCloseDeleteAccountModal}>
+                취소
+              </Button>
               <Button
                 variant="danger"
                 title="탈퇴하기"

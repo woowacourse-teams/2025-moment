@@ -51,7 +51,9 @@ export const ChangeNicknameForm = ({
           </RotateNicknameButton>
         </S.ChangeNicknameContent>
       </S.InputGroup>
-      <Button variant="primary" onClick={handleSubmit}>변경하기</Button>
+      <Button variant="primary" onClick={handleSubmit}>
+        변경하기
+      </Button>
     </S.ChangeNicknameFormWrapper>
   );
 };
