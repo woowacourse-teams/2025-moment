@@ -101,6 +101,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                 </S.ActionWrapper>
                 {(myComment.moment.originalImageUrl || myComment.moment.optimizedImageUrl) && (
                   <CommentImageWithFallback
+                    key={`${myComment.moment.originalImageUrl ?? ''}|${myComment.moment.optimizedImageUrl ?? ''}`}
                     originalImageUrl={myComment.moment.originalImageUrl}
                     optimizedImageUrl={myComment.moment.optimizedImageUrl}
                     alt="모멘트 이미지"
@@ -134,6 +135,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                   <S.CommentContent>{myComment.content}</S.CommentContent>
                   {(myComment.originalImageUrl || myComment.optimizedImageUrl) && (
                     <CommentImageWithFallback
+                      key={`${myComment.originalImageUrl ?? ''}|${myComment.optimizedImageUrl ?? ''}`}
                       originalImageUrl={myComment.originalImageUrl}
                       optimizedImageUrl={myComment.optimizedImageUrl}
                       alt="코멘트 이미지"

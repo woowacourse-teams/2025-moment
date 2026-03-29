@@ -159,10 +159,10 @@ export function TodayCommentForm({
               </S.MomentContent>
               {(momentData.originalImageUrl || momentData.optimizedImageUrl) && (
                 <MomentImageWithFallback
+                  key={`${momentData.originalImageUrl ?? ''}|${momentData.optimizedImageUrl ?? ''}`}
                   originalImageUrl={momentData.originalImageUrl}
                   optimizedImageUrl={momentData.optimizedImageUrl}
                   onImageClick={handleImageClick}
-                  key={momentData.originalImageUrl || momentData.optimizedImageUrl}
                 />
               )}
             </S.MyCommentsContentWrapper>

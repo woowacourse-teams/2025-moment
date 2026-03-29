@@ -157,6 +157,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         <S.MyMomentsBottomWrapper>
           {myMoment.originalImageUrl || myMoment.optimizedImageUrl ? (
             <MomentImageWithFallback
+              key={`${myMoment.originalImageUrl ?? ''}|${myMoment.optimizedImageUrl ?? ''}`}
               originalImageUrl={myMoment.originalImageUrl}
               optimizedImageUrl={myMoment.optimizedImageUrl}
               onImageClick={handleImageClick}
@@ -234,6 +235,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
                         <div area-label={`${currentComment.content}`}>{currentComment.content}</div>
                         {(currentComment.originalImageUrl || currentComment.optimizedImageUrl) && (
                           <CommentImageWithFallback
+                            key={`${currentComment.originalImageUrl ?? ''}|${currentComment.optimizedImageUrl ?? ''}`}
                             originalImageUrl={currentComment.originalImageUrl}
                             optimizedImageUrl={currentComment.optimizedImageUrl}
                             onImageClick={handleImageClick}
