@@ -16,15 +16,17 @@ import { useCommentLikeMutation } from '../api/useCommentLikeMutation';
 import { useImageFallback } from '@/shared/hooks';
 
 const CommentImageWithFallback = ({
-  imageUrl,
+  originalImageUrl,
+  optimizedImageUrl,
   alt,
   onImageClick,
 }: {
-  imageUrl: string;
+  originalImageUrl?: string | null;
+  optimizedImageUrl?: string | null;
   alt: string;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
-  const { src, onError } = useImageFallback(imageUrl);
+  const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
   return (
     <S.CommentImageContainer>
       <S.CommentImage src={src} onError={onError} alt={alt} onClick={e => onImageClick(src, e)} />
@@ -97,9 +99,10 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                   </S.LikeButton>
                   <S.LikeCount>{myComment.moment.likeCount || 0}</S.LikeCount>
                 </S.ActionWrapper>
-                {myComment.moment?.imageUrl && (
+                {(myComment.moment?.originalImageUrl || myComment.moment?.optimizedImageUrl) && (
                   <CommentImageWithFallback
-                    imageUrl={myComment.moment.imageUrl}
+                    originalImageUrl={myComment.moment.originalImageUrl}
+                    optimizedImageUrl={myComment.moment.optimizedImageUrl}
                     alt="모멘트 이미지"
                     onImageClick={handleImageClick}
                   />
@@ -129,9 +132,10 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
               content={
                 <S.MyCommentsContentWrapper>
                   <S.CommentContent>{myComment.content}</S.CommentContent>
-                  {myComment.imageUrl && (
+                  {(myComment.originalImageUrl || myComment.optimizedImageUrl) && (
                     <CommentImageWithFallback
-                      imageUrl={myComment.imageUrl}
+                      originalImageUrl={myComment.originalImageUrl}
+                      optimizedImageUrl={myComment.optimizedImageUrl}
                       alt="코멘트 이미지"
                       onImageClick={handleImageClick}
                     />

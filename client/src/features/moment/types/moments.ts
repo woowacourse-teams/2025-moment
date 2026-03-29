@@ -16,7 +16,8 @@ export interface MyMomentsItem {
   content: string;
   memberNickname: string;
   createdAt: string;
-  imageUrl?: string | null;
+  originalImageUrl?: string | null;
+  optimizedImageUrl?: string | null;
   likeCount: number;
   hasLiked: boolean;
   commentCount: number;
@@ -34,7 +35,8 @@ export interface Comment {
   nickname: string;
   memberNickname: string; // V2
   createdAt: string;
-  imageUrl?: string | null;
+  originalImageUrl?: string | null;
+  optimizedImageUrl?: string | null;
   likeCount: number;
   hasLiked: boolean;
 }
