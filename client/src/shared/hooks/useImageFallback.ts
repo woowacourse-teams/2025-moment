@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 interface UseImageFallbackProps {
-  originalImageUrl?: string | null;
-  optimizedImageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
 }
 
 interface UseImageFallbackReturn {

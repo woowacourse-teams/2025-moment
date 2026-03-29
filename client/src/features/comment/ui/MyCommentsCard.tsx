@@ -21,8 +21,8 @@ const CommentImageWithFallback = ({
   alt,
   onImageClick,
 }: {
-  originalImageUrl?: string | null;
-  optimizedImageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   alt: string;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
@@ -99,7 +99,7 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                   </S.LikeButton>
                   <S.LikeCount>{myComment.moment.likeCount || 0}</S.LikeCount>
                 </S.ActionWrapper>
-                {(myComment.moment?.originalImageUrl || myComment.moment?.optimizedImageUrl) && (
+                {(myComment.moment.originalImageUrl || myComment.moment.optimizedImageUrl) && (
                   <CommentImageWithFallback
                     originalImageUrl={myComment.moment.originalImageUrl}
                     optimizedImageUrl={myComment.moment.optimizedImageUrl}

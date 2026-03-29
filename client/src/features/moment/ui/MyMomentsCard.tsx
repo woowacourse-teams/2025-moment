@@ -20,8 +20,8 @@ const MomentImageWithFallback = ({
   optimizedImageUrl,
   onImageClick,
 }: {
-  originalImageUrl?: string | null;
-  optimizedImageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
   const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
@@ -42,8 +42,8 @@ const CommentImageWithFallback = ({
   optimizedImageUrl,
   onImageClick,
 }: {
-  originalImageUrl?: string | null;
-  optimizedImageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
   const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
