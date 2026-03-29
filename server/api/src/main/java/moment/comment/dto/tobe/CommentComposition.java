@@ -8,7 +8,8 @@ public record CommentComposition(
         Long id,
         String content,
         String nickname,
-        String imageUrl,
+        String originalImageUrl,
+        String optimizedImageUrl,
         LocalDateTime commentCreatedAt,
         Long momentId,
         Long commenterUserId,
@@ -16,12 +17,15 @@ public record CommentComposition(
 ) {
     public static CommentComposition of(Comment comment,
                                         User commenter,
-                                        String imageUrl) {
+                                        String originalImageUrl,
+                                        String optimizedImageUrl
+    ) {
         return new CommentComposition(
                 comment.getId(),
                 comment.getContent(),
                 commenter != null ? commenter.getNickname() : "탈퇴한 사용자",
-                imageUrl,
+                originalImageUrl,
+                optimizedImageUrl,
                 comment.getCreatedAt(),
                 comment.getMomentId(),
                 commenter != null ? commenter.getId() : null,

@@ -61,7 +61,7 @@ class GroupCommentCreateFacadeServiceTest {
 
         Moment moment = createMomentWithOwner(momentId, momentOwnerId);
         GroupCommentResponse response = new GroupCommentResponse(
-                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, LocalDateTime.now());
+                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, null, LocalDateTime.now());
 
         when(momentApplicationService.getMomentBy(momentId)).thenReturn(moment);
         when(commentApplicationService.createCommentInGroup(
@@ -94,7 +94,7 @@ class GroupCommentCreateFacadeServiceTest {
 
         Moment moment = createMomentWithOwner(momentId, momentOwnerId);
         GroupCommentResponse response = new GroupCommentResponse(
-                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, LocalDateTime.now());
+                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, null, LocalDateTime.now());
 
         when(momentApplicationService.getMomentBy(momentId)).thenReturn(moment);
         when(commentApplicationService.createCommentInGroup(
@@ -119,7 +119,7 @@ class GroupCommentCreateFacadeServiceTest {
 
         Moment moment = createMomentWithOwner(momentId, momentOwnerId);
         GroupCommentResponse expectedResponse = new GroupCommentResponse(
-                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, LocalDateTime.now());
+                10L, "댓글 내용", "작성자닉네임", 1L, 0L, false, null, null, LocalDateTime.now());
 
         when(momentApplicationService.getMomentBy(momentId)).thenReturn(moment);
         when(commentApplicationService.createCommentInGroup(

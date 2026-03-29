@@ -9,18 +9,20 @@ public record MomentComposition(
         Long momenterId,
         String content,
         String nickname,
-        String imageUrl,
+        String originalUrl,
+        String optimizedUrl,
         LocalDateTime momentCreatedAt
 ) {
 
-    public static MomentComposition of(Moment moment, String imageUrl) {
+    public static MomentComposition of(Moment moment, String originalUrl, String optimizedUrl) {
         User momenter = moment.getMomenter();
         return new MomentComposition(
                 moment.getId(),
                 momenter != null ? momenter.getId() : null,
                 moment.getContent(),
                 momenter != null ? momenter.getNickname() : "탈퇴한 사용자",
-                imageUrl,
+                originalUrl,
+                optimizedUrl,
                 moment.getCreatedAt()
         );
     }

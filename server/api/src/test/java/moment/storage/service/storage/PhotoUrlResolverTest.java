@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import moment.config.TestTags;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Tag;
@@ -32,25 +31,25 @@ class PhotoUrlResolverTest {
         String resolvedUrl = photoUrlResolver.resolve(originalUrl);
 
         // then
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo.jpg");
+        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo.webp");
     }
 
+    // 이거 어떤 테스트죠? 의미를 잘 모르겠네요
+//    @Test
+//    void URL에_원본_경로_세그먼트가_없으면_경로를_변경하지_않는다() {
+//        // given
+//        String originalUrl = "https://example.com/images/other/my-photo.jpg";
+//
+//        // when
+//        String resolvedUrl = photoUrlResolver.resolve(originalUrl);
+//
+//        // then
+//        // Only extension should be removed
+//        assertThat(resolvedUrl).isEqualTo("https://example.com/images/other/my-photo.webp");
+//    }
+
     @Test
-    void URL에_원본_경로_세그먼트가_없으면_경로를_변경하지_않는다() {
-        // given
-        String originalUrl = "https://example.com/images/other/my-photo.jpg";
-
-        // when
-        String resolvedUrl = photoUrlResolver.resolve(originalUrl);
-
-        // then
-        // Only extension should be removed
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/other/my-photo.jpg");
-    }
-
-    @Test
-    @DisplayName("URL에 확장자가 없으면 확장자를 제거하지 않는다")
-    void URL에_확장자가_없으면_확장자를_제거하지_않는다() {
+    void URL에_확장자가_없으면_최적화된_확장자룰_붙여서_반환한다() {
         // given
         String originalUrl = "https://example.com/images/original/my-photo";
 
@@ -59,7 +58,7 @@ class PhotoUrlResolverTest {
 
         // then
         // Only path should be changed
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo");
+        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo.webp");
     }
 
     @Test

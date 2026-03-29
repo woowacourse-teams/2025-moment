@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import moment.block.service.application.UserBlockApplicationService;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
-
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
 import moment.like.service.like.CommentLikeService;
@@ -17,8 +16,8 @@ import moment.like.service.like.MomentLikeService;
 import moment.moment.domain.Moment;
 import moment.moment.domain.MomentImage;
 import moment.moment.dto.response.MomentNotificationResponse;
-import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.moment.dto.response.MyGroupMomentCommentResponse;
+import moment.moment.dto.response.MyGroupMomentListResponse;
 import moment.moment.dto.response.MyGroupMomentResponse;
 import moment.moment.service.moment.MomentImageService;
 import moment.moment.service.moment.MomentService;
@@ -128,7 +127,8 @@ public class MyGroupMomentPageFacadeService {
         boolean hasLiked = momentLikeService.hasLiked(momentId, memberId);
 
         MomentImage momentImage = momentImageMap.get(moment);
-        String imageUrl = (momentImage != null) ? photoUrlResolver.resolve(momentImage.getImageUrl()) : null;
+        String originalImageUrl = (momentImage != null) ? momentImage.getImageUrl() : null;
+        String optimizedImageUrl = (momentImage != null) ? photoUrlResolver.resolve(momentImage.getImageUrl()) : null;
 
         List<CommentComposition> compositions = commentsMap.getOrDefault(momentId, List.of());
         List<MyGroupMomentCommentResponse> comments = compositions.stream()
@@ -144,6 +144,6 @@ public class MyGroupMomentPageFacadeService {
         MomentNotificationResponse notification = MomentNotificationResponse.from(notificationIds);
 
         return MyGroupMomentResponse.of(
-                moment, likeCount, hasLiked, commentCount, imageUrl, comments, notification);
+                moment, likeCount, hasLiked, commentCount, originalImageUrl, optimizedImageUrl, comments, notification);
     }
 }

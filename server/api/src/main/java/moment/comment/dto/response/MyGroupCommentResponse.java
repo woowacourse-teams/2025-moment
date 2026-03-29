@@ -14,8 +14,11 @@ public record MyGroupCommentResponse(
         @Schema(description = "등록된 Comment 내용", example = "정말 멋진 하루군요!")
         String content,
 
-        @Schema(description = "Comment 이미지 url", example = "https://example.com/image.jpg")
-        String imageUrl,
+        @Schema(description = "Comment 이미지 원본 url", example = "https://example.com/image.jpg")
+        String originalImageUrl,
+
+        @Schema(description = "Comment 이미지 최적화 url", example = "https://example.com/image.webp")
+        String optimizedImageUrl,
 
         @Schema(description = "Comment 등록 시간", example = "2025-07-21T10:57:08.926954")
         LocalDateTime createdAt,
@@ -48,7 +51,8 @@ public record MyGroupCommentResponse(
         return new MyGroupCommentResponse(
                 commentComposition.id(),
                 commentComposition.content(),
-                commentComposition.imageUrl(),
+                commentComposition.originalImageUrl(),
+                commentComposition.optimizedImageUrl(),
                 commentComposition.commentCreatedAt(),
                 commentLikeCount,
                 commentHasLiked,

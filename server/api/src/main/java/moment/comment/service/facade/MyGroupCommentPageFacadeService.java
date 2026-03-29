@@ -14,7 +14,6 @@ import moment.comment.dto.response.MyGroupCommentResponse;
 import moment.comment.dto.tobe.CommentComposition;
 import moment.comment.service.application.CommentApplicationService;
 import moment.comment.service.comment.CommentService;
-
 import moment.group.domain.GroupMember;
 import moment.group.service.group.GroupMemberService;
 import moment.like.service.like.CommentLikeService;
@@ -141,6 +140,7 @@ public class MyGroupCommentPageFacadeService {
                     comment.getId(),
                     comment.getContent(),
                     comment.getMember() != null ? comment.getMember().getNickname() : null,
+                    null,
                     null,
                     comment.getCreatedAt(),
                     comment.getMomentId(),

@@ -1,7 +1,6 @@
 package moment.moment.service.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -85,7 +84,7 @@ class CommentableMomentFacadeServiceTest {
         List<Long> momentIds = List.of(10L, 20L, 30L);
         List<Long> notCommentedIds = List.of(20L, 30L);
         CommentableMomentResponse expected = new CommentableMomentResponse(
-                20L, null, "작성자", "모멘트 내용", null, null);
+                20L, null, "작성자", "모멘트 내용", null, null, null);
 
         given(momentApplicationService.getCommentableMomentIdsInGroup(groupId, commenterId))
                 .willReturn(momentIds);
