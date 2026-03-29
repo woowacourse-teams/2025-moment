@@ -155,7 +155,7 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsBottomWrapper>
-          {(myMoment.originalImageUrl || myMoment.optimizedImageUrl) ? (
+          {myMoment.originalImageUrl || myMoment.optimizedImageUrl ? (
             <MomentImageWithFallback
               originalImageUrl={myMoment.originalImageUrl}
               optimizedImageUrl={myMoment.optimizedImageUrl}
