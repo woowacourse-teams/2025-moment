@@ -9,7 +9,8 @@ const momentsData = [
     nickname: '푸르른 물방울의 테리우스',
     level: 'ASTEROID_WHITE',
     content: '오늘 정말 힘든 하루였어요. 그래도 버텨냈네요.',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     createdAt: '2025-01-20T10:00:00',
   },
   {
@@ -17,7 +18,8 @@ const momentsData = [
     nickname: '따뜻한 햇살의 아리아',
     level: 'ASTEROID_WHITE',
     content: '새로운 하루가 시작되었어요. 오늘도 화이팅!',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     createdAt: '2025-01-20T11:00:00',
   },
   {
@@ -25,7 +27,8 @@ const momentsData = [
     nickname: '빛나는 별의 루나',
     level: 'ASTEROID_WHITE',
     content: '오늘도 좋은 하루를 보내고 있어요!',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     createdAt: '2025-01-20T12:00:00',
   },
 ] as const;

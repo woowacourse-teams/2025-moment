@@ -11,7 +11,8 @@ const momentsData = [
     content: '오늘 정말 행복한 하루를 보냈어요!',
     memberNickname: '테스트유저',
     createdAt: '2025-10-22T10:00:00',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     comments: [
       {
         id: 101,
@@ -19,7 +20,8 @@ const momentsData = [
         nickname: '따뜻한 햇살의 아리아',
         memberNickname: '따뜻한 햇살의 아리아',
         createdAt: '2025-10-22T10:30:00',
-        imageUrl: null,
+        originalImageUrl: null,
+        optimizedImageUrl: null,
       },
     ],
     momentNotification: {
