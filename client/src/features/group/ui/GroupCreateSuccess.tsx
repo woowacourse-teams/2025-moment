@@ -1,5 +1,5 @@
-import { Input } from '@/shared/design-system/input/Input';
-import { Button } from '@/shared/design-system/button/Button';
+import { Input } from '@/shared/design-system/input';
+import { Button } from '@/shared/design-system/button';
 import { useNavigate } from 'react-router';
 import { toast } from '@/shared/store/toast';
 import * as S from './GroupCreateForm.styles';
@@ -56,7 +56,7 @@ export function GroupCreateSuccess({ inviteCode, groupId, onClose }: GroupCreate
       </S.InputGroup>
 
       <S.ButtonGroup>
-        <Button title="그룹으로 이동" variant="primary" onClick={handleGoToGroup} />
+        <Button variant="primary" onClick={handleGoToGroup}>그룹으로 이동</Button>
       </S.ButtonGroup>
     </S.FormContainer>
   );

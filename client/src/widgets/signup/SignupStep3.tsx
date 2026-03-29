@@ -1,6 +1,6 @@
 import { SignupFormData } from '@/features/auth/types/signup';
-import { Button } from '@/shared/design-system/button/Button';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Button } from '@/shared/design-system/button';
+import { Modal } from '@/shared/design-system/modal';
 import { useEnterKeyHandler } from '@/shared/hooks/useEnterKeyHandler';
 import { TermsContent } from '@/pages/terms/TermsContent';
 import { useState } from 'react';

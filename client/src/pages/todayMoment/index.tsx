@@ -1,6 +1,6 @@
 import { useSendMoments } from '@/features/moment/hook/useSendMoments';
 import { TodayMomentForm } from '@/features/moment/ui/TodayMomentForm';
-import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer';
 import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import * as S from './index.styles';

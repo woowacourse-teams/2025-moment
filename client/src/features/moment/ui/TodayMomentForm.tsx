@@ -48,11 +48,12 @@ export function TodayMomentForm({
             {content.length} / {MAX_LENGTH}
           </p>
           <YellowSquareButton
-            Icon={Send}
-            title="모멘트 공유하기"
+            leftIcon={<Send size={16} />}
             onClick={handleNavigateToTodayMomentSuccess}
             disabled={content.trim().length === 0}
-          />
+          >
+            모멘트 공유하기
+          </YellowSquareButton>
         </Card.Action>
       </S.TodayContentForm>
     </Card>

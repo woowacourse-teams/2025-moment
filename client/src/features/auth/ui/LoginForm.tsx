@@ -1,5 +1,5 @@
 import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
-import { Input } from '@/shared/design-system/input/Input';
+import { Input } from '@/shared/design-system/input';
 import { useNavigate } from 'react-router';
 import { GoogleLoginButton } from './GoogleLoginButton';
 import { AppleLoginButton } from './AppleLoginButton';

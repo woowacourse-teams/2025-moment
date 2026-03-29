@@ -1,6 +1,6 @@
 import { useRandomNicknameQuery } from '@/features/auth/api/useRandomNicknameQuery';
 import { useEnterKeyHandler } from '@/shared/hooks';
-import { Input } from '@/shared/design-system/input/Input';
+import { Input } from '@/shared/design-system/input';
 import { RotateNicknameButton } from '@/widgets/signup/SignupStep2';
 import { RotateCw } from 'lucide-react';
 import { useEffect } from 'react';
@@ -51,7 +51,7 @@ export const ChangeNicknameForm = ({
           </RotateNicknameButton>
         </S.ChangeNicknameContent>
       </S.InputGroup>
-      <Button title="변경하기" variant="primary" onClick={handleSubmit} />
+      <Button variant="primary" onClick={handleSubmit}>변경하기</Button>
     </S.ChangeNicknameFormWrapper>
   );
 };

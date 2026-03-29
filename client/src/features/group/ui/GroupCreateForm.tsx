@@ -1,5 +1,5 @@
-import { Input } from '@/shared/design-system/input/Input';
-import { Button } from '@/shared/design-system/button/Button';
+import { Input } from '@/shared/design-system/input';
+import { Button } from '@/shared/design-system/button';
 import { useGroupCreateForm } from '../hooks/useGroupCreateForm';
 import * as S from './GroupCreateForm.styles';
 

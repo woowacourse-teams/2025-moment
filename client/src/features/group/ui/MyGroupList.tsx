@@ -1,7 +1,7 @@
 import { isApp } from '@/shared/utils/device';
 import { useGroupsQuery } from '../api/useGroupsQuery';
 import { GroupCard } from './GroupCard';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { useNavigate } from 'react-router';
 import { ROUTES } from '@/app/routes/routes';
 import * as S from './MyGroupList.styles';
@@ -14,7 +14,7 @@ import { EditGroupModal } from './EditGroupModal';
 import { GroupMemberManagementModal } from './GroupMemberManagementModal';
 import { EditGroupProfileModal } from './EditGroupProfileModal';
 import { useModal } from '@/shared/design-system/modal';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Modal } from '@/shared/design-system/modal';
 import { GroupCreateForm } from './GroupCreateForm';
 import { GroupCreateSuccess } from './GroupCreateSuccess';
 import { GroupInviteSection } from './GroupInviteSection';
@@ -120,7 +120,7 @@ export const MyGroupList = () => {
     <S.Container>
       <S.Header>
         <S.Title>내 그룹 ({groups.length})</S.Title>
-        <Button variant="primary" title="그룹 생성" onClick={handleCreateGroup} />
+        <Button variant="primary" onClick={handleCreateGroup}>그룹 생성</Button>
       </S.Header>
       {groups.length === 0 ? (
         <S.EmptyState>

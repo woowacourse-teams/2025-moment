@@ -2,9 +2,9 @@ import { useProfileQuery } from '@/features/my/api/useProfileQuery';
 import { ChangeNicknameForm } from '@/features/my/ui/ChangeNicknameForm';
 import { ChangePasswordForm } from '@/features/my/ui/ChangePasswordForm';
 import { useModal } from '@/shared/design-system/modal';
-import { Button } from '@/shared/design-system/button/Button';
-import { Card } from '@/shared/design-system/card/Card';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Button } from '@/shared/design-system/button';
+import { Card } from '@/shared/design-system/card';
+import { Modal } from '@/shared/design-system/modal';
 import { MyGroupList } from '@/features/group/ui/MyGroupList';
 import { BlockedUserList } from '@/features/block/ui/BlockedUserList';
 import { useState } from 'react';
@@ -57,7 +57,7 @@ export default function MyPage() {
               <S.UserInfo>
                 <p>{myProfile.nickname}</p>
                 <S.ButtonContainer>
-                  <Button variant="primary" title="닉네임 변경" onClick={handleOpenNicknameModal} />
+                  <Button variant="primary" onClick={handleOpenNicknameModal}>닉네임 변경</Button>
                   {myProfile.loginType === 'EMAIL' && (
                     <Button
                       variant="primary"
@@ -142,7 +142,7 @@ export default function MyPage() {
             <p>정말로 탈퇴하시겠습니까?</p>
             <p>탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.</p>
             <S.DeleteAccountButtonContainer>
-              <Button variant="secondary" title="취소" onClick={handleCloseDeleteAccountModal} />
+              <Button variant="secondary" onClick={handleCloseDeleteAccountModal}>취소</Button>
               <Button
                 variant="danger"
                 title="탈퇴하기"

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useJoinGroupMutation } from '@/features/group/api/useJoinGroupMutation';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useProfileQuery } from '@/features/auth/api/useProfileQuery';
-import { Button } from '@/shared/design-system/button/Button';
-import { Input } from '@/shared/design-system/input/Input';
+import { Button } from '@/shared/design-system/button';
+import { Input } from '@/shared/design-system/input';
 import { track } from '@/shared/lib/ga/track';
 import * as S from './GroupJoinForm.styles';
 

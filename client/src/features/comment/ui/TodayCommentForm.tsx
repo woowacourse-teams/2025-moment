@@ -1,5 +1,5 @@
-import { Card } from '@/shared/design-system/card/Card';
-import { SimpleCard } from '@/shared/design-system/simpleCard/SimpleCard';
+import { Card } from '@/shared/design-system/card';
+import { SimpleCard } from '@/shared/design-system/simpleCard';
 import { CommonSkeletonCard } from '@/shared/ui/skeleton';
 import { AlertCircle, Loader, RotateCcw, Siren } from 'lucide-react';
 import * as S from './TodayCommentForm.styles';
@@ -150,24 +150,21 @@ export function TodayCommentForm({
           }
           subtitle=""
         />
-        <SimpleCard
-          height="small"
-          content={
-            <S.MyCommentsContentWrapper>
-              <S.MomentContent aria-label={`모멘트 내용: ${momentData.content}`}>
-                {momentData.content}
-              </S.MomentContent>
-              {(momentData.originalImageUrl || momentData.optimizedImageUrl) && (
-                <MomentImageWithFallback
-                  key={`${momentData.originalImageUrl ?? ''}|${momentData.optimizedImageUrl ?? ''}`}
-                  originalImageUrl={momentData.originalImageUrl}
-                  optimizedImageUrl={momentData.optimizedImageUrl}
-                  onImageClick={handleImageClick}
-                />
-              )}
-            </S.MyCommentsContentWrapper>
-          }
-        />
+        <SimpleCard height="small">
+          <S.MyCommentsContentWrapper>
+            <S.MomentContent aria-label={`모멘트 내용: ${momentData.content}`}>
+              {momentData.content}
+            </S.MomentContent>
+            {(momentData.originalImageUrl || momentData.optimizedImageUrl) && (
+              <MomentImageWithFallback
+                key={`${momentData.originalImageUrl ?? ''}|${momentData.optimizedImageUrl ?? ''}`}
+                originalImageUrl={momentData.originalImageUrl}
+                optimizedImageUrl={momentData.optimizedImageUrl}
+                onImageClick={handleImageClick}
+              />
+            )}
+          </S.MyCommentsContentWrapper>
+        </SimpleCard>
 
         <TodayCommentWriteContent
           momentId={momentData.id}

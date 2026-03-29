@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Modal } from '@/shared/design-system/modal';
 import { ComplaintReasonSelector } from './ComplaintReasonSelector';
 import * as S from './ComplaintModal.styles';
 import { ComplaintFormData, ComplaintReason } from '@/features/complaint/types/complaintType';
@@ -67,13 +67,14 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({
       </Modal.Content>
       <Modal.Footer>
         <S.ButtonContainer>
-          <Button variant="primary" title="취소" onClick={handleClose} />
+          <Button variant="primary" onClick={handleClose}>취소</Button>
           <Button
             variant="secondary"
-            title="신고하기"
             onClick={handleSubmit}
             disabled={!selectedReason}
-          />
+          >
+            신고하기
+          </Button>
         </S.ButtonContainer>
       </Modal.Footer>
     </Modal>

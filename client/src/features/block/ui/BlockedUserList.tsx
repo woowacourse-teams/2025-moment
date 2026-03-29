@@ -1,6 +1,6 @@
 import { useBlockListQuery } from '../api/useBlockListQuery';
 import { useUnblockMutation } from '../api/useUnblockMutation';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import * as S from './BlockedUserList.styles';
 
 export const BlockedUserList = () => {

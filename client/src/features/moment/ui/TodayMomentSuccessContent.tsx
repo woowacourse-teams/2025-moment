@@ -33,10 +33,11 @@ export const TodayMomentSuccessContent = () => {
       <Card.Action position="center">
         <S.ActionContainer role="group" aria-label="다음 액션 선택">
           <YellowSquareButton
-            Icon={MessageSquare}
-            title="코멘트 남기러가기"
+            leftIcon={<MessageSquare size={16} />}
             onClick={handleNavigate}
-          />
+          >
+            코멘트 남기러가기
+          </YellowSquareButton>
         </S.ActionContainer>
       </Card.Action>
     </S.TodayContentWrapper>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Modal } from '@/shared/design-system/modal';
 import { useGroupMembersQuery } from '../api/useGroupMembersQuery';
 import { usePendingMembersQuery } from '../api/usePendingMembersQuery';
 import { useApproveMemberMutation } from '../api/useApproveMemberMutation';

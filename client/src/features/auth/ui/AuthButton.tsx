@@ -2,7 +2,7 @@ import { useLogoutMutation } from '@/features/auth/api/useLogoutMutation';
 import { Profile } from '@/features/auth/types/profile';
 import { useOutsideClick } from '@/shared/hooks/useOutsideClick';
 import { useToggle } from '@/shared/hooks/useToggle';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router';
 import * as S from './AuthButton.styles';
@@ -55,7 +55,7 @@ export const AuthButton = ({ onClick, profile }: AuthButtonProps) => {
   };
 
   if (!profile) {
-    return <Button title="로그인" onClick={handleLoginClick} variant="primary" />;
+    return <Button onClick={handleLoginClick} variant="primary">로그인</Button>;
   }
 
   return (

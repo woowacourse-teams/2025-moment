@@ -1,4 +1,4 @@
-import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer';
 import * as S from './index.styles';
 import { TodayMomentSuccessContent } from '@/features/moment/ui/TodayMomentSuccessContent';
 import { Card } from '@/shared/design-system/card';

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useUpdateGroupMutation } from '../api/useUpdateGroupMutation';
 import { Group } from '../types/group';
-import { Button } from '@/shared/design-system/button/Button';
-import { Input } from '@/shared/design-system/input/Input';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Button } from '@/shared/design-system/button';
+import { Input } from '@/shared/design-system/input';
+import { Modal } from '@/shared/design-system/modal';
 import * as S from './GroupCreateForm.styles'; // Reuse styles
 
 interface EditGroupModalProps {
@@ -90,13 +90,14 @@ export const EditGroupModal = ({ group, isOpen, onClose }: EditGroupModalProps) 
           </S.InputGroup>
 
           <S.ButtonGroup>
-            <Button type="button" variant="secondary" title="취소" onClick={onClose} />
+            <Button type="button" variant="secondary" onClick={onClose}>취소</Button>
             <Button
               type="submit"
               variant="primary"
-              title={updateGroupMutation.isPending ? '수정 중...' : '수정하기'}
               disabled={!isValid || updateGroupMutation.isPending}
-            />
+            >
+              {updateGroupMutation.isPending ? '수정 중...' : '수정하기'}
+            </Button>
           </S.ButtonGroup>
         </S.FormContainer>
       </Modal.Content>
