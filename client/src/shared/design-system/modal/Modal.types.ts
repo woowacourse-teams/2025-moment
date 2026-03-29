@@ -13,7 +13,7 @@ export interface ModalProps {
 }
 
 export interface ModalHeader {
-  title?: string;
+  title?: React.ReactNode;
   showCloseButton?: boolean;
   id?: string;
 }

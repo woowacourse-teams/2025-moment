@@ -1,14 +1,15 @@
 import { LucideIcon } from 'lucide-react';
 import * as S from './CardTitleContainer.styles';
-import { theme } from '@/shared/styles/theme';
+import { useTheme } from '@emotion/react';
 
 interface CardTitleContainerProps {
   Icon?: LucideIcon;
   title: React.ReactNode;
-  subtitle: string;
+  subtitle: React.ReactNode;
 }
 
 export const CardTitleContainer = ({ Icon, title, subtitle }: CardTitleContainerProps) => {
+  const theme = useTheme();
   return (
     <S.CardTitleContainer>
       <S.CardTitleWrapper>

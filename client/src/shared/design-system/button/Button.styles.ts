@@ -1,3 +1,4 @@
+import { StyleFn } from '@/shared/design-system/types';
 import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
@@ -8,7 +9,7 @@ export type ButtonVariant =
   | 'quaternary'
   | 'quinary'
   | 'danger';
-export type ExternalVariant = (theme: CustomTheme) => string;
+export type ExternalVariant = StyleFn;
 
 const buttonStyles = {
   primary: (theme: CustomTheme) => `
@@ -26,7 +27,7 @@ const buttonStyles = {
         transition: transform 0.3s ease;
     }
 
-    @media (max-width: 768px) {
+    ${theme.breakpoints.mobile} {
         padding: 8px 16px;
         font-size: 14px;
     }
@@ -41,12 +42,7 @@ const buttonStyles = {
     font-weight: bold;
     transition: all 0.3s ease;
 
-    @media (max-width: 768px) {
-        padding: 16px 24px;
-        font-size: 20px;
-    }
-
-    @media (max-width: 480px) {
+    ${theme.breakpoints.mobile} {
         padding: 14px 20px;
         font-size: 18px;
     }
@@ -70,11 +66,7 @@ const buttonStyles = {
     gap: 10px;
     transition: all 0.3s ease;
 
-    @media (max-width: 768px) {
-        padding: 16px 24px;
-    }
-
-    @media (max-width: 480px) {
+    ${theme.breakpoints.mobile} {
         padding: 14px 20px;
         font-size: 1rem;
     }
@@ -94,20 +86,20 @@ const buttonStyles = {
     border-radius: 50px;
     font-size: 16px;
 
-    @media (max-width: 1024px) {
+    ${theme.breakpoints.tablet} {
       padding: 8px 16px;
       font-size: 14px;
     }
 
-    @media (max-width: 768px) {
+    ${theme.breakpoints.mobile} {
       padding: 4px 10px;
       font-size: 12px;
-    
+
       &:hover {
         filter: brightness(1.1);
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         transform: translateY(-2px);
-    }
+      }
     }
   `,
 
@@ -119,12 +111,12 @@ const buttonStyles = {
     border-radius: 50px;
     font-size: 16px;
 
-    @media (max-width: 1024px) {
+    ${theme.breakpoints.tablet} {
       padding: 8px 16px;
       font-size: 14px;
     }
 
-    @media (max-width: 768px) {
+    ${theme.breakpoints.mobile} {
       padding: 4px 10px;
       font-size: 12px;
     }`,
@@ -146,7 +138,7 @@ const buttonStyles = {
       transition: all 0.3s ease;
     }
 
-    @media (max-width: 768px) {
+    ${theme.breakpoints.mobile} {
       padding: 8px 16px;
       font-size: 14px;
     }

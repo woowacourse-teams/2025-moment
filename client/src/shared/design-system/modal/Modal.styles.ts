@@ -1,10 +1,11 @@
+import { StyleFn } from '@/shared/design-system/types';
 import { CustomTheme } from '@/shared/styles/theme';
 import styled from '@emotion/styled';
 
 export type ModalVariant = 'default' | 'memoji';
 export type ModalSize = 'small' | 'medium' | 'large';
 export type ModalPosition = 'center' | 'bottom';
-export type ExternalModalVariant = (theme: CustomTheme) => string;
+export type ExternalModalVariant = StyleFn;
 
 const modalFrameStyles = {
   default: (

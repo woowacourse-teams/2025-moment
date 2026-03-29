@@ -31,7 +31,7 @@ const CardStyles = {
       }
     }
 
-    @media (max-width: 768px) {
+    ${theme.breakpoints.mobile} {
       width: 90%;
       padding: 10px 20px;
     }

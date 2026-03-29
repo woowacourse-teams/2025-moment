@@ -1,15 +1,23 @@
+import React from 'react';
 import styled from '@emotion/styled';
 
-interface CardActionProps {
-  children: React.ReactNode;
-  position: 'center' | 'space-between';
+interface CardActionProps extends React.HTMLAttributes<HTMLElement> {
+  position?: 'center' | 'space-between';
 }
 
-export const CardAction = ({ children, position = 'center' }: CardActionProps) => {
-  return <CardActionStyles position={position}>{children}</CardActionStyles>;
-};
+export const CardAction = React.forwardRef<HTMLElement, CardActionProps>(
+  ({ children, position = 'center', ...props }, ref) => {
+    return (
+      <CardActionStyles ref={ref} $position={position} {...props}>
+        {children}
+      </CardActionStyles>
+    );
+  },
+);
 
-const CardActionStyles = styled.section<{ position: 'center' | 'space-between' }>`
+CardAction.displayName = 'CardAction';
+
+const CardActionStyles = styled.section<{ $position: 'center' | 'space-between' }>`
   display: flex;
-  justify-content: ${({ position }) => (position === 'center' ? 'center' : 'space-between')};
+  justify-content: ${({ $position }) => ($position === 'center' ? 'center' : 'space-between')};
 `;

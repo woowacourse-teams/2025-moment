@@ -1,12 +1,15 @@
+import React from 'react';
 import styled from '@emotion/styled';
 
-interface CardContentProps {
-  children: React.ReactNode;
-}
+interface CardContentProps extends React.HTMLAttributes<HTMLElement> {}
 
-export const CardContent = ({ children }: CardContentProps) => {
-  return <CardContentStyles>{children}</CardContentStyles>;
-};
+export const CardContent = React.forwardRef<HTMLElement, CardContentProps>(
+  ({ children, ...props }, ref) => {
+    return <CardContentStyles ref={ref} {...props}>{children}</CardContentStyles>;
+  },
+);
+
+CardContent.displayName = 'CardContent';
 
 const CardContentStyles = styled.section`
   display: flex;

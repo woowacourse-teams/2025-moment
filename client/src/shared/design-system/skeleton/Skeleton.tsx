@@ -1,28 +1,27 @@
 import React from 'react';
 import * as S from './Skeleton.styles';
 
-export interface SkeletonProps {
+export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   width?: string | number;
   height?: string | number;
   borderRadius?: string | number;
-  className?: string;
 }
 
-export const Skeleton: React.FC<SkeletonProps> = ({
-  width = '100%',
-  height = '1rem',
-  borderRadius = '4px',
-  className,
-}) => {
-  return (
-    <S.SkeletonContainer
-      width={width}
-      height={height}
-      borderRadius={borderRadius}
-      className={className}
-    />
-  );
-};
+export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ width = '100%', height = '1rem', borderRadius = '4px', ...props }, ref) => {
+    return (
+      <S.SkeletonContainer
+        ref={ref}
+        $width={width}
+        $height={height}
+        $borderRadius={borderRadius}
+        {...props}
+      />
+    );
+  },
+);
+
+Skeleton.displayName = 'Skeleton';
 
 interface SkeletonTextProps {
   lines?: number;

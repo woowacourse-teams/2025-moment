@@ -1,29 +1,11 @@
-import { Button } from '@/shared/design-system/button';
-import { LucideIcon } from 'lucide-react';
+import { Button, ButtonProps } from '@/shared/design-system/button';
 
-interface RequestButtonProps {
-  Icon?: LucideIcon;
-  title: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-}
+type YellowSquareButtonProps = Omit<ButtonProps, 'variant'>;
 
-export const YellowSquareButton = ({
-  Icon,
-  title,
-  onClick,
-  disabled,
-  type,
-}: RequestButtonProps) => {
+export const YellowSquareButton = ({ children, ...props }: YellowSquareButtonProps) => {
   return (
-    <Button
-      Icon={Icon}
-      title={title}
-      variant="tertiary"
-      onClick={onClick}
-      disabled={disabled}
-      type={type}
-    />
+    <Button variant="tertiary" {...props}>
+      {children}
+    </Button>
   );
 };
