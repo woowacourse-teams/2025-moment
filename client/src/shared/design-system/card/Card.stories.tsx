@@ -32,8 +32,8 @@ export const Default: Story = {
           <TextArea placeholder="Enter your message" height="medium" />
         </Card.Content>
         <Card.Action position="space-between">
-          <Button variant="primary" title="확인" />
-          <Button variant="primary" title="취소" />
+          <Button variant="primary">확인</Button>
+          <Button variant="primary">취소</Button>
         </Card.Action>
       </Card>
     );

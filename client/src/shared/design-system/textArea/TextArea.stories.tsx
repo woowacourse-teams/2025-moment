@@ -1,13 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { TextArea } from './TextArea';
+import { textAreaHeight } from './TextArea.styles';
 
 const meta: Meta<typeof TextArea> = {
-  title: 'Shared/TextArea',
+  title: 'Design System/TextArea',
   component: TextArea,
   argTypes: {
     height: {
       control: { type: 'radio' },
-      options: ['small', 'medium', 'large'],
+      options: ['small', 'medium', 'large'] satisfies textAreaHeight[],
     },
     disabled: {
       control: { type: 'boolean' },
@@ -26,11 +27,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Large: Story = {
-  args: {
-    height: 'large',
-    placeholder: '긴 텍스트를 입력하세요',
-  },
+export const AllHeights: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 24, background: '#1E293B', width: 400 }}>
+      {(['small', 'medium', 'large'] as textAreaHeight[]).map((height) => (
+        <TextArea key={height} height={height} placeholder={`height: ${height}`} />
+      ))}
+    </div>
+  ),
 };
 
 export const Disabled: Story = {
