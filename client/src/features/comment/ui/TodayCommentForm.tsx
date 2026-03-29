@@ -16,13 +16,15 @@ import { Heart } from 'lucide-react';
 import { useImageFallback } from '@/shared/hooks';
 
 const MomentImageWithFallback = ({
-  imageUrl,
+  originalImageUrl,
+  optimizedImageUrl,
   onImageClick,
 }: {
-  imageUrl: string;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
-  const { src, onError } = useImageFallback(imageUrl);
+  const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
   return (
     <S.MomentImageContainer>
       <S.MomentImage
@@ -155,11 +157,12 @@ export function TodayCommentForm({
               <S.MomentContent aria-label={`모멘트 내용: ${momentData.content}`}>
                 {momentData.content}
               </S.MomentContent>
-              {momentData.imageUrl && (
+              {(momentData.originalImageUrl || momentData.optimizedImageUrl) && (
                 <MomentImageWithFallback
-                  imageUrl={momentData.imageUrl}
+                  key={`${momentData.originalImageUrl ?? ''}|${momentData.optimizedImageUrl ?? ''}`}
+                  originalImageUrl={momentData.originalImageUrl}
+                  optimizedImageUrl={momentData.optimizedImageUrl}
                   onImageClick={handleImageClick}
-                  key={momentData.imageUrl}
                 />
               )}
             </S.MyCommentsContentWrapper>

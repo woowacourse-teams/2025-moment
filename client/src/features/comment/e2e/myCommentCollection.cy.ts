@@ -7,12 +7,14 @@ const commentsData = [
     id: 1,
     content: '힘내세요! 응원합니다.',
     createdAt: '2025-01-20T10:00:00',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     moment: {
       id: 101,
       nickName: '별빛 가득한 아리아',
       content: '오늘은 정말 힘든 하루였어요.',
-      imageUrl: null,
+      originalImageUrl: null,
+      optimizedImageUrl: null,
       createdAt: '2025-01-20T09:00:00',
     },
     commentNotification: {
@@ -24,12 +26,14 @@ const commentsData = [
     id: 2,
     content: '저도 비슷한 경험이 있어요.',
     createdAt: '2025-01-20T11:00:00',
-    imageUrl: null,
+    originalImageUrl: null,
+    optimizedImageUrl: null,
     moment: {
       id: 102,
       nickName: '푸른 하늘의 테리우스',
       content: '새로운 도전을 시작했어요!',
-      imageUrl: null,
+      originalImageUrl: null,
+      optimizedImageUrl: null,
       createdAt: '2025-01-20T10:30:00',
     },
     commentNotification: {

@@ -16,13 +16,15 @@ import { useMomentLikeMutation } from '../api/useMomentLikeMutation';
 import { useImageFallback } from '@/shared/hooks';
 
 const MomentImageWithFallback = ({
-  imageUrl,
+  originalImageUrl,
+  optimizedImageUrl,
   onImageClick,
 }: {
-  imageUrl: string;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
-  const { src, onError } = useImageFallback(imageUrl);
+  const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
   return (
     <S.MomentImageContainer>
       <S.MomentImage
@@ -36,13 +38,15 @@ const MomentImageWithFallback = ({
 };
 
 const CommentImageWithFallback = ({
-  imageUrl,
+  originalImageUrl,
+  optimizedImageUrl,
   onImageClick,
 }: {
-  imageUrl: string;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   onImageClick: (url: string, e: React.MouseEvent) => void;
 }) => {
-  const { src, onError } = useImageFallback(imageUrl);
+  const { src, onError } = useImageFallback({ originalImageUrl, optimizedImageUrl });
   return (
     <S.CommentImageContainer>
       <S.CommentImage
@@ -151,8 +155,13 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
         </S.MyMomentsTitleWrapper>
         <S.MyMomentsContent>{myMoment.content}</S.MyMomentsContent>
         <S.MyMomentsBottomWrapper>
-          {myMoment.imageUrl ? (
-            <MomentImageWithFallback imageUrl={myMoment.imageUrl} onImageClick={handleImageClick} />
+          {myMoment.originalImageUrl || myMoment.optimizedImageUrl ? (
+            <MomentImageWithFallback
+              key={`${myMoment.originalImageUrl ?? ''}|${myMoment.optimizedImageUrl ?? ''}`}
+              originalImageUrl={myMoment.originalImageUrl}
+              optimizedImageUrl={myMoment.optimizedImageUrl}
+              onImageClick={handleImageClick}
+            />
           ) : (
             <div />
           )}
@@ -224,9 +233,11 @@ export const MyMomentsCard = ({ myMoment }: { myMoment: MyMomentsItem }) => {
 
                       <S.CommentContent>
                         <div area-label={`${currentComment.content}`}>{currentComment.content}</div>
-                        {currentComment.imageUrl && (
+                        {(currentComment.originalImageUrl || currentComment.optimizedImageUrl) && (
                           <CommentImageWithFallback
-                            imageUrl={currentComment.imageUrl}
+                            key={`${currentComment.originalImageUrl ?? ''}|${currentComment.optimizedImageUrl ?? ''}`}
+                            originalImageUrl={currentComment.originalImageUrl}
+                            optimizedImageUrl={currentComment.optimizedImageUrl}
                             onImageClick={handleImageClick}
                           />
                         )}

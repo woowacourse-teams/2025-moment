@@ -12,7 +12,8 @@ export interface CommentItem {
   id: number;
   content: string;
   createdAt: string;
-  imageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   likeCount: number;
   hasLiked: boolean;
   moment: {
@@ -21,7 +22,8 @@ export interface CommentItem {
     id: number;
     nickName: string;
     memberNickname?: string;
-    imageUrl?: string | null;
+    originalImageUrl: string | null;
+    optimizedImageUrl: string | null;
     likeCount: number;
     hasLiked: boolean;
   } | null;
@@ -36,7 +38,8 @@ export interface GetCommentableMoments {
   memberId: number;
   nickname: string;
   content: string;
-  imageUrl?: string | null;
+  originalImageUrl: string | null;
+  optimizedImageUrl: string | null;
   createdAt: string;
   likeCount?: number;
   hasLiked?: boolean;
