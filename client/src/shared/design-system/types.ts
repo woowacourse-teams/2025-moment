@@ -11,5 +11,3 @@ export type StyleFn = (theme: CustomTheme) => string;
 /** theme.colors의 키 타입 */
 export type ColorKey = keyof CustomTheme['colors'];
 
-/** 공통 사이즈 prop */
-export type SizeProp = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
