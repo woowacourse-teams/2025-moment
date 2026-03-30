@@ -15,7 +15,7 @@ const buttonStyles = {
   primary: (theme: CustomTheme) => `
     background-color: transparent;
     color: #fff;
-    border: 1px solid ${theme.colors['slate-700']};
+    border: 1px solid ${theme.semantic.color.border.subtle};
     border-radius: 50px;
     padding: 10px 20px;
     font-size: 16px;
@@ -81,7 +81,7 @@ const buttonStyles = {
   quaternary: (theme: CustomTheme) => `
     background-color: transparent;
     color: ${theme.colors['gray-200']};
-    border: 1px solid ${theme.colors['slate-700']};
+    border: 1px solid ${theme.semantic.color.border.subtle};
     padding: 10px 20px;
     border-radius: 50px;
     font-size: 16px;
@@ -106,7 +106,7 @@ const buttonStyles = {
   quinary: (theme: CustomTheme) => `
     background-color: ${theme.colors['yellow-300']};
     color: ${theme.colors['slate-700']};
-    border: 1px solid ${theme.colors['slate-700']};
+    border: 1px solid ${theme.semantic.color.border.subtle};
     padding: 10px 20px;
     border-radius: 50px;
     font-size: 16px;

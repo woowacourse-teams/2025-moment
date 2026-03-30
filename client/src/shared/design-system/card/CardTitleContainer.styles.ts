@@ -18,7 +18,7 @@ export const CardSubtitleStyles = {
     ${theme.breakpoints.mobile} {
       font-size: ${theme.typography.fontSize.mobileSubTitle.medium};
     }
-    color: ${theme.colors['gray-200']};
+    color: ${theme.semantic.color.text.secondary};
     `,
 };
 
