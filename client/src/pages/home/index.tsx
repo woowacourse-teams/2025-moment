@@ -1,6 +1,6 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useDelayedVisible } from '@/shared/hooks/useDelayedVisible';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
@@ -9,7 +9,7 @@ import { PropsWithChildren, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Modal } from '@/shared/design-system/modal';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { GroupList } from '@/features/group/ui/GroupList';
@@ -72,8 +72,12 @@ export default function HomePage() {
                 <S.GroupListContainer>
                   <GroupList />
                   <S.ActionButtons>
-                    <Button title="그룹 생성" variant="secondary" onClick={handleCreateGroupCtx} />
-                    <Button title="그룹 참여" variant="secondary" onClick={handleJoinGroupCtx} />
+                    <Button variant="secondary" onClick={handleCreateGroupCtx}>
+                      그룹 생성
+                    </Button>
+                    <Button variant="secondary" onClick={handleJoinGroupCtx}>
+                      그룹 참여
+                    </Button>
                   </S.ActionButtons>
                 </S.GroupListContainer>
               ) : (
@@ -95,7 +99,9 @@ export default function HomePage() {
                 </S.OnboardingContainer>
               )
             ) : (
-              <Button title="모멘트 작성하기" variant="secondary" onClick={handleClick} />
+              <Button variant="secondary" onClick={handleClick}>
+                모멘트 작성하기
+              </Button>
             )}
           </S.ContentSection>
 
@@ -196,7 +202,9 @@ export default function HomePage() {
               <br />
               방장이 승인을 허용해야 그룹에 들어갈 수 있습니다.
             </S.OnboardingDescription>
-            <Button title="확인" variant="primary" onClick={handleCloseModal} />
+            <Button variant="primary" onClick={handleCloseModal}>
+              확인
+            </Button>
           </S.OnboardingContainer>
         </Modal.Content>
       </Modal>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { useCreateInviteMutation } from '../api/useCreateInviteMutation';
 import { toast } from '@/shared/store/toast';
 import * as S from './GroupInviteSection.styles';

@@ -3,7 +3,7 @@ import * as S from './TodayContent.styles';
 import { Card } from '@/shared/design-system/card';
 import { FileUpload } from '@/shared/ui';
 import { TextArea } from '@/shared/design-system/textArea';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { useTodayMomentForm } from '../hook/useTodayMomentForm';
 
 export function TodayMomentForm({
@@ -48,11 +48,12 @@ export function TodayMomentForm({
             {content.length} / {MAX_LENGTH}
           </p>
           <YellowSquareButton
-            Icon={Send}
-            title="모멘트 공유하기"
+            leftIcon={<Send size={16} />}
             onClick={handleNavigateToTodayMomentSuccess}
             disabled={content.trim().length === 0}
-          />
+          >
+            모멘트 공유하기
+          </YellowSquareButton>
         </Card.Action>
       </S.TodayContentForm>
     </Card>

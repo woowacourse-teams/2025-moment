@@ -128,26 +128,23 @@ export const MyCommentsCard = ({ myComment }: { myComment: CommentItem }) => {
                 <S.LikeCount>{myComment.likeCount || 0}</S.LikeCount>
               </S.ActionWrapper>
             </S.TitleContainer>
-            <SimpleCard
-              height="small"
-              content={
-                <S.MyCommentsContentWrapper>
-                  <S.CommentContent>{myComment.content}</S.CommentContent>
-                  {(myComment.originalImageUrl || myComment.optimizedImageUrl) && (
-                    <CommentImageWithFallback
-                      key={`${myComment.originalImageUrl ?? ''}|${myComment.optimizedImageUrl ?? ''}`}
-                      originalImageUrl={myComment.originalImageUrl}
-                      optimizedImageUrl={myComment.optimizedImageUrl}
-                      alt="코멘트 이미지"
-                      onImageClick={handleImageClick}
-                    />
-                  )}
-                </S.MyCommentsContentWrapper>
-              }
-            />
+            <SimpleCard height="small">
+              <S.MyCommentsContentWrapper>
+                <S.CommentContent>{myComment.content}</S.CommentContent>
+                {(myComment.originalImageUrl || myComment.optimizedImageUrl) && (
+                  <CommentImageWithFallback
+                    key={`${myComment.originalImageUrl ?? ''}|${myComment.optimizedImageUrl ?? ''}`}
+                    originalImageUrl={myComment.originalImageUrl}
+                    optimizedImageUrl={myComment.optimizedImageUrl}
+                    alt="코멘트 이미지"
+                    onImageClick={handleImageClick}
+                  />
+                )}
+              </S.MyCommentsContentWrapper>
+            </SimpleCard>
           </S.ContentContainer>
           {!myComment.commentNotification.isRead && (
-            <Button onClick={handleCommentOpen} title="확인" />
+            <Button onClick={handleCommentOpen}>확인</Button>
           )}
         </Card.Content>
       </Card>

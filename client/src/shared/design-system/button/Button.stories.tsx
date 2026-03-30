@@ -1,14 +1,22 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { User } from 'lucide-react';
+import { Send, User } from 'lucide-react';
 import { Button } from './Button';
+import { ButtonVariant } from './Button.styles';
 
 const meta: Meta<typeof Button> = {
-  title: 'Shared/Button',
+  title: 'Design System/Button',
   component: Button,
   argTypes: {
     variant: {
-      control: { type: 'radio' },
-      options: ['primary', 'secondary', 'tertiary'],
+      control: { type: 'select' },
+      options: [
+        'primary',
+        'secondary',
+        'tertiary',
+        'quaternary',
+        'quinary',
+        'danger',
+      ] satisfies ButtonVariant[],
     },
     disabled: {
       control: { type: 'boolean' },
@@ -16,7 +24,7 @@ const meta: Meta<typeof Button> = {
   },
   args: {
     variant: 'primary',
-    title: 'Click me',
+    children: 'Click me',
     disabled: false,
   },
 };
@@ -27,16 +35,43 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const WithIcon: Story = {
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: 24, background: '#1E293B' }}>
+      {(
+        ['primary', 'secondary', 'tertiary', 'quaternary', 'quinary', 'danger'] as ButtonVariant[]
+      ).map(variant => (
+        <Button key={variant} variant={variant}>
+          {variant}
+        </Button>
+      ))}
+    </div>
+  ),
+};
+
+export const WithLeftIcon: Story = {
   args: {
-    Icon: User,
-    title: '사용자',
+    leftIcon: <User size={16} />,
+    children: '사용자',
+  },
+};
+
+export const WithRightIcon: Story = {
+  args: {
+    rightIcon: <Send size={16} />,
+    children: '전송',
+    variant: 'tertiary',
   },
 };
 
 export const Disabled: Story = {
-  args: {
-    disabled: true,
-    title: '비활성화',
-  },
+  render: () => (
+    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: 24, background: '#1E293B' }}>
+      {(['primary', 'secondary', 'tertiary', 'danger'] as ButtonVariant[]).map(variant => (
+        <Button key={variant} variant={variant} disabled>
+          {variant}
+        </Button>
+      ))}
+    </div>
+  ),
 };

@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 
@@ -21,7 +21,9 @@ const NotFoundPage = () => {
           주소를 다시 확인해주세요.
         </S.ErrorDescription>
         <S.ButtonContainer>
-          <Button onClick={handleGoHome} variant="primary" title="홈으로 돌아가기" />
+          <Button onClick={handleGoHome} variant="primary">
+            홈으로 돌아가기
+          </Button>
         </S.ButtonContainer>
       </S.NotFoundContent>
     </S.NotFoundContainer>

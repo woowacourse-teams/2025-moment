@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Modal } from '@/shared/design-system/modal/Modal';
-import { Button } from '@/shared/design-system/button/Button';
-import { Input } from '@/shared/design-system/input/Input';
+import { Modal } from '@/shared/design-system/modal';
+import { Button } from '@/shared/design-system/button';
+import { Input } from '@/shared/design-system/input';
 import { useUpdateProfileMutation } from '../api/useUpdateProfileMutation';
 import styled from '@emotion/styled';
 import { theme } from '@/shared/styles/theme';
@@ -54,13 +54,16 @@ export const EditGroupProfileModal = ({
             <HelperText>그룹마다 서로 다른 닉네임을 사용할 수 있습니다.</HelperText>
           </FormGroup>
           <ButtonGroup>
-            <Button variant="secondary" title="취소" onClick={onClose} type="button" />
+            <Button variant="secondary" onClick={onClose} type="button">
+              취소
+            </Button>
             <Button
               variant="primary"
-              title={updateProfileMutation.isPending ? '수정 중...' : '수정하기'}
               disabled={!nickname.trim() || updateProfileMutation.isPending}
               type="submit"
-            />
+            >
+              {updateProfileMutation.isPending ? '수정 중...' : '수정하기'}
+            </Button>
           </ButtonGroup>
         </Form>
       </Modal.Content>

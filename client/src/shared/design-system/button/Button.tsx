@@ -1,38 +1,41 @@
-import { LucideIcon } from 'lucide-react';
+import React from 'react';
 import * as S from './Button.styles';
 import { ButtonVariant, ExternalVariant } from './Button.styles';
 
-export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   externalVariant?: ExternalVariant;
-  title: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  Icon?: LucideIcon;
-  type?: 'button' | 'submit' | 'reset';
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export const Button = ({
-  variant = 'primary',
-  externalVariant,
-  title,
-  onClick,
-  disabled,
-  Icon,
-  type = 'button',
-  ...props
-}: ButtonProps) => {
-  return (
-    <S.Button
-      variant={variant}
-      externalVariant={externalVariant}
-      onClick={onClick}
-      disabled={disabled}
-      type={type}
-      {...props}
-    >
-      {Icon && <Icon size={16} />}
-      {title}
-    </S.Button>
-  );
-};
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = 'primary',
+      externalVariant,
+      leftIcon,
+      rightIcon,
+      children,
+      type = 'button',
+      ...props
+    },
+    ref,
+  ) => {
+    return (
+      <S.Button
+        ref={ref}
+        variant={variant}
+        externalVariant={externalVariant}
+        type={type}
+        {...props}
+      >
+        {leftIcon}
+        {children}
+        {rightIcon}
+      </S.Button>
+    );
+  },
+);
+
+Button.displayName = 'Button';

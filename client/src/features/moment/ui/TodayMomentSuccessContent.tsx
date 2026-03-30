@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
@@ -32,11 +32,9 @@ export const TodayMomentSuccessContent = () => {
       </Card.Content>
       <Card.Action position="center">
         <S.ActionContainer role="group" aria-label="다음 액션 선택">
-          <YellowSquareButton
-            Icon={MessageSquare}
-            title="코멘트 남기러가기"
-            onClick={handleNavigate}
-          />
+          <YellowSquareButton leftIcon={<MessageSquare size={16} />} onClick={handleNavigate}>
+            코멘트 남기러가기
+          </YellowSquareButton>
         </S.ActionContainer>
       </Card.Action>
     </S.TodayContentWrapper>

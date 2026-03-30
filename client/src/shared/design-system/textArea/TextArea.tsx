@@ -1,3 +1,4 @@
+import React from 'react';
 import { textAreaHeight } from './TextArea.styles';
 import * as S from './TextArea.styles';
 
@@ -6,6 +7,10 @@ export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   height: textAreaHeight;
 }
 
-export const TextArea = ({ placeholder, height, ...props }: TextAreaProps) => {
-  return <S.TextArea placeholder={placeholder} $height={height} {...props} />;
-};
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ height, ...props }, ref) => {
+    return <S.TextArea ref={ref} $height={height} {...props} />;
+  },
+);
+
+TextArea.displayName = 'TextArea';

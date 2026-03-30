@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { TodayCommentForm } from '@/features/comment/ui/TodayCommentForm';
-import { TitleContainer } from '@/shared/design-system/titleContainer/TitleContainer';
+import { TitleContainer } from '@/shared/design-system/titleContainer';
 import * as S from '../todayMoment/index.styles';
 import { useCommentableMomentsQuery } from '@/features/comment/api/useCommentableMomentsQuery';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';

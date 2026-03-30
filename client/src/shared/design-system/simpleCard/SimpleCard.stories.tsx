@@ -1,13 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { SimpleCard } from './SimpleCard';
+import { SimpleCardHeight } from './SimpleCard.styles';
 
 const meta: Meta<typeof SimpleCard> = {
-  title: 'Shared/SimpleCard',
+  title: 'Design System/SimpleCard',
   component: SimpleCard,
   argTypes: {
     height: {
       control: { type: 'radio' },
-      options: ['small', 'medium', 'large'],
+      options: ['small', 'medium', 'large'] satisfies SimpleCardHeight[],
     },
     backgroundColor: {
       control: { type: 'select' },
@@ -16,7 +17,7 @@ const meta: Meta<typeof SimpleCard> = {
   },
   args: {
     height: 'small',
-    content: '텍스트 상자입니다.',
+    children: '텍스트 상자입니다.',
   },
 };
 
@@ -26,9 +27,29 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const AllHeights: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        padding: 24,
+        background: '#1E293B',
+      }}
+    >
+      {(['small', 'medium', 'large'] as SimpleCardHeight[]).map(height => (
+        <SimpleCard key={height} height={height}>
+          height: {height}
+        </SimpleCard>
+      ))}
+    </div>
+  ),
+};
+
 export const WithCustomColor: Story = {
   args: {
     backgroundColor: 'emerald-50',
-    content: '커스텀 배경색이 적용된 카드입니다.',
+    children: '커스텀 배경색이 적용된 카드입니다.',
   },
 };

@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Modal } from './Modal';
 import { useModal } from './useModal';
-import { Button } from '@/shared/design-system/button/Button';
+import { Button } from '@/shared/design-system/button';
 import { SimpleCard } from '../simpleCard';
 
 const meta: Meta<typeof Modal> = {
@@ -43,7 +43,9 @@ export const Default: Story = {
 
     return (
       <>
-        <Button title="기본 모달 열기" variant="secondary" onClick={handleOpen} />
+        <Button variant="secondary" onClick={handleOpen}>
+          기본 모달 열기
+        </Button>
         <Modal
           position={args.position}
           size={args.size}
@@ -54,8 +56,12 @@ export const Default: Story = {
           <Modal.Header showCloseButton={true} />
           <Modal.Content>
             <p>기본 모달 컴포넌트입니다.</p>
-            <SimpleCard height="small" content={<div>정말 멋진 모달이네요.</div>} />
-            <Button title="공감하기" variant="primary" onClick={handleClose} />
+            <SimpleCard height="small">
+              <div>정말 멋진 모달이네요.</div>
+            </SimpleCard>
+            <Button variant="primary" onClick={handleClose}>
+              공감하기
+            </Button>
           </Modal.Content>
         </Modal>
       </>
@@ -69,7 +75,9 @@ export const Memoji: Story = {
 
     return (
       <>
-        <Button title="메모지 모달 열기" variant="secondary" onClick={handleOpen} />
+        <Button variant="secondary" onClick={handleOpen}>
+          메모지 모달 열기
+        </Button>
         <Modal position={args.position} variant="memoji" isOpen={isOpen} onClose={handleClose}>
           <Modal.Header title="메모지 모달" showCloseButton={true} />
           <Modal.Content>

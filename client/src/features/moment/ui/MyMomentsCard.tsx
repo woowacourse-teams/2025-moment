@@ -1,4 +1,4 @@
-import { Modal } from '@/shared/design-system/modal/Modal';
+import { Modal } from '@/shared/design-system/modal';
 import { ChevronLeft, ChevronRight, Mail, Siren } from 'lucide-react';
 import { WriteTime } from '@/shared/ui/writeTime/WriteTime';
 import { WriterInfo } from '@/widgets/writerInfo';
