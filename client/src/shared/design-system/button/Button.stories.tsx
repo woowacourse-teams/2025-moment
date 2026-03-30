@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Send, User } from 'lucide-react';
-import { Button, ButtonProps } from './Button';
+import { Button } from './Button';
 import { ButtonVariant } from './Button.styles';
 
 const meta: Meta<typeof Button> = {
