@@ -43,7 +43,9 @@ export const Default: Story = {
 
     return (
       <>
-        <Button variant="secondary" onClick={handleOpen}>기본 모달 열기</Button>
+        <Button variant="secondary" onClick={handleOpen}>
+          기본 모달 열기
+        </Button>
         <Modal
           position={args.position}
           size={args.size}
@@ -73,7 +75,9 @@ export const Memoji: Story = {
 
     return (
       <>
-        <Button variant="secondary" onClick={handleOpen}>메모지 모달 열기</Button>
+        <Button variant="secondary" onClick={handleOpen}>
+          메모지 모달 열기
+        </Button>
         <Modal position={args.position} variant="memoji" isOpen={isOpen} onClose={handleClose}>
           <Modal.Header title="메모지 모달" showCloseButton={true} />
           <Modal.Content>

@@ -10,4 +10,3 @@ export type StyleFn = (theme: CustomTheme) => string;
 
 /** theme.colors의 키 타입 */
 export type ColorKey = keyof CustomTheme['colors'];
-
