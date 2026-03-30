@@ -1,7 +1,7 @@
 import { ROUTES } from '@/app/routes/routes';
 import { toast } from '@/shared/store/toast';
 import { FileUpload } from '@/shared/ui';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { Send } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import * as S from '../../moment/ui/TodayContent.styles';

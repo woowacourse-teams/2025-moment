@@ -3,7 +3,7 @@ import * as S from './TodayContent.styles';
 import { Card } from '@/shared/design-system/card';
 import { FileUpload } from '@/shared/ui';
 import { TextArea } from '@/shared/design-system/textArea';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { useTodayMomentForm } from '../hook/useTodayMomentForm';
 
 export function TodayMomentForm({

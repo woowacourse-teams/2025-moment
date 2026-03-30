@@ -1,5 +1,5 @@
 import { ROUTES } from '@/app/routes/routes';
-import { YellowSquareButton } from '@/shared/ui/button/YellowSquareButton';
+import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { CardSuccessContainer } from '@/widgets/today/CardSuccessContainer';
 import { CheckCircle, MessageSquare } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
