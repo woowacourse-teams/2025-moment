@@ -8,7 +8,7 @@ const CardStyles = {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: ${theme.spacing.cardWidth[$width]};
+    width: ${theme.sizes.cardWidth[$width]};
     padding: 20px 30px;
     background-color: ${theme.colors['slate-800_60']};
     border-radius: 10px;

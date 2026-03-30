@@ -17,17 +17,17 @@ const modalFrameStyles = {
     border: 1px solid ${theme.colors['gray-700']};
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    width: ${props.$position === 'center' ? theme.spacing.modalWidth[props.$size].desktop : '100%'};
+    width: ${props.$position === 'center' ? theme.sizes.modalWidth[props.$size].desktop : '100%'};
     height: ${props.$height || 'auto'};
 
     ${theme.breakpoints.tablet} {
       padding: 16px 24px;
-      width: ${props.$position === 'center' ? theme.spacing.modalWidth[props.$size].tablet : '100%'};
+      width: ${props.$position === 'center' ? theme.sizes.modalWidth[props.$size].tablet : '100%'};
     }
     
     ${theme.breakpoints.mobile} {
       padding: 12px 20px;
-      width: ${props.$position === 'center' ? theme.spacing.modalWidth[props.$size].mobile : '100%'};
+      width: ${props.$position === 'center' ? theme.sizes.modalWidth[props.$size].mobile : '100%'};
     }
   `,
 

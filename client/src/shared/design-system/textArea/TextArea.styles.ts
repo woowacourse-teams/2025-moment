@@ -9,7 +9,7 @@ const TextAreaStyles = {
     padding: 20px;
     background-color: ${theme.colors['gray-600_20']};
     border-radius: 5px;
-    height: ${theme.spacing.textAreaHeight[$height]};
+    height: ${theme.sizes.textAreaHeight[$height]};
     color: ${theme.colors.white};
     border: 1px solid ${theme.colors['gray-700']};
     resize: none;

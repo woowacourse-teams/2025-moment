@@ -36,36 +36,4 @@ const scale = {
 export const spacing = {
   /** 범용 4px 기반 간격 — padding, margin, gap에 사용 */
   scale,
-
-  // 아래는 기존 컴포넌트 전용 크기값 (하위 호환 유지)
-  textAreaHeight: {
-    small: '100px',
-    medium: '200px',
-    large: '300px',
-  },
-
-  cardWidth: {
-    small: '30%',
-    medium: '60%',
-    large: '90%',
-    full: '100%',
-  },
-
-  modalWidth: {
-    small: {
-      desktop: '30%',
-      tablet: '50%',
-      mobile: '70%',
-    },
-    medium: {
-      desktop: '60%',
-      tablet: '70%',
-      mobile: '90%',
-    },
-    large: {
-      desktop: '90%',
-      tablet: '95%',
-      mobile: '100%',
-    },
-  },
 } as const;
