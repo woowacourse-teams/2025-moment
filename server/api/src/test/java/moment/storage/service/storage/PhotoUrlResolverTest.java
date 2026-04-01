@@ -17,21 +17,64 @@ class PhotoUrlResolverTest {
 
     private PhotoUrlResolver photoUrlResolver;
 
+    private static final String CLOUDFRONT_DOMAIN = "https://test-cloudfront.example.com";
+
     @BeforeEach
     void setUp() {
-        photoUrlResolver = new PhotoUrlResolver("/original/", "/resized/");
+        photoUrlResolver = new PhotoUrlResolver("/original/", "/resized/", CLOUDFRONT_DOMAIN);
     }
 
     @Test
     void 원본_이미지_URL을_성공적으로_변환한다() {
         // given
-        String originalUrl = "https://example.com/images/original/my-photo.jpg";
+        String originalUrl = "https://test-cloudfront.example.com/images/original/my-photo.jpg";
 
         // when
         String resolvedUrl = photoUrlResolver.resolve(originalUrl);
 
         // then
-        assertThat(resolvedUrl).isEqualTo("https://example.com/images/resized/my-photo.webp");
+        assertThat(resolvedUrl).isEqualTo("https://test-cloudfront.example.com/images/resized/my-photo.webp");
+    }
+
+    @Test
+    void S3_URL이_입력되면_CloudFront_도메인으로_변환하고_최적화_경로와_확장자를_적용한다() {
+        // given
+        String s3Url = "https://bucket.s3.ap-northeast-2.amazonaws.com/images/original/my-photo.jpg";
+
+        // when
+        String resolvedUrl = photoUrlResolver.resolve(s3Url);
+
+        // then
+        assertThat(resolvedUrl).isEqualTo("https://test-cloudfront.example.com/images/resized/my-photo.webp");
+    }
+
+    @Test
+    void resolveToOriginal_CloudFront_URL이면_그대로_반환한다() {
+        // given
+        String cloudfrontUrl = "https://test-cloudfront.example.com/images/original/my-photo.jpg";
+
+        // when
+        String result = photoUrlResolver.resolveToOriginal(cloudfrontUrl);
+
+        // then
+        assertThat(result).isEqualTo(cloudfrontUrl);
+    }
+
+    @Test
+    void resolveToOriginal_S3_URL이면_CloudFront_URL로_변환한다() {
+        // given
+        String s3Url = "https://bucket.s3.ap-northeast-2.amazonaws.com/images/original/my-photo.jpg";
+
+        // when
+        String result = photoUrlResolver.resolveToOriginal(s3Url);
+
+        // then
+        assertThat(result).isEqualTo("https://test-cloudfront.example.com/images/original/my-photo.jpg");
+    }
+
+    @Test
+    void resolveToOriginal_null이면_null을_반환한다() {
+        assertThat(photoUrlResolver.resolveToOriginal(null)).isNull();
     }
 
     // 이거 어떤 테스트죠? 의미를 잘 모르겠네요

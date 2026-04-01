@@ -127,7 +127,7 @@ public class MyGroupMomentPageFacadeService {
         boolean hasLiked = momentLikeService.hasLiked(momentId, memberId);
 
         MomentImage momentImage = momentImageMap.get(moment);
-        String originalImageUrl = (momentImage != null) ? momentImage.getImageUrl() : null;
+        String originalImageUrl = (momentImage != null) ? photoUrlResolver.resolveToOriginal(momentImage.getImageUrl()) : null;
         String optimizedImageUrl = (momentImage != null) ? photoUrlResolver.resolve(momentImage.getImageUrl()) : null;
 
         List<CommentComposition> compositions = commentsMap.getOrDefault(momentId, List.of());

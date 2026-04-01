@@ -115,7 +115,7 @@ public class MomentApplicationService {
         return moments.stream()
                 .map(moment -> {
                     MomentImage image = momentImageByMoment.get(moment);
-                    String originalUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
                     return MomentComposition.of(moment, originalUrl, resolvedImageUrl);
@@ -155,7 +155,7 @@ public class MomentApplicationService {
         Moment moment = commentableMoments.get(RANDOM.nextInt(commentableMoments.size()));
         Optional<MomentImage> momentImage = momentImageService.findMomentImage(moment);
 
-        String originalUrl = momentImage.map(MomentImage::getImageUrl).orElse(null);
+        String originalUrl = momentImage.map(image -> photoUrlResolver.resolveToOriginal(image.getImageUrl())).orElse(null);
         String resolvedImageUrl = momentImage.map(image -> photoUrlResolver.resolve(image.getImageUrl()))
                 .orElse(null);
 
@@ -198,7 +198,7 @@ public class MomentApplicationService {
                     long commentCount = commentService.countByMomentIdExcludingBlocked(moment.getId(), blockedUserIds);
                     MomentImage image = momentImageMap.get(moment);
 
-                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalImageUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
                     return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, originalImageUrl,
                             optimizedImageUrl);
@@ -221,7 +221,7 @@ public class MomentApplicationService {
                     boolean hasLiked = momentLikeService.hasLiked(moment.getId(), member.getId());
                     long commentCount = commentService.countByMomentId(moment.getId());
                     MomentImage image = momentImageMap.get(moment);
-                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalImageUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
                     return GroupMomentResponse.from(moment, likeCount, hasLiked, commentCount, originalImageUrl,
@@ -244,7 +244,7 @@ public class MomentApplicationService {
 
         Optional<MomentImage> savedImage = momentImageService.create(moment, imageUrl, imageName);
         String originalImageUrl = savedImage
-                .map(MomentImage::getImageUrl)
+                .map(image -> photoUrlResolver.resolveToOriginal(image.getImageUrl()))
                 .orElse(null);
 
         String optimizedImageUrl = savedImage

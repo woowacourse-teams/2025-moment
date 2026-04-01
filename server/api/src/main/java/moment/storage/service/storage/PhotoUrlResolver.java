@@ -7,14 +7,26 @@ import org.springframework.stereotype.Component;
 public class PhotoUrlResolver {
 
     private static final String OPTIMIZED_EXTENSION = ".webp";
+    private static final String AMAZONAWS_HOST_SUFFIX = ".amazonaws.com";
+
     private final String originalPathSegment;
     private final String targetPathSegment;
+    private final String cloudfrontDomain;
 
     public PhotoUrlResolver(
             @Value("${s3.bucket-path}") String originalPathSegment,
-            @Value("${s3.optimized-bucket-path}") String targetPathSegment) {
+            @Value("${s3.optimized-bucket-path}") String targetPathSegment,
+            @Value("${s3.cloudfront-domain}") String cloudfrontDomain) {
         this.originalPathSegment = originalPathSegment;
         this.targetPathSegment = targetPathSegment;
+        this.cloudfrontDomain = cloudfrontDomain;
+    }
+
+    public String resolveToOriginal(String url) {
+        if (url == null || url.isBlank()) {
+            return url;
+        }
+        return toCloudfrontUrl(url);
     }
 
     public String resolve(String originalUrl) {
@@ -22,9 +34,22 @@ public class PhotoUrlResolver {
             return originalUrl;
         }
 
-        String urlWithChangedPath = originalUrl.replace(originalPathSegment, targetPathSegment);
+        String cloudfrontUrl = toCloudfrontUrl(originalUrl);
+        String urlWithChangedPath = cloudfrontUrl.replace(originalPathSegment, targetPathSegment);
 
         return changeExtensionToWebp(urlWithChangedPath);
+    }
+
+    private String toCloudfrontUrl(String url) {
+        if (url.startsWith(cloudfrontDomain)) {
+            return url;
+        }
+        int amazonawsIndex = url.indexOf(AMAZONAWS_HOST_SUFFIX);
+        if (amazonawsIndex != -1) {
+            String path = url.substring(amazonawsIndex + AMAZONAWS_HOST_SUFFIX.length());
+            return cloudfrontDomain + path;
+        }
+        return url;
     }
 
     private String changeExtensionToWebp(String url) {

@@ -64,7 +64,7 @@ public class CommentApplicationService {
         return comments.stream()
                 .map(comment -> {
                     CommentImage image = commentImageByComment.get(comment);
-                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalImageUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
                     return CommentComposition.of(
@@ -148,7 +148,7 @@ public class CommentApplicationService {
         return commentsWithoutCursor.stream()
                 .map(comment -> {
                     CommentImage image = commentImagesByComment.get(comment);
-                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalImageUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String resolvedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
 
                     return CommentComposition.of(comment, commenter, originalImageUrl, resolvedImageUrl);
@@ -194,7 +194,7 @@ public class CommentApplicationService {
         Comment comment = commentService.createWithMember(moment, commenter, member, content);
 
         Optional<CommentImage> savedImage = commentImageService.create(comment, imageUrl, imageName);
-        String originalImageUrl = savedImage.map(CommentImage::getImageUrl).orElse(null);
+        String originalImageUrl = savedImage.map(image -> photoUrlResolver.resolveToOriginal(image.getImageUrl())).orElse(null);
         String resolvedImageUrl = savedImage
                 .map(image -> photoUrlResolver.resolve(image.getImageUrl()))
                 .orElse(null);
@@ -219,7 +219,7 @@ public class CommentApplicationService {
                     long likeCount = commentLikeService.getCount(comment.getId());
                     boolean hasLiked = commentLikeService.hasLiked(comment.getId(), member.getId());
                     CommentImage image = commentImageMap.get(comment);
-                    String originalImageUrl = (image != null) ? image.getImageUrl() : null;
+                    String originalImageUrl = (image != null) ? photoUrlResolver.resolveToOriginal(image.getImageUrl()) : null;
                     String optimizedImageUrl = (image != null) ? photoUrlResolver.resolve(image.getImageUrl()) : null;
                     return GroupCommentResponse.from(comment, likeCount, hasLiked, originalImageUrl, optimizedImageUrl);
                 })
