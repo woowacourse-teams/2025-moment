@@ -94,19 +94,21 @@ export const SignupForm = () => {
 
       <S.ButtonContainer>
         <Button
-          title="이전"
           onClick={handlePreviousStep}
           disabled={!beforeStep}
           type="button"
           aria-label="이전 단계로"
-        />
+        >
+          이전
+        </Button>
         <Button
-          title="다음"
           type="button"
           onClick={handleNextStep}
           disabled={isDisabled}
           aria-label="다음 단계로"
-        />
+        >
+          다음
+        </Button>
       </S.ButtonContainer>
     </S.SignupFormWrapper>
   );

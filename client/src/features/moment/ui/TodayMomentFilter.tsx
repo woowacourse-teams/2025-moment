@@ -14,17 +14,19 @@ export const TodayMomentFilter = ({
   return (
     <FilterContainer>
       <Button
-        title="전체"
         variant={activeFilter === 'all' ? 'quinary' : 'quaternary'}
         onClick={() => onActiveFilterChange('all')}
         aria-label="전체 모멘트 보기"
-      />
+      >
+        전체
+      </Button>
       <Button
-        title="미확인 알림"
         variant={activeFilter === 'unread' ? 'quinary' : 'quaternary'}
         onClick={() => onActiveFilterChange('unread')}
         aria-label="미확인 코멘트 보기"
-      />
+      >
+        미확인 알림
+      </Button>
     </FilterContainer>
   );
 };

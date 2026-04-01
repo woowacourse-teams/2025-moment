@@ -74,18 +74,20 @@ export function GroupJoinForm({ initialCode, onSuccess, onCancel }: GroupJoinFor
           aria-label="닉네임 입력"
         />
         <Button
-          title={joinGroupMutation.isPending ? '참여 중...' : '참여하기'}
           variant="primary"
           type="submit"
           disabled={!inputVal.trim() || !nickname.trim() || joinGroupMutation.isPending}
-        />
+        >
+          {joinGroupMutation.isPending ? '참여 중...' : '참여하기'}
+        </Button>
         <Button
-          title="취소"
           variant="secondary"
           onClick={onCancel}
           type="button"
           disabled={joinGroupMutation.isPending}
-        />
+        >
+          취소
+        </Button>
       </S.Content>
     </S.FormContainer>
   );

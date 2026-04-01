@@ -51,12 +51,9 @@ export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Pro
       </S.TermsContainer>
 
       <S.ButtonContainer>
-        <Button
-          title="회원가입"
-          variant="primary"
-          onClick={handleClick}
-          disabled={!agreedToTerms}
-        />
+        <Button variant="primary" onClick={handleClick} disabled={!agreedToTerms}>
+          회원가입
+        </Button>
       </S.ButtonContainer>
 
       <Modal
