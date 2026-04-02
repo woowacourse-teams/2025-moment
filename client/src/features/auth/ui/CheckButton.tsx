@@ -9,12 +9,9 @@ interface CheckButton {
 
 export const CheckButton = ({ title, onClick: handleClick, disabled }: CheckButton) => {
   return (
-    <Button
-      externalVariant={buttonVariant}
-      title={title}
-      onClick={handleClick}
-      disabled={disabled}
-    />
+    <Button externalVariant={buttonVariant} onClick={handleClick} disabled={disabled}>
+      {title}
+    </Button>
   );
 };
 

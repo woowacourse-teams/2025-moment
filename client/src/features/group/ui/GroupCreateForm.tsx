@@ -72,21 +72,18 @@ export function GroupCreateForm({ onSuccess, onCancel }: GroupCreateFormProps) {
 
       <S.ButtonGroup>
         {onCancel && (
-          <Button
-            type="button"
-            title="취소"
-            variant="secondary"
-            onClick={onCancel}
-            aria-label="취소"
-          />
+          <Button type="button" variant="secondary" onClick={onCancel} aria-label="취소">
+            취소
+          </Button>
         )}
         <Button
           type="submit"
-          title="그룹 만들기"
           variant="primary"
           disabled={!isValid || isPending}
           aria-label="그룹 만들기"
-        />
+        >
+          그룹 만들기
+        </Button>
       </S.ButtonGroup>
     </S.FormContainer>
   );

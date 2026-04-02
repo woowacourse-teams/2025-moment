@@ -61,22 +61,16 @@ export default function MyPage() {
                     닉네임 변경
                   </Button>
                   {myProfile.loginType === 'EMAIL' && (
-                    <Button
-                      variant="primary"
-                      title="비밀번호 변경"
-                      onClick={handleOpenPasswordModal}
-                    />
+                    <Button variant="primary" onClick={handleOpenPasswordModal}>
+                      비밀번호 변경
+                    </Button>
                   )}
-                  <Button
-                    variant="primary"
-                    title="로그아웃"
-                    onClick={() => logoutMutation.mutate()}
-                  />
-                  <Button
-                    variant="danger"
-                    title="회원 탈퇴"
-                    onClick={handleOpenDeleteAccountModal}
-                  />
+                  <Button variant="primary" onClick={() => logoutMutation.mutate()}>
+                    로그아웃
+                  </Button>
+                  <Button variant="danger" onClick={handleOpenDeleteAccountModal}>
+                    회원 탈퇴
+                  </Button>
                 </S.ButtonContainer>
               </S.UserInfo>
             </S.UserProfileSection>
@@ -149,10 +143,11 @@ export default function MyPage() {
               </Button>
               <Button
                 variant="danger"
-                title="탈퇴하기"
                 onClick={() => deleteAccountMutation.mutate()}
                 disabled={deleteAccountMutation.isPending}
-              />
+              >
+                탈퇴하기
+              </Button>
             </S.DeleteAccountButtonContainer>
           </S.DeleteAccountContent>
         </Modal.Content>

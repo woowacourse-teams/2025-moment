@@ -278,22 +278,37 @@ export const ExplainSection = styled.section`
 
   @media screen and (max-width: 1440px) {
     flex-direction: column-reverse;
+    padding: 0 40px;
   }
 
   @media (max-width: 768px) {
     gap: 50px;
-    padding: 16px;
+    padding: 0 24px;
   }
 `;
 
 export const ExplainImage = styled(Picture)`
+  max-width: 700px;
+  width: 100%;
+
   & img {
     object-fit: cover;
+    width: 100%;
+    height: auto;
+  }
+
+  @media screen and (max-width: 1440px) {
+    & img {
+      width: 100%;
+      height: auto;
+    }
   }
 
   @media screen and (max-width: 768px) {
+    display: block;
+    max-width: 600px;
     width: 90%;
-    height: 90%;
+    margin: 0 auto;
 
     & img {
       width: 100%;
