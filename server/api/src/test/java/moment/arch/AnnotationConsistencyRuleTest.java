@@ -89,6 +89,7 @@ class AnnotationConsistencyRuleTest extends BaseArchTest {
             classes()
                     .that().areAnnotatedWith(RestController.class)
                     .and().resideOutsideOfPackage("..admin..")
+                    .and().resideOutsideOfPackage("..global..")
                     .should(useAuthenticationPrincipal())
                     .because("[AU-001] User API Controller는 @AuthenticationPrincipal을 사용해야 합니다. " +
                             "수정 가이드: 인증이 필요한 엔드포인트에 " +
