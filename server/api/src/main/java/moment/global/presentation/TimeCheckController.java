@@ -13,7 +13,7 @@ public class TimeCheckController {
 
     private final TimeProvider timeProvider;
 
-    @GetMapping("/api/test/time")
+    @GetMapping("/time")
     public String checkTime() {
         return "Server Time: " + timeProvider.now().toString();
     }
