@@ -26,8 +26,13 @@ public class Emitters {
         return emitter;
     }
 
-    public boolean isUserExist(Long userId) {
-        return emitters.containsKey(userId);
+    public boolean isEmitterExist(Long userId) {
+        List<SseEmitter> userEmitters = emitters.get(userId);
+        if (userEmitters == null || userEmitters.isEmpty()) {
+            emitters.remove(userId);
+            return false;
+        }
+        return true;
     }
 
     public void remove(Long userId) {

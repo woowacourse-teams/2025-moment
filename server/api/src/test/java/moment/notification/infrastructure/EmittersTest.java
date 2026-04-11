@@ -1,6 +1,7 @@
 package moment.notification.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
@@ -52,11 +53,13 @@ class EmittersTest {
         emitters.add(userId, mockEmitter);
 
         // then
-        assertThat(spyEmitters.containsKey(userId)).isTrue();
-        assertThat(spyEmitters.get(userId)).hasSize(1);
-        then(mockEmitter).should(times(1)).onCompletion(any(Runnable.class));
-        then(mockEmitter).should(times(1)).onTimeout(any(Runnable.class));
-        then(mockEmitter).should(times(1)).onError(any(Consumer.class));
+        assertAll(
+                () -> assertThat(spyEmitters.containsKey(userId)).isTrue(),
+                () -> assertThat(spyEmitters.get(userId)).hasSize(1),
+                () -> then(mockEmitter).should(times(1)).onCompletion(any(Runnable.class)),
+                () -> then(mockEmitter).should(times(1)).onTimeout(any(Runnable.class)),
+                () -> then(mockEmitter).should(times(1)).onError(any(Consumer.class))
+        );
     }
 
     @Test
@@ -90,8 +93,10 @@ class EmittersTest {
         userEmitters.remove(emitter1);
 
         // then
-        assertThat(spyEmitters.get(userId)).hasSize(1);
-        assertThat(spyEmitters.get(userId)).contains(emitter2);
+        assertAll(
+                () -> assertThat(spyEmitters.get(userId)).hasSize(1),
+                () -> assertThat(spyEmitters.get(userId)).contains(emitter2)
+        );
     }
 
     @Test
@@ -109,8 +114,10 @@ class EmittersTest {
         emitters.sendToClient(userId, "testEvent", "testData");
 
         // then
-        then(emitter1).should(times(1)).send(any(SseEventBuilder.class));
-        then(emitter2).should(times(1)).send(any(SseEventBuilder.class));
+        assertAll(
+                () -> then(emitter1).should(times(1)).send(any(SseEventBuilder.class)),
+                () -> then(emitter2).should(times(1)).send(any(SseEventBuilder.class))
+        );
     }
 
     @Test
@@ -130,8 +137,10 @@ class EmittersTest {
         emitters.sendToClient(userId, "testEvent", "testData");
 
         // then
-        assertThat(spyEmitters.get(userId)).hasSize(1);
-        assertThat(spyEmitters.get(userId)).contains(goodEmitter);
+        assertAll(
+                () -> assertThat(spyEmitters.get(userId)).hasSize(1),
+                () -> assertThat(spyEmitters.get(userId)).contains(goodEmitter)
+        );
     }
 
     @Test
@@ -148,8 +157,10 @@ class EmittersTest {
         emitters.sendHeartbeat();
 
         // then
-        then(emitter1).should(times(1)).send(any(SseEventBuilder.class));
-        then(emitter2).should(times(1)).send(any(SseEventBuilder.class));
+        assertAll(
+                () -> then(emitter1).should(times(1)).send(any(SseEventBuilder.class)),
+                () -> then(emitter2).should(times(1)).send(any(SseEventBuilder.class))
+        );
     }
 
     @Test
@@ -178,6 +189,48 @@ class EmittersTest {
         // when & then
         emitters.remove(nonExistentUserId);
         assertThat(spyEmitters.containsKey(nonExistentUserId)).isFalse();
+    }
+
+    @Test
+    void 존재하지_않는_사용자의_연결_여부를_확인하면_false를_반환한다() {
+        // given
+        Long nonExistentUserId = 999L;
+
+        // when
+        boolean result = emitters.isEmitterExist(nonExistentUserId);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void 연결된_사용자의_연결_여부를_확인하면_true를_반환한다() {
+        // given
+        Long userId = 1L;
+        SseEmitter mockEmitter = mock(SseEmitter.class);
+        emitters.add(userId, mockEmitter);
+
+        // when
+        boolean result = emitters.isEmitterExist(userId);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 사용자의_emitter_리스트가_비어있으면_false를_반환하고_엔트리를_삭제한다() {
+        // given
+        Long userId = 1L;
+        spyEmitters.put(userId, new CopyOnWriteArrayList<>());
+
+        // when
+        boolean result = emitters.isEmitterExist(userId);
+
+        // then
+        assertAll(
+                () -> assertThat(result).isFalse(),
+                () -> assertThat(spyEmitters.containsKey(userId)).isFalse()
+        );
     }
 
     @Test

@@ -31,7 +31,7 @@ public class SseNotificationService {
     }
 
     public boolean isUserExist(Long userId) {
-        return emitters.isUserExist(userId);
+        return emitters.isEmitterExist(userId);
     }
 
     @Scheduled(fixedRate = 25_000)
