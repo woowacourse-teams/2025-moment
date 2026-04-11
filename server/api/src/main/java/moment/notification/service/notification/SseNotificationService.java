@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.logging.NoLogging;
 import moment.notification.infrastructure.Emitters;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,8 +25,13 @@ public class SseNotificationService {
         return emitter;
     }
 
+    @Async
     public void sendToClient(Long userId, String eventName, Object data) {
         emitters.sendToClient(userId, eventName, data);
+    }
+
+    public boolean isUserExist(Long userId) {
+        return emitters.isUserExist(userId);
     }
 
     @Scheduled(fixedRate = 25_000)
