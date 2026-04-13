@@ -32,7 +32,7 @@ public class NotificationFacadeService {
         NotificationSseResponse sseResponse = NotificationSseResponse.from(savedNotification);
         sseNotificationService.sendToClient(command.userId(), "notification", sseResponse);
 
-        if (command.pushMessage() != null) {
+        if (command.pushMessage() != null && !sseNotificationService.isUserExist(command.userId())) {
             pushNotificationApplicationService.sendToDeviceEndpoint(
                     command.userId(), command.pushMessage(), link);
         }

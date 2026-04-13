@@ -8,12 +8,13 @@ import moment.notification.dto.request.DeviceEndpointRequest;
 import moment.notification.service.notification.PushNotificationService;
 import moment.user.domain.User;
 import moment.user.service.user.UserService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 public class PushNotificationApplicationService {
 
     private final UserService userService;
@@ -26,6 +27,7 @@ public class PushNotificationApplicationService {
         pushNotificationService.save(user, request.deviceEndpoint());
     }
 
+    @Async
     public void sendToDeviceEndpoint(long userId, PushNotificationMessage message, String link) {
         User user = userService.getUserBy(userId);
         pushNotificationSender.send(new PushNotificationCommand(user, message, link));
