@@ -101,8 +101,11 @@ const setupInterceptors = (instance: AxiosInstance) => {
       });
 
       if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
+        const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
         queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-        toast.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
+        if (wasLoggedIn) {
+          toast.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
+        }
         redirectToLogin();
         return Promise.reject(error);
       }
@@ -121,9 +124,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
             return instance(originalRequest);
           } catch {
             if (!isLoginCheck) {
+              const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
               queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-              toast.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
-              redirectToLogin();
+              if (wasLoggedIn) {
+                toast.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
+                redirectToLogin();
+              }
             }
             return Promise.reject(error);
           }
@@ -139,9 +145,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
           return instance(originalRequest);
         } catch (refreshError) {
           if (!isLoginCheck) {
+            const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
             queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-            toast.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
-            redirectToLogin();
+            if (wasLoggedIn) {
+              toast.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
+              redirectToLogin();
+            }
           }
           return Promise.reject(refreshError);
         } finally {
