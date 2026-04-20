@@ -3,7 +3,7 @@ name: Deploy Storybook to GitHub Pages
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - 'client/src/**/*.stories.tsx'
       - 'client/src/shared/ui/**'

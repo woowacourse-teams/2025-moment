@@ -1,4 +1,4 @@
-name: Moment Client CD
+name: Prod Client CD
 
 on:
   push:
@@ -45,6 +45,9 @@ jobs:
           REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
           REACT_APP_GOOGLE_LOGIN_REDIRECTION_URL: ${{ secrets.REACT_APP_PROD_GOOGLE_LOGIN_REDIRECTION_URL }}
           REACT_APP_FCM_VAPID_KEY: ${{ secrets.REACT_APP_FCM_VAPID_KEY }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         run: pnpm run build
 
       - name: Configure AWS credentials
