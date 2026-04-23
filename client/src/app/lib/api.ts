@@ -67,7 +67,7 @@ const setupInterceptors = (instance: AxiosInstance) => {
       const errorCode = (serverError as { code: string })?.code || 'unknown';
       const errorMessage = (serverError as { message: string })?.message || error.message;
 
-      const domain = url.split('/')[4] || 'unknown';
+      const domain = url.split('/')[1] || 'unknown';
       const endpoint = url.replace(instance.defaults.baseURL || '', '') || '/';
       const httpMethod = originalRequest?.method?.toUpperCase() || 'UNKNOWN';
 
@@ -79,12 +79,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
           domain,
           http_method: httpMethod,
           http_status: status?.toString() || 'unknown',
-          endpoint,
           error_code: errorCode,
         },
         contexts: {
           request: {
             url: originalRequest?.url || url,
+            endpoint,
             method: httpMethod,
             baseURL: instance.defaults.baseURL,
           },
