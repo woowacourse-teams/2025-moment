@@ -1,16 +1,17 @@
-name: Client CI
+name: Prod Client CI
 
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'client/**'
-      - '.github/workflows/dev-client-ci.yml'
   pull_request:
-    branches: [main, develop]
+    types: [ opened, synchronize, reopened ]
+    branches: [ main ]
     paths:
       - 'client/**'
-      - '.github/workflows/dev-client-ci.yml'
+      - '.github/workflows/prod-client-ci.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'client/**'
+      - '.github/workflows/prod-client-ci.yml'
 
 defaults:
   run:
@@ -65,9 +66,6 @@ jobs:
           wait-on-timeout: 60
           browser: chrome
           record: false
-
-      - name: Build application
-        run: pnpm run build
 
       - name: Upload test coverage
         uses: codecov/codecov-action@v4

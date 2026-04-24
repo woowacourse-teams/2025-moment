@@ -29,8 +29,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         },
         error_details: {
           message: error.message,
-          stack: error.stack?.split('\n').slice(0, 5).join('\n'),
-          component: this.constructor.name,
         },
       },
     });
