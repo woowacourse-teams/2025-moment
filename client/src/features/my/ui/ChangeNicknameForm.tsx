@@ -46,7 +46,11 @@ export const ChangeNicknameForm = ({
             value={nickname}
             disabled
           />
-          <RotateNicknameButton onClick={handleRotateNickname}>
+          <RotateNicknameButton
+            type="button"
+            onClick={handleRotateNickname}
+            aria-label="다른 닉네임으로 변경"
+          >
             <RotateCw size={25} color="white" />
           </RotateNicknameButton>
         </S.ChangeNicknameContent>
