@@ -158,7 +158,7 @@ describe('toast', () => {
 
   describe('ID 반환', () => {
     it('toastId를 반환한다', () => {
-      let id: string;
+      let id = '';
       act(() => {
         id = toast.success('메시지');
       });
