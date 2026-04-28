@@ -54,4 +54,10 @@ export const mockGlobalAPIs = () => {
       ],
     },
   }).as('getGroups');
+
+  // NavigatorsBar의 usePendingMembersQuery: 미목업 시 401 → refresh → /login 리다이렉트 발생
+  cy.intercept('GET', '**/api/v2/groups/*/pending', {
+    statusCode: 200,
+    body: { status: 200, data: [] },
+  }).as('getPendingMembers');
 };
