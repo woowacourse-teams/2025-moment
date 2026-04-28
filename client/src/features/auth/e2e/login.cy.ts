@@ -21,6 +21,8 @@ describe('로그인', () => {
     mockNotLoggedIn();
     cy.visit('/login');
     cy.wait('@checkLogin');
+    // isLogged: false → checkIfLoggined이 /auth/refresh 호출 → 초기 refresh call 소비
+    cy.wait('@refreshToken');
   });
 
   describe('시나리오 1: 로그인 성공', () => {
@@ -65,9 +67,10 @@ describe('로그인', () => {
       cy.get('button[type="submit"]').click();
 
       cy.wait('@loginFail');
+      cy.wait('@refreshToken');
       cy.url().should('include', '/login');
       // 401 → 토큰 갱신 시도 → 갱신도 실패 → interceptor가 "로그인이 만료되었어요" 토스트 표시
-      cy.contains('로그인이 만료되었어요').should('be.visible');
+      cy.contains('로그인이 만료되었어요', { timeout: 5000 }).should('be.visible');
     });
   });
 

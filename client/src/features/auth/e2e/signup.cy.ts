@@ -17,6 +17,12 @@ const mockNotLoggedIn = () => {
     statusCode: 200,
     body: { status: 200, data: { isLogged: false } },
   }).as('checkLogin');
+
+  // isLogged: false → checkIfLoggined이 /auth/refresh 실제 호출 시도 → CI에서 10s 대기 발생 방지
+  cy.intercept('POST', '**/api/v2/auth/refresh', {
+    statusCode: 401,
+    body: { message: 'Refresh token expired' },
+  }).as('refreshToken');
 };
 
 const mockSignupAPIs = () => {
