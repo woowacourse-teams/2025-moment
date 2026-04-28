@@ -74,9 +74,7 @@ describe('useOutsideClick', () => {
     (ref as React.MutableRefObject<HTMLElement>).current = container;
     (excludeRef as React.MutableRefObject<HTMLElement>).current = excluded;
 
-    renderHook(() =>
-      useOutsideClick({ ref, callback, isActive: true, excludeRefs: [excludeRef] }),
-    );
+    renderHook(() => useOutsideClick({ ref, callback, isActive: true, excludeRefs: [excludeRef] }));
 
     clickOn(excluded);
 
