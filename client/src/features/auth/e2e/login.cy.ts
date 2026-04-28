@@ -14,6 +14,13 @@ const mockNotLoggedIn = () => {
     statusCode: 401,
     body: { message: 'Refresh token expired' },
   }).as('refreshToken');
+
+  // NavigatorsBar의 useGroupsQuery: 미mock 시 401 → api.ts interceptor가 isRefreshing=true 설정
+  // → 로그인 401 interceptor가 기존 refreshPromise 대기 → 다른 토스트 메시지 표시 방지
+  cy.intercept('GET', '**/api/v2/groups*', {
+    statusCode: 200,
+    body: { status: 200, data: [] },
+  }).as('getGroups');
 };
 
 describe('로그인', () => {
