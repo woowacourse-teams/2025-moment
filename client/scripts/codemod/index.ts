@@ -64,9 +64,7 @@ async function main() {
   console.log('\n' + '─'.repeat(60));
 
   if (isApply) {
-    console.log(
-      `\x1b[32m완료\x1b[0m  ${modifiedFiles}개 파일, ${totalReplacements}개 교체\n`,
-    );
+    console.log(`\x1b[32m완료\x1b[0m  ${modifiedFiles}개 파일, ${totalReplacements}개 교체\n`);
   } else {
     console.log(
       `\x1b[33m[미리보기]\x1b[0m  ${modifiedFiles}개 파일, ${totalReplacements}개 교체 예정`,
@@ -104,7 +102,7 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error('codemod 실패:', err);
   process.exit(1);
 });

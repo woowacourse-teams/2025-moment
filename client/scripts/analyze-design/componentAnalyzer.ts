@@ -36,7 +36,7 @@ export function analyzeComponents(files: string[], projectRoot: string): Compone
     traverse(ast, {
       ImportDeclaration(nodePath) {
         const source = nodePath.node.source.value;
-        if (!COMPONENT_PREFIXES.some((prefix) => source.startsWith(prefix))) return;
+        if (!COMPONENT_PREFIXES.some(prefix => source.startsWith(prefix))) return;
 
         if (!components[source]) {
           components[source] = { importPath: source, importCount: 0, usedInFiles: [] };

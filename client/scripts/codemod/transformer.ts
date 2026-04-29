@@ -111,7 +111,7 @@ export function analyzeFile(file: string, tokenMap: TokenMap): FileAnalysis {
       const src = nodePath.node.source.value;
       if (!src.includes('styles/theme')) return;
       const hasTheme = nodePath.node.specifiers.some(
-        (s) => s.type === 'ImportSpecifier' && (s.imported as any).name === 'theme',
+        s => s.type === 'ImportSpecifier' && (s.imported as any).name === 'theme',
       );
       if (hasTheme) hasThemeImport = true;
     },

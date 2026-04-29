@@ -27,7 +27,7 @@ interface Report {
   adoptionRate: { tokenCount: number; hardcodedCount: number; tokenAdoptionPercent: number };
 }
 
-const CHART_COLORS = ['#F1C40F', '#60A5FA', '#4ADE80', '#F87171', '#A78BFA', '#FB923C', '#34D399'];
+const COLORS = ['#F1C40F', '#60A5FA', '#4ADE80', '#F87171', '#A78BFA', '#FB923C', '#34D399'];
 const TOOLTIP_STYLE = {
   backgroundColor: '#1E293B',
   border: '1px solid #374151',
@@ -48,8 +48,11 @@ function shortFile(path: string) {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('ko-KR', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
@@ -59,7 +62,7 @@ export default function DesignAuditPage() {
 
   useEffect(() => {
     fetch('/design-system-report/report.json')
-      .then((res) => {
+      .then(res => {
         if (!res.ok) throw new Error('not found');
         return res.json() as Promise<Report>;
       })
@@ -87,9 +90,15 @@ export default function DesignAuditPage() {
     );
   }
 
-  const { adoptionRate: ar, hardcodedStyles: h, tokenUsage: t, components, analyzedFiles, generatedAt } = report;
+  const {
+    adoptionRate: ar,
+    hardcodedStyles: h,
+    tokenUsage: t,
+    components,
+    analyzedFiles,
+    generatedAt,
+  } = report;
 
-  // ── 차트 데이터 가공 ──────────────────────────────────────────────────────
   const adoptionPieData = [
     { name: '토큰 사용', value: ar.tokenCount },
     { name: '하드코딩', value: ar.hardcodedCount },
@@ -99,7 +108,7 @@ export default function DesignAuditPage() {
     { name: 'px 값', value: h.byType.pxValue },
     { name: 'hex 색상', value: h.byType.hexColor },
     { name: 'Tailwind 임의값', value: h.byType.tailwindArbitrary },
-  ].filter((d) => d.value > 0);
+  ].filter(d => d.value > 0);
 
   const componentBarData = Object.entries(components)
     .slice(0, 8)
@@ -135,7 +144,6 @@ export default function DesignAuditPage() {
         </S.Subtitle>
       </S.Header>
 
-      {/* ── 요약 카드 ── */}
       <S.StatGrid>
         <S.StatCard>
           <S.StatLabel>분석 파일 수</S.StatLabel>
@@ -167,7 +175,6 @@ export default function DesignAuditPage() {
         </S.StatCard>
       </S.StatGrid>
 
-      {/* ── 1행: 채택률 파이 + 하드코딩 타입 파이 ── */}
       <S.ChartGrid>
         <S.ChartCard>
           <S.ChartTitle>토큰 채택률</S.ChartTitle>
@@ -187,9 +194,7 @@ export default function DesignAuditPage() {
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend
-                formatter={(val) => (
-                  <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>
-                )}
+                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -209,21 +214,18 @@ export default function DesignAuditPage() {
                 dataKey="value"
               >
                 {hardcodedTypePieData.map((_, i) => (
-                  <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend
-                formatter={(val) => (
-                  <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>
-                )}
+                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
         </S.ChartCard>
       </S.ChartGrid>
 
-      {/* ── 2행: 컴포넌트 사용 + 토큰 카테고리 ── */}
       <S.ChartGrid>
         <S.ChartCard>
           <S.ChartTitle>공통 컴포넌트 사용 횟수</S.ChartTitle>
@@ -231,7 +233,12 @@ export default function DesignAuditPage() {
             <BarChart data={componentBarData} layout="vertical" margin={{ left: 8, right: 24 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
               <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
-              <YAxis type="category" dataKey="name" tick={{ fill: TICK_COLOR, fontSize: 12 }} width={72} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={{ fill: TICK_COLOR, fontSize: 12 }}
+                width={72}
+              />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="사용 횟수" fill="#F1C40F" radius={[0, 4, 4, 0]} />
             </BarChart>
@@ -244,11 +251,16 @@ export default function DesignAuditPage() {
             <BarChart data={tokenCategoryData} layout="vertical" margin={{ left: 8, right: 24 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
               <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
-              <YAxis type="category" dataKey="name" tick={{ fill: TICK_COLOR, fontSize: 11 }} width={96} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={{ fill: TICK_COLOR, fontSize: 11 }}
+                width={96}
+              />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="사용 횟수" radius={[0, 4, 4, 0]}>
                 {tokenCategoryData.map((_, i) => (
-                  <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>
@@ -256,7 +268,6 @@ export default function DesignAuditPage() {
         </S.ChartCard>
       </S.ChartGrid>
 
-      {/* ── 3행: 하드코딩 집중 파일 top10 (full width) ── */}
       <S.ChartGrid>
         <S.ChartCard $fullWidth>
           <S.ChartTitle>하드코딩 집중 파일 TOP 10</S.ChartTitle>
@@ -264,7 +275,12 @@ export default function DesignAuditPage() {
             <BarChart data={topFilesData} layout="vertical" margin={{ left: 8, right: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
               <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
-              <YAxis type="category" dataKey="name" tick={{ fill: TICK_COLOR, fontSize: 11 }} width={200} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={{ fill: TICK_COLOR, fontSize: 11 }}
+                width={200}
+              />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="하드코딩 개수" fill="#F87171" radius={[0, 4, 4, 0]} />
             </BarChart>
@@ -272,7 +288,6 @@ export default function DesignAuditPage() {
         </S.ChartCard>
       </S.ChartGrid>
 
-      {/* ── 4행: 피처 영역별 분포 ── */}
       <S.ChartGrid>
         <S.ChartCard $fullWidth>
           <S.ChartTitle>피처 영역별 하드코딩 분포</S.ChartTitle>
@@ -284,7 +299,7 @@ export default function DesignAuditPage() {
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="value" name="하드코딩 개수" radius={[4, 4, 0, 0]}>
                 {featureAreaData.map((_, i) => (
-                  <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>

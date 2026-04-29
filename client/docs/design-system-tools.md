@@ -2,11 +2,11 @@
 
 이 프로젝트에는 세 가지 개발 도구가 포함되어 있다.
 
-| 도구 | 명령어 | 역할 |
-|------|--------|------|
-| 분석 CLI | `pnpm run analyze:design` | 코드를 읽고 지표를 JSON으로 저장 |
-| Codemod | `pnpm run codemod` / `codemod:apply` | 하드코딩 색상을 토큰으로 자동 교체 |
-| 대시보드 | `localhost/design-audit` (개발 서버) | 분석 결과를 차트로 시각화 |
+| 도구     | 명령어                               | 역할                               |
+| -------- | ------------------------------------ | ---------------------------------- |
+| 분석 CLI | `pnpm run analyze:design`            | 코드를 읽고 지표를 JSON으로 저장   |
+| Codemod  | `pnpm run codemod` / `codemod:apply` | 하드코딩 색상을 토큰으로 자동 교체 |
+| 대시보드 | `localhost/design-audit` (개발 서버) | 분석 결과를 차트로 시각화          |
 
 ---
 
@@ -41,13 +41,14 @@ import { Modal } from '@/shared/design-system/modal';
 
 CSS로 사용된 하드코딩 값을 세 가지 패턴으로 탐지한다.
 
-| 종류 | 예시 |
-|------|------|
-| hex 색상 | `#ffffff`, `#F1C40F`, `#fff` |
-| px 단위 값 | `16px`, `24px`, `1.5rem`은 제외 |
-| Tailwind 임의값 | `p-[13px]`, `text-[#123456]` |
+| 종류            | 예시                            |
+| --------------- | ------------------------------- |
+| hex 색상        | `#ffffff`, `#F1C40F`, `#fff`    |
+| px 단위 값      | `16px`, `24px`, `1.5rem`은 제외 |
+| Tailwind 임의값 | `p-[13px]`, `text-[#123456]`    |
 
 탐지 대상 컨텍스트:
+
 - `styled.div`, `css`, `keyframes` 등 **tagged template literal** 안의 CSS 문자열
 - JSX의 `style={{ }}` 속성 안의 문자열 값
 - JSX의 `css={{ }}` 속성 안의 문자열 값
@@ -166,7 +167,7 @@ design-system-report/
 ```tsx
 // Before
 export const Card = styled.div`
-  background: #1E293B;
+  background: #1e293b;
   color: #ffffff;
 `;
 
@@ -181,11 +182,11 @@ JSX inline style의 경우:
 
 ```tsx
 // Before
-<Heart color="#ef4444" />
+<Heart color="#ef4444" />;
 
 // After
-import { theme } from '@/shared/styles/theme';  // 자동 추가
-<Heart color={theme.colors['red-500']} />
+import { theme } from '@/shared/styles/theme'; // 자동 추가
+<Heart color={theme.colors['red-500']} />;
 ```
 
 ---
@@ -210,6 +211,7 @@ colors.ts에서 추출:
 `@babel/traverse`로 파일을 순회하며 두 가지 컨텍스트에서 hex를 찾는다.
 
 **컨텍스트 A — styled template literal**
+
 ```
 TaggedTemplateExpression (styled.div, css, keyframes)
   └─ TemplateLiteral
@@ -217,6 +219,7 @@ TaggedTemplateExpression (styled.div, css, keyframes)
 ```
 
 **컨텍스트 B — JSX style 속성**
+
 ```
 JSXAttribute (name === 'style')
   └─ JSXExpressionContainer
@@ -272,6 +275,7 @@ pnpm run codemod:apply    # 적용: 실제로 파일을 수정
 ```
 
 미리보기 출력 예시:
+
 ```
 src/features/auth/ui/AppleLoginButton.styles.ts  (2개)
   L3  #000000 → ${({ theme }) => theme.colors.black}
@@ -295,14 +299,14 @@ src/shared/ui/errorBoundary/ErrorFallback.tsx  (1개)
 
 `report.json`의 숫자들을 차트로 시각화한다. **개발 환경에서만 접근 가능**하다.
 
-| 차트 | 내용 |
-|------|------|
-| Donut — 토큰 채택률 | 토큰 사용 vs 하드코딩 비율 |
-| Donut — 하드코딩 유형 | hex / px / Tailwind 임의값 분포 |
-| 수평 Bar — 컴포넌트 사용 | Button·Modal 등 사용 횟수 순위 |
-| 수평 Bar — 토큰 카테고리 | theme.colors / semantic / spacing 등 |
-| 수평 Bar — 집중 파일 TOP 10 | 하드코딩이 많은 파일 |
-| Bar — 피처 영역별 분포 | features / pages / shared 등 |
+| 차트                        | 내용                                 |
+| --------------------------- | ------------------------------------ |
+| Donut — 토큰 채택률         | 토큰 사용 vs 하드코딩 비율           |
+| Donut — 하드코딩 유형       | hex / px / Tailwind 임의값 분포      |
+| 수평 Bar — 컴포넌트 사용    | Button·Modal 등 사용 횟수 순위       |
+| 수평 Bar — 토큰 카테고리    | theme.colors / semantic / spacing 등 |
+| 수평 Bar — 집중 파일 TOP 10 | 하드코딩이 많은 파일                 |
+| Bar — 피처 영역별 분포      | features / pages / shared 등         |
 
 ### 접근 조건
 
@@ -353,12 +357,12 @@ pnpm run codemod:apply    (적용)
 
 ## 기술 스택
 
-| 역할 | 사용 기술 |
-|------|----------|
-| TypeScript 실행 | `tsx` (별도 컴파일 없이 직접 실행) |
-| AST 파싱 | `@babel/parser` (TypeScript + JSX 플러그인) |
-| AST 탐색 | `@babel/traverse` |
-| 시각화 | `recharts` (개발 환경 전용) |
-| 스타일 | Emotion (`@emotion/styled`) |
+| 역할            | 사용 기술                                   |
+| --------------- | ------------------------------------------- |
+| TypeScript 실행 | `tsx` (별도 컴파일 없이 직접 실행)          |
+| AST 파싱        | `@babel/parser` (TypeScript + JSX 플러그인) |
+| AST 탐색        | `@babel/traverse`                           |
+| 시각화          | `recharts` (개발 환경 전용)                 |
+| 스타일          | Emotion (`@emotion/styled`)                 |
 
 `@babel/generator`를 사용하지 않는 이유: 전체 파일을 AST에서 재생성하면 들여쓰기·따옴표 스타일 등 불필요한 포맷 변경이 발생한다. 대신 AST로 교체 위치(character offset)만 계산하고 소스 문자열을 직접 수정해 **최소한의 변경만 일어나도록** 설계했다.

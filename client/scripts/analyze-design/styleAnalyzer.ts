@@ -32,15 +32,30 @@ function extractFromText(
   HEX_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = HEX_RE.exec(text)) !== null) {
-    details.push({ file: relFile, type: 'hexColor', value: m[0], line: startLine + newlinesUpTo(text, m.index) });
+    details.push({
+      file: relFile,
+      type: 'hexColor',
+      value: m[0],
+      line: startLine + newlinesUpTo(text, m.index),
+    });
   }
   PX_RE.lastIndex = 0;
   while ((m = PX_RE.exec(text)) !== null) {
-    details.push({ file: relFile, type: 'pxValue', value: m[0], line: startLine + newlinesUpTo(text, m.index) });
+    details.push({
+      file: relFile,
+      type: 'pxValue',
+      value: m[0],
+      line: startLine + newlinesUpTo(text, m.index),
+    });
   }
   TAILWIND_RE.lastIndex = 0;
   while ((m = TAILWIND_RE.exec(text)) !== null) {
-    details.push({ file: relFile, type: 'tailwindArbitrary', value: m[0], line: startLine + newlinesUpTo(text, m.index) });
+    details.push({
+      file: relFile,
+      type: 'tailwindArbitrary',
+      value: m[0],
+      line: startLine + newlinesUpTo(text, m.index),
+    });
   }
 }
 

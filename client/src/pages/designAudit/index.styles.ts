@@ -65,8 +65,7 @@ export const StatLabel = styled.p`
 export const StatValue = styled.p<{ $accent?: boolean }>`
   font-size: 1.75rem;
   font-weight: 700;
-  color: ${({ theme, $accent }) =>
-    $accent ? theme.colors['yellow-500'] : theme.colors.white};
+  color: ${({ theme, $accent }) => ($accent ? theme.colors['yellow-500'] : theme.colors.white)};
 `;
 
 export const StatUnit = styled.span`
@@ -96,11 +95,11 @@ export const ChartCard = styled.div<{ $fullWidth?: boolean }>`
 `;
 
 export const ChartTitle = styled.h2`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors['gray-200']};
   margin-bottom: 20px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 `;
 

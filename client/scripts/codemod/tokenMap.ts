@@ -39,13 +39,9 @@ export function buildTokenMap(projectRoot: string): TokenMap {
 export function colorTokenExpr(tokenKey: string, context: 'template' | 'jsx'): string {
   // Keys with hyphens/underscores need bracket notation
   const needsBracket = /[-_]/.test(tokenKey) || /^\d/.test(tokenKey);
-  const access = needsBracket
-    ? `theme.colors['${tokenKey}']`
-    : `theme.colors.${tokenKey}`;
+  const access = needsBracket ? `theme.colors['${tokenKey}']` : `theme.colors.${tokenKey}`;
 
-  return context === 'template'
-    ? `\${({ theme }) => ${access}}`
-    : access;
+  return context === 'template' ? `\${({ theme }) => ${access}}` : access;
 }
 
 export function normalizeHexPublic(hex: string): string {

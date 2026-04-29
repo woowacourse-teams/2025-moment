@@ -28,9 +28,7 @@ export function generateReport(
   }
 
   // Sort byFile descending
-  const sortedByFile = Object.fromEntries(
-    Object.entries(byFile).sort(([, a], [, b]) => b - a),
-  );
+  const sortedByFile = Object.fromEntries(Object.entries(byFile).sort(([, a], [, b]) => b - a));
 
   // Sort components by importCount descending
   const sortedComponents = Object.fromEntries(
@@ -80,9 +78,7 @@ export function generateReport(
 
   console.log('\n=== 디자인 시스템 분석 결과 ===\n');
   console.log(`분석 파일 수:    ${files.length}개`);
-  console.log(
-    `컴포넌트 사용:   ${componentCount}종 / 총 ${totalImports}회`,
-  );
+  console.log(`컴포넌트 사용:   ${componentCount}종 / 총 ${totalImports}회`);
 
   if (componentCount > 0) {
     const top = Object.entries(sortedComponents)

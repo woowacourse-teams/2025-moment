@@ -26,7 +26,7 @@ async function main() {
   generateReport(PROJECT_ROOT, files, componentResult, styleResult, tokenResult);
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error('\n분석 실패:', err);
   process.exit(1);
 });
