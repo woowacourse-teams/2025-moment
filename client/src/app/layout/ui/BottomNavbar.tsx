@@ -3,6 +3,7 @@ import { Picture } from '@/shared/design-system/picture';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { usePendingMembersQuery } from '@/features/group/api/usePendingMembersQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { Link, useLocation, useParams } from 'react-router';
 import { isApp } from '@/shared/utils/device';
 import * as S from './BottomNavbar.styles';
@@ -10,8 +11,9 @@ import * as S from './BottomNavbar.styles';
 export const BottomNavbar = () => {
   const location = useLocation();
   const { groupId } = useParams<{ groupId: string }>();
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const { data: notifications } = useReadNotificationsQuery();
-  const { data: groupsData } = useGroupsQuery();
+  const { data: groupsData } = useGroupsQuery({ enabled: !!isLoggedIn });
   const { data: pendingMembers } = usePendingMembersQuery(groupId || '');
 
   const currentPath = location.pathname;

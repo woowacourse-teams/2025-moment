@@ -74,10 +74,11 @@ describe('로그인', () => {
       cy.get('button[type="submit"]').click();
 
       cy.wait('@loginFail');
-      cy.wait('@refreshToken');
       cy.url().should('include', '/login');
-      // 401 → 토큰 갱신 시도 → 갱신도 실패 → interceptor가 "로그인이 만료되었어요" 토스트 표시
-      cy.contains('로그인이 만료되었어요', { timeout: 5000 }).should('be.visible');
+      // 로그인 401은 자격증명 실패 → 토큰 갱신 없이 mutation onError에서 서버 메시지 표시
+      cy.contains('이메일 또는 비밀번호가 올바르지 않습니다.', { timeout: 5000 }).should(
+        'be.visible',
+      );
     });
   });
 

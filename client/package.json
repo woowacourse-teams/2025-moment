@@ -27,6 +27,7 @@
   "license": "MIT",
   "sideEffects": [
     "*.css",
+    "instrument.js",
     "@emotion/**/*",
     "@sentry/**/*",
     "react-ga4/**/*"

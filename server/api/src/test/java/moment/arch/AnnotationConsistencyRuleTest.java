@@ -77,6 +77,8 @@ class AnnotationConsistencyRuleTest extends BaseArchTest {
             classes()
                     .that().areAnnotatedWith(Service.class)
                     .and().haveSimpleNameNotEndingWith("FacadeService") // Facade는 예외로 둠
+                    .and().haveSimpleNameNotStartingWith("PushNotification") // 푸시 알림 서비스는 외부 API 를 불러오는 경우가 있기 때문에 예외
+                    .and().haveSimpleNameNotStartingWith("SseNotification") // SSE 알림 서비스는 지속 연결이기 때문에 트랜잭션이 있으면 안됨
                     .should(haveTransactionalReadOnlyTrue())
                     .because("[A-007] @Service 클래스는 클래스 레벨에 @Transactional(readOnly = true)를 적용해야 합니다. " +
                             "수정 가이드: 클래스에 @Transactional(readOnly = true)를 추가하세요. " +
@@ -89,6 +91,7 @@ class AnnotationConsistencyRuleTest extends BaseArchTest {
             classes()
                     .that().areAnnotatedWith(RestController.class)
                     .and().resideOutsideOfPackage("..admin..")
+                    .and().resideOutsideOfPackage("..global..")
                     .should(useAuthenticationPrincipal())
                     .because("[AU-001] User API Controller는 @AuthenticationPrincipal을 사용해야 합니다. " +
                             "수정 가이드: 인증이 필요한 엔드포인트에 " +

@@ -50,29 +50,28 @@ export function GroupInviteSection({
             <S.CodeDisplay>{inviteCode}</S.CodeDisplay>
           </S.InviteCodeContainer>
           <S.ButtonGroup>
+            <Button variant="primary" onClick={handleCopyCode} aria-label="초대 링크 복사">
+              링크 복사
+            </Button>
             <Button
-              title="링크 복사"
-              variant="primary"
-              onClick={handleCopyCode}
-              aria-label="초대 링크 복사"
-            />
-            <Button
-              title="새 코드 생성"
               variant="secondary"
               onClick={handleGenerateCode}
               disabled={createInviteMutation.isPending}
               aria-label="새 초대 코드 생성"
-            />
+            >
+              새 코드 생성
+            </Button>
           </S.ButtonGroup>
         </>
       ) : (
         <Button
-          title="초대 코드 생성"
           variant="primary"
           onClick={handleGenerateCode}
           disabled={createInviteMutation.isPending}
           aria-label="초대 코드 생성"
-        />
+        >
+          초대 코드 생성
+        </Button>
       )}
     </>
   );

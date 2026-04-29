@@ -38,10 +38,11 @@ export const BlockedUserList = () => {
               <S.Nickname>{user.nickname}</S.Nickname>
               <Button
                 variant="danger"
-                title="차단 해제"
                 onClick={() => handleUnblock(user.blockedUserId)}
                 disabled={unblockMutation.isPending}
-              />
+              >
+                차단 해제
+              </Button>
             </S.UserItem>
           ))}
         </S.List>

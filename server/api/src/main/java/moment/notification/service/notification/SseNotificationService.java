@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moment.global.logging.NoLogging;
 import moment.notification.infrastructure.Emitters;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SseNotificationService {
 
     private static final long VALID_TIME = 10 * 60 * 1000L;
@@ -26,8 +25,13 @@ public class SseNotificationService {
         return emitter;
     }
 
+    @Async
     public void sendToClient(Long userId, String eventName, Object data) {
         emitters.sendToClient(userId, eventName, data);
+    }
+
+    public boolean isUserExist(Long userId) {
+        return emitters.isEmitterExist(userId);
     }
 
     @Scheduled(fixedRate = 25_000)

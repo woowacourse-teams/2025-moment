@@ -17,11 +17,12 @@ export const CheckButton = ({
   return (
     <Button
       externalVariant={buttonVariant}
-      title={title}
       onClick={handleClick}
       disabled={disabled}
       aria-label={ariaLabel}
-    />
+    >
+      {title}
+    </Button>
   );
 };
 

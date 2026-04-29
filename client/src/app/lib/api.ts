@@ -67,7 +67,7 @@ const setupInterceptors = (instance: AxiosInstance) => {
       const errorCode = (serverError as { code: string })?.code || 'unknown';
       const errorMessage = (serverError as { message: string })?.message || error.message;
 
-      const domain = url.split('/')[4] || 'unknown';
+      const domain = url.split('/')[1] || 'unknown';
       const endpoint = url.replace(instance.defaults.baseURL || '', '') || '/';
       const httpMethod = originalRequest?.method?.toUpperCase() || 'UNKNOWN';
 
@@ -79,12 +79,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
           domain,
           http_method: httpMethod,
           http_status: status?.toString() || 'unknown',
-          endpoint,
           error_code: errorCode,
         },
         contexts: {
           request: {
             url: originalRequest?.url || url,
+            endpoint,
             method: httpMethod,
             baseURL: instance.defaults.baseURL,
           },
@@ -101,16 +101,22 @@ const setupInterceptors = (instance: AxiosInstance) => {
       });
 
       if (url.includes('/auth/refresh') && (status === 401 || status === 403)) {
+        const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
         queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-        toast.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
+        if (wasLoggedIn) {
+          toast.error('로그인이 만료되었어요! 다시 로그인해 주세요.');
+        }
         redirectToLogin();
         return Promise.reject(error);
       }
 
       // 로그인 체크 요청은 ProtectedRoute에서 처리하므로 인터셉터에서 토스트/리다이렉트 생략
       const isLoginCheck = url.includes('/auth/login/check');
+      // 로그인 요청 401은 자격증명 실패이므로 토큰 갱신 불필요
+      const isLoginEndpoint =
+        url.includes('/auth/login') && !url.includes('/auth/login/check');
 
-      if (status === 401 && !originalRequest._retry) {
+      if (status === 401 && !originalRequest._retry && !isLoginEndpoint) {
         originalRequest._retry = true;
 
         if (isRefreshing && refreshPromise) {
@@ -121,9 +127,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
             return instance(originalRequest);
           } catch {
             if (!isLoginCheck) {
+              const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
               queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-              toast.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
-              redirectToLogin();
+              if (wasLoggedIn) {
+                toast.error('잠시 문제가 생겼어요. 다시 로그인해 주세요.');
+                redirectToLogin();
+              }
             }
             return Promise.reject(error);
           }
@@ -139,9 +148,12 @@ const setupInterceptors = (instance: AxiosInstance) => {
           return instance(originalRequest);
         } catch (refreshError) {
           if (!isLoginCheck) {
+            const wasLoggedIn = queryClient.getQueryData(queryKeys.auth.checkLogin);
             queryClient.setQueryData(queryKeys.auth.checkLogin, false);
-            toast.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
-            redirectToLogin();
+            if (wasLoggedIn) {
+              toast.error('로그인이 만료되었어요. 다시 로그인해 주세요.');
+              redirectToLogin();
+            }
           }
           return Promise.reject(refreshError);
         } finally {

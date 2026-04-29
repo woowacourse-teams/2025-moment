@@ -47,11 +47,12 @@ export function GroupCreateSuccess({ inviteCode, groupId, onClose }: GroupCreate
           />
           <Button
             type="button"
-            title="복사"
             variant="secondary"
             onClick={handleCopyLink}
             style={{ width: '80px', whiteSpace: 'nowrap' }}
-          />
+          >
+            복사
+          </Button>
         </div>
       </S.InputGroup>
 

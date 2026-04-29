@@ -23,12 +23,9 @@ export const ChangePasswordForm = () => {
         />
         <S.ErrorMessage>{errors.checkedPassword || ''}</S.ErrorMessage>
       </S.ChangePasswordFormContent>
-      <Button
-        title="변경하기"
-        variant="primary"
-        onClick={handleSubmit}
-        disabled={isSubmitDisabled}
-      />
+      <Button variant="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
+        변경하기
+      </Button>
     </S.ChangePassWordFormWrapper>
   );
 };

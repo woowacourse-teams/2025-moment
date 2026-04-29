@@ -2,6 +2,7 @@ import { ROUTES } from '@/app/routes/routes';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
 import { usePendingMembersQuery } from '@/features/group/api/usePendingMembersQuery';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
+import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { Picture } from '@/shared/design-system/picture';
 import { Link, useLocation, useParams } from 'react-router';
 import * as S from './index.styles';
@@ -9,8 +10,9 @@ import { track } from '@/shared/lib/ga/track';
 
 export const NavigatorsBar = ({ $isNavBar }: { $isNavBar?: boolean }) => {
   const { groupId } = useParams<{ groupId: string }>();
+  const { data: isLoggedIn } = useCheckIfLoggedInQuery();
   const { data: notifications } = useReadNotificationsQuery();
-  const { data: groupsData } = useGroupsQuery();
+  const { data: groupsData } = useGroupsQuery({ enabled: !!isLoggedIn });
   const { data: pendingMembers } = usePendingMembersQuery(groupId || '');
   const location = useLocation();
 
