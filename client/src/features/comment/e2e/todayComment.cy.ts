@@ -114,7 +114,7 @@ describe('오늘의 코멘트 페이지', () => {
       cy.contains(momentsData[0].nickname).should('be.visible');
       cy.contains(momentsData[0].content).should('be.visible');
 
-      cy.get('button[class*="RefreshButton"]').click();
+      cy.get('button[aria-label="다른 모멘트 보기"]').click();
 
       cy.wait('@getMoments');
 
@@ -153,7 +153,7 @@ describe('오늘의 코멘트 페이지', () => {
     });
 
     it('신고 아이콘을 클릭하면 신고하기 모달이 보인다', () => {
-      cy.get('button[class*="ComplaintButton"]').click();
+      cy.get('button[aria-label="모멘트 신고"]').click();
 
       cy.contains('신고하기').should('be.visible');
       cy.contains('신고 사유를 선택해주세요').should('be.visible');
@@ -169,7 +169,7 @@ describe('오늘의 코멘트 페이지', () => {
     });
 
     it('리스트 중 하나를 클릭하고 신고하기 버튼을 클릭하면 모달이 꺼지면서 신고 접수 토스트가 보인다', () => {
-      cy.get('button[class*="ComplaintButton"]').click();
+      cy.get('button[aria-label="모멘트 신고"]').click();
 
       cy.get('[role="dialog"]').within(() => {
         cy.contains('스팸/광고').click();
@@ -189,7 +189,7 @@ describe('오늘의 코멘트 페이지', () => {
       cy.contains(momentsData[0].nickname).should('be.visible');
       cy.contains(momentsData[0].content).should('be.visible');
 
-      cy.get('button[class*="ComplaintButton"]').click();
+      cy.get('button[aria-label="모멘트 신고"]').click();
 
       cy.get('[role="dialog"]').within(() => {
         cy.contains('스팸/광고').click();
@@ -207,7 +207,7 @@ describe('오늘의 코멘트 페이지', () => {
     });
 
     it('모달에서 취소 버튼을 클릭하면 모달이 닫힌다', () => {
-      cy.get('button[class*="ComplaintButton"]').click();
+      cy.get('button[aria-label="모멘트 신고"]').click();
 
       cy.contains('신고하기').should('be.visible');
 
@@ -220,7 +220,7 @@ describe('오늘의 코멘트 페이지', () => {
     });
 
     it('모달 외부를 클릭하면 모달이 닫힌다', () => {
-      cy.get('button[class*="ComplaintButton"]').click();
+      cy.get('button[aria-label="모멘트 신고"]').click();
 
       cy.contains('신고하기').should('be.visible');
 

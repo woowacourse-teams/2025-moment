@@ -65,7 +65,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),
-    new ForkTsCheckerWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin({ typescript: { configFile: 'tsconfig.build.json' } }),
     new webpack.DefinePlugin({
       'process.env.REACT_APP_BASE_URL': JSON.stringify(
         process.env.REACT_APP_BASE_URL || 'http://localhost:8080/api/v2',

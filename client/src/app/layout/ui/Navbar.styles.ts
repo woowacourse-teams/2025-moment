@@ -14,6 +14,10 @@ export const Navbar = styled.nav`
   right: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  @supports not (backdrop-filter: blur(10px)) {
+    background-color: rgba(10, 10, 15, 0.85);
+  }
 `;
 
 export const LevelIcon = styled.img`
