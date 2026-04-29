@@ -62,7 +62,13 @@ describe('나의 모멘트 모음집 페이지', () => {
     }).as('getUnreadMoments');
 
     cy.visit('/groups/1/collection/my-moment');
-    cy.wait(['@checkLogin', '@getProfile', '@getNotifications', '@getMyMoments']);
+    cy.wait([
+      '@checkLogin',
+      '@getProfile',
+      '@getNotifications',
+      '@getMyMoments',
+      '@getUnreadMoments',
+    ]);
   });
 
   describe('시나리오 1: 모멘트 목록 확인', () => {

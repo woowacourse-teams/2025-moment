@@ -5,11 +5,22 @@ interface CheckButton {
   title: string;
   onClick: () => void;
   disabled: boolean;
+  'aria-label'?: string;
 }
 
-export const CheckButton = ({ title, onClick: handleClick, disabled }: CheckButton) => {
+export const CheckButton = ({
+  title,
+  onClick: handleClick,
+  disabled,
+  'aria-label': ariaLabel,
+}: CheckButton) => {
   return (
-    <Button externalVariant={buttonVariant} onClick={handleClick} disabled={disabled}>
+    <Button
+      externalVariant={buttonVariant}
+      onClick={handleClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+    >
       {title}
     </Button>
   );

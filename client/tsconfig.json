@@ -18,14 +18,5 @@
     "types": ["node", "jest", "cypress"]
   },
   "include": ["src", ".storybook", "test", "src/types/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "**/*.cy.ts",
-    "**/*.cy.tsx"
-  ]
+  "exclude": ["node_modules", "dist", "**/*.cy.ts", "**/*.cy.tsx"]
 }

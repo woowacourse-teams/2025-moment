@@ -112,8 +112,10 @@ const setupInterceptors = (instance: AxiosInstance) => {
 
       // 로그인 체크 요청은 ProtectedRoute에서 처리하므로 인터셉터에서 토스트/리다이렉트 생략
       const isLoginCheck = url.includes('/auth/login/check');
+      // 로그인 요청 401은 자격증명 실패이므로 토큰 갱신 불필요
+      const isLoginEndpoint = url.includes('/auth/login') && !url.includes('/auth/login/check');
 
-      if (status === 401 && !originalRequest._retry) {
+      if (status === 401 && !originalRequest._retry && !isLoginEndpoint) {
         originalRequest._retry = true;
 
         if (isRefreshing && refreshPromise) {
