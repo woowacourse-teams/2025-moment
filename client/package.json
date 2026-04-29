@@ -23,7 +23,9 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "converter:csv": "node src/shared/utils/csvToTs.js",
-    "analyze:design": "tsx scripts/analyze-design/index.ts"
+    "analyze:design": "tsx scripts/analyze-design/index.ts",
+    "codemod": "tsx scripts/codemod/index.ts",
+    "codemod:apply": "tsx scripts/codemod/index.ts --apply"
   },
   "license": "MIT",
   "sideEffects": [
