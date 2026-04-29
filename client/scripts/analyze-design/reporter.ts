@@ -76,7 +76,9 @@ export function generateReport(
   const componentCount = Object.keys(sortedComponents).length;
   const totalImports = Object.values(sortedComponents).reduce((s, c) => s + c.importCount, 0);
 
-  const C1 = 26, C2 = 22, C3 = 22;
+  const C1 = 26,
+    C2 = 22,
+    C3 = 22;
 
   // Visual width accounting for Hangul double-width chars
   function vw(s: string): number {
@@ -91,8 +93,7 @@ export function generateReport(
   const ps = (s: string, n: number) => ' '.repeat(Math.max(0, n - vw(s))) + s;
   const peAnsi = (s: string, visW: number, n: number) => s + ' '.repeat(Math.max(0, n - visW));
 
-  const row = (a: string, b: string, c: string) =>
-    `║ ${pe(a, C1)} ║ ${pe(b, C2)} ║ ${pe(c, C3)} ║`;
+  const row = (a: string, b: string, c: string) => `║ ${pe(a, C1)} ║ ${pe(b, C2)} ║ ${pe(c, C3)} ║`;
   const rowAnsi3 = (a: string, b: string, c: string, cVisW: number) =>
     `║ ${pe(a, C1)} ║ ${pe(b, C2)} ║ ${peAnsi(c, cVisW, C3)} ║`;
 
