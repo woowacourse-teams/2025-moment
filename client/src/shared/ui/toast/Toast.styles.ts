@@ -33,17 +33,17 @@ const toastVariants = {
     color: ${theme.colors['emerald-600']};
   `,
   error: (theme: CustomTheme) => `
-    background-color: color-mix(in srgb, ${theme.colors['red-500']} 10%, transparent);
+    background-color: rgba(239, 68, 68, 0.1);
     border-left: 4px solid ${theme.colors['red-500']};
     color: ${theme.colors['red-500']};
   `,
   warning: (theme: CustomTheme) => `
-    background-color: color-mix(in srgb, ${theme.colors['orange-500_80']} 10%, transparent);
+    background-color: rgba(245, 183, 11, 0.08);
     border-left: 4px solid ${theme.colors['orange-500_80']};
     color: ${theme.colors['orange-500_80']};
   `,
   message: (theme: CustomTheme) => `
-    background-color: color-mix(in srgb, ${theme.colors['yellow-300_80']} 10%, transparent);
+    background-color: rgba(244, 208, 63, 0.08);
     border-left: 4px solid ${theme.colors['yellow-300_80']};
     color: ${theme.colors['yellow-300_80']};
   `,
@@ -85,6 +85,10 @@ export const ToastItem = styled.div<{
   position: relative;
   animation: ${({ isExiting }) => (isExiting ? slideOut : slideIn)} 0.3s ease-out forwards;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  @supports not (backdrop-filter: blur(8px)) {
+    background-color: rgba(30, 41, 59, 0.95) !important;
+  }
   min-height: 60px;
 
   ${({ $isClickable }) =>
