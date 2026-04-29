@@ -56,6 +56,7 @@ export const SignupStep3 = ({ signupData, handleClick, onEnter }: SignupStep3Pro
           variant="primary"
           onClick={handleClick}
           disabled={!agreedToTerms}
+          aria-label="회원가입"
         />
       </S.ButtonContainer>
 

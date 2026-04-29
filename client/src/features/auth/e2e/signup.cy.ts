@@ -5,12 +5,11 @@ const TEST_PASSWORD = 'Valid123!';
 const TEST_CODE = '123456';
 const TEST_NICKNAME = '행복한 판다';
 
-// CheckButton이 title을 HTML attribute로 사용하므로 [title="..."] 선택자 필요
-const EMAIL_CODE_SEND_BTN = '[title="인증코드 전송"]';
-const EMAIL_CODE_VERIFY_BTN = '[title="인증코드 확인"]';
+const EMAIL_CODE_SEND_BTN = '[aria-label="이메일 인증코드 전송"]';
+const EMAIL_CODE_VERIFY_BTN = '[aria-label="이메일 인증코드 확인"]';
 const NEXT_BTN = '[aria-label="다음 단계로"]';
 const PREV_BTN = '[aria-label="이전 단계로"]';
-const SIGNUP_BTN = '[title="회원가입"]';
+const SIGNUP_BTN = '[aria-label="회원가입"]';
 
 const mockNotLoggedIn = () => {
   cy.intercept('GET', '**/api/v2/auth/login/check', {
