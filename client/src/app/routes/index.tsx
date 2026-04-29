@@ -22,6 +22,7 @@ const NewPasswordPage = lazy(() => import('@/pages/newPassword'));
 const TermsPage = lazy(() => import('@/pages/terms'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/privacyPolicy'));
 const DeleteAccountPage = lazy(() => import('@/pages/deleteAccount'));
+const DesignAuditPage = lazy(() => import('@/pages/designAudit'));
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -82,6 +83,15 @@ export const router = createBrowserRouter(
           element={
             <Suspense fallback={<FormPageSkeleton />}>
               <NewPasswordPage />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path={ROUTES.DESIGN_AUDIT}
+          element={
+            <Suspense fallback={null}>
+              <DesignAuditPage />
             </Suspense>
           }
         />
