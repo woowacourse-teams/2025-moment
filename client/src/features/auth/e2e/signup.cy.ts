@@ -9,7 +9,7 @@ const EMAIL_CODE_SEND_BTN = '[aria-label="이메일 인증코드 전송"]';
 const EMAIL_CODE_VERIFY_BTN = '[aria-label="이메일 인증코드 확인"]';
 const NEXT_BTN = '[aria-label="다음 단계로"]';
 const PREV_BTN = '[aria-label="이전 단계로"]';
-const SIGNUP_BTN = '[aria-label="회원가입"]';
+const SIGNUP_BTN = 'button[aria-label="회원가입"]';
 
 const mockNotLoggedIn = () => {
   cy.intercept('GET', '**/api/v2/auth/login/check', {
