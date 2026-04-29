@@ -63,9 +63,16 @@ export function generateReport(
   };
 
   // ── write JSON ──────────────────────────────────────────────────────────
+  const json = JSON.stringify(report, null, 2);
+
   const outDir = path.resolve(projectRoot, OUTPUT_DIR);
   fs.mkdirSync(outDir, { recursive: true });
-  fs.writeFileSync(path.join(outDir, OUTPUT_FILE), JSON.stringify(report, null, 2), 'utf-8');
+  fs.writeFileSync(path.join(outDir, OUTPUT_FILE), json, 'utf-8');
+
+  // Also copy to public/ so the dev server can serve it to the dashboard page
+  const publicDir = path.resolve(projectRoot, 'public', OUTPUT_DIR);
+  fs.mkdirSync(publicDir, { recursive: true });
+  fs.writeFileSync(path.join(publicDir, OUTPUT_FILE), json, 'utf-8');
 
   // ── console summary ────────────────────────────────────────────────────
   const componentCount = Object.keys(sortedComponents).length;
