@@ -175,17 +175,17 @@ export default function DesignAuditPage() {
         </S.StatCard>
       </S.StatGrid>
 
-      <S.ChartGrid>
+      <S.ChartGrid $cols={3}>
         <S.ChartCard>
           <S.ChartTitle>토큰 채택률</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={adoptionPieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={100}
+                innerRadius={50}
+                outerRadius={80}
                 paddingAngle={3}
                 dataKey="value"
               >
@@ -194,7 +194,7 @@ export default function DesignAuditPage() {
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend
-                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>}
+                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 12 }}>{val}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -202,14 +202,14 @@ export default function DesignAuditPage() {
 
         <S.ChartCard>
           <S.ChartTitle>하드코딩 유형별 분포</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={hardcodedTypePieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={100}
+                innerRadius={50}
+                outerRadius={80}
                 paddingAngle={3}
                 dataKey="value"
               >
@@ -219,43 +219,43 @@ export default function DesignAuditPage() {
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend
-                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 13 }}>{val}</span>}
+                formatter={val => <span style={{ color: '#D1D5DB', fontSize: 12 }}>{val}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
         </S.ChartCard>
-      </S.ChartGrid>
 
-      <S.ChartGrid>
         <S.ChartCard>
           <S.ChartTitle>공통 컴포넌트 사용 횟수</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={componentBarData} layout="vertical" margin={{ left: 8, right: 24 }}>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={componentBarData} layout="vertical" margin={{ left: 8, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
-              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
+              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 11 }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                tick={{ fill: TICK_COLOR, fontSize: 12 }}
-                width={72}
+                tick={{ fill: TICK_COLOR, fontSize: 11 }}
+                width={68}
               />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="사용 횟수" fill="#F1C40F" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </S.ChartCard>
+      </S.ChartGrid>
 
+      <S.ChartGrid $cols={3}>
         <S.ChartCard>
           <S.ChartTitle>토큰 카테고리별 사용 횟수</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={tokenCategoryData} layout="vertical" margin={{ left: 8, right: 24 }}>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={tokenCategoryData} layout="vertical" margin={{ left: 8, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
-              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
+              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 11 }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                tick={{ fill: TICK_COLOR, fontSize: 11 }}
-                width={96}
+                tick={{ fill: TICK_COLOR, fontSize: 10 }}
+                width={90}
               />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="사용 횟수" radius={[0, 4, 4, 0]}>
@@ -266,36 +266,32 @@ export default function DesignAuditPage() {
             </BarChart>
           </ResponsiveContainer>
         </S.ChartCard>
-      </S.ChartGrid>
 
-      <S.ChartGrid>
-        <S.ChartCard $fullWidth>
+        <S.ChartCard>
           <S.ChartTitle>하드코딩 집중 파일 TOP 10</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={340}>
-            <BarChart data={topFilesData} layout="vertical" margin={{ left: 8, right: 40 }}>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={topFilesData} layout="vertical" margin={{ left: 8, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" horizontal={false} />
-              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 12 }} />
+              <XAxis type="number" tick={{ fill: TICK_COLOR, fontSize: 11 }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                tick={{ fill: TICK_COLOR, fontSize: 11 }}
-                width={200}
+                tick={{ fill: TICK_COLOR, fontSize: 10 }}
+                width={140}
               />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="count" name="하드코딩 개수" fill="#F87171" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </S.ChartCard>
-      </S.ChartGrid>
 
-      <S.ChartGrid>
-        <S.ChartCard $fullWidth>
+        <S.ChartCard>
           <S.ChartTitle>피처 영역별 하드코딩 분포</S.ChartTitle>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={featureAreaData} margin={{ left: 8, right: 24 }}>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={featureAreaData} margin={{ left: 8, right: 16 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
-              <XAxis dataKey="name" tick={{ fill: TICK_COLOR, fontSize: 13 }} />
-              <YAxis tick={{ fill: TICK_COLOR, fontSize: 12 }} />
+              <XAxis dataKey="name" tick={{ fill: TICK_COLOR, fontSize: 11 }} />
+              <YAxis tick={{ fill: TICK_COLOR, fontSize: 11 }} />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="value" name="하드코딩 개수" radius={[4, 4, 0, 0]}>
                 {featureAreaData.map((_, i) => (

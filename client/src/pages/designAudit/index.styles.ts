@@ -2,17 +2,17 @@ import styled from '@emotion/styled';
 
 export const Page = styled.div`
   min-height: 100vh;
-  padding: 40px 24px 80px;
-  max-width: 1200px;
+  padding: 24px 24px 40px;
+  max-width: 1440px;
   margin: 0 auto;
 
   ${({ theme }) => theme.breakpoints.mobile} {
-    padding: 24px 16px 60px;
+    padding: 16px 16px 40px;
   }
 `;
 
 export const Header = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.h1`
@@ -41,8 +41,8 @@ export const RunHint = styled.code`
 export const StatGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin-bottom: 16px;
 
   ${({ theme }) => theme.breakpoints.mobile} {
     grid-template-columns: repeat(2, 1fr);
@@ -53,7 +53,7 @@ export const StatCard = styled.div`
   background-color: ${({ theme }) => theme.colors['slate-800']};
   border: 1px solid ${({ theme }) => theme.colors['gray-700']};
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px 20px;
 `;
 
 export const StatLabel = styled.p`
@@ -63,7 +63,7 @@ export const StatLabel = styled.p`
 `;
 
 export const StatValue = styled.p<{ $accent?: boolean }>`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: ${({ theme, $accent }) => ($accent ? theme.colors['yellow-500'] : theme.colors.white)};
 `;
@@ -75,23 +75,22 @@ export const StatUnit = styled.span`
   margin-left: 4px;
 `;
 
-export const ChartGrid = styled.div`
+export const ChartGrid = styled.div<{ $cols?: 2 | 3 }>`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: ${({ $cols }) => ($cols === 3 ? 'repeat(3, 1fr)' : '1fr 1fr')};
+  gap: 16px;
+  margin-bottom: 16px;
 
   ${({ theme }) => theme.breakpoints.mobile} {
     grid-template-columns: 1fr;
   }
 `;
 
-export const ChartCard = styled.div<{ $fullWidth?: boolean }>`
+export const ChartCard = styled.div`
   background-color: ${({ theme }) => theme.colors['slate-800']};
   border: 1px solid ${({ theme }) => theme.colors['gray-700']};
   border-radius: 12px;
-  padding: 24px;
-  ${({ $fullWidth }) => $fullWidth && 'grid-column: 1 / -1;'}
+  padding: 20px 20px 16px;
 `;
 
 export const ChartTitle = styled.h2`
