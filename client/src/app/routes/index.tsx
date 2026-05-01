@@ -22,6 +22,8 @@ const NewPasswordPage = lazy(() => import('@/pages/newPassword'));
 const TermsPage = lazy(() => import('@/pages/terms'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/privacyPolicy'));
 const DeleteAccountPage = lazy(() => import('@/pages/deleteAccount'));
+const DesignAuditPage =
+  process.env.NODE_ENV === 'development' ? lazy(() => import('@/pages/designAudit')) : null;
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -85,6 +87,17 @@ export const router = createBrowserRouter(
             </Suspense>
           }
         />
+
+        {process.env.NODE_ENV === 'development' && DesignAuditPage && (
+          <Route
+            path={ROUTES.DESIGN_AUDIT}
+            element={
+              <Suspense fallback={null}>
+                <DesignAuditPage />
+              </Suspense>
+            }
+          />
+        )}
 
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.TODAY_MOMENT} element={<TodayMomentPage />} />

@@ -35,3 +35,6 @@ storybook-static
 
 # cursor
 .cursor/
+
+# design system analyzer output (generated, not tracked)
+design-system-report/

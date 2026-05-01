@@ -22,7 +22,10 @@
     "test:debug": "jest --no-cache --verbose",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "converter:csv": "node src/shared/utils/csvToTs.js"
+    "converter:csv": "node src/shared/utils/csvToTs.js",
+    "analyze:design": "tsx scripts/analyze-design/index.ts",
+    "codemod": "tsx scripts/codemod/index.ts",
+    "codemod:apply": "tsx scripts/codemod/index.ts --apply"
   },
   "license": "MIT",
   "sideEffects": [
@@ -43,13 +46,17 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-ga4": "^2.1.0",
-    "react-router": "^7.6.3"
+    "react-router": "^7.6.3",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
+    "@babel/parser": "^7.29.2",
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
     "@emotion/babel-plugin": "^11.13.5",
     "@eslint-react/eslint-plugin": "^1.52.3",
     "@sentry/webpack-plugin": "^4.5.0",
@@ -59,6 +66,7 @@
     "@tanstack/react-query-devtools": "^5.83.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/babel__traverse": "^7.28.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.14",
     "@types/react": "^19.1.8",
@@ -86,6 +94,7 @@
     "storybook": "^9.0.17",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.14",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.37.0",
     "webpack": "^5.100.1",

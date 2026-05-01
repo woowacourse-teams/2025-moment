@@ -16,4 +16,5 @@ export const ROUTES = {
   NEW_PASSWORD: '/passwordUpdate',
   COLLECTION_MYMOMENT: '/groups/:groupId/collection/my-moment',
   COLLECTION_MYCOMMENT: '/groups/:groupId/collection/my-comment',
+  DESIGN_AUDIT: '/design-audit',
 };
