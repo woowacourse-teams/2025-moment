@@ -14,10 +14,7 @@ export const useSSENotifications = () => {
   const isFirstConnectRef = useRef(true);
 
   const connect = useCallback(() => {
-    if (
-      eventSourceRef.current &&
-      eventSourceRef.current.readyState !== EventSource.CLOSED
-    ) {
+    if (eventSourceRef.current && eventSourceRef.current.readyState !== EventSource.CLOSED) {
       return;
     }
 
@@ -87,10 +84,7 @@ export const useSSENotifications = () => {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        if (
-          !eventSourceRef.current ||
-          eventSourceRef.current.readyState === EventSource.CLOSED
-        ) {
+        if (!eventSourceRef.current || eventSourceRef.current.readyState === EventSource.CLOSED) {
           isFirstConnectRef.current = false;
           connect();
         }
