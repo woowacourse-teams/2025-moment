@@ -25,7 +25,8 @@
     "converter:csv": "node src/shared/utils/csvToTs.js",
     "analyze:design": "tsx scripts/analyze-design/index.ts",
     "codemod": "tsx scripts/codemod/index.ts",
-    "codemod:apply": "tsx scripts/codemod/index.ts --apply"
+    "codemod:apply": "tsx scripts/codemod/index.ts --apply",
+    "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
   },
   "license": "MIT",
   "sideEffects": [
@@ -73,6 +74,7 @@
     "@types/react-dom": "^19.1.6",
     "babel-jest": "^30.0.4",
     "babel-loader": "^10.0.0",
+    "chromatic": "^16.6.3",
     "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
