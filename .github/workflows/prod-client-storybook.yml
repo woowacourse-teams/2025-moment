@@ -1,4 +1,4 @@
-name: Deploy Storybook to GitHub Pages
+name: Deploy Storybook to Chromatic
 
 on:
   push:
@@ -7,10 +7,16 @@ on:
     paths:
       - 'client/src/**/*.stories.tsx'
       - 'client/src/shared/ui/**'
+      - 'client/.storybook/**'
+  pull_request:
+    paths:
+      - 'client/src/**/*.stories.tsx'
+      - 'client/src/shared/ui/**'
+      - 'client/.storybook/**'
   workflow_dispatch:
 
 jobs:
-  deploy:
+  chromatic:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -33,11 +41,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Storybook
-        run: pnpm run build-storybook
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Publish to Chromatic
+        uses: chromaui/action@latest
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./client/storybook-static
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: ./client
