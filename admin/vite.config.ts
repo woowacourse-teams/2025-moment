@@ -9,6 +9,17 @@ interface VitestConfigExport extends UserConfig {
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-emotion": ["@emotion/react", "@emotion/styled"],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       "/api": {
