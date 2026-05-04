@@ -16,6 +16,7 @@ export default defineConfig({
           "vendor-react": ["react", "react-dom", "react-router-dom"],
           "vendor-query": ["@tanstack/react-query"],
           "vendor-emotion": ["@emotion/react", "@emotion/styled"],
+          "vendor-axios": ["axios"],
         },
       },
     },
