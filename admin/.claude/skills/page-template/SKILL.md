@@ -1,25 +1,25 @@
 ---
-name: page-scaffold
-description: Generate starter file skeleton for new Admin pages following FSD architecture. Use when implementing a new list or detail page.
+name: page-template
+description: FSD 아키텍처를 따르는 새 어드민 페이지의 기본 파일 구조를 생성합니다. 새 목록 또는 상세 페이지를 구현할 때 사용하세요.
 argument-hint: <entity> <list|detail>
 disable-model-invocation: true
 ---
 
-Generate Admin page scaffold for: $ARGUMENTS
+다음 어드민 페이지 스캐폴드를 생성하세요: $ARGUMENTS
 
-Parse the arguments as `<entity> <list|detail>`. If the page type is omitted, generate both.
+인수를 `<entity> <list|detail>` 형식으로 파싱하세요. 페이지 타입이 생략된 경우 두 가지 모두 생성하세요.
 
 ---
 
-## List Page
+## 목록 페이지 (List Page)
 
-**Files to create:**
+**생성할 파일:**
 1. `pages/<Entity>ListPage.tsx`
 2. `features/<entity>/hooks/use<Entity>List.ts`
 3. `features/<entity>/ui/<Entity>Table.tsx` + `<Entity>Table.styles.ts`
 4. `features/<entity>/ui/<Entity>SearchFilter.tsx` + `<Entity>SearchFilter.styles.ts`
 
-**Page template:**
+**페이지 템플릿:**
 ```tsx
 export default function <Entity>ListPage() {
   const { user } = useAuth();
@@ -37,7 +37,7 @@ export default function <Entity>ListPage() {
 
   return (
     <Container>
-      <Header><Title><Entity> Management</Title></Header>
+      <Header><Title><Entity> 관리</Title></Header>
       <<Entity>SearchFilter keyword={keyword} onKeywordChange={setKeyword} onSearch={handleSearch} />
       <<Entity>Table <entities>={<entities>} isAdmin={isAdmin} />
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
@@ -46,7 +46,7 @@ export default function <Entity>ListPage() {
 }
 ```
 
-**Logic hook template:**
+**로직 훅 템플릿:**
 ```typescript
 export function use<Entity>List() {
   const [page, setPage] = useState(0);
@@ -69,9 +69,9 @@ export function use<Entity>List() {
 
 ---
 
-## Detail Page
+## 상세 페이지 (Detail Page)
 
-**Files to create:**
+**생성할 파일:**
 1. `pages/<Entity>DetailPage.tsx`
 2. `features/<entity>/hooks/use<Entity>Detail.ts`
 3. `features/<entity>/ui/<Entity>DetailCard.tsx` + styles
@@ -80,9 +80,9 @@ export function use<Entity>List() {
 
 ---
 
-## Rules
+## 규칙
 
-- Pages are thin (composition only — no useState, useQuery inside)
-- Logic lives in `features/<entity>/hooks/`
-- Styles in separate `*.styles.ts` files (never inline)
-- Add query keys to `shared/api/queryKeys.ts` before writing hooks
+- 페이지는 얇게 유지 (조합만 담당 — useState, useQuery를 직접 쓰지 않음)
+- 로직은 `features/<entity>/hooks/`에 위치
+- 스타일은 별도 `*.styles.ts` 파일로 분리 (인라인 스타일 금지)
+- 훅 작성 전에 `shared/api/queryKeys.ts`에 쿼리 키를 먼저 추가할 것

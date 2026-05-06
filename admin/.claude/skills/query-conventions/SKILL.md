@@ -1,16 +1,16 @@
 ---
 name: query-conventions
-description: TanStack Query patterns and code templates for this admin codebase. Apply when writing useQuery or useMutation hooks.
+description: 이 어드민 코드베이스의 TanStack Query 패턴 및 코드 템플릿입니다. useQuery 또는 useMutation 훅을 작성할 때 적용하세요.
 user-invocable: false
 ---
 
-## File Location
+## 파일 위치
 
-All query/mutation hooks go in `features/<entity>/api/`.
+모든 쿼리/뮤테이션 훅은 `features/<entity>/api/`에 위치합니다.
 
-## Query Keys
+## 쿼리 키 (Query Keys)
 
-Centralized in `shared/api/queryKeys.ts`. Always add new keys there:
+`shared/api/queryKeys.ts`에 중앙 집중 관리합니다. 새 키는 항상 여기에 추가하세요:
 
 ```typescript
 export const queryKeys = {
@@ -25,7 +25,7 @@ export const queryKeys = {
 };
 ```
 
-## Query Hook Template
+## 쿼리 훅 템플릿
 
 ```typescript
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ export function useUsersQuery(params: UserListParams) {
 }
 ```
 
-## Mutation Hook Template
+## 뮤테이션 훅 템플릿
 
 ```typescript
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -65,17 +65,17 @@ export function useDeleteUserMutation() {
 }
 ```
 
-## Invalidation Strategy
+## 캐시 무효화 전략
 
-| Action        | Invalidate                        |
-|---------------|-----------------------------------|
-| Delete item   | `queryKeys.<entity>.all`          |
-| Update item   | `queryKeys.<entity>.all`          |
-| Update detail | `queryKeys.<entity>.detail(id)`   |
+| 동작            | 무효화 대상                               |
+|----------------|------------------------------------------|
+| 항목 삭제       | `queryKeys.<entity>.all`                 |
+| 항목 수정       | `queryKeys.<entity>.all`                 |
+| 상세 정보 수정  | `queryKeys.<entity>.detail(id)`          |
 
-## Checklist
+## 체크리스트
 
-- [ ] Key defined in `shared/api/queryKeys.ts`
-- [ ] Hook in `features/<entity>/api/`
-- [ ] Mutation invalidates correct keys
-- [ ] Mutation includes `reason` param for destructive actions
+- [ ] `shared/api/queryKeys.ts`에 키 정의 완료
+- [ ] `features/<entity>/api/`에 훅 위치
+- [ ] 뮤테이션이 올바른 키를 무효화하는지 확인
+- [ ] 파괴적 동작에 `reason` 파라미터 포함 여부 확인

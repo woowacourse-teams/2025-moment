@@ -1,54 +1,54 @@
 ---
 name: validation
-description: Run lint, type-check, and tests. Auto-fix errors up to 3 attempts before reporting.
+description: lint, 타입 체크, 테스트를 실행합니다. 오류는 최대 3회 시도까지 자동으로 수정합니다.
 disable-model-invocation: true
 allowed-tools: Bash(pnpm *)
 ---
 
-Run full validation and auto-fix any errors.
+전체 유효성 검사를 실행하고 오류가 있으면 자동으로 수정하세요.
 
-## Command
+## 실행 명령어
 
 ```bash
 pnpm run lint && tsc --noEmit && pnpm run test
 ```
 
-## Process
+## 진행 방식
 
-1. Run the validation command
-2. If it fails, diagnose and fix errors automatically
-3. Re-run validation (max 3 attempts total)
-4. If still failing after 3 attempts, report to user with full error details
+1. 유효성 검사 명령어 실행
+2. 실패하면 오류를 진단하고 자동으로 수정
+3. 유효성 검사 재실행 (최대 3회 시도)
+4. 3회 시도 후에도 실패하면 전체 오류 내용과 함께 사용자에게 보고
 
-## Auto-fixable Errors
+## 자동 수정 가능한 오류 유형
 
-| Type             | Example                                       |
-|------------------|-----------------------------------------------|
-| Missing import   | `'useState' is not defined`                   |
-| Type mismatch    | `Type 'string' not assignable to 'number'`    |
-| Unused variable  | `'foo' declared but never used`               |
-| Missing return   | `Function lacks ending return statement`      |
+| 타입             | 예시                                              |
+|-----------------|---------------------------------------------------|
+| 누락된 import    | `'useState' is not defined`                       |
+| 타입 불일치      | `Type 'string' not assignable to 'number'`        |
+| 미사용 변수      | `'foo' declared but never used`                   |
+| 누락된 return    | `Function lacks ending return statement`          |
 
-## Output
+## 출력 형식
 
-**PASS:**
+**통과:**
 ```
-✅ Validation PASSED
+✅ 유효성 검사 통과
 - lint: ✓
 - tsc: ✓
 - test: ✓
 ```
 
-**FAIL (auto-fixing):**
+**실패 (자동 수정 중):**
 ```
-❌ Validation FAILED (attempt 1/3)
-Error: src/features/user/ui/UserList.tsx:15 - 'useState' is not defined
-Fixing...
+❌ 유효성 검사 실패 (시도 1/3)
+오류: src/features/user/ui/UserList.tsx:15 - 'useState' is not defined
+수정 중...
 ```
 
-**FAIL (manual needed):**
+**실패 (수동 처리 필요):**
 ```
-❌ Validation FAILED (after 3 attempts)
-Unresolved errors: [details]
-Manual intervention required.
+❌ 유효성 검사 실패 (3회 시도 후)
+미해결 오류: [상세 내용]
+수동 처리가 필요합니다.
 ```

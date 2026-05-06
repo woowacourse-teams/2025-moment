@@ -3,18 +3,18 @@ paths:
   - "src/**/*.{ts,tsx}"
 ---
 
-# Error Handling Rules
+# 에러 처리 규칙
 
-## API Errors
+## API 에러
 
-Global interceptor in `shared/api/client.ts`:
-- **401**: Redirect to `/login`
-- **403**: Show permission denied message
-- **4xx/5xx**: Normalize error format
+`shared/api/client.ts`의 전역 인터셉터에서 처리:
+- **401**: `/login`으로 리다이렉트
+- **403**: 권한 없음 메시지 표시
+- **4xx/5xx**: 에러 형식 정규화
 
-## Component States
+## 데이터 fetching 컴포넌트 상태
 
-Every data-fetching component must handle:
+데이터를 불러오는 컴포넌트는 반드시 아래 4가지 상태를 모두 처리합니다:
 
 ```tsx
 if (isLoading) return <Loading />;
@@ -23,13 +23,13 @@ if (!data?.length) return <Empty />;
 return <Content data={data} />;
 ```
 
-## Mutation Errors
+## 뮤테이션 에러
 
-- Show toast/alert with error message
-- Do NOT close modal on error
-- Log error details for debugging
+- 에러 메시지를 toast/alert로 표시
+- 에러가 발생해도 모달을 닫지 않음
+- 디버깅을 위해 에러 상세 내용 로깅
 
-## Error Boundaries
+## Error Boundary
 
-- Wrap pages with ErrorBoundary
-- Provide fallback UI with retry option
+- 모든 페이지를 ErrorBoundary로 감쌀 것
+- 재시도 버튼이 있는 fallback UI 제공

@@ -1,46 +1,46 @@
 ---
 name: smart-commit
-description: Create atomic, well-structured git commits with Korean messages.
+description: 한국어 메시지로 원자적이고 잘 구조화된 git 커밋을 생성합니다.
 disable-model-invocation: true
 allowed-tools: Bash(git *)
 ---
 
-Create atomic commits for all current changes.
+현재 변경사항을 원자적 커밋으로 나누어 생성하세요.
 
-## Rules
+## 규칙
 
-- **Atomic commits**: one logical change per commit
-- **Korean messages**: all commit messages in Korean
-- **No Co-Authored-By** lines
-- **Never switch branches**
+- **원자적 커밋**: 논리적 변경 단위 하나당 커밋 하나
+- **한국어 메시지**: 모든 커밋 메시지는 한국어로 작성
+- **Co-Authored-By 금지**: 해당 줄 추가 안 함
+- **브랜치 전환 금지**
 
-## Commit Format
+## 커밋 형식
 
 ```
-<type>: <subject>
+<type>: <제목>
 ```
 
-| Type       | Usage              |
-|------------|--------------------|
-| `feat`     | New feature        |
-| `fix`      | Bug fix            |
-| `refactor` | Code restructuring |
-| `style`    | Formatting only    |
-| `docs`     | Documentation      |
-| `test`     | Tests              |
-| `chore`    | Build/config       |
+| 타입       | 사용 시점           |
+|------------|---------------------|
+| `feat`     | 새로운 기능         |
+| `fix`      | 버그 수정           |
+| `refactor` | 코드 구조 개선      |
+| `style`    | 포맷팅만 변경       |
+| `docs`     | 문서 작업           |
+| `test`     | 테스트 작업         |
+| `chore`    | 빌드/설정 변경      |
 
-## Workflow
+## 작업 순서
 
-1. `git status` — identify changed files
-2. `git diff` — review what changed
-3. Group files by logical unit
-4. For each group:
-   - `git add <specific-files>`
-   - `git commit -m "<type>: <Korean subject>"`
-5. `git log -n <count>` — verify result
+1. `git status` — 변경된 파일 목록 확인
+2. `git diff` — 변경 내용 검토
+3. 논리적 단위로 파일 그룹화
+4. 각 그룹에 대해:
+   - `git add <특정-파일들>`
+   - `git commit -m "<type>: <한국어 제목>"`
+5. `git log -n <개수>` — 결과 확인
 
-## Example
+## 예시
 
 ```bash
 git add src/features/user/api/useUsersQuery.ts

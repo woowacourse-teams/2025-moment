@@ -1,32 +1,32 @@
 ---
 name: smart-pr
-description: Generate and create a GitHub pull request with Korean title and description.
+description: 한국어 제목과 설명으로 GitHub 풀 리퀘스트를 생성합니다.
 disable-model-invocation: true
-allowed-tools: Bash(gh *), Bash(git *)
+allowed-tools: Bash(gh *) Bash(git *)
 ---
 
-Create a pull request for the current branch.
+현재 브랜치의 풀 리퀘스트를 생성하세요.
 
-## Rules
+## 규칙
 
-- All content in Korean
-- Follow `.github/pull_request_template.md` if it exists
-- Concise — focus on core changes, not implementation detail
+- 모든 내용은 한국어로 작성
+- `.github/pull_request_template.md`가 있으면 해당 형식을 따를 것
+- 간결하게 작성 — 구현 세부사항보다 핵심 변경사항에 집중
 
-## PR Title Format
+## PR 제목 형식
 
 ```
-<type>: <subject>
+<type>: <제목>
 ```
 
-Example: `feat: 사용자 목록 페이지 구현`
+예시: `feat: 사용자 목록 페이지 구현`
 
-## PR Body Template
+## PR 본문 템플릿
 
 ```markdown
 # 📋 연관 이슈
 
-close #<issue_number>
+close #<이슈번호>
 
 # 🚀 작업 내용
 
@@ -42,10 +42,10 @@ close #<issue_number>
 (없으면 생략)
 ```
 
-## Workflow
+## 작업 순서
 
-1. `git log main..HEAD --oneline` — review commits on this branch
-2. `git diff main...HEAD --stat` — understand scope of changes
-3. Draft title and body based on commits
+1. `git log main..HEAD --oneline` — 이 브랜치의 커밋 확인
+2. `git diff main...HEAD --stat` — 변경 범위 파악
+3. 커밋 기반으로 제목과 본문 초안 작성
 4. `gh pr create --title "..." --body "..."`
-5. Output the PR URL
+5. PR URL 출력

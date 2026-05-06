@@ -1,38 +1,38 @@
-# Git Conventions
+# Git 규칙
 
-## Branch Naming
+## 브랜치 네이밍
 
 ```
-<type>/<issue-number>-<short-description>
+<type>/<이슈번호>-<짧은설명>
 ```
 
-| Type | Usage |
-|------|-------|
-| `feat/` | New feature |
-| `fix/` | Bug fix |
-| `refactor/` | Code refactoring |
-| `chore/` | Build, config, dependencies |
+| 타입 | 사용 시점 |
+|------|----------|
+| `feat/` | 새로운 기능 |
+| `fix/` | 버그 수정 |
+| `refactor/` | 코드 구조 개선 |
+| `chore/` | 빌드, 설정, 의존성 변경 |
 
-Example: `feat/#123-user-list-page`
+예시: `feat/#123-user-list-page`
 
-## Commit Messages
+## 커밋 메시지
 
-Format: `<type>: <subject>`
+형식: `<type>: <제목>`
 
-| Type | Usage |
-|------|-------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `refactor` | Code restructuring |
-| `style` | Formatting only |
-| `docs` | Documentation |
-| `test` | Tests |
-| `chore` | Build/config |
+| 타입 | 사용 시점 |
+|------|----------|
+| `feat` | 새로운 기능 |
+| `fix` | 버그 수정 |
+| `refactor` | 코드 구조 개선 |
+| `style` | 포맷팅만 변경 |
+| `docs` | 문서 작업 |
+| `test` | 테스트 작업 |
+| `chore` | 빌드/설정 변경 |
 
-Example: `feat: add user list pagination`
+예시: `feat: 사용자 목록 페이지네이션 추가`
 
-## Rules
+## 규칙
 
-- Atomic commits (one logical change per commit)
-- No `--force` push to main/master
-- No `--no-verify` unless explicitly needed
+- 원자적 커밋 (논리적 변경 단위 하나당 커밋 하나)
+- main/master에 `--force` push 금지
+- `--no-verify` 사용 금지 (명시적 허가 없이)

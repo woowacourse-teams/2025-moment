@@ -1,25 +1,25 @@
 ---
 name: refactor-logic
-description: Extract business logic from UI components into custom hooks in features/<entity>/hooks/.
-argument-hint: <component-file>
+description: UI 컴포넌트에서 비즈니스 로직을 features/<entity>/hooks/의 커스텀 훅으로 추출합니다.
+argument-hint: <컴포넌트-파일>
 disable-model-invocation: true
 ---
 
-Extract business logic from: $ARGUMENTS
+다음 컴포넌트에서 비즈니스 로직을 추출하세요: $ARGUMENTS
 
-Read the target component, identify all state, effects, and query calls, then move them into a custom hook.
+대상 컴포넌트를 읽고, 모든 상태(state), 이펙트(effects), 쿼리 호출을 파악한 뒤 커스텀 훅으로 이동하세요.
 
-## Target Structure
+## 목표 구조
 
-| Context     | Hook file                    | Hook name         |
-|-------------|------------------------------|-------------------|
-| List Page   | `use<Entity>List.ts`         | `use<Entity>List` |
-| Detail Page | `use<Entity>Detail.ts`       | `use<Entity>Detail` |
-| Edit Modal  | `use<Entity>Edit.ts`         | `use<Entity>Edit` |
+| 컨텍스트      | 훅 파일                      | 훅 이름             |
+|--------------|------------------------------|---------------------|
+| 목록 페이지   | `use<Entity>List.ts`         | `use<Entity>List`   |
+| 상세 페이지   | `use<Entity>Detail.ts`       | `use<Entity>Detail` |
+| 수정 모달     | `use<Entity>Edit.ts`         | `use<Entity>Edit`   |
 
-Location: `features/<entity>/hooks/`
+위치: `features/<entity>/hooks/`
 
-## List Hook Template
+## 목록 훅 템플릿
 
 ```typescript
 export function useUserList() {
@@ -41,7 +41,7 @@ export function useUserList() {
 }
 ```
 
-## Detail Hook Template
+## 상세 훅 템플릿
 
 ```typescript
 export function useGroupDetail(groupId: string) {
@@ -67,8 +67,8 @@ export function useGroupDetail(groupId: string) {
 }
 ```
 
-## Checklist
+## 체크리스트
 
-- [ ] Hook lives in `features/<entity>/hooks/`
-- [ ] UI component has no `useState`, `useEffect`, or `useQuery` after extraction
-- [ ] Hook returns only needed data and handlers (no raw query objects)
+- [ ] 훅이 `features/<entity>/hooks/`에 위치하는지 확인
+- [ ] 추출 후 UI 컴포넌트에 `useState`, `useEffect`, `useQuery`가 없는지 확인
+- [ ] 훅이 필요한 데이터와 핸들러만 반환하는지 확인 (raw 쿼리 객체 노출 금지)
