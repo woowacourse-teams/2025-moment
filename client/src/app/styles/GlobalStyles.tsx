@@ -1,4 +1,5 @@
 import { Global, css } from '@emotion/react';
+import { theme } from '@/shared/styles/theme';
 
 const globalStyles = css`
   * {
@@ -51,7 +52,7 @@ const globalStyles = css`
     font-weight: 400;
     line-height: 1.5;
     color: #212529;
-    background-color: #fff;
+    background-color: ${theme.colors.white};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -132,7 +133,7 @@ const globalStyles = css`
 
   mark {
     background: #ff0;
-    color: #000;
+    color: ${theme.colors.black};
   }
 
   small {

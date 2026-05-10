@@ -8,8 +8,8 @@ export const AppleLoginButton = styled.button`
   width: 100%;
   height: 48px;
   border-radius: 10px;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
   font-size: 16px;
   font-weight: 500;
   transition: opacity 0.2s;

@@ -1,5 +1,15 @@
 lockfileVersion: '9.0'
 
+onlyBuiltDependencies:
+  - '@firebase/util'
+  - '@sentry/cli'
+  - '@swc/core'
+  - cypress
+  - esbuild
+  - msw
+  - protobufjs
+  - unrs-resolver
+
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false

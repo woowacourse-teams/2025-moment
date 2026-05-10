@@ -5,15 +5,14 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./src/*"]
     },
     "types": ["node", "jest", "cypress"]
   },

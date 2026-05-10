@@ -6,7 +6,7 @@ export const SignupFormWrapper = styled.form`
   min-height: 650px;
   max-height: 700px;
   padding: 32px;
-  background-color: ${({ theme }) => theme.colors['slate-800_60']}; // #1E293B
+  background-color: ${({ theme }) => theme.colors['slate-800_60']};
   border-radius: 12px;
   display: flex;
   flex-direction: column;
