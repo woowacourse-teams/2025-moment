@@ -108,8 +108,8 @@ export default function HomePage() {
               )
             ) : ctaVariant === 'treatment' ? (
               <S.CTAButtonGroup>
-                <Button variant="primary" onClick={handleClick}>
-                  지금 시작하기
+                <Button variant="secondary" onClick={handleClick}>
+                  모멘트 작성하기
                 </Button>
                 <Button variant="secondary" onClick={handleScrollToIntro}>
                   서비스 둘러보기
