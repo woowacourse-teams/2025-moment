@@ -5,20 +5,17 @@ import { FileUpload } from '@/shared/ui';
 import { TextArea } from '@/shared/design-system/textArea';
 import { YellowSquareButton } from '@/shared/ui/yellowSquareButton/YellowSquareButton';
 import { useTodayMomentForm } from '../hook/useTodayMomentForm';
-import { Variant } from '@/shared/lib/abTest';
 
 export function TodayMomentForm({
   handleContentChange,
   handleImageChange,
   handleSendContent,
   content,
-  variant = 'control',
 }: {
   handleContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleImageChange: (imageData: { imageUrl: string; imageName: string } | null) => void;
   handleSendContent: () => void;
   content: string;
-  variant?: Variant;
 }) {
   const { handleFormSubmit, handleNavigateToTodayMomentSuccess, handleTextAreaFocus, MAX_LENGTH } =
     useTodayMomentForm({ content, handleSendContent });
@@ -46,38 +43,18 @@ export function TodayMomentForm({
             <FileUpload onImageChange={handleImageChange} disabled={false} />
           </fieldset>
         </Card.Content>
-        {variant === 'control' ? (
-          <Card.Action position="space-between">
-            <p>
-              {content.length} / {MAX_LENGTH}
-            </p>
-            <YellowSquareButton
-              leftIcon={<Send size={16} />}
-              onClick={handleNavigateToTodayMomentSuccess}
-              disabled={content.trim().length === 0}
-            >
-              모멘트 공유하기
-            </YellowSquareButton>
-          </Card.Action>
-        ) : (
-          <Card.Action position="space-between">
-            <p>
-              {content.length} / {MAX_LENGTH}
-            </p>
-          </Card.Action>
-        )}
-        {variant === 'treatment' && (
-          <S.FloatingSubmitWrapper>
-            <S.FloatingSubmitButton
-              variant="tertiary"
-              leftIcon={<Send size={16} />}
-              onClick={handleNavigateToTodayMomentSuccess}
-              disabled={content.trim().length === 0}
-            >
-              모멘트 공유하기
-            </S.FloatingSubmitButton>
-          </S.FloatingSubmitWrapper>
-        )}
+        <Card.Action position="space-between">
+          <p>
+            {content.length} / {MAX_LENGTH}
+          </p>
+          <YellowSquareButton
+            leftIcon={<Send size={16} />}
+            onClick={handleNavigateToTodayMomentSuccess}
+            disabled={content.trim().length === 0}
+          >
+            모멘트 공유하기
+          </YellowSquareButton>
+        </Card.Action>
       </S.TodayContentForm>
     </Card>
   );
