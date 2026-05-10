@@ -109,5 +109,17 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@sentry/cli",
+      "@swc/core",
+      "cypress",
+      "esbuild",
+      "msw",
+      "protobufjs",
+      "unrs-resolver"
+    ]
   }
 }
