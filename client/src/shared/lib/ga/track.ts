@@ -3,6 +3,7 @@ import { isGAEnabled } from '.';
 
 type CommonParams = {
   screen?: string;
+  ab_variant?: string;
 };
 
 type EventMap = {
@@ -38,7 +39,7 @@ type EventMap = {
 function getCommonParams(): CommonParams {
   return {
     screen: window.location.pathname,
-    // ab_variant: (window as any).__AB_VARIANT__, // 사용 시 주석 해제
+    ab_variant: (window as any).__AB_VARIANT__,
   };
 }
 
