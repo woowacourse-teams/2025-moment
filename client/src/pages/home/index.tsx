@@ -42,11 +42,13 @@ export default function HomePage() {
   const ctaVariant = useABVariant('landing-cta');
 
   useEffect(() => {
-    (window as any).__AB_VARIANT__ = ctaVariant;
+    if (!isLoggedIn) {
+      (window as any).__AB_VARIANT__ = ctaVariant;
+    }
     return () => {
       (window as any).__AB_VARIANT__ = undefined;
     };
-  }, [ctaVariant]);
+  }, [ctaVariant, isLoggedIn]);
 
   const handleClick = () => {
     track('click_cta', { cta_type: 'primary' });
