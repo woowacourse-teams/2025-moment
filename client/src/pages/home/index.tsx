@@ -5,7 +5,7 @@ import { Hero } from '@/widgets/hero';
 import { useNavigate } from 'react-router';
 import * as S from './index.styles';
 import { useScrollAnimation } from '@/shared/hooks/useScrollAnimation';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
@@ -40,6 +40,13 @@ export default function HomePage() {
   const hasGroups = isLoggedIn && groups.length > 0;
 
   const ctaVariant = useABVariant('landing-cta');
+
+  useEffect(() => {
+    (window as any).__AB_VARIANT__ = ctaVariant;
+    return () => {
+      (window as any).__AB_VARIANT__ = undefined;
+    };
+  }, [ctaVariant]);
 
   const handleClick = () => {
     track('click_cta', { cta_type: 'primary' });
