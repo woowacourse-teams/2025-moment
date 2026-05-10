@@ -9,6 +9,7 @@ import { PropsWithChildren, useState } from 'react';
 import { explainData } from './const';
 import { useScrollDepth } from '@/shared/lib/ga/hooks/useScrollDepth';
 import { track } from '@/shared/lib/ga/track';
+import { useABVariant } from '@/shared/hooks/useABVariant';
 import { Modal } from '@/shared/design-system/modal';
 import { useCheckIfLoggedInQuery } from '@/features/auth/api/useCheckIfLoggedInQuery';
 import { useGroupsQuery } from '@/features/group/api/useGroupsQuery';
@@ -38,9 +39,16 @@ export default function HomePage() {
   const groups = groupsResponse?.data || [];
   const hasGroups = isLoggedIn && groups.length > 0;
 
+  const ctaVariant = useABVariant('landing-cta');
+
   const handleClick = () => {
     track('click_cta', { cta_type: 'primary' });
     navigate(ROUTES.LOGIN);
+  };
+
+  const handleScrollToIntro = () => {
+    track('click_cta', { cta_type: 'secondary' });
+    document.querySelector('#intro-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const handleCreateGroupCtx = () => setModalType('create');
@@ -98,6 +106,15 @@ export default function HomePage() {
                   </S.OnboardingButtonGroup>
                 </S.OnboardingContainer>
               )
+            ) : ctaVariant === 'treatment' ? (
+              <S.CTAButtonGroup>
+                <Button variant="primary" onClick={handleClick}>
+                  지금 시작하기
+                </Button>
+                <Button variant="secondary" onClick={handleScrollToIntro}>
+                  서비스 둘러보기
+                </Button>
+              </S.CTAButtonGroup>
             ) : (
               <Button variant="secondary" onClick={handleClick}>
                 모멘트 작성하기
