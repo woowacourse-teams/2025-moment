@@ -33,7 +33,7 @@ type EventMap = {
   scroll_depth: { percent_bucket: '0' | '25' | '50' | '75' | '100' };
   click_navigation: { destination: 'today_moment' | 'today_comment' | 'collection' };
   click_auth: { device: 'desktop' | 'mobile' };
-  click_cta: { cta_type: 'primary' | 'secondary' };
+  click_cta: { cta_type: 'primary' | 'secondary'; after_explore?: boolean };
 };
 
 function getCommonParams(): CommonParams {

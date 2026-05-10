@@ -40,6 +40,7 @@ export default function HomePage() {
   const hasGroups = isLoggedIn && groups.length > 0;
 
   const ctaVariant = useABVariant('landing-cta');
+  const [didExplore, setDidExplore] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -51,11 +52,12 @@ export default function HomePage() {
   }, [ctaVariant, isLoggedIn]);
 
   const handleClick = () => {
-    track('click_cta', { cta_type: 'primary' });
+    track('click_cta', { cta_type: 'primary', after_explore: didExplore });
     navigate(ROUTES.LOGIN);
   };
 
   const handleScrollToIntro = () => {
+    setDidExplore(true);
     track('click_cta', { cta_type: 'secondary' });
     document.querySelector('#intro-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
