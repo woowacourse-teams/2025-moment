@@ -6,19 +6,26 @@ import { useLocation, useParams } from 'react-router';
 import * as S from './index.styles';
 import { track } from '@/shared/lib/ga/track';
 import { useDwell } from '@/shared/lib/ga/hooks/useDwell';
+import { useABVariant } from '@/shared/hooks/useABVariant';
 
 export default function TodayMomentPage() {
   const { groupId } = useParams<{ groupId: string }>();
   const { handleContentChange, handleImageChange, handleSendContent, content } =
     useSendMoments(groupId);
 
+  const variant = useABVariant('submit-btn-position');
   const location = useLocation();
+
   useEffect(() => {
+    (window as any).__AB_VARIANT__ = variant;
     track('open_composer', {
       entry: location.state?.entry ?? 'nav',
       composer: 'moment',
     });
-  }, []);
+    return () => {
+      (window as any).__AB_VARIANT__ = undefined;
+    };
+  }, [variant]);
 
   useDwell('composer');
 
@@ -33,6 +40,7 @@ export default function TodayMomentPage() {
         handleImageChange={handleImageChange}
         handleSendContent={handleSendContent}
         content={content}
+        variant={variant}
       />
     </S.TodayPageWrapper>
   );
