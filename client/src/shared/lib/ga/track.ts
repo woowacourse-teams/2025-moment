@@ -3,6 +3,7 @@ import { isGAEnabled } from '.';
 
 type CommonParams = {
   screen?: string;
+  ab_variant?: string;
 };
 
 type EventMap = {
@@ -32,13 +33,13 @@ type EventMap = {
   scroll_depth: { percent_bucket: '0' | '25' | '50' | '75' | '100' };
   click_navigation: { destination: 'today_moment' | 'today_comment' | 'collection' };
   click_auth: { device: 'desktop' | 'mobile' };
-  click_cta: { cta_type: 'primary' | 'secondary' };
+  click_cta: { cta_type: 'primary' | 'secondary'; after_explore?: boolean };
 };
 
 function getCommonParams(): CommonParams {
   return {
     screen: window.location.pathname,
-    // ab_variant: (window as any).__AB_VARIANT__, // 사용 시 주석 해제
+    ab_variant: (window as any).__AB_VARIANT__,
   };
 }
 

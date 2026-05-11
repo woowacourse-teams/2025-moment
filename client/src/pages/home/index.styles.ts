@@ -453,6 +453,14 @@ export const OnboardingCard = styled.div`
     height: 160px;
   }
 `;
+export const CTAButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+`;
+
 export const GroupListContainer = styled.div`
   width: 100%;
   max-width: 480px;
