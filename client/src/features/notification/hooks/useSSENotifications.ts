@@ -7,6 +7,11 @@ import { subscribeNotifications } from '../api/subscribeNotifications';
 import { NotificationItem, NotificationResponse } from '../types/notifications';
 import { SSENotification } from '../types/sseNotification';
 
+const getGroupIdFromLink = (link: string) => {
+  const match = link.match(/\/groups\/(\d+)/);
+  return match ? Number(match[1]) : null;
+};
+
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
   const { data: isLoggedIn } = useCheckIfLoggedInQuery();
@@ -51,15 +56,19 @@ export const useSSENotifications = () => {
           data: [newNotification, ...currentNotifications],
         } satisfies NotificationResponse);
 
+        const groupId = getGroupIdFromLink(sseData.link);
+
         if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
           toast.message('나의 모멘트에 코멘트가 달렸습니다!', 'moment', 5000, sseData.link);
+          if (groupId) {
+            queryClient.invalidateQueries({ queryKey: queryKeys.group.myMoments(groupId) });
+            queryClient.invalidateQueries({ queryKey: queryKeys.group.momentsUnread(groupId) });
+          }
+        } else if (sseData.notificationType === 'NEW_REPLY_ON_COMMENT' && groupId) {
+          queryClient.invalidateQueries({ queryKey: queryKeys.group.comments(groupId) });
+          queryClient.invalidateQueries({ queryKey: queryKeys.group.commentsUnread(groupId) });
         }
 
-        if (sseData.targetType === 'MOMENT') {
-          queryClient.invalidateQueries({ queryKey: ['moments'] });
-        } else if (sseData.targetType === 'COMMENT') {
-          queryClient.invalidateQueries({ queryKey: ['comments'] });
-        }
         queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
       } catch {
         toast.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
