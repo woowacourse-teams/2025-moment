@@ -2,6 +2,7 @@ import type { QueryKey } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { NotificationItem, NotificationResponse, NotificationType } from '../types/notifications';
 import { SSENotification } from '../types/sseNotification';
+import { SseNotificationErrorReason } from './sseNotificationError';
 
 type ParseSsePayloadResult =
   | {
@@ -10,7 +11,7 @@ type ParseSsePayloadResult =
     }
   | {
       ok: false;
-      reason: 'parse-error';
+      reason: SseNotificationErrorReason;
     };
 
 export type NotificationInvalidationTarget = QueryKey;

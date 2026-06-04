@@ -12,6 +12,7 @@ import {
   parseSsePayload,
   prependNotificationToCache,
 } from '../utils/sseNotificationPayload';
+import { reportSseNotificationError } from '../utils/sseNotificationError';
 
 export const useSSENotifications = () => {
   const queryClient = useQueryClient();
@@ -38,13 +39,13 @@ export const useSSENotifications = () => {
     const handleNotification = (event: MessageEvent) => {
       const parsedPayload = parseSsePayload(event.data);
       if (!parsedPayload.ok) {
-        toast.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
+        reportSseNotificationError(parsedPayload.reason);
         return;
       }
 
       try {
         if (!isSseNotificationPayload(parsedPayload.value)) {
-          toast.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
+          reportSseNotificationError('invalid-payload');
           return;
         }
 
@@ -71,8 +72,8 @@ export const useSSENotifications = () => {
         getNotificationInvalidationTargets(sseData).forEach(queryKey => {
           queryClient.invalidateQueries({ queryKey });
         });
-      } catch {
-        toast.error('실시간 알림 데이터 처리 중 오류가 발생했습니다.');
+      } catch (error) {
+        reportSseNotificationError('unknown', error);
       }
     };
 
