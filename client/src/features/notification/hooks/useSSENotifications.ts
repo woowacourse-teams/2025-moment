@@ -7,6 +7,7 @@ import { subscribeNotifications } from '../api/subscribeNotifications';
 import { NotificationResponse } from '../types/notifications';
 import {
   getNotificationInvalidationTargets,
+  getSseNotificationToast,
   isSseNotificationPayload,
   mapSsePayloadToNotificationItem,
   parseSsePayload,
@@ -60,10 +61,11 @@ export const useSSENotifications = () => {
           prependNotificationToCache(currentData, newNotification),
         );
 
-        if (sseData.notificationType === 'NEW_COMMENT_ON_MOMENT') {
+        const notificationToast = getSseNotificationToast(sseData);
+        if (notificationToast) {
           toast.message(
-            '나의 모멘트에 코멘트가 달렸습니다!',
-            sseData.link ? 'moment' : undefined,
+            notificationToast.message,
+            sseData.link ? notificationToast.routeType : undefined,
             5000,
             sseData.link ?? undefined,
           );
