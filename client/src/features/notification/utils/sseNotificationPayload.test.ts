@@ -1,6 +1,7 @@
 import {
   getGroupIdFromLink,
   getNotificationInvalidationTargets,
+  getSseNotificationToast,
   mapSsePayloadToNotificationItem,
   parseSsePayload,
   prependNotificationToCache,
@@ -192,5 +193,72 @@ describe('SSE 알림 invalidate target 계산', () => {
     const result = getNotificationInvalidationTargets(payload);
 
     expect(result).toEqual([queryKeys.notifications.all]);
+  });
+});
+
+describe('SSE 알림 toast 표시 정책', () => {
+  it('NEW_COMMENT_ON_MOMENT 알림은 모멘트 toast 대상이다', () => {
+    const payload: SSENotification = {
+      notificationId: 20,
+      notificationType: 'NEW_COMMENT_ON_MOMENT',
+      message: '내 모멘트에 새로운 코멘트가 달렸습니다.',
+      link: '/groups/3/collection/my-moment',
+    };
+
+    const result = getSseNotificationToast(payload);
+
+    expect(result).toEqual({
+      message: '나의 모멘트에 코멘트가 달렸습니다!',
+      routeType: 'moment',
+    });
+  });
+
+  it('MOMENT_LIKED 알림은 모멘트 toast 대상이다', () => {
+    const payload: SSENotification = {
+      notificationId: 21,
+      notificationType: 'MOMENT_LIKED',
+      message: '모멘트에 좋아요가 달렸습니다.',
+      link: '/groups/3/collection/my-moment',
+    };
+
+    const result = getSseNotificationToast(payload);
+
+    expect(result).toEqual({
+      message: '나의 모멘트에 좋아요가 달렸습니다!',
+      routeType: 'moment',
+    });
+  });
+
+  it('COMMENT_LIKED 알림은 코멘트 toast 대상이다', () => {
+    const payload: SSENotification = {
+      notificationId: 22,
+      notificationType: 'COMMENT_LIKED',
+      message: '코멘트에 좋아요가 달렸습니다.',
+      link: '/groups/3/collection/my-comment',
+    };
+
+    const result = getSseNotificationToast(payload);
+
+    expect(result).toEqual({
+      message: '나의 코멘트에 좋아요가 달렸습니다!',
+      routeType: 'comment',
+    });
+  });
+
+  it.each([
+    ['GROUP_JOIN_REQUEST', '그룹 가입 요청이 왔습니다.'],
+    ['GROUP_JOIN_APPROVED', '그룹 가입이 승인되었습니다.'],
+    ['GROUP_KICKED', '그룹에서 강퇴되었습니다.'],
+  ] as const)('%s 알림은 이동 없는 toast 대상이다', (notificationType, message) => {
+    const payload: SSENotification = {
+      notificationId: 23,
+      notificationType,
+      message,
+      link: notificationType === 'GROUP_KICKED' ? null : '/groups/3/today-moment',
+    };
+
+    const result = getSseNotificationToast(payload);
+
+    expect(result).toEqual({ message });
   });
 });

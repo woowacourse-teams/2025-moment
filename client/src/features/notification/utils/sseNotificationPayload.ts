@@ -1,4 +1,5 @@
 import type { QueryKey } from '@tanstack/react-query';
+import type { ToastRouteType } from '@/shared/types/toast';
 import { queryKeys } from '@/shared/lib/queryKeys';
 import { NotificationItem, NotificationResponse, NotificationType } from '../types/notifications';
 import { SSENotification } from '../types/sseNotification';
@@ -15,6 +16,11 @@ type ParseSsePayloadResult =
     };
 
 export type NotificationInvalidationTarget = QueryKey;
+
+export interface SseNotificationToast {
+  message: string;
+  routeType?: ToastRouteType;
+}
 
 export const NOTIFICATION_TYPES = [
   'NEW_COMMENT_ON_MOMENT',
@@ -119,6 +125,49 @@ export const getNotificationInvalidationTargets = (
   }
 
   return queryKeysToInvalidate;
+};
+
+/**
+ * SSE 알림 타입에 따라 사용자에게 보여줄 toast 내용을 계산한다.
+ *
+ * @param payload - 현재 서버 NotificationSseResponse 형태의 SSE payload
+ * @returns toast로 노출할 알림 내용. toast 대상이 아니면 null
+ */
+export const getSseNotificationToast = (
+  payload: SSENotification,
+): SseNotificationToast | null => {
+  if (payload.notificationType === 'NEW_COMMENT_ON_MOMENT') {
+    return {
+      message: '나의 모멘트에 코멘트가 달렸습니다!',
+      routeType: 'moment',
+    };
+  }
+
+  if (payload.notificationType === 'MOMENT_LIKED') {
+    return {
+      message: '나의 모멘트에 좋아요가 달렸습니다!',
+      routeType: 'moment',
+    };
+  }
+
+  if (payload.notificationType === 'COMMENT_LIKED') {
+    return {
+      message: '나의 코멘트에 좋아요가 달렸습니다!',
+      routeType: 'comment',
+    };
+  }
+
+  if (
+    payload.notificationType === 'GROUP_JOIN_REQUEST' ||
+    payload.notificationType === 'GROUP_JOIN_APPROVED' ||
+    payload.notificationType === 'GROUP_KICKED'
+  ) {
+    return {
+      message: payload.message,
+    };
+  }
+
+  return null;
 };
 
 /**
