@@ -1,5 +1,10 @@
-export type NotificationType = 'NEW_REPLY_ON_COMMENT' | 'NEW_COMMENT_ON_MOMENT';
-export type TargetType = 'COMMENT' | 'MOMENT';
+export type NotificationType =
+  | 'NEW_COMMENT_ON_MOMENT'
+  | 'GROUP_JOIN_REQUEST'
+  | 'GROUP_JOIN_APPROVED'
+  | 'GROUP_KICKED'
+  | 'MOMENT_LIKED'
+  | 'COMMENT_LIKED';
 
 export interface NotificationResponse {
   status: number;
@@ -7,10 +12,9 @@ export interface NotificationResponse {
 }
 
 export interface NotificationItem {
-  id?: number;
+  id: number;
   notificationType: NotificationType;
-  targetType: TargetType;
-  targetId: number;
   message: string;
   isRead: boolean;
+  link: string | null;
 }
