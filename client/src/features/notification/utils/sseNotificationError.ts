@@ -14,10 +14,7 @@ const normalizeError = (error: unknown): Error => {
  * @param reason - SSE 알림 데이터 처리 실패 원인
  * @param error - 후처리 중 발생한 원본 에러. 없으면 기본 Error를 생성한다.
  */
-export const reportSseNotificationError = (
-  reason: SseNotificationErrorReason,
-  error?: unknown,
-) => {
+export const reportSseNotificationError = (reason: SseNotificationErrorReason, error?: unknown) => {
   Sentry.captureException(normalizeError(error), {
     level: 'warning',
     tags: {

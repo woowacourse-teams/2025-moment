@@ -133,9 +133,7 @@ export const getNotificationInvalidationTargets = (
  * @param payload - 현재 서버 NotificationSseResponse 형태의 SSE payload
  * @returns toast로 노출할 알림 내용. toast 대상이 아니면 null
  */
-export const getSseNotificationToast = (
-  payload: SSENotification,
-): SseNotificationToast | null => {
+export const getSseNotificationToast = (payload: SSENotification): SseNotificationToast | null => {
   if (payload.notificationType === 'NEW_COMMENT_ON_MOMENT') {
     return {
       message: '나의 모멘트에 코멘트가 달렸습니다!',

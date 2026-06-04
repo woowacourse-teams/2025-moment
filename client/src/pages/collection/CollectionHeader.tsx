@@ -12,11 +12,11 @@ export const CollectionHeader = () => {
   const currentpath = useLocation().pathname;
   const { data: notifications } = useReadNotificationsQuery();
 
-  const isMomentNotificationExisting = notifications?.data.some(
-    notification => MOMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
+  const isMomentNotificationExisting = notifications?.data.some(notification =>
+    MOMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
   );
-  const isCommentNotificationExisting = notifications?.data.some(
-    notification => COMMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
+  const isCommentNotificationExisting = notifications?.data.some(notification =>
+    COMMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
   );
 
   const momentCollectionPath = ROUTES.COLLECTION_MYMOMENT.replace(':groupId', groupId || '');
