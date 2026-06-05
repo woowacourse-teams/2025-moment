@@ -2,6 +2,7 @@ import {
   getGroupIdFromLink,
   getNotificationInvalidationTargets,
   getSseNotificationToast,
+  isSseNotificationPayload,
   mapSsePayloadToNotificationItem,
   parseSsePayload,
   prependNotificationToCache,
@@ -15,6 +16,76 @@ describe('SSE 알림 payload 파싱', () => {
     const result = parseSsePayload('{invalid-json');
 
     expect(result).toEqual({ ok: false, reason: 'parse-error' });
+  });
+});
+
+describe('SSE payload 런타임 검증', () => {
+  it('필수 필드가 모두 유효하면 SSE 알림 payload로 본다', () => {
+    const payload = {
+      notificationId: 10,
+      notificationType: 'COMMENT_LIKED',
+      message: '코멘트에 좋아요가 달렸습니다.',
+      link: '/groups/3/collection/my-comment',
+    };
+
+    const result = isSseNotificationPayload(payload);
+
+    expect(result).toBe(true);
+  });
+
+  it('link가 null이어도 유효 payload로 본다', () => {
+    const payload = {
+      notificationId: 11,
+      notificationType: 'GROUP_KICKED',
+      message: '그룹에서 강퇴되었습니다.',
+      link: null,
+    };
+
+    const result = isSseNotificationPayload(payload);
+
+    expect(result).toBe(true);
+  });
+
+  it.each([
+    [
+      'notificationId가 없으면',
+      {
+        notificationType: 'COMMENT_LIKED',
+        message: '코멘트에 좋아요가 달렸습니다.',
+        link: '/groups/3/collection/my-comment',
+      },
+    ],
+    [
+      '지원하지 않는 notificationType이면',
+      {
+        notificationId: 12,
+        notificationType: 'UNKNOWN_TYPE',
+        message: '알 수 없는 알림입니다.',
+        link: '/groups/3/collection/my-comment',
+      },
+    ],
+    [
+      'message가 문자열이 아니면',
+      {
+        notificationId: 13,
+        notificationType: 'COMMENT_LIKED',
+        message: null,
+        link: '/groups/3/collection/my-comment',
+      },
+    ],
+    [
+      'link가 문자열이나 null이 아니면',
+      {
+        notificationId: 14,
+        notificationType: 'COMMENT_LIKED',
+        message: '코멘트에 좋아요가 달렸습니다.',
+        link: 3,
+      },
+    ],
+  ])('%s 유효 payload로 보지 않는다', (_description, payload) => {
+    const result = isSseNotificationPayload(payload);
+
+    expect(result).toBe(false);
   });
 });
 
