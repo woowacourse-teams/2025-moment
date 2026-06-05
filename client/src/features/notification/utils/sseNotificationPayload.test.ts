@@ -135,7 +135,7 @@ describe('SSE 알림 item cache prepend', () => {
 });
 
 describe('SSE 알림 invalidate target 계산', () => {
-  it('정상 SSE 알림은 notifications.all을 invalidate 대상으로 포함한다', () => {
+  it('정상 SSE 알림은 알림 목록 갱신 대상으로 계산한다', () => {
     const payload: SSENotification = {
       notificationId: 10,
       notificationType: 'GROUP_KICKED',
@@ -148,7 +148,7 @@ describe('SSE 알림 invalidate target 계산', () => {
     expect(result).toEqual([queryKeys.notifications.all]);
   });
 
-  it('NEW_COMMENT_ON_MOMENT 알림의 group link는 모멘트 모음집 관련 query key를 포함한다', () => {
+  it('NEW_COMMENT_ON_MOMENT 알림은 모멘트 모음집 갱신 대상으로 계산한다', () => {
     const payload: SSENotification = {
       notificationId: 10,
       notificationType: 'NEW_COMMENT_ON_MOMENT',
@@ -165,7 +165,24 @@ describe('SSE 알림 invalidate target 계산', () => {
     ]);
   });
 
-  it('COMMENT_LIKED 알림의 group link는 코멘트 모음집 관련 query key를 포함한다', () => {
+  it('MOMENT_LIKED 알림은 모멘트 모음집 갱신 대상으로 계산한다', () => {
+    const payload: SSENotification = {
+      notificationId: 13,
+      notificationType: 'MOMENT_LIKED',
+      message: '모멘트에 좋아요가 달렸습니다.',
+      link: '/groups/3/collection/my-moment',
+    };
+
+    const result = getNotificationInvalidationTargets(payload);
+
+    expect(result).toEqual([
+      queryKeys.notifications.all,
+      queryKeys.group.myMoments(3),
+      queryKeys.group.momentsUnread(3),
+    ]);
+  });
+
+  it('COMMENT_LIKED 알림은 코멘트 모음집 갱신 대상으로 계산한다', () => {
     const payload: SSENotification = {
       notificationId: 11,
       notificationType: 'COMMENT_LIKED',
@@ -182,7 +199,7 @@ describe('SSE 알림 invalidate target 계산', () => {
     ]);
   });
 
-  it('groupId를 추출할 수 없으면 group-specific query key를 포함하지 않는다', () => {
+  it('groupId를 추출할 수 없으면 그룹 화면 갱신 대상으로 계산하지 않는다', () => {
     const payload: SSENotification = {
       notificationId: 12,
       notificationType: 'NEW_COMMENT_ON_MOMENT',

@@ -108,7 +108,10 @@ export const getNotificationInvalidationTargets = (
 
   if (!groupId) return queryKeysToInvalidate;
 
-  if (payload.notificationType === 'NEW_COMMENT_ON_MOMENT') {
+  if (
+    payload.notificationType === 'NEW_COMMENT_ON_MOMENT' ||
+    payload.notificationType === 'MOMENT_LIKED'
+  ) {
     return [
       ...queryKeysToInvalidate,
       queryKeys.group.myMoments(groupId),
