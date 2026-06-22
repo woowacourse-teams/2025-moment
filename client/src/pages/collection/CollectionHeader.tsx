@@ -1,18 +1,22 @@
 import { ROUTES } from '@/app/routes/routes';
 import { useReadNotificationsQuery } from '@/features/notification/api/useReadNotificationsQuery';
+import { NotificationType } from '@/features/notification/types/notifications';
 import { useLocation, useParams } from 'react-router';
 import * as S from './index.styles';
+
+const MOMENT_NOTIFICATION_TYPES: NotificationType[] = ['NEW_COMMENT_ON_MOMENT', 'MOMENT_LIKED'];
+const COMMENT_NOTIFICATION_TYPES: NotificationType[] = ['COMMENT_LIKED'];
 
 export const CollectionHeader = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const currentpath = useLocation().pathname;
   const { data: notifications } = useReadNotificationsQuery();
 
-  const isMomentNotificationExisting = notifications?.data.some(
-    notification => notification.targetType === 'MOMENT',
+  const isMomentNotificationExisting = notifications?.data.some(notification =>
+    MOMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
   );
-  const isCommentNotificationExisting = notifications?.data.some(
-    notification => notification.targetType === 'COMMENT',
+  const isCommentNotificationExisting = notifications?.data.some(notification =>
+    COMMENT_NOTIFICATION_TYPES.includes(notification.notificationType),
   );
 
   const momentCollectionPath = ROUTES.COLLECTION_MYMOMENT.replace(':groupId', groupId || '');

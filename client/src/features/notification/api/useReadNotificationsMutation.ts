@@ -10,8 +10,8 @@ export const useReadNotificationsMutation = (groupId?: number | string) => {
     mutationFn: patchReadNotifications,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
-      if (groupId) {
-        const numericGroupId = Number(groupId);
+      const numericGroupId = Number(groupId);
+      if (groupId != null && groupId !== '' && Number.isFinite(numericGroupId)) {
         queryClient.invalidateQueries({ queryKey: queryKeys.group.comments(numericGroupId) });
         queryClient.invalidateQueries({
           queryKey: queryKeys.group.commentsUnread(numericGroupId),
