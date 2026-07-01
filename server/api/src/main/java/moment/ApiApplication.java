@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableRetry
 @SpringBootApplication
 @EnableConfigurationProperties(GeminiProperties.class)
+// 배포 트리거
 public class ApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
