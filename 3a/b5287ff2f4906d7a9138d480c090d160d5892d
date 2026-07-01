@@ -1,0 +1,14 @@
+client/src/app/App.tsx
+  h_09d9451df330ee 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "3ab5287ff2f4906d7a9138d480c090d160d5892d",
+  "prompts": {},
+  "humans": {
+    "h_09d9451df330ee": {
+      "author": "yush <yush2202@gmail.com>"
+    }
+  }
+}
