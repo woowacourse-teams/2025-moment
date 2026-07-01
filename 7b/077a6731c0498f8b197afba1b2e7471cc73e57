@@ -1,0 +1,14 @@
+server/api/src/main/java/moment/ApiApplication.java
+  h_09d9451df330ee 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "7b077a6731c0498f8b197afba1b2e7471cc73e57",
+  "prompts": {},
+  "humans": {
+    "h_09d9451df330ee": {
+      "author": "yush <yush2202@gmail.com>"
+    }
+  }
+}
