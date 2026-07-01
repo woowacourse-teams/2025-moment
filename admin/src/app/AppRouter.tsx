@@ -7,7 +7,7 @@ import UserListPage from "@pages/UserListPage";
 import UserDetailPage from "@pages/UserDetailPage";
 import GroupListPage from "@pages/GroupListPage";
 import GroupDetailPage from "@pages/GroupDetailPage";
-
+/** admin 배포 트리거*/
 export function AppRouter() {
   return (
     <Routes>
