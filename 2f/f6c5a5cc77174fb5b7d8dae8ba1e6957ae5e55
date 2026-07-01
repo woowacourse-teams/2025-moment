@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "2ff6c5a5cc77174fb5b7d8dae8ba1e6957ae5e55",
+  "prompts": {},
+  "humans": {
+    "h_09d9451df330ee": {
+      "author": "yush <yush2202@gmail.com>"
+    }
+  }
+}
