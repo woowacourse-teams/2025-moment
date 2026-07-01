@@ -1,0 +1,14 @@
+server/admin/src/main/java/moment/AdminApplication.java
+  h_09d9451df330ee 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "f5b3ed5a0e0ed4ddaa59a1f60d3558fb32c31e9a",
+  "prompts": {},
+  "humans": {
+    "h_09d9451df330ee": {
+      "author": "yush <yush2202@gmail.com>"
+    }
+  }
+}
