@@ -9,7 +9,6 @@ import GlobalStyles from './styles/GlobalStyles';
 import { theme } from '../shared/styles/theme';
 import { useInitializePushNotification } from '@/shared/lib/notifications/useInitializePushNotification';
 import { ErrorBoundary } from '@/shared/ui/errorBoundary';
-/** 배포 트리거 */
 declare global {
   interface Window {
     onTabFocus?: () => void;
